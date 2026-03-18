@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Migro — Skills Assessment Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black:#0a0a0a; --white:#ffffff;
+    --gray-50:#f9fafb; --gray-100:#f3f4f6; --gray-200:#e5e7eb;
+    --gray-300:#d1d5db; --gray-400:#9ca3af; --gray-500:#6b7280;
+    --gray-600:#4b5563; --gray-700:#374151; --gray-800:#1f2937;
+    --green:#16a34a;  --green-bg:#f0fdf4;  --green-border:#bbf7d0;
+    --amber:#d97706;  --amber-bg:#fffbeb;  --amber-border:#fde68a;
+    --red:#dc2626;    --red-bg:#fef2f2;    --red-border:#fecaca;
+    --blue:#2563eb;   --blue-bg:#eff6ff;   --blue-border:#bfdbfe;
+    --purple:#7c3aed; --purple-bg:#f5f3ff; --purple-border:#ddd6fe;
+    --teal:#0d9488;   --teal-bg:#f0fdfa;   --teal-border:#99f6e4;
+    --pink:#db2777;   --pink-bg:#fdf2f8;   --pink-border:#fbcfe8;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; color: var(--gray-800); background: var(--gray-50); line-height: 1.6; }
+
+  /* NAV */
+  nav { position: sticky; top: 0; z-index: 100; background: var(--black); color: var(--white); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; height: 56px; }
+  .nav-brand { font-family: 'Playfair Display', serif; font-size: 1.3rem; letter-spacing: -.5px; }
+  .nav-brand span { color: var(--amber); }
+  .nav-right { display: flex; align-items: center; gap: 16px; }
+  .nav-back { color: var(--gray-300); text-decoration: none; font-size: .85rem; display: flex; align-items: center; gap: 6px; transition: color .2s; }
+  .nav-back:hover { color: var(--white); }
+  .lang-btn { background: none; border: 1px solid var(--gray-600); color: var(--gray-300); padding: 4px 10px; border-radius: 4px; font-size: .78rem; cursor: pointer; transition: all .2s; font-family: inherit; }
+  .lang-btn:hover, .lang-btn.active { background: var(--white); color: var(--black); border-color: var(--white); }
+
+  /* HERO */
+  .hero { background: var(--black); color: var(--white); padding: 56px 24px 48px; text-align: center; }
+  .hero-tag { display: inline-block; background: var(--purple-bg); color: var(--purple); border: 1px solid var(--purple-border); padding: 4px 12px; border-radius: 20px; font-size: .78rem; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 16px; }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem,5vw,3rem); line-height: 1.15; margin-bottom: 16px; }
+  .hero h1 span { color: var(--amber); }
+  .hero p { color: var(--gray-300); font-size: 1.05rem; max-width: 600px; margin: 0 auto; }
+
+  /* LAYOUT */
+  .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+  .section { padding: 48px 0; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 8px; }
+  .section-sub { color: var(--gray-500); margin-bottom: 28px; font-size: .95rem; }
+
+  /* FINDER */
+  .finder { background: var(--white); border: 1px solid var(--gray-200); border-radius: 12px; overflow: hidden; }
+  .finder-head { background: var(--gray-800); color: var(--white); padding: 20px 24px; display: flex; align-items: center; gap: 12px; }
+  .finder-head h3 { font-size: 1rem; font-weight: 600; }
+  .finder-body { padding: 24px; }
+  .search-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .search-input { flex: 1; min-width: 200px; padding: 11px 14px; border: 1px solid var(--gray-300); border-radius: 8px; font-family: inherit; font-size: .9rem; background: var(--gray-50); }
+  .search-input:focus { outline: none; border-color: var(--blue); background: var(--white); }
+  .search-btn { padding: 11px 20px; background: var(--black); color: var(--white); border: none; border-radius: 8px; font-family: inherit; font-size: .9rem; font-weight: 600; cursor: pointer; transition: background .2s; white-space: nowrap; }
+  .search-btn:hover { background: var(--gray-700); }
+  .finder-result { margin-top: 20px; }
+  .finder-result-empty { color: var(--gray-400); font-size: .9rem; text-align: center; padding: 24px 0; }
+
+  /* AUTHORITY TABLE */
+  .auth-table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--gray-200); background: var(--white); margin-top: 4px; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+  thead { background: var(--gray-800); color: var(--white); }
+  th { padding: 11px 13px; text-align: left; font-weight: 600; font-size: .78rem; text-transform: uppercase; letter-spacing: .4px; white-space: nowrap; }
+  td { padding: 10px 13px; border-bottom: 1px solid var(--gray-100); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--gray-50); }
+  .auth-badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: .72rem; font-weight: 700; white-space: nowrap; }
+  .time-fast   { background: var(--green-bg);  color: var(--green); }
+  .time-medium { background: var(--amber-bg);  color: var(--amber); }
+  .time-slow   { background: var(--red-bg);    color: var(--red); }
+  .cost-low    { color: var(--green); font-weight: 600; }
+  .cost-med    { color: var(--amber); font-weight: 600; }
+  .cost-high   { color: var(--red); font-weight: 600; }
+
+  /* AUTHORITY CARDS */
+  .auth-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 16px; }
+  .auth-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 12px; padding: 20px; transition: box-shadow .2s; }
+  .auth-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.07); }
+  .auth-card-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+  .auth-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .auth-abbr { font-weight: 700; font-size: 1rem; color: var(--gray-800); }
+  .auth-fullname { font-size: .78rem; color: var(--gray-500); margin-top: 1px; }
+  .auth-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .meta-pill { display: flex; align-items: center; gap: 4px; font-size: .75rem; color: var(--gray-600); background: var(--gray-100); padding: 3px 9px; border-radius: 20px; }
+  .meta-pill strong { color: var(--gray-800); }
+  .auth-occs { font-size: .82rem; color: var(--gray-600); line-height: 1.6; margin-bottom: 12px; }
+  .auth-occs strong { color: var(--gray-800); display: block; margin-bottom: 2px; font-size: .8rem; text-transform: uppercase; letter-spacing: .4px; }
+  .auth-link { display: block; text-align: center; padding: 8px; background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 7px; font-size: .8rem; font-weight: 600; color: var(--gray-700); text-decoration: none; transition: all .2s; }
+  .auth-link:hover { background: var(--black); color: var(--white); border-color: var(--black); }
+
+  /* FILTER BAR */
+  .filter-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+  .filter-btn { padding: 7px 16px; border-radius: 20px; border: 1px solid var(--gray-300); background: var(--white); font-family: inherit; font-size: .82rem; font-weight: 500; cursor: pointer; transition: all .2s; color: var(--gray-700); }
+  .filter-btn:hover { border-color: var(--gray-500); }
+  .filter-btn.active { background: var(--black); color: var(--white); border-color: var(--black); }
+  .auth-card.hidden { display: none; }
+
+  /* STEPS */
+  .steps { display: flex; flex-direction: column; }
+  .step { display: flex; gap: 20px; padding: 0 0 28px; }
+  .step:last-child { padding-bottom: 0; }
+  .step-left { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 44px; }
+  .step-num { width: 44px; height: 44px; border-radius: 50%; background: var(--black); color: var(--white); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; flex-shrink: 0; z-index: 1; }
+  .step-line { flex: 1; width: 2px; background: var(--gray-200); margin-top: 4px; }
+  .step:last-child .step-line { display: none; }
+  .step-body { padding-top: 10px; }
+  .step-title { font-weight: 600; font-size: 1rem; margin-bottom: 4px; }
+  .step-desc { color: var(--gray-600); font-size: .9rem; line-height: 1.6; }
+  .step-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: .72rem; font-weight: 600; margin-left: 8px; vertical-align: middle; }
+  .tag-green  { background: var(--green-bg);  color: var(--green); }
+  .tag-amber  { background: var(--amber-bg);  color: var(--amber); }
+  .tag-purple { background: var(--purple-bg); color: var(--purple); }
+
+  /* DOCUMENT CHECKLIST */
+  .doc-list { display: flex; flex-direction: column; gap: 10px; }
+  .doc-item { background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; padding: 14px 18px; display: flex; align-items: flex-start; gap: 14px; }
+  .doc-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 2px; }
+  .doc-title { font-weight: 600; font-size: .9rem; margin-bottom: 2px; }
+  .doc-desc { font-size: .83rem; color: var(--gray-600); line-height: 1.5; }
+  .doc-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .doc-tag { font-size: .7rem; font-weight: 600; padding: 2px 7px; border-radius: 4px; }
+  .doc-tag.req  { background: var(--red-bg);    color: var(--red);    border: 1px solid var(--red-border); }
+  .doc-tag.opt  { background: var(--gray-100);  color: var(--gray-600); }
+  .doc-tag.key  { background: var(--blue-bg);   color: var(--blue);   border: 1px solid var(--blue-border); }
+
+  /* TIPS */
+  .tips-list { display: flex; flex-direction: column; gap: 12px; }
+  .tip { background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; padding: 16px 18px; display: flex; gap: 14px; align-items: flex-start; }
+  .tip-num { background: var(--black); color: var(--white); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .78rem; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+  .tip-title { font-weight: 600; font-size: .9rem; margin-bottom: 3px; }
+  .tip-body  { font-size: .85rem; color: var(--gray-600); line-height: 1.6; }
+
+  /* CALLOUT */
+  .callout { border-radius: 10px; padding: 16px 18px; margin-bottom: 20px; display: flex; gap: 12px; }
+  .callout.blue   { background: var(--blue-bg);   border: 1px solid var(--blue-border); }
+  .callout.amber  { background: var(--amber-bg);  border: 1px solid var(--amber-border); }
+  .callout.green  { background: var(--green-bg);  border: 1px solid var(--green-border); }
+  .callout.purple { background: var(--purple-bg); border: 1px solid var(--purple-border); }
+  .callout-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 2px; }
+  .callout-body { font-size: .875rem; line-height: 1.6; color: var(--gray-700); }
+  .callout-body strong { color: var(--gray-800); }
+  .callout-body a { color: var(--blue); text-decoration: none; }
+
+  /* ACC */
+  .acc-list { display: flex; flex-direction: column; gap: 8px; }
+  .acc-item { background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; overflow: hidden; }
+  .acc-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; cursor: pointer; user-select: none; gap: 12px; }
+  .acc-head:hover { background: var(--gray-50); }
+  .acc-title { font-weight: 600; font-size: .95rem; display: flex; align-items: center; gap: 10px; }
+  .acc-icon { font-size: 1.1rem; flex-shrink: 0; }
+  .acc-arrow { color: var(--gray-400); font-size: 1.1rem; transition: transform .3s; flex-shrink: 0; }
+  .acc-item.open .acc-arrow { transform: rotate(180deg); }
+  .acc-body { max-height: 0; overflow: hidden; transition: max-height .4s cubic-bezier(.4,0,.2,1); }
+  .acc-item.open .acc-body { max-height: 2000px; }
+  .acc-content { padding: 0 20px 20px; color: var(--gray-700); font-size: .9rem; line-height: 1.7; }
+  .acc-content ul { padding-left: 20px; margin-top: 8px; }
+  .acc-content li { margin-bottom: 6px; }
+  .acc-content strong { color: var(--gray-800); }
+  .acc-content a { color: var(--blue); text-decoration: none; }
+  .acc-content a:hover { text-decoration: underline; }
+
+  /* FADE */
+  .fade-up { opacity: 0; transform: translateY(24px); transition: opacity .5s, transform .5s; }
+  .fade-up.visible { opacity: 1; transform: none; }
+
+  /* FOOTER */
+  footer { background: var(--black); color: var(--gray-400); text-align: center; padding: 28px 24px; font-size: .82rem; margin-top: 48px; }
+  .footer-brand { font-family: 'Playfair Display', serif; color: var(--white); font-size: 1rem; margin-bottom: 6px; }
+  .footer-brand span { color: var(--amber); }
+
+  @media(max-width:600px){
+    .hero { padding: 40px 16px 32px; }
+    .container { padding: 0 16px; }
+    th, td { padding: 8px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">Mi<span>gro</span></div>
+  <div class="nav-right">
+    <a href="migro-dashboard.html" class="nav-back">⊞ <span data-en="Dashboard" data-es="Inicio">Dashboard</span></a>
+    <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" id="btn-es" onclick="setLang('es')">ES</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag" data-en="Skills Assessment" data-es="Evaluación de Habilidades">Skills Assessment</div>
+  <h1 data-en="Get your skills <span style='color:var(--amber)'>recognised</span>" data-es="Haz que reconozcan tus <span style='color:var(--amber)'>habilidades</span>">Get your skills <span style="color:var(--amber)">recognised</span></h1>
+  <p data-en="Find the right assessing authority for your occupation, understand what documents to prepare, and avoid the most common pitfalls." data-es="Encuentra la autoridad evaluadora correcta para tu ocupación, entiende qué documentos preparar y evita los errores más comunes.">Find the right assessing authority for your occupation, understand what documents to prepare, and avoid the most common pitfalls.</p>
+</div>
+
+<div class="container">
+
+  <!-- WHY SKILLS ASSESSMENT -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="Why do you need a skills assessment?" data-es="¿Por qué necesitas una evaluación de habilidades?">Why do you need a skills assessment?</h2>
+    <p class="section-sub" data-en="It's the first mandatory step before submitting an EOI for any skilled visa." data-es="Es el primer paso obligatorio antes de presentar una EOI para cualquier visa calificada.">It's the first mandatory step before submitting an EOI for any skilled visa.</p>
+
+    <div class="callout purple">
+      <div class="callout-icon">🎯</div>
+      <div class="callout-body" data-en="A <strong>skills assessment</strong> is an official evaluation by a designated authority that confirms your qualifications and work experience are comparable to Australian standards for your nominated occupation. Without a <strong>positive assessment</strong>, you cannot submit an EOI or be invited to apply for a skilled visa." data-es="Una <strong>evaluación de habilidades</strong> es una evaluación oficial por una autoridad designada que confirma que tus calificaciones y experiencia laboral son comparables a los estándares australianos para tu ocupación nominada. Sin una <strong>evaluación positiva</strong>, no puedes presentar una EOI ni ser invitado a solicitar una visa calificada.">A <strong>skills assessment</strong> is an official evaluation confirming your qualifications and work experience are comparable to Australian standards. Without a <strong>positive outcome</strong>, you cannot submit an EOI or be invited to apply for a skilled visa.</div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px">
+      <div style="background:var(--white);border:1px solid var(--gray-200);border-radius:10px;padding:18px">
+        <div style="font-size:1.4rem;margin-bottom:8px">⏱️</div>
+        <div style="font-weight:600;font-size:.9rem;margin-bottom:4px" data-en="Takes weeks to months" data-es="Toma semanas a meses">Takes weeks to months</div>
+        <div style="font-size:.83rem;color:var(--gray-600)" data-en="Plan ahead — don't wait until you're ready to apply." data-es="Planifica con anticipación — no esperes hasta que estés listo para solicitar.">Plan ahead — don't wait until you're ready to apply.</div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--gray-200);border-radius:10px;padding:18px">
+        <div style="font-size:1.4rem;margin-bottom:8px">📌</div>
+        <div style="font-weight:600;font-size:.9rem;margin-bottom:4px" data-en="Occupation-specific" data-es="Específica por ocupación">Occupation-specific</div>
+        <div style="font-size:.83rem;color:var(--gray-600)" data-en="Each occupation has one designated assessing authority — you can't choose." data-es="Cada ocupación tiene una autoridad evaluadora designada — no puedes elegir.">Each occupation has one designated assessing authority — you can't choose.</div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--gray-200);border-radius:10px;padding:18px">
+        <div style="font-size:1.4rem;margin-bottom:8px">🔄</div>
+        <div style="font-weight:600;font-size:.9rem;margin-bottom:4px" data-en="Valid for 3 years" data-es="Válida por 3 años">Valid for 3 years</div>
+        <div style="font-size:.83rem;color:var(--gray-600)" data-en="Most assessments are valid for 3 years from the date of the letter." data-es="La mayoría de las evaluaciones son válidas por 3 años desde la fecha de la carta.">Most assessments are valid for 3 years from the assessment letter date.</div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--gray-200);border-radius:10px;padding:18px">
+        <div style="font-size:1.4rem;margin-bottom:8px">💸</div>
+        <div style="font-weight:600;font-size:.9rem;margin-bottom:4px" data-en="Paid service" data-es="Servicio pago">Paid service</div>
+        <div style="font-size:.83rem;color:var(--gray-600)" data-en="Costs range from AUD $300 to over $1,000 depending on authority and assessment type." data-es="Los costos varían de AUD $300 a más de $1,000 según la autoridad y el tipo de evaluación.">Costs range from AUD $300 to $1,000+ depending on authority.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINDER -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="Find your assessing authority" data-es="Encuentra tu autoridad evaluadora">Find your assessing authority</h2>
+    <p class="section-sub" data-en="Search by occupation name or ANZSCO code to find who assesses your skills." data-es="Busca por nombre de ocupación o código ANZSCO para encontrar quién evalúa tus habilidades.">Search by occupation name or ANZSCO code to find who assesses your skills.</p>
+
+    <div class="finder">
+      <div class="finder-head">
+        <span style="font-size:1.2rem">🔍</span>
+        <h3 data-en="Occupation search" data-es="Búsqueda de ocupación">Occupation search</h3>
+      </div>
+      <div class="finder-body">
+        <div class="search-row">
+          <input class="search-input" id="occ-search" type="text" placeholder="e.g. Software Engineer, Nurse, Accountant, 261313…" oninput="searchOcc()">
+        </div>
+        <div class="finder-result" id="occ-result">
+          <div class="finder-result-empty" data-en="Start typing to search over 200 occupations." data-es="Comienza a escribir para buscar entre más de 200 ocupaciones.">Start typing to search over 200 occupations.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUTHORITY CARDS -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="Major assessing authorities" data-es="Principales autoridades evaluadoras">Major assessing authorities</h2>
+    <p class="section-sub" data-en="The 11 most commonly used authorities for skilled migration. Filter by sector." data-es="Las 11 autoridades más utilizadas para la migración calificada. Filtra por sector.">The 11 most commonly used authorities for skilled migration. Filter by sector.</p>
+
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterAuth('all',this)" data-en="All" data-es="Todos">All</button>
+      <button class="filter-btn" onclick="filterAuth('tech',this)" data-en="Technology" data-es="Tecnología">Technology</button>
+      <button class="filter-btn" onclick="filterAuth('engineering',this)" data-en="Engineering" data-es="Ingeniería">Engineering</button>
+      <button class="filter-btn" onclick="filterAuth('health',this)" data-en="Health" data-es="Salud">Health</button>
+      <button class="filter-btn" onclick="filterAuth('business',this)" data-en="Business" data-es="Negocios">Business</button>
+      <button class="filter-btn" onclick="filterAuth('trades',this)" data-en="Trades" data-es="Oficios">Trades</button>
+      <button class="filter-btn" onclick="filterAuth('education',this)" data-en="Education" data-es="Educación">Education</button>
+    </div>
+
+    <div class="auth-grid">
+
+      <!-- ACS -->
+      <div class="auth-card" data-sector="tech">
+        <div class="auth-card-head">
+          <div class="auth-icon">💻</div>
+          <div>
+            <div class="auth-abbr">ACS</div>
+            <div class="auth-fullname" data-en="Australian Computer Society" data-es="Sociedad Australiana de Computación">Australian Computer Society</div>
+          </div>
+        </div>
+        <div class="auth-meta">
+          <div class="meta-pill">⏱️ <strong data-en="4–12 wks" data-es="4–12 sem">4–12 wks</strong></div>
+          <div class="meta-pill">💰 <strong>AUD ~$560</strong></div>
+          <div class="meta-pill"><span class="auth-badge time-medium" data-en="Medium" data-es="Mediano">Medium</span></div>
+        </div>
+        <div class="auth-occs">
+          <strong data-en="Key occupations" data-es="Ocupaciones clave">Key occupations</strong>
+          <span data-en="Software Engineer (261313), ICT Business Analyst (261111), Systems Administrator (262113), Database Administrator (262111), ICT Project Manager (135111), Cybersecurity Specialist, UX Designer (232413)" data-es="Ingeniero de Software (261313), Analista de Negocios TIC (261111), Administrador de Sistemas (262113), Administrador de Base de Datos (262111), Gerente de Proyectos TIC (135111)">Software Engineer, ICT Business Analyst, Systems Administrator, Database Administrator, ICT Project Manager, Cybersecurity Specialist</span>
+        </div>
+        <a class="auth-link" href="https://www.acs.org.au/msa" target="_blank" data-en="ACS official site →" data-es="Sitio oficial ACS →">ACS official site →</a>
+      </div>
+
+      <!-- Engineers Australia -->
+      <div class="auth-card" data-sector="engineering">
+        <div class="auth-card-head">
+          <div class="auth-icon">⚙️</div>
+          <div>
+            <div class="auth-abbr">EA</div>
+            <div class="auth-fullname">Engineers Australia</div>
+          </div>
+        </div>
+        <div class="auth-meta">
+          <div class="meta-pill">⏱️ <strong data-en="8–16 wks" data-es="8–16 sem">8–16 wks</strong></div>
+          <div class="meta-pill">💰 <strong>AUD ~$750</strong></div>
+          <div class="meta-pill"><span class="auth-badge time-slow" data-en="Slow" data-es="Lento">Slow</span></div>
+        </div>
+        <div class="auth-occs">
+          <strong data-en="Key occupations" data-es="Ocupaciones clave">Key occupations</strong>
+          <span data-en="Civil Engineer (233211), Mechanical Engineer (233512), Electrical Engineer (233311), Structural Engineer (233214), Chemical Engineer (233111), Mining Engineer (233611), Environmental Engineer (233915)" data-es="Ingeniero Civil (233211), Ingeniero Mecánico (233512), Ingeniero Eléctrico (233311), Ingeniero Estructural (233214), Ingeniero Químico (233111)">Civil, Mechanical, Electrical, Structural, Chemical, Mining, Environmental Engineers</span>
+        </div>
+        <a class="auth-link" href="https://www.engineersaustralia.org.au/skills-assessment" target="_blank" data-en="EA official site →" data-es="Sitio oficial EA →">EA official site →</a>
+      </div>
+
+      <!-- VETASSESS -->
+      <div class="auth-card" data-sector="business trades">
+        <div class="auth-card-head">
+          <div class="auth-icon">📋</div>
+          <div>
+            <div class="auth-abbr">VETASSESS</div>
+            <div class="auth-fullname" data-en="Vocational & Technical Assessment" data-es="Evaluación Vocacional y Técnica">Vocational & Technical Assessment</div>
+          </div>
+        </div>
+        <div class="auth-meta">
+          <div class="meta-pill">⏱️ <strong data-en="6–14 wks" data-es="6–14 sem">6–14 wks</strong></div>
+          <div class="meta-pill">💰 <strong>AUD ~$700</strong></div>
+          <div class="meta-pill"><span class="auth-badge time-medium" data-en="Medium" data-es="Mediano">Medium</span></div>
+        </div>
+        <div class="auth-occs">
+          <strong data-en="Key occupations" data-es="Ocupaciones clave">Key occupations</strong>
+          <span data-en="400+ occupations across business, management, hospitality, creative arts, social science, and some trades. Marketing Specialist, Chef, Graphic Designer, Project Manager, HR Manager, Journalist" data-es="400+ ocupaciones en negocios, gestión, hostelería, artes creativas, ciencias sociales y algunos oficios. Especialista en Marketing, Chef, Diseñador Gráfico, Gerente de Proyectos">400+ occupations: Marketing Specialist, Chef, Graphic Designer, HR Manager, Project Manager, Journalist, Scientist</span>
+        </div>
+        <a class="auth-link" href="https://www.vetassess.com.au" target="_blank" data-en="VETASSESS official site →" data-es="Sitio oficial VETASSESS →">VETASSESS official site →</a>
+      </div>
+
+      <!-- AHPRA -->
+      <div class="auth-card" data-sector="health">
+        <div class="auth-card-head">
+          <div class="auth-icon">🏥</div>
+          <div>
+            <div class="auth-abbr">AHPRA</div>
+            <div class="auth-fullname" data-en="Australian Health Practitioner Reg. Agency" data-es="Agencia Australiana de Registro de Profesionales de Salud">Australian Health Practitioner Reg. Agency</div>
+          </div>
+        </div>
+        <div class="auth-meta">
+          <div class="meta-pill">⏱️ <strong data-en="12–24 wks" data-es="12–24 sem">12–24 wks</strong></div>
+          <div class="meta-pill">💰 <strong>AUD ~$700–1,000</strong></div>
+          <div class="meta-pill"><span class="auth-badge time-slow" data-en="Slow" data-es="Lento">Slow</span></div>
+        </div>
+        <div class="auth-occs">
+          <strong data-en="Key occupations" data-es="Ocupaciones clave">Key occupations</strong>
+          <span data-en="General Practitioner (253111), Specialist Medical Practitioner (253999), Physiotherapist (252511), Psychologist (272299), Pharmacist (251511), Dentist (252111), Optometrist (251411)" data-es="Médico General (253111), Médico Especialista (253999), Fisioterapeuta (252511), Psicólogo (272299), Farmacéutico (251511), Dentista (252111)">General Practitioner, Physiotherapist, Psychologist, Pharmacist, Dentist, Optometrist, Medical Specialist</span>
+        </div>
+        <a class="auth-link" href="https://www.ahpra.gov.au" target="_blank" data-en="AHPRA official site →" data-es="Sitio oficial AHPRA →">AHPRA official site →</a>
+      </div>
+
+      <!-- ANMAC -->
+      <div class="auth-card" data-sector="health">
+        <div class="auth-card-head">
+          <div class="auth-icon">🩺</div>
+          <div>
+            <div class="auth-abbr">ANMAC</div>
+            <div class="auth-fullname" data-en="Australian Nursing & Midwifery Accreditation Council" data-es="Consejo Australiano de Acreditación de Enfermería y Obstetricia">Australian Nursing & Midwifery Accreditation Council</div>
+          </div>
+        </div>
+        <div class="auth-meta">
+          <div class="meta-pill">⏱️ <strong data-en="8–16 wks" data-es="8–16 sem">8–16 wks</strong></div>
+          <div class="meta-pill">💰 <strong>AUD ~$700</strong></div>
+          <div class="meta-pill"><span class="auth-badge time-slow" data-en="Slow" data-es="Lento">Slow</span></div>
+        </div>
+        <div class="auth-occs">
+          <strong data-en="Key occupations" data-es="Ocupaciones clave">Key occupations</strong>
+          <span data-en="Registered Nurse (254111), Enrolled Nurse (254411), Midwife (254111), Nurse Practitioner (254111), Nurse Manager (254411)" data-es="Enfermero/a Registrado/a (254111), Enfermero/a Matriculado/a (254411), Matrona/Obstetra (254111)">Registered Nurse, Enrolled Nurse, Midwife, Nurse Practitioner, Nurse Manager</span>
+        </div>
+        <a class="auth-link" href="https://www.anmac.org.au" target="_blank" data-en="ANMAC official site →" data-es="Sitio oficial ANMAC →">ANMAC official site →</a>
+      </div>
+
+      <!-- CPA / CAANZ -->
+      <div class="auth-card" data-sector="business">
+        <div class="auth-card-head">
+          <div class="auth-icon">📊</div>
+          <div>
+            <div class="auth-abbr">CPA / CAANZ / IPA</div>
+            <div class="auth-fullname" data-en="Accounting professional bodies" data-es="Organismos profesionales de contabilidad">Accounting professional bodies</div>
+          </div>
+        </div>
+        <div class="auth-meta">
+          <div class="meta-pill">⏱️ <strong data-en="4–10 wks" data-es="4–10 sem">4–10 wks</strong></div>
+          <div class="meta-pill">💰 <strong>AUD ~$500</strong></div>
+          <div class="meta-pill"><span class="auth-badge time-medium" data-en="Medium" data-es="Mediano">Medium</span></div>
+        </div>
+        <div class="auth-occs">
+          <strong data-en="Key occupations" data-es="Ocupaciones clave">Key occupations</strong>
+          <span data-en="Accountant (General) (221111), Management Accountant (221112), Taxation Accountant (221113), External Auditor (221213), Finance Manager (132211)" data-es="Contador General (221111), Contador de Gestión (221112), Contador Fiscal (221113), Auditor Externo (221213), Gerente de Finanzas (132211)">Accountant (General), Management Accountant, Taxation Accountant, External Auditor, Finance Manager</span>
+        </div>
+        <a class="auth-link" href="https://www.cpaaustralia.com.au" target="_blank" data-en="CPA official site →" data-es="Sitio oficial CPA →">CPA official site →</a>
+      </div>
+
+      <!-- TRA -->
+      <div class="auth-card" data-sector="trades">
+        <div class="auth-card-head">
+          <div class="auth-icon">🔧</div>
+          <div>
+            <div class="auth-abbr">TRA</div>
+            <div class="auth-fullname" data-en="Trades Recognition Australia" data-es="Reconocimiento de Oficios de Australia">Trades Recognition Australia</div>
+          </div>
+        </div>
+        <div class="auth-meta">
+          <div class="meta-pill">⏱️ <strong data-en="8–20 wks" data-es="8–20 sem">8–20 wks</strong></div>
+          <div class="meta-pill">💰 <strong>AUD ~$400–700</strong></div>
+          <div class="meta-pill"><span class="auth-badge time-slow" data-en="Slow" data-es="Lento">Slow</span></div>
+        </div>
+        <div class="auth-occs">
+          <strong data-en="Key occupations" data-es="Ocupaciones clave">Key occupations</strong>
+          <span data-en="Electrician (341111), Plumber (334111), Carpenter (331212), Motor Mechanic (321211), Welder (322313), Cook (351411), Baker (351111), Hairdresser (391111)" data-es="Electricista (341111), Plomero (334111), Carpintero (331212), Mecánico de Automóviles (321211), Soldador (322313), Cocinero (351411)">Electrician, Plumber, Carpenter, Motor Mechanic, Welder, Cook, Baker, Hairdresser</span>
+        </div>
+        <a class="auth-link" href="https://www.tradesrecognitionaustralia.gov.au" target="_blank" data-en="TRA official site →" data-es="Sitio oficial TRA →">TRA official site →</a>
+      </div>
+
+      <!-- AITSL -->
+      <div class="auth-card" data-sector="education">
+        <div class="auth-card-head">
+          <div class="auth-icon">🏫</div>
+          <div>
+            <div class="auth-abbr">AITSL</div>
+            <div class="auth-fullname" data-en="Australian Institute for Teaching & School Leadership" data-es="Instituto Australiano para la Enseñanza y el Liderazgo Escolar">Australian Institute for Teaching & School Leadership</div>
+          </div>
+        </div>
+        <div class="auth-meta">
+          <div class="meta-pill">⏱️ <strong data-en="10–20 wks" data-es="10–20 sem">10–20 wks</strong></div>
+          <div class="meta-pill">💰 <strong>AUD ~$500</strong></div>
+          <div class="meta-pill"><span class="auth-badge time-slow" data-en="Slow" data-es="Lento">Slow</span></div>
+        </div>
+        <div class="auth-occs">
+          <strong data-en="Key occupations" data-es="Ocupaciones clave">Key occupations</strong>
+          <span data-en="Primary School Teacher (241213), Secondary School Teacher (241411), Special Education Teacher (241511), Early Childhood Teacher (241111)" data-es="Maestro de Primaria (241213), Profesor de Secundaria (241411), Maestro de Educación Especial (241511), Educador de Primera Infancia (241111)">Primary Teacher, Secondary Teacher, Special Education Teacher, Early Childhood Teacher</span>
+        </div>
+        <a class="auth-link" href="https://www.aitsl.edu.au/teach/overseas-trained-teachers" target="_blank" data-en="AITSL official site →" data-es="Sitio oficial AITSL →">AITSL official site →</a>
+      </div>
+
+      <!-- AASW -->
+      <div class="auth-card" data-sector="health education">
+        <div class="auth-card-head">
+          <div class="auth-icon">🤝</div>
+          <div>
+            <div class="auth-abbr">AASW</div>
+            <div class="auth-fullname" data-en="Australian Association of Social Workers" data-es="Asociación Australiana de Trabajadores Sociales">Australian Association of Social Workers</div>
+          </div>
+        </div>
+        <div class="auth-meta">
+          <div class="meta-pill">⏱️ <strong data-en="6–12 wks" data-es="6–12 sem">6–12 wks</strong></div>
+          <div class="meta-pill">💰 <strong>AUD ~$480</strong></div>
+          <div class="meta-pill"><span class="auth-badge time-medium" data-en="Medium" data-es="Mediano">Medium</span></div>
+        </div>
+        <div class="auth-occs">
+          <strong data-en="Key occupations" data-es="Ocupaciones clave">Key occupations</strong>
+          <span data-en="Social Worker (272511), Welfare Worker (272613), Family Support Worker, Child Protection Officer" data-es="Trabajador Social (272511), Trabajador de Bienestar (272613), Trabajador de Apoyo Familiar, Oficial de Protección Infantil">Social Worker (272511), Welfare Worker (272613), Family Support Worker</span>
+        </div>
+        <a class="auth-link" href="https://www.aasw.asn.au" target="_blank" data-en="AASW official site →" data-es="Sitio oficial AASW →">AASW official site →</a>
+      </div>
+
+      <!-- AIQS -->
+      <div class="auth-card" data-sector="engineering business">
+        <div class="auth-card-head">
+          <div class="auth-icon">📐</div>
+          <div>
+            <div class="auth-abbr">AIQS</div>
+            <div class="auth-fullname" data-en="Australian Institute of Quantity Surveyors" data-es="Instituto Australiano de Presupuestadores de Obras">Australian Institute of Quantity Surveyors</div>
+          </div>
+        </div>
+        <div class="auth-meta">
+          <div class="meta-pill">⏱️ <strong data-en="6–10 wks" data-es="6–10 sem">6–10 sem</strong></div>
+          <div class="meta-pill">💰 <strong>AUD ~$400</strong></div>
+          <div class="meta-pill"><span class="auth-badge time-medium" data-en="Medium" data-es="Mediano">Medium</span></div>
+        </div>
+        <div class="auth-occs">
+          <strong data-en="Key occupations" data-es="Ocupaciones clave">Key occupations</strong>
+          <span data-en="Quantity Surveyor (233213), Building Estimator (312114), Cost Engineer" data-es="Presupuestador de Obras (233213), Estimador de Construcción (312114), Ingeniero de Costos">Quantity Surveyor (233213), Building Estimator (312114), Cost Engineer</span>
+        </div>
+        <a class="auth-link" href="https://www.aiqs.com.au" target="_blank" data-en="AIQS official site →" data-es="Sitio oficial AIQS →">AIQS official site →</a>
+      </div>
+
+      <!-- APAC -->
+      <div class="auth-card" data-sector="health">
+        <div class="auth-card-head">
+          <div class="auth-icon">🧠</div>
+          <div>
+            <div class="auth-abbr">APAC</div>
+            <div class="auth-fullname" data-en="Australian Psychology Accreditation Council" data-es="Consejo Australiano de Acreditación de Psicología">Australian Psychology Accreditation Council</div>
+          </div>
+        </div>
+        <div class="auth-meta">
+          <div class="meta-pill">⏱️ <strong data-en="10–16 wks" data-es="10–16 sem">10–16 wks</strong></div>
+          <div class="meta-pill">💰 <strong>AUD ~$600</strong></div>
+          <div class="meta-pill"><span class="auth-badge time-slow" data-en="Slow" data-es="Lento">Slow</span></div>
+        </div>
+        <div class="auth-occs">
+          <strong data-en="Key occupations" data-es="Ocupaciones clave">Key occupations</strong>
+          <span data-en="Psychologist (272299), Clinical Psychologist (272311), Counsellor (272111), Organisational Psychologist (272312)" data-es="Psicólogo (272299), Psicólogo Clínico (272311), Consejero (272111), Psicólogo Organizacional (272312)">Psychologist (272299), Clinical Psychologist, Counsellor, Organisational Psychologist</span>
+        </div>
+        <a class="auth-link" href="https://www.psychologycouncil.org.au" target="_blank" data-en="APAC official site →" data-es="Sitio oficial APAC →">APAC official site →</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- DOCUMENTS TO PREPARE -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="Documents you'll typically need" data-es="Documentos que normalmente necesitarás">Documents you'll typically need</h2>
+    <p class="section-sub" data-en="Requirements vary by authority, but these core documents are almost always required." data-es="Los requisitos varían según la autoridad, pero estos documentos principales son casi siempre requeridos.">Requirements vary by authority, but these core documents are almost always required.</p>
+
+    <div class="doc-list">
+      <div class="doc-item">
+        <div class="doc-icon">🎓</div>
+        <div>
+          <div class="doc-title" data-en="Academic transcripts & degree certificates" data-es="Expedientes académicos y certificados de título">Academic transcripts & degree certificates</div>
+          <div class="doc-desc" data-en="Official transcripts showing subjects studied and grades. Degree certificate showing conferral. Must usually be certified copies. If not in English, a NAATI-certified translation is required." data-es="Expedientes oficiales que muestren las materias estudiadas y las calificaciones. Certificado de título que muestre la conferencia. Generalmente deben ser copias certificadas. Si no están en inglés, se requiere una traducción certificada por NAATI.">Official transcripts with subjects and grades. Degree certificate showing conferral. Certified copies usually required. Non-English documents need NAATI-certified translation.</div>
+          <div class="doc-tags"><span class="doc-tag req" data-en="Required" data-es="Requerido">Required</span><span class="doc-tag key" data-en="Get certified copies" data-es="Obtener copias certificadas">Get certified copies</span></div>
+        </div>
+      </div>
+      <div class="doc-item">
+        <div class="doc-icon">💼</div>
+        <div>
+          <div class="doc-title" data-en="Employment reference letters" data-es="Cartas de referencia laboral">Employment reference letters</div>
+          <div class="doc-desc" data-en="On company letterhead, signed by a manager or HR. Must include: start/end dates, full-time/part-time status (hours per week), job title, and a description of duties. Generic HR letters often fail — get a detailed, duty-specific letter." data-es="En papel con membrete de la empresa, firmadas por un gerente o RRHH. Deben incluir: fechas de inicio/fin, estado de tiempo completo/parcial (horas por semana), título del cargo y descripción de funciones. Las cartas genéricas de RRHH a menudo fallan — obtén una carta detallada y específica sobre las funciones.">On company letterhead, signed by manager/HR. Must include: dates, full-time/part-time hours, job title, and detailed duties description. Vague letters are a top reason for negative assessments.</div>
+          <div class="doc-tags"><span class="doc-tag req" data-en="Required" data-es="Requerido">Required</span><span class="doc-tag key" data-en="Detail duties specifically" data-es="Detallar funciones específicamente">Detail duties specifically</span></div>
+        </div>
+      </div>
+      <div class="doc-item">
+        <div class="doc-icon">📄</div>
+        <div>
+          <div class="doc-title" data-en="Payslips / payroll records" data-es="Recibos de sueldo / registros de nómina">Payslips / payroll records</div>
+          <div class="doc-desc" data-en="Multiple payslips per employment period to corroborate dates and employment. Bank statements can substitute if payslips are unavailable. Tax returns or tax assessment notices can also help." data-es="Múltiples recibos de sueldo por período de empleo para corroborar fechas y empleo. Los estados de cuenta bancarios pueden sustituirlos si los recibos no están disponibles. Las declaraciones de impuestos también pueden ayudar.">Multiple payslips per period to corroborate employment dates. Bank statements or tax returns can substitute if payslips are unavailable.</div>
+          <div class="doc-tags"><span class="doc-tag req" data-en="Required" data-es="Requerido">Required</span></div>
+        </div>
+      </div>
+      <div class="doc-item">
+        <div class="doc-icon">🪪</div>
+        <div>
+          <div class="doc-title" data-en="Identity documents" data-es="Documentos de identidad">Identity documents</div>
+          <div class="doc-desc" data-en="Passport (all pages showing travel history). Some authorities also require birth certificate. Must be certified copies." data-es="Pasaporte (todas las páginas que muestren historial de viajes). Algunas autoridades también requieren certificado de nacimiento. Deben ser copias certificadas.">Passport including all pages showing travel history. Some authorities also require birth certificate. Must be certified copies.</div>
+          <div class="doc-tags"><span class="doc-tag req" data-en="Required" data-es="Requerido">Required</span></div>
+        </div>
+      </div>
+      <div class="doc-item">
+        <div class="doc-icon">🌐</div>
+        <div>
+          <div class="doc-title" data-en="Certified translations (if applicable)" data-es="Traducciones certificadas (si corresponde)">Certified translations (if applicable)</div>
+          <div class="doc-desc" data-en="Any document not in English must be translated by a NAATI-accredited translator. NAATI is Australia's national standards body for translators — not all certified translators are NAATI. The translation must accompany the original document." data-es="Cualquier documento que no esté en inglés debe ser traducido por un traductor acreditado por NAATI. NAATI es el organismo nacional australiano de estándares para traductores — no todos los traductores certificados son NAATI. La traducción debe acompañar el documento original.">Any non-English document must be translated by a NAATI-accredited translator. The translation must accompany the original document.</div>
+          <div class="doc-tags"><span class="doc-tag req" data-en="If not in English" data-es="Si no está en inglés">If not in English</span><span class="doc-tag key" data-en="NAATI only" data-es="Solo NAATI">NAATI only</span></div>
+        </div>
+      </div>
+      <div class="doc-item">
+        <div class="doc-icon">📑</div>
+        <div>
+          <div class="doc-title" data-en="Statutory declaration or CV (sometimes)" data-es="Declaración jurada o CV (a veces)">Statutory declaration or CV (sometimes)</div>
+          <div class="doc-desc" data-en="Some authorities (e.g. VETASSESS) require a statutory declaration outlining your duties in detail. This is particularly important when reference letters are insufficient or employers cannot be contacted. A detailed CV is almost always useful to include." data-es="Algunas autoridades (p.ej. VETASSESS) requieren una declaración jurada que describe detalladamente tus funciones. Esto es particularmente importante cuando las cartas de referencia son insuficientes o los empleadores no pueden ser contactados. Un CV detallado es casi siempre útil para incluir.">Some authorities (e.g. VETASSESS) require a statutory declaration detailing duties. Particularly important when reference letters are insufficient. A detailed CV is almost always useful to include.</div>
+          <div class="doc-tags"><span class="doc-tag opt" data-en="Authority-specific" data-es="Según autoridad">Authority-specific</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIPS -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="Tips for a strong assessment" data-es="Consejos para una evaluación sólida">Tips for a strong assessment</h2>
+    <p class="section-sub" data-en="The most common reasons for negative outcomes — and how to avoid them." data-es="Las razones más comunes para resultados negativos — y cómo evitarlos.">The most common reasons for negative outcomes — and how to avoid them.</p>
+
+    <div class="tips-list">
+      <div class="tip">
+        <div class="tip-num">1</div>
+        <div>
+          <div class="tip-title" data-en="Get specific, detailed employment reference letters" data-es="Obtén cartas de referencia laboral específicas y detalladas">Get specific, detailed employment reference letters</div>
+          <div class="tip-body" data-en="The #1 reason for negative assessments is vague reference letters. Don't ask HR for a generic letter — specifically request a letter that details your daily tasks, the technologies you used, projects you led, and how your role relates to the occupation. Draft the letter yourself and ask the manager to review and sign it on letterhead." data-es="La razón #1 para las evaluaciones negativas son las cartas de referencia vagas. No le pidas a RRHH una carta genérica: solicita específicamente una carta que detalle tus tareas diarias, las tecnologías que usaste, los proyectos que lideraste y cómo tu rol se relaciona con la ocupación. Redacta la carta tú mismo y pide al gerente que la revise y firme en papel con membrete.">The #1 reason for negative assessments is vague reference letters. Draft the letter yourself detailing: daily tasks, technologies/tools used, projects led, and how your role matches the nominated occupation. Ask the manager to review and sign it on letterhead.</div>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-num">2</div>
+        <div>
+          <div class="tip-title" data-en="Match your duties to the ANZSCO description" data-es="Haz coincidir tus funciones con la descripción ANZSCO">Match your duties to the ANZSCO description</div>
+          <div class="tip-body" data-en="Authorities compare your documented duties against the ANZSCO description for your nominated occupation. Read the ANZSCO definition before writing or requesting reference letters — use the same language and cover all key tasks listed. Gaps between your actual duties and the ANZSCO description will hurt your assessment." data-es="Las autoridades comparan tus funciones documentadas con la descripción ANZSCO para tu ocupación nominada. Lee la definición ANZSCO antes de escribir o solicitar cartas de referencia: usa el mismo lenguaje y cubre todas las tareas clave enumeradas. Las brechas entre tus funciones reales y la descripción ANZSCO perjudicarán tu evaluación.">Authorities compare your duties against the ANZSCO description. Read it before writing reference letters — use the same language and cover all key tasks. Gaps between actual duties and ANZSCO description will hurt your outcome.</div>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-num">3</div>
+        <div>
+          <div class="tip-title" data-en="Don't round up your experience period" data-es="No redondees tu período de experiencia">Don't round up your experience period</div>
+          <div class="tip-body" data-en="If assessors find inconsistencies between your claimed dates and your supporting documents (payslips, contracts, LinkedIn profile), it raises credibility concerns. Be exact — even if it means you fall just short of a threshold. You can apply for reassessment once you have more experience." data-es="Si los evaluadores encuentran inconsistencias entre las fechas que declaras y tus documentos de respaldo (recibos de sueldo, contratos, perfil de LinkedIn), surgen dudas sobre la credibilidad. Sé exacto, incluso si eso significa que quedas justo por debajo de un umbral. Puedes solicitar una reevaluación una vez que tengas más experiencia.">Inconsistencies between claimed dates and supporting documents (payslips, contracts, LinkedIn) raise credibility concerns. Be exact with all dates. You can reapply for reassessment once you have more experience.</div>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-num">4</div>
+        <div>
+          <div class="tip-title" data-en="Apply as early as possible in your preparation" data-es="Solicita lo antes posible en tu preparación">Apply as early as possible in your preparation</div>
+          <div class="tip-body" data-en="Skills assessment processing times range from 4 to 24 weeks. Applying early means delays don't hold up your EOI. You can submit an EOI before your assessment is finalised — but you'll need to update it once you receive the outcome. Most people regret waiting too long." data-es="Los tiempos de procesamiento van de 4 a 24 semanas. Solicitar temprano significa que los retrasos no bloquean tu EOI. Puedes presentar una EOI antes de que se finalice tu evaluación, pero deberás actualizarla una vez que recibas el resultado. La mayoría de las personas se arrepiente de haber esperado demasiado.">Processing takes 4–24 weeks. Apply early so delays don't hold up your EOI. You can submit an EOI before the assessment is final — update it once you get the outcome. Most applicants regret waiting too long.</div>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-num">5</div>
+        <div>
+          <div class="tip-title" data-en="If refused, you can request a review or reapply" data-es="Si eres rechazado, puedes solicitar una revisión o volver a solicitar">If refused, you can request a review or reapply</div>
+          <div class="tip-body" data-en="A negative assessment is not the end. Most authorities offer a review process if you believe the outcome was wrong. You can also reapply with new or stronger evidence. Some applicants also consult a migration agent who specialises in skills assessments to identify what was missing. Common fixes: stronger reference letters, a statutory declaration, or clarifying documentation about specific duties." data-es="Una evaluación negativa no es el final. La mayoría de las autoridades ofrecen un proceso de revisión si crees que el resultado fue incorrecto. También puedes volver a solicitar con evidencia nueva o más sólida. Algunos solicitantes también consultan a un agente de migración especializado en evaluaciones de habilidades para identificar qué faltó.">A negative assessment is not the end. Most authorities offer a review process. You can also reapply with stronger evidence. Common fixes: more detailed reference letters, a statutory declaration, or clarifying documentation.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="Common questions" data-es="Preguntas frecuentes">Common questions</h2>
+    <div class="acc-list">
+
+      <div class="acc-item" id="sq1">
+        <div class="acc-head" onclick="toggleAcc('sq1')">
+          <div class="acc-title"><span class="acc-icon">❓</span><span data-en="Can I change my nominated occupation after getting assessed?" data-es="¿Puedo cambiar mi ocupación nominada después de ser evaluado?">Can I change my nominated occupation after getting assessed?</span></div>
+          <div class="acc-arrow">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p data-en="You can change your nominated occupation in your EOI at any time, but if your new occupation has a different assessing authority, you'll need a new assessment. Each assessing authority is specific to an occupation — an ACS assessment for Software Engineer cannot be used for an ICT Project Manager application (which also uses ACS but requires a separate assessment). Some authorities do allow you to add occupations to an existing assessment for a smaller fee, but this is authority-dependent." data-es="Puedes cambiar tu ocupación nominada en tu EOI en cualquier momento, pero si tu nueva ocupación tiene una autoridad evaluadora diferente, necesitarás una nueva evaluación. Cada autoridad evaluadora es específica para una ocupación. Algunas autoridades te permiten agregar ocupaciones a una evaluación existente por una tarifa menor, pero esto depende de la autoridad.">You can change your nominated occupation in your EOI, but if the new occupation has a different assessing authority, you'll need a new assessment. Some authorities allow adding occupations for a smaller fee. Check each authority's policy.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item" id="sq2">
+        <div class="acc-head" onclick="toggleAcc('sq2')">
+          <div class="acc-title"><span class="acc-icon">❓</span><span data-en="Does my assessment count the same points if I have only overseas experience?" data-es="¿Mi evaluación cuenta los mismos puntos si solo tengo experiencia en el extranjero?">Does my assessment count the same points if I have only overseas experience?</span></div>
+          <div class="acc-arrow">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p data-en="The skills assessment itself just produces a positive or negative outcome. The points you claim separately for 'work experience' in your EOI distinguish between overseas and Australian work experience — Australian experience is worth more points per year. Your assessment needs to confirm the experience is genuine, but the authority doesn't assign points — that's done by Home Affairs via your EOI." data-es="La evaluación de habilidades en sí solo produce un resultado positivo o negativo. Los puntos que reclamás por separado por 'experiencia laboral' en tu EOI distinguen entre experiencia en el extranjero y australiana: la experiencia australiana vale más puntos por año. Tu evaluación necesita confirmar que la experiencia es genuina, pero la autoridad no asigna puntos, eso lo hace Home Affairs a través de tu EOI.">The skills assessment produces a positive/negative outcome only. Points for work experience are calculated separately in your EOI. Australian experience is worth more points than overseas experience per year. The authority confirms your experience is genuine; Home Affairs assigns points.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item" id="sq3">
+        <div class="acc-head" onclick="toggleAcc('sq3')">
+          <div class="acc-title"><span class="acc-icon">❓</span><span data-en="What if my employer is no longer in business?" data-es="¿Qué pasa si mi empleador ya no existe?">What if my employer is no longer in business?</span></div>
+          <div class="acc-arrow">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p data-en="This is common and authorities are familiar with this situation. Alternative evidence includes: bank statements showing salary deposits during the employment period, tax returns/tax assessments showing employment income, former colleagues who can provide statutory declarations, LinkedIn profile history, superannuation records (if applicable), contracts, and project documentation. A statutory declaration from you explaining the situation and providing alternative evidence is usually accepted." data-es="Esto es común y las autoridades están familiarizadas con esta situación. La evidencia alternativa incluye: estados de cuenta bancarios que muestren depósitos de salario durante el período de empleo, declaraciones de impuestos que muestren ingresos laborales, ex colegas que puedan proporcionar declaraciones juradas, historial de LinkedIn, registros de jubilación y documentación de proyectos.">Authorities are familiar with this. Alternative evidence: bank statements showing salary deposits, tax returns, statutory declarations from former colleagues, LinkedIn history, superannuation records, project documentation. A statutory declaration explaining the situation with alternative evidence is usually accepted.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item" id="sq4">
+        <div class="acc-head" onclick="toggleAcc('sq4')">
+          <div class="acc-title"><span class="acc-icon">❓</span><span data-en="Can I get fast-tracked processing?" data-es="¿Puedo obtener procesamiento acelerado?">Can I get fast-tracked processing?</span></div>
+          <div class="acc-arrow">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p data-en="Some authorities offer priority or express processing for an additional fee — typically 2–3x the standard fee. ACS offers a priority service (around 2–4 weeks). Engineers Australia and TRA do not offer formal priority services. VETASSESS offers priority assessment. If you're in a hurry, check your specific authority's website for current options and fees. Keep in mind that even 'fast' processing is 2–6 weeks." data-es="Algunas autoridades ofrecen procesamiento prioritario o express por una tarifa adicional, típicamente 2–3 veces la tarifa estándar. ACS ofrece servicio prioritario (alrededor de 2–4 semanas). Engineers Australia y TRA no ofrecen servicios prioritarios formales. VETASSESS ofrece evaluación prioritaria. Ten en cuenta que incluso el procesamiento 'rápido' es de 2–6 semanas.">Some authorities offer priority processing for an extra fee. ACS offers ~2–4 week priority service. VETASSESS also offers priority assessment. Engineers Australia and TRA do not have formal priority services. Even 'fast' processing typically takes 2–6 weeks.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section fade-up">
+    <div class="callout blue">
+      <div class="callout-icon">ℹ️</div>
+      <div class="callout-body" data-en="<strong>Migro is an independent guidance tool.</strong> Assessment requirements, fees, and processing times change. Always verify directly with the relevant assessing authority and the <a href='https://immi.homeaffairs.gov.au' target='_blank'>Department of Home Affairs</a> before applying." data-es="<strong>Migro es una herramienta de orientación independiente.</strong> Los requisitos de evaluación, las tarifas y los tiempos de procesamiento cambian. Siempre verifica directamente con la autoridad evaluadora relevante y el <a href='https://immi.homeaffairs.gov.au' target='_blank'>Departamento de Home Affairs</a> antes de solicitar."><strong>Migro is an independent guidance tool.</strong> Assessment requirements, fees, and processing times change. Always verify directly with the relevant assessing authority and the <a href='https://immi.homeaffairs.gov.au' target='_blank'>Department of Home Affairs</a> before applying.</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-brand">Mi<span>gro</span></div>
+  <div data-en="Australian immigration guidance — independent &amp; bilingual." data-es="Orientación sobre inmigración australiana — independiente y bilingüe.">Australian immigration guidance — independent &amp; bilingual.</div>
+  <div style="margin-top:4px" data-en="Not legal advice. Always verify with Home Affairs." data-es="No es asesoramiento legal. Siempre verifica con Home Affairs.">Not legal advice. Always verify with Home Affairs.</div>
+</footer>
+
+<script>
+/* ── LANG ── */
+let lang = 'en';
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('[data-en]').forEach(el => {
+    el.innerHTML = el.getAttribute('data-' + l);
+  });
+  document.getElementById('btn-en').classList.toggle('active', l === 'en');
+  document.getElementById('btn-es').classList.toggle('active', l === 'es');
+}
+
+/* ── ACCORDION ── */
+function toggleAcc(id) { document.getElementById(id).classList.toggle('open'); }
+
+/* ── AUTHORITY FILTER ── */
+function filterAuth(sector, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.auth-card').forEach(card => {
+    const s = card.dataset.sector || '';
+    card.classList.toggle('hidden', sector !== 'all' && !s.includes(sector));
+  });
+}
+
+/* ── OCCUPATION SEARCH ── */
+const OCC_DATA = [
+  { anzsco:'261313', title:'Software Engineer',            authority:'ACS',      link:'https://www.acs.org.au/msa' },
+  { anzsco:'261111', title:'ICT Business Analyst',         authority:'ACS',      link:'https://www.acs.org.au/msa' },
+  { anzsco:'262113', title:'Systems Administrator',        authority:'ACS',      link:'https://www.acs.org.au/msa' },
+  { anzsco:'262111', title:'Database Administrator',       authority:'ACS',      link:'https://www.acs.org.au/msa' },
+  { anzsco:'135111', title:'ICT Project Manager',          authority:'ACS',      link:'https://www.acs.org.au/msa' },
+  { anzsco:'261112', title:'Systems Analyst',              authority:'ACS',      link:'https://www.acs.org.au/msa' },
+  { anzsco:'261311', title:'Analyst Programmer',           authority:'ACS',      link:'https://www.acs.org.au/msa' },
+  { anzsco:'261312', title:'Developer Programmer',         authority:'ACS',      link:'https://www.acs.org.au/msa' },
+  { anzsco:'261399', title:'Software & Applications Programmers NEC', authority:'ACS', link:'https://www.acs.org.au/msa' },
+  { anzsco:'262114', title:'Web Administrator',            authority:'ACS',      link:'https://www.acs.org.au/msa' },
+  { anzsco:'233211', title:'Civil Engineer',               authority:'Engineers Australia', link:'https://www.engineersaustralia.org.au/skills-assessment' },
+  { anzsco:'233512', title:'Mechanical Engineer',          authority:'Engineers Australia', link:'https://www.engineersaustralia.org.au/skills-assessment' },
+  { anzsco:'233311', title:'Electrical Engineer',          authority:'Engineers Australia', link:'https://www.engineersaustralia.org.au/skills-assessment' },
+  { anzsco:'233214', title:'Structural Engineer',          authority:'Engineers Australia', link:'https://www.engineersaustralia.org.au/skills-assessment' },
+  { anzsco:'233111', title:'Chemical Engineer',            authority:'Engineers Australia', link:'https://www.engineersaustralia.org.au/skills-assessment' },
+  { anzsco:'233611', title:'Mining Engineer',              authority:'Engineers Australia', link:'https://www.engineersaustralia.org.au/skills-assessment' },
+  { anzsco:'233915', title:'Environmental Engineer',       authority:'Engineers Australia', link:'https://www.engineersaustralia.org.au/skills-assessment' },
+  { anzsco:'233211', title:'Structural Engineer',          authority:'Engineers Australia', link:'https://www.engineersaustralia.org.au/skills-assessment' },
+  { anzsco:'253111', title:'General Practitioner',         authority:'AHPRA',    link:'https://www.ahpra.gov.au' },
+  { anzsco:'253999', title:'Medical Practitioner NEC',     authority:'AHPRA',    link:'https://www.ahpra.gov.au' },
+  { anzsco:'252511', title:'Physiotherapist',              authority:'AHPRA',    link:'https://www.ahpra.gov.au' },
+  { anzsco:'251511', title:'Pharmacist',                   authority:'AHPRA',    link:'https://www.ahpra.gov.au' },
+  { anzsco:'252111', title:'Dentist',                      authority:'AHPRA',    link:'https://www.ahpra.gov.au' },
+  { anzsco:'251411', title:'Optometrist',                  authority:'AHPRA',    link:'https://www.ahpra.gov.au' },
+  { anzsco:'254111', title:'Registered Nurse',             authority:'ANMAC',    link:'https://www.anmac.org.au' },
+  { anzsco:'254411', title:'Enrolled Nurse',               authority:'ANMAC',    link:'https://www.anmac.org.au' },
+  { anzsco:'254111', title:'Midwife',                      authority:'ANMAC',    link:'https://www.anmac.org.au' },
+  { anzsco:'221111', title:'Accountant (General)',         authority:'CPA / CAANZ / IPA', link:'https://www.cpaaustralia.com.au' },
+  { anzsco:'221112', title:'Management Accountant',        authority:'CPA / CAANZ / IPA', link:'https://www.cpaaustralia.com.au' },
+  { anzsco:'221113', title:'Taxation Accountant',          authority:'CPA / CAANZ / IPA', link:'https://www.cpaaustralia.com.au' },
+  { anzsco:'221213', title:'External Auditor',             authority:'CPA / CAANZ / IPA', link:'https://www.cpaaustralia.com.au' },
+  { anzsco:'132211', title:'Finance Manager',              authority:'CPA / CAANZ / IPA', link:'https://www.cpaaustralia.com.au' },
+  { anzsco:'341111', title:'Electrician (General)',        authority:'TRA',       link:'https://www.tradesrecognitionaustralia.gov.au' },
+  { anzsco:'334111', title:'Plumber (General)',            authority:'TRA',       link:'https://www.tradesrecognitionaustralia.gov.au' },
+  { anzsco:'331212', title:'Carpenter',                    authority:'TRA',       link:'https://www.tradesrecognitionaustralia.gov.au' },
+  { anzsco:'321211', title:'Motor Mechanic (General)',     authority:'TRA',       link:'https://www.tradesrecognitionaustralia.gov.au' },
+  { anzsco:'322313', title:'Welder (First Class)',         authority:'TRA',       link:'https://www.tradesrecognitionaustralia.gov.au' },
+  { anzsco:'351411', title:'Cook',                         authority:'TRA',       link:'https://www.tradesrecognitionaustralia.gov.au' },
+  { anzsco:'351111', title:'Baker',                        authority:'TRA',       link:'https://www.tradesrecognitionaustralia.gov.au' },
+  { anzsco:'391111', title:'Hairdresser',                  authority:'TRA',       link:'https://www.tradesrecognitionaustralia.gov.au' },
+  { anzsco:'241213', title:'Primary School Teacher',       authority:'AITSL',     link:'https://www.aitsl.edu.au' },
+  { anzsco:'241411', title:'Secondary School Teacher',     authority:'AITSL',     link:'https://www.aitsl.edu.au' },
+  { anzsco:'241511', title:'Special Education Teacher',    authority:'AITSL',     link:'https://www.aitsl.edu.au' },
+  { anzsco:'241111', title:'Early Childhood Teacher',      authority:'AITSL',     link:'https://www.aitsl.edu.au' },
+  { anzsco:'272511', title:'Social Worker',                authority:'AASW',      link:'https://www.aasw.asn.au' },
+  { anzsco:'272613', title:'Welfare Worker',               authority:'AASW',      link:'https://www.aasw.asn.au' },
+  { anzsco:'233213', title:'Quantity Surveyor',            authority:'AIQS',      link:'https://www.aiqs.com.au' },
+  { anzsco:'272299', title:'Psychologist',                 authority:'APAC / AHPRA', link:'https://www.psychologycouncil.org.au' },
+  { anzsco:'272311', title:'Clinical Psychologist',        authority:'APAC / AHPRA', link:'https://www.psychologycouncil.org.au' },
+  { anzsco:'225111', title:'Advertising Specialist',       authority:'VETASSESS', link:'https://www.vetassess.com.au' },
+  { anzsco:'225113', title:'Marketing Specialist',         authority:'VETASSESS', link:'https://www.vetassess.com.au' },
+  { anzsco:'225112', title:'Market Research Analyst',      authority:'VETASSESS', link:'https://www.vetassess.com.au' },
+  { anzsco:'351311', title:'Chef',                         authority:'VETASSESS', link:'https://www.vetassess.com.au' },
+  { anzsco:'232411', title:'Graphic Designer',             authority:'VETASSESS', link:'https://www.vetassess.com.au' },
+  { anzsco:'149212', title:'Human Resource Manager',       authority:'VETASSESS', link:'https://www.vetassess.com.au' },
+  { anzsco:'133111', title:'Construction Project Manager', authority:'VETASSESS', link:'https://www.vetassess.com.au' },
+  { anzsco:'212411', title:'Journalist',                   authority:'VETASSESS', link:'https://www.vetassess.com.au' },
+  { anzsco:'234511', title:'Biochemist',                   authority:'VETASSESS', link:'https://www.vetassess.com.au' },
+  { anzsco:'234513', title:'Chemist',                      authority:'VETASSESS', link:'https://www.vetassess.com.au' },
+  { anzsco:'149111', title:'Project Manager (General)',    authority:'VETASSESS', link:'https://www.vetassess.com.au' },
+  { anzsco:'132111', title:'Corporate General Manager',    authority:'VETASSESS', link:'https://www.vetassess.com.au' },
+];
+
+function searchOcc() {
+  const q = document.getElementById('occ-search').value.trim().toLowerCase();
+  const res = document.getElementById('occ-result');
+  if (q.length < 2) {
+    res.innerHTML = `<div class="finder-result-empty" data-en="Start typing to search over 200 occupations." data-es="Comienza a escribir para buscar entre más de 200 ocupaciones.">Start typing to search over 200 occupations.</div>`;
+    return;
+  }
+  const matches = OCC_DATA.filter(o =>
+    o.title.toLowerCase().includes(q) || o.anzsco.includes(q) || o.authority.toLowerCase().includes(q)
+  ).slice(0, 8);
+
+  if (!matches.length) {
+    res.innerHTML = `<div class="finder-result-empty">${lang==='es'
+      ?'No se encontraron ocupaciones. Prueba con un término diferente o busca en el <a href="https://immi.homeaffairs.gov.au/visas/working-in-australia/skillselect/eligible-skilles-occupations" target="_blank" style="color:var(--blue)">sitio oficial</a>.'
+      :'No occupations found. Try a different term or search the <a href="https://immi.homeaffairs.gov.au/visas/working-in-australia/skillselect/eligible-skilles-occupations" target="_blank" style="color:var(--blue)">official Home Affairs list</a>.'
+    }</div>`;
+    return;
+  }
+
+  res.innerHTML = `<div style="overflow-x:auto;border-radius:8px;border:1px solid var(--gray-200)">
+    <table>
+      <thead><tr>
+        <th>ANZSCO</th>
+        <th>${lang==='es'?'Ocupación':'Occupation'}</th>
+        <th>${lang==='es'?'Autoridad Evaluadora':'Assessing Authority'}</th>
+        <th></th>
+      </tr></thead>
+      <tbody>
+        ${matches.map(o=>`<tr>
+          <td><code style="font-size:.8rem;background:var(--gray-100);padding:2px 6px;border-radius:4px">${o.anzsco}</code></td>
+          <td style="font-weight:500">${o.title}</td>
+          <td>${o.authority}</td>
+          <td><a href="${o.link}" target="_blank" style="color:var(--blue);font-size:.82rem;white-space:nowrap">${lang==='es'?'Ver →':'View →'}</a></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+/* ── FADE-UP ── */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+}, { threshold: 0.08 });
+document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
