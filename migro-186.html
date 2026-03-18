@@ -1,0 +1,569 @@
+<html><body>test</body></html><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Migro — Visa 186 ENS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --black:#0f0f0f;--white:#ffffff;
+  --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-300:#d1d5db;
+  --gray-500:#6b7280;--gray-600:#4b5563;--gray-700:#374151;--gray-800:#1f2937;
+  --green:#16a34a;--green-bg:#f0fdf4;--green-border:#bbf7d0;
+  --amber:#d97706;--amber-bg:#fffbeb;--amber-border:#fde68a;
+  --red:#dc2626;--red-bg:#fef2f2;--red-border:#fecaca;
+  --blue:#2563eb;--blue-bg:#eff6ff;--blue-border:#bfdbfe;
+  --purple:#7c3aed;--purple-bg:#f5f3ff;--purple-border:#ddd6fe;
+  --teal:#0d9488;--teal-bg:#f0fdfa;--teal-border:#99f6e4;
+  --orange:#ea580c;--orange-bg:#fff7ed;--orange-border:#fed7aa;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:var(--gray-800);background:var(--gray-50);line-height:1.6}
+a{color:inherit;text-decoration:none}
+
+/* NAV */
+.nav{background:var(--white);border-bottom:1px solid var(--gray-200);position:sticky;top:0;z-index:100;padding:0 1.5rem}
+.nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+.nav-brand{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--black)}
+.nav-links{display:flex;align-items:center;gap:1.25rem}
+.nav-links a{font-size:.85rem;font-weight:500;color:var(--gray-600);transition:color .2s}
+.nav-links a:hover{color:var(--black)}
+.lang-btn{background:var(--gray-100);border:none;border-radius:6px;padding:.3rem .75rem;font-size:.8rem;font-weight:600;cursor:pointer;color:var(--gray-700)}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#fff7ed 0%,#fed7aa 100%);padding:3rem 1.5rem 2.5rem}
+.hero-inner{max-width:1100px;margin:0 auto}
+.hero-tag{display:inline-block;background:var(--orange);color:#fff;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .75rem;border-radius:999px;margin-bottom:1rem}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;color:var(--black);max-width:700px;line-height:1.2;margin-bottom:.75rem}
+.hero p{color:var(--gray-600);font-size:1rem;max-width:600px}
+.breadcrumb{display:flex;align-items:center;gap:.5rem;margin-bottom:1.5rem;font-size:.8rem;color:var(--gray-500)}
+.breadcrumb a{color:var(--orange);font-weight:500}
+
+/* LAYOUT */
+.container{max-width:1100px;margin:0 auto;padding:3rem 1.5rem}
+.section-title{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--black);margin-bottom:1.5rem}
+.section{margin-bottom:3rem}
+
+/* CARDS */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem}
+.card{background:var(--white);border:1px solid var(--gray-200);border-radius:12px;padding:1.25rem}
+.card-icon{font-size:1.6rem;margin-bottom:.6rem}
+.card-label{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gray-500);margin-bottom:.3rem}
+.card-value{font-size:1rem;font-weight:600;color:var(--black)}
+.card-sub{font-size:.8rem;color:var(--gray-500);margin-top:.25rem}
+
+/* STREAM CARDS */
+.stream-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem}
+.stream-card{background:var(--white);border:2px solid var(--gray-200);border-radius:14px;padding:1.5rem;transition:border-color .2s}
+.stream-card.best{border-color:var(--orange);position:relative}
+.stream-card.best::before{content:'Most common';position:absolute;top:-12px;left:1.25rem;background:var(--orange);color:#fff;font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.2rem .65rem;border-radius:999px}
+.stream-name{font-size:1.05rem;font-weight:700;color:var(--black);margin-bottom:.3rem}
+.stream-sub{font-size:.8rem;color:var(--gray-500);margin-bottom:1rem}
+.stream-row{display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;border-bottom:1px solid var(--gray-100);font-size:.85rem}
+.stream-row:last-child{border-bottom:none}
+.stream-row .label{color:var(--gray-600)}
+.stream-row .val{font-weight:600;color:var(--black)}
+.badge{display:inline-block;font-size:.68rem;font-weight:700;padding:.2rem .55rem;border-radius:999px}
+.badge-green{background:var(--green-bg);color:var(--green)}
+.badge-amber{background:var(--amber-bg);color:var(--amber)}
+.badge-blue{background:var(--blue-bg);color:var(--blue)}
+.badge-orange{background:var(--orange-bg);color:var(--orange)}
+.badge-red{background:var(--red-bg);color:var(--red)}
+
+/* STEPS */
+.steps{display:flex;flex-direction:column;gap:0}
+.step{display:grid;grid-template-columns:48px 1fr;gap:1rem;position:relative}
+.step:not(:last-child)::after{content:'';position:absolute;left:23px;top:48px;width:2px;height:calc(100% - 24px);background:var(--gray-200)}
+.step-num{width:48px;height:48px;border-radius:50%;background:var(--orange-bg);border:2px solid var(--orange);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.95rem;color:var(--orange);flex-shrink:0;z-index:1}
+.step-body{padding-bottom:1.75rem}
+.step-title{font-weight:700;font-size:.95rem;color:var(--black);margin-bottom:.3rem}
+.step-desc{font-size:.85rem;color:var(--gray-600);line-height:1.6}
+
+/* REQUIREMENTS */
+.req-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+.req-card{background:var(--white);border:1px solid var(--gray-200);border-radius:12px;padding:1.25rem}
+.req-title{font-weight:700;font-size:.9rem;color:var(--black);margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem}
+.req-list{list-style:none;display:flex;flex-direction:column;gap:.4rem}
+.req-list li{font-size:.82rem;color:var(--gray-600);padding-left:1.2rem;position:relative}
+.req-list li::before{content:'✓';position:absolute;left:0;color:var(--green);font-weight:700}
+
+/* COMPARISON TABLE */
+.compare-table{width:100%;border-collapse:collapse;background:var(--white);border-radius:12px;overflow:hidden;border:1px solid var(--gray-200)}
+.compare-table th{background:var(--gray-100);padding:.75rem 1rem;text-align:left;font-size:.78rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--gray-600);border-bottom:1px solid var(--gray-200)}
+.compare-table td{padding:.75rem 1rem;font-size:.85rem;color:var(--gray-700);border-bottom:1px solid var(--gray-100)}
+.compare-table tr:last-child td{border-bottom:none}
+.compare-table tr:hover td{background:var(--gray-50)}
+.tick{color:var(--green);font-weight:700}
+.cross{color:var(--red)}
+
+/* CALLOUT */
+.callout{border-radius:12px;padding:1.25rem 1.5rem;display:flex;gap:1rem;align-items:flex-start;margin-bottom:1.5rem}
+.callout-green{background:var(--green-bg);border:1px solid var(--green-border)}
+.callout-amber{background:var(--amber-bg);border:1px solid var(--amber-border)}
+.callout-blue{background:var(--blue-bg);border:1px solid var(--blue-border)}
+.callout-orange{background:var(--orange-bg);border:1px solid var(--orange-border)}
+.callout-icon{font-size:1.25rem;flex-shrink:0;margin-top:.05rem}
+.callout-body h4{font-size:.9rem;font-weight:700;color:var(--black);margin-bottom:.3rem}
+.callout-body p{font-size:.82rem;color:var(--gray-700);line-height:1.5}
+
+/* ACCORDION */
+.accordion{display:flex;flex-direction:column;gap:.5rem}
+.acc-item{background:var(--white);border:1px solid var(--gray-200);border-radius:10px;overflow:hidden}
+.acc-trigger{width:100%;display:flex;justify-content:space-between;align-items:center;padding:1rem 1.25rem;background:none;border:none;cursor:pointer;font-size:.9rem;font-weight:600;color:var(--black);text-align:left;gap:1rem}
+.acc-trigger:hover{background:var(--gray-50)}
+.acc-chevron{font-size:1rem;transition:transform .3s;flex-shrink:0}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1)}
+.acc-body.open{max-height:1000px}
+.acc-content{padding:0 1.25rem 1rem;font-size:.85rem;color:var(--gray-600);line-height:1.7}
+
+/* COSTS TABLE */
+.costs-table{width:100%;border-collapse:collapse;background:var(--white);border-radius:12px;overflow:hidden;border:1px solid var(--gray-200)}
+.costs-table th{background:var(--gray-100);padding:.6rem 1rem;text-align:left;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--gray-600);border-bottom:1px solid var(--gray-200)}
+.costs-table td{padding:.65rem 1rem;font-size:.84rem;color:var(--gray-700);border-bottom:1px solid var(--gray-100)}
+.costs-table tr:last-child td{border-bottom:none}
+.costs-table .total-row td{font-weight:700;background:var(--orange-bg);color:var(--black)}
+
+/* TIPS */
+.tips-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.9rem}
+.tip{background:var(--white);border:1px solid var(--gray-200);border-radius:10px;padding:1rem 1.1rem;display:flex;gap:.75rem}
+.tip-icon{font-size:1.1rem;flex-shrink:0;margin-top:.05rem}
+.tip-text{font-size:.83rem;color:var(--gray-700);line-height:1.5}
+.tip-text strong{color:var(--black);display:block;margin-bottom:.15rem}
+
+/* RESOURCES */
+.resources-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.9rem}
+.resource-card{background:var(--white);border:1px solid var(--gray-200);border-radius:10px;padding:1rem;display:flex;flex-direction:column;gap:.35rem;transition:border-color .2s}
+.resource-card:hover{border-color:var(--orange)}
+.resource-card .res-title{font-size:.85rem;font-weight:600;color:var(--black)}
+.resource-card .res-sub{font-size:.75rem;color:var(--gray-500)}
+.resource-card .res-link{font-size:.75rem;color:var(--orange);font-weight:500;margin-top:auto}
+
+/* FADE */
+.fade-up{opacity:0;transform:translateY(24px);transition:opacity .55s ease,transform .55s ease}
+.fade-up.visible{opacity:1;transform:none}
+
+/* DIVIDER */
+.divider{border:none;border-top:1px solid var(--gray-200);margin:2.5rem 0}
+
+@media(max-width:640px){
+  .stream-grid,.req-grid,.card-grid,.tips-grid,.resources-grid{grid-template-columns:1fr}
+  .compare-table{font-size:.78rem}
+  .compare-table th,.compare-table td{padding:.5rem .65rem}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="migro-dashboard.html" class="nav-brand">Migro</a>
+    <div class="nav-links">
+      <a href="migro-dashboard.html" data-en="Dashboard" data-es="Inicio">Dashboard</a>
+      <a href="migro-roadmap.html" data-en="Roadmap" data-es="Hoja de ruta">Roadmap</a>
+      <a href="migro-costs.html" data-en="Costs" data-es="Costos">Costs</a>
+      <button class="lang-btn" onclick="toggleLang()">ES</button>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb">
+      <a href="migro-dashboard.html">Migro</a>
+      <span>›</span>
+      <span data-en="Visa 186 ENS" data-es="Visa 186 ENS">Visa 186 ENS</span>
+    </div>
+    <div class="hero-tag" data-en="Employer Sponsored" data-es="Patrocinio Empleador">Employer Sponsored</div>
+    <h1 data-en="Subclass 186 — Employer Nomination Scheme" data-es="Subclase 186 — Esquema de Nominación de Empleador">Subclass 186 — Employer Nomination Scheme</h1>
+    <p data-en="Permanent residence through employer sponsorship. One of the clearest paths to Australian PR for skilled workers already in Australia or offshore." data-es="Residencia permanente mediante patrocinio de empleador. Uno de los caminos más claros a la PR australiana para trabajadores calificados dentro o fuera de Australia.">Permanent residence through employer sponsorship. One of the clearest paths to Australian PR for skilled workers already in Australia or offshore.</p>
+  </div>
+</section>
+
+<div class="container">
+
+  <!-- KEY FACTS -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Key facts at a glance" data-es="Datos clave de un vistazo">Key facts at a glance</h2>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">🏛️</div>
+        <div class="card-label" data-en="Visa type" data-es="Tipo de visa">Visa type</div>
+        <div class="card-value" data-en="Permanent Residence" data-es="Residencia Permanente">Permanent Residence</div>
+        <div class="card-sub" data-en="Granted immediately, no temporary stage" data-es="Otorgada de inmediato, sin etapa temporal">Granted immediately, no temporary stage</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🏢</div>
+        <div class="card-label" data-en="Employer required" data-es="Empleador requerido">Employer required</div>
+        <div class="card-value" data-en="Yes — approved sponsor" data-es="Sí — patrocinador aprobado">Yes — approved sponsor</div>
+        <div class="card-sub" data-en="Must be an approved business in Australia" data-es="Debe ser empresa aprobada en Australia">Must be an approved business in Australia</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📋</div>
+        <div class="card-label" data-en="Streams" data-es="Corrientes">Streams</div>
+        <div class="card-value" data-en="3 streams" data-es="3 corrientes">3 streams</div>
+        <div class="card-sub" data-en="Direct Entry, Transition, Labour Agreement" data-es="Entrada directa, Transición, Acuerdo laboral">Direct Entry, Transition, Labour Agreement</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">💰</div>
+        <div class="card-label" data-en="VAC (primary)" data-es="Cargo visa (principal)">VAC (primary)</div>
+        <div class="card-value">$4,770</div>
+        <div class="card-sub" data-en="2025–26 financial year" data-es="Año financiero 2025–26">2025–26 financial year</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🌏</div>
+        <div class="card-label" data-en="Where to apply" data-es="Dónde aplicar">Where to apply</div>
+        <div class="card-value" data-en="Onshore or offshore" data-es="Dentro o fuera de Australia">Onshore or offshore</div>
+        <div class="card-sub" data-en="Location at time of application matters" data-es="La ubicación al momento de aplicar importa">Location at time of application matters</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">⏱️</div>
+        <div class="card-label" data-en="Processing time" data-es="Tiempo de procesamiento">Processing time</div>
+        <div class="card-value" data-en="5–18 months" data-es="5–18 meses">5–18 months</div>
+        <div class="card-sub" data-en="Varies by stream and queue" data-es="Varía según corriente y cola">Varies by stream and queue</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 STREAMS -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="The 3 streams" data-es="Las 3 corrientes">The 3 streams</h2>
+    <div class="stream-grid">
+      <div class="stream-card">
+        <div class="stream-name" data-en="Transition Stream" data-es="Corriente de Transición">Transition Stream</div>
+        <div class="stream-sub" data-en="For current 482 / 457 holders" data-es="Para titulares actuales de visa 482 / 457">For current 482 / 457 holders</div>
+        <div class="stream-row"><span class="label" data-en="Current visa" data-es="Visa actual">Current visa</span><span class="val">482 / 457</span></div>
+        <div class="stream-row"><span class="label" data-en="Min. experience" data-es="Exp. mínima">Min. experience</span><span class="val" data-en="3 yrs same employer" data-es="3 años mismo empleador">3 yrs same employer</span></div>
+        <div class="stream-row"><span class="label" data-en="Skills assessment" data-es="Eval. habilidades">Skills assessment</span><span class="val" data-en="Usually waived" data-es="Generalmente eximida">Usually waived</span></div>
+        <div class="stream-row"><span class="label" data-en="Age limit" data-es="Límite de edad">Age limit</span><span class="val" data-en="Under 45 at application" data-es="Menores de 45 al aplicar">Under 45 at application</span></div>
+        <div class="stream-row"><span class="label">MLTSSL required</span><span class="val"><span class="badge badge-green">Yes</span></span></div>
+      </div>
+      <div class="stream-card best">
+        <div class="stream-name" data-en="Direct Entry Stream" data-es="Corriente de Entrada Directa">Direct Entry Stream</div>
+        <div class="stream-sub" data-en="Offshore or onshore without prior 482" data-es="Desde el exterior o Australia sin visa 482">Offshore or onshore without prior 482</div>
+        <div class="stream-row"><span class="label" data-en="Prior visa" data-es="Visa previa">Prior visa</span><span class="val" data-en="None required" data-es="No requerida">None required</span></div>
+        <div class="stream-row"><span class="label" data-en="Skills assessment" data-es="Eval. habilidades">Skills assessment</span><span class="val" data-en="Required" data-es="Requerida">Required</span></div>
+        <div class="stream-row"><span class="label" data-en="Work experience" data-es="Experiencia laboral">Work experience</span><span class="val" data-en="3 yrs in occupation" data-es="3 años en ocupación">3 yrs in occupation</span></div>
+        <div class="stream-row"><span class="label" data-en="Age limit" data-es="Límite de edad">Age limit</span><span class="val" data-en="Under 45 at application" data-es="Menores de 45 al aplicar">Under 45 at application</span></div>
+        <div class="stream-row"><span class="label">MLTSSL required</span><span class="val"><span class="badge badge-green">Yes</span></span></div>
+      </div>
+      <div class="stream-card">
+        <div class="stream-name" data-en="Labour Agreement Stream" data-es="Corriente Acuerdo Laboral">Labour Agreement Stream</div>
+        <div class="stream-sub" data-en="Special industry / company agreements" data-es="Acuerdos especiales de industria / empresa">Special industry / company agreements</div>
+        <div class="stream-row"><span class="label" data-en="Who uses it" data-es="Quién lo usa">Who uses it</span><span class="val" data-en="Niche industries" data-es="Industrias específicas">Niche industries</span></div>
+        <div class="stream-row"><span class="label" data-en="MLTSSL" data-es="MLTSSL">MLTSSL</span><span class="val" data-en="May differ" data-es="Puede diferir">May differ</span></div>
+        <div class="stream-row"><span class="label" data-en="Requirements" data-es="Requisitos">Requirements</span><span class="val" data-en="Set by agreement" data-es="Definidos por acuerdo">Set by agreement</span></div>
+        <div class="stream-row"><span class="label" data-en="Age limit" data-es="Límite de edad">Age limit</span><span class="val" data-en="As per agreement" data-es="Según acuerdo">As per agreement</span></div>
+        <div class="stream-row"><span class="label" data-en="Rarity" data-es="Rareza">Rarity</span><span class="val"><span class="badge badge-amber" data-en="Uncommon" data-es="Poco común">Uncommon</span></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS STEPS -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="How the 186 works" data-es="Cómo funciona la 186">How the 186 works</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title" data-en="Employer becomes an approved sponsor" data-es="El empleador se convierte en patrocinador aprobado">Employer becomes an approved sponsor</div>
+          <div class="step-desc" data-en="Your employer must apply to become a Standard Business Sponsor (SBS). Most legitimate employers qualify. This step costs $420 and takes 1–4 weeks. If your employer already sponsors 482 workers, they are likely already an SBS." data-es="Tu empleador debe solicitar ser un Patrocinador Comercial Estándar (SBS). La mayoría de los empleadores legítimos califican. Este paso cuesta $420 y tarda 1–4 semanas. Si tu empleador ya patrocina trabajadores en 482, probablemente ya es SBS.">Your employer must apply to become a Standard Business Sponsor (SBS). Most legitimate employers qualify. This step costs $420 and takes 1–4 weeks. If your employer already sponsors 482 workers, they are likely already an SBS.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title" data-en="Employer nominates you" data-es="El empleador te nomina">Employer nominates you</div>
+          <div class="step-desc" data-en="The employer lodges a nomination application for the position. They must show the role is full-time, permanent, and that you meet the requirements. Your occupation must be on the MLTSSL. Nomination fee: $330." data-es="El empleador presenta una solicitud de nominación para el puesto. Debe demostrar que el rol es permanente y de tiempo completo. Tu ocupación debe estar en el MLTSSL. Tarifa de nominación: $330.">The employer lodges a nomination application for the position. They must show the role is full-time, permanent, and that you meet the requirements. Your occupation must be on the MLTSSL. Nomination fee: $330.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title" data-en="Get skills assessed (Direct Entry)" data-es="Obtener evaluación de habilidades (Entrada Directa)">Get skills assessed (Direct Entry)</div>
+          <div class="step-desc" data-en="If applying via Direct Entry stream, you need a positive skills assessment from the relevant assessing authority for your occupation (e.g. ACS for IT, Engineers Australia for engineering). Transition stream applicants are usually exempt." data-es="Si aplicas por Entrada Directa, necesitas una evaluación positiva de habilidades del organismo evaluador relevante (ej. ACS para IT, Engineers Australia para ingeniería). Los de la corriente de Transición generalmente están exentos.">If applying via Direct Entry stream, you need a positive skills assessment from the relevant assessing authority for your occupation (e.g. ACS for IT, Engineers Australia for engineering). Transition stream applicants are usually exempt.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title" data-en="Lodge your visa application" data-es="Presentar solicitud de visa">Lodge your visa application</div>
+          <div class="step-desc" data-en="Once nominated, you can lodge the visa application on ImmiAccount. Include health examinations, police clearances, English evidence, and skills assessment. You can lodge nomination and visa concurrently." data-es="Una vez nominado, puedes presentar la solicitud de visa en ImmiAccount. Incluye exámenes médicos, antecedentes penales, evidencia de inglés y evaluación de habilidades. Puedes presentar nominación y visa de forma simultánea.">Once nominated, you can lodge the visa application on ImmiAccount. Include health examinations, police clearances, English evidence, and skills assessment. You can lodge nomination and visa concurrently.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title" data-en="Await decision" data-es="Esperar decisión">Await decision</div>
+          <div class="step-desc" data-en="Processing times range from 5–18 months. You'll receive a bridging visa if you're onshore and your current visa expires. Once granted, you receive permanent residence immediately." data-es="Los tiempos de procesamiento van de 5–18 meses. Recibirás una visa puente si estás en Australia y tu visa actual expira. Una vez aprobada, recibes la residencia permanente de inmediato.">Processing times range from 5–18 months. You'll receive a bridging visa if you're onshore and your current visa expires. Once granted, you receive permanent residence immediately.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REQUIREMENTS -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Core requirements" data-es="Requisitos principales">Core requirements</h2>
+    <div class="req-grid">
+      <div class="req-card">
+        <div class="req-title">🧑‍💼 <span data-en="Applicant — Transition Stream" data-es="Solicitante — Corriente de Transición">Applicant — Transition Stream</span></div>
+        <ul class="req-list">
+          <li data-en="Hold or have held a 482 or 457 visa" data-es="Tener o haber tenido visa 482 o 457">Hold or have held a 482 or 457 visa</li>
+          <li data-en="3 years with same employer in same role" data-es="3 años con el mismo empleador en el mismo rol">3 years with same employer in same role</li>
+          <li data-en="Under 45 at time of application" data-es="Menores de 45 al momento de aplicar">Under 45 at time of application</li>
+          <li data-en="Competent English (IELTS 6.0 each band)" data-es="Inglés competente (IELTS 6.0 en cada banda)">Competent English (IELTS 6.0 each band)</li>
+          <li data-en="Occupation on MLTSSL" data-es="Ocupación en el MLTSSL">Occupation on MLTSSL</li>
+          <li data-en="Pass health and character checks" data-es="Aprobar controles de salud y carácter">Pass health and character checks</li>
+        </ul>
+      </div>
+      <div class="req-card">
+        <div class="req-title">🌏 <span data-en="Applicant — Direct Entry Stream" data-es="Solicitante — Corriente de Entrada Directa">Applicant — Direct Entry Stream</span></div>
+        <ul class="req-list">
+          <li data-en="3 years relevant work experience" data-es="3 años de experiencia laboral relevante">3 years relevant work experience</li>
+          <li data-en="Positive skills assessment" data-es="Evaluación de habilidades positiva">Positive skills assessment</li>
+          <li data-en="Under 45 at time of application" data-es="Menores de 45 al momento de aplicar">Under 45 at time of application</li>
+          <li data-en="Competent English (IELTS 6.0 each band)" data-es="Inglés competente (IELTS 6.0 en cada banda)">Competent English (IELTS 6.0 each band)</li>
+          <li data-en="Occupation on MLTSSL" data-es="Ocupación en el MLTSSL">Occupation on MLTSSL</li>
+          <li data-en="Pass health and character checks" data-es="Aprobar controles de salud y carácter">Pass health and character checks</li>
+        </ul>
+      </div>
+      <div class="req-card">
+        <div class="req-title">🏢 <span data-en="Employer requirements" data-es="Requisitos del empleador">Employer requirements</span></div>
+        <ul class="req-list">
+          <li data-en="Approved Standard Business Sponsor" data-es="Patrocinador Comercial Estándar aprobado">Approved Standard Business Sponsor</li>
+          <li data-en="Genuine need for the position" data-es="Necesidad genuina del puesto">Genuine need for the position</li>
+          <li data-en="Training obligations met (2% levy)" data-es="Obligaciones de capacitación cumplidas (2% tasa)">Training obligations met (2% levy)</li>
+          <li data-en="Salary meets TSMIT ($73,150)" data-es="Salario cumple TSMIT ($73,150)">Salary meets TSMIT ($73,150)</li>
+          <li data-en="Equivalent terms to Australian workers" data-es="Condiciones equivalentes a trabajadores australianos">Equivalent terms to Australian workers</li>
+          <li data-en="No adverse information / sanctions" data-es="Sin información adversa / sanciones">No adverse information / sanctions</li>
+        </ul>
+      </div>
+      <div class="req-card">
+        <div class="req-title">🌐 <span data-en="English language" data-es="Idioma inglés">English language</span></div>
+        <ul class="req-list">
+          <li data-en="IELTS: 6.0 each band (Competent)" data-es="IELTS: 6.0 en cada banda (Competente)">IELTS: 6.0 each band (Competent)</li>
+          <li data-en="OET: B in all four components" data-es="OET: B en los cuatro componentes">OET: B in all four components</li>
+          <li data-en="TOEFL iBT: 12L, 13R, 18S, 21W" data-es="TOEFL iBT: 12L, 13R, 18S, 21W">TOEFL iBT: 12L, 13R, 18S, 21W</li>
+          <li data-en="PTE: 50 each component" data-es="PTE: 50 en cada componente">PTE: 50 each component</li>
+          <li data-en="Passport holders from UK, USA, CA, NZ, IE exempt" data-es="Pasaportes de RU, EE.UU., CA, NZ, IE exentos">Passport holders from UK, USA, CA, NZ, IE exempt</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- AGE EXEMPTIONS CALLOUT -->
+  <section class="section fade-up">
+    <div class="callout callout-amber">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body">
+        <h4 data-en="Age limit: under 45" data-es="Límite de edad: menores de 45">Age limit: under 45</h4>
+        <p data-en="You must be under 45 years of age at the time you lodge your visa application (not nomination). Certain academic and medical professionals may be exempt — check with a registered migration agent. Employers cannot apply for an age waiver unless you fall under specific exemption categories." data-es="Debes ser menor de 45 años al momento de presentar tu solicitud de visa (no la nominación). Ciertos profesionales académicos y médicos pueden estar exentos — consulta con un agente de migración registrado. Los empleadores no pueden solicitar exención de edad salvo categorías específicas.">You must be under 45 years of age at the time you lodge your visa application (not nomination). Certain academic and medical professionals may be exempt — check with a registered migration agent. Employers cannot apply for an age waiver unless you fall under specific exemption categories.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 186 vs POINTS TEST -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="186 vs points-tested pathways" data-es="186 vs vías por puntaje">186 vs points-tested pathways</h2>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th data-en="Factor" data-es="Factor">Factor</th>
+          <th data-en="Visa 186" data-es="Visa 186">Visa 186</th>
+          <th data-en="189 / 190 / 491" data-es="189 / 190 / 491">189 / 190 / 491</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td data-en="Employer required" data-es="Empleador requerido">Employer required</td><td class="tick">✓ Yes</td><td class="cross">✗ No</td></tr>
+        <tr><td data-en="Points test" data-es="Prueba de puntos">Points test</td><td class="cross">✗ No</td><td class="tick">✓ Yes</td></tr>
+        <tr><td data-en="Permanent from day 1" data-es="Permanente desde el día 1">Permanent from day 1</td><td class="tick">✓ Yes (186)</td><td class="tick">✓ 189/190 yes</td></tr>
+        <tr><td data-en="MLTSSL occupation needed" data-es="Ocupación en MLTSSL">MLTSSL occupation needed</td><td class="tick">✓ Yes</td><td class="cross">✗ MLTSSL or STSOL</td></tr>
+        <tr><td data-en="Age limit" data-es="Límite de edad">Age limit</td><td data-en="Under 45" data-es="Menores de 45">Under 45</td><td data-en="Under 45 (for points)" data-es="Menores de 45 (por puntos)">Under 45 (for points)</td></tr>
+        <tr><td data-en="Path from 482" data-es="Camino desde 482">Path from 482</td><td class="tick">✓ Yes — Transition Stream</td><td data-en="Only via EOI + ITA" data-es="Solo vía EOI + ITA">Only via EOI + ITA</td></tr>
+        <tr><td data-en="Wait in SkillSelect pool" data-es="Espera en el pool SkillSelect">Wait in SkillSelect pool</td><td class="cross">✗ No</td><td class="tick">✓ Yes, can take years</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- COSTS -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Costs 2025–26" data-es="Costos 2025–26">Costs 2025–26</h2>
+    <table class="costs-table">
+      <thead>
+        <tr>
+          <th data-en="Item" data-es="Ítem">Item</th>
+          <th data-en="Who pays" data-es="Quién paga">Who pays</th>
+          <th data-en="Amount" data-es="Monto">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td data-en="SBS sponsorship application" data-es="Solicitud SBS patrocinio">SBS sponsorship application</td><td data-en="Employer" data-es="Empleador">Employer</td><td>$420</td></tr>
+        <tr><td data-en="Nomination application" data-es="Solicitud nominación">Nomination application</td><td data-en="Employer" data-es="Empleador">Employer</td><td>$330</td></tr>
+        <tr><td data-en="SAF Levy (Skilling Australians Fund)" data-es="Tasa SAF">SAF Levy (Skilling Australians Fund)</td><td data-en="Employer" data-es="Empleador">Employer</td><td data-en="$3,000/yr (small) · $5,000/yr (large)" data-es="$3,000/año (pequeña) · $5,000/año (grande)">$3,000/yr (small) · $5,000/yr (large)</td></tr>
+        <tr><td data-en="Visa application charge — primary" data-es="Cargo visa — principal">Visa application charge — primary</td><td data-en="Applicant" data-es="Solicitante">Applicant</td><td>$4,770</td></tr>
+        <tr><td data-en="Visa application charge — partner" data-es="Cargo visa — pareja">Visa application charge — partner</td><td data-en="Applicant" data-es="Solicitante">Applicant</td><td>$2,385</td></tr>
+        <tr><td data-en="Visa application charge — child" data-es="Cargo visa — hijo">Visa application charge — child</td><td data-en="Applicant" data-es="Solicitante">Applicant</td><td>$1,195</td></tr>
+        <tr><td data-en="Skills assessment (varies)" data-es="Evaluación de habilidades (varía)">Skills assessment (varies)</td><td data-en="Applicant" data-es="Solicitante">Applicant</td><td>$300–$1,000</td></tr>
+        <tr><td data-en="Health examinations" data-es="Exámenes médicos">Health examinations</td><td data-en="Applicant" data-es="Solicitante">Applicant</td><td>$300–$500</td></tr>
+        <tr><td data-en="Police clearances" data-es="Antecedentes penales">Police clearances</td><td data-en="Applicant" data-es="Solicitante">Applicant</td><td>$50–$200</td></tr>
+        <tr class="total-row"><td data-en="Typical total (applicant side)" data-es="Total típico (lado solicitante)"><strong>Typical total (applicant side)</strong></td><td></td><td><strong>$5,500–$8,000</strong></td></tr>
+      </tbody>
+    </table>
+    <div class="callout callout-orange" style="margin-top:1rem">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body">
+        <h4 data-en="SAF levy is the employer's cost" data-es="La tasa SAF es costo del empleador">SAF levy is the employer's cost</h4>
+        <p data-en="It is illegal for an employer to recover the SAF levy or nomination costs from the worker. If an employer asks you to pay these, that is a red flag and may constitute visa fraud." data-es="Es ilegal que un empleador recupere la tasa SAF o los costos de nominación del trabajador. Si un empleador te pide pagar esto, es una señal de alerta y puede constituir fraude de visa.">It is illegal for an employer to recover the SAF levy or nomination costs from the worker. If an employer asks you to pay these, that is a red flag and may constitute visa fraud.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIPS -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Strategy tips" data-es="Consejos estratégicos">Strategy tips</h2>
+    <div class="tips-grid">
+      <div class="tip">
+        <div class="tip-icon">🎯</div>
+        <div class="tip-text"><strong data-en="Start the conversation early" data-es="Inicia la conversación temprano">Start the conversation early</strong><span data-en="Don't wait until your 482 expires. Raise the 186 pathway with your employer well before the 3-year mark — processing can take over a year." data-es="No esperes a que expire tu visa 482. Habla con tu empleador sobre la visa 186 mucho antes del tercer año — el procesamiento puede tardar más de un año.">Don't wait until your 482 expires. Raise the 186 pathway with your employer well before the 3-year mark — processing can take over a year.</span></div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">📋</div>
+        <div class="tip-text"><strong data-en="Keep clean employment records" data-es="Mantén registros de empleo limpios">Keep clean employment records</strong><span data-en="For the Transition Stream, you need to prove 3 continuous years. Keep payslips, tax returns, and employment contracts. Any gaps can be problematic." data-es="Para la Corriente de Transición necesitas probar 3 años continuos. Guarda recibos de sueldo, declaraciones de impuestos y contratos. Cualquier brecha puede ser problemática.">For the Transition Stream, you need to prove 3 continuous years. Keep payslips, tax returns, and employment contracts. Any gaps can be problematic.</span></div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">🌏</div>
+        <div class="tip-text"><strong data-en="Onshore vs offshore matters" data-es="Dentro vs fuera de Australia importa">Onshore vs offshore matters</strong><span data-en="If you apply onshore, you'll get a Bridging Visa A while waiting. If offshore, you must wait abroad. Onshore is generally preferred." data-es="Si aplicas en Australia, recibirás una Visa Puente A mientras esperas. Si estás en el exterior, debes esperar fuera. En general, dentro de Australia es preferible.">If you apply onshore, you'll get a Bridging Visa A while waiting. If offshore, you must wait abroad. Onshore is generally preferred.</span></div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">📝</div>
+        <div class="tip-text"><strong data-en="MLTSSL check first" data-es="Verifica el MLTSSL primero">MLTSSL check first</strong><span data-en="Unlike the 482, the 186 requires your occupation to be on the MLTSSL. Check before starting the process — some occupations on the STSOL don't qualify." data-es="A diferencia de la 482, la 186 requiere que tu ocupación esté en el MLTSSL. Verifica antes de comenzar el proceso — algunas ocupaciones en el STSOL no califican.">Unlike the 482, the 186 requires your occupation to be on the MLTSSL. Check before starting the process — some occupations on the STSOL don't qualify.</span></div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">⏰</div>
+        <div class="tip-text"><strong data-en="Watch your age" data-es="Vigila tu edad">Watch your age</strong><span data-en="If you're approaching 45, timing is critical. The age is assessed at visa application, not nomination. Start early if you're getting close." data-es="Si te acercas a los 45, el tiempo es crítico. La edad se evalúa en la solicitud de visa, no en la nominación. Comienza temprano si estás cerca.">If you're approaching 45, timing is critical. The age is assessed at visa application, not nomination. Start early if you're getting close.</span></div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">🤝</div>
+        <div class="tip-text"><strong data-en="Employer education" data-es="Educación al empleador">Employer education</strong><span data-en="Many employers don't know the 186 process. Be prepared to explain the costs and steps to HR or management. A good migration agent can help with employer communication." data-es="Muchos empleadores no conocen el proceso de la 186. Prepárate para explicar costos y pasos a RRHH o gerencia. Un buen agente de migración puede ayudar con la comunicación al empleador.">Many employers don't know the 186 process. Be prepared to explain the costs and steps to HR or management. A good migration agent can help with employer communication.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Frequently asked questions" data-es="Preguntas frecuentes">Frequently asked questions</h2>
+    <div class="accordion">
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span data-en="Can I change employers during the 186 process?" data-es="¿Puedo cambiar de empleador durante el proceso de la 186?">Can I change employers during the 186 process?</span>
+          <span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content" data-en="For the Transition Stream, changing employers would disrupt your 3-year continuity requirement and could cause your nomination to be withdrawn. For the Direct Entry stream, a change of employer requires a new nomination but you can transfer the visa application to the new employer's nomination. This is a complex situation — consult a migration agent." data-es="Para la Corriente de Transición, cambiar de empleador interrumpiría tu requisito de continuidad de 3 años y podría hacer que retiren tu nominación. Para la Corriente de Entrada Directa, un cambio de empleador requiere una nueva nominación, pero puedes transferir la solicitud de visa a la nominación del nuevo empleador. Es una situación compleja — consulta un agente de migración.">For the Transition Stream, changing employers would disrupt your 3-year continuity requirement and could cause your nomination to be withdrawn. For the Direct Entry stream, a change of employer requires a new nomination but you can transfer the visa application to the new employer's nomination. This is a complex situation — consult a migration agent.</div>
+        </div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span data-en="Does my employer have to pay the SAF levy upfront?" data-es="¿El empleador debe pagar la tasa SAF por adelantado?">Does my employer have to pay the SAF levy upfront?</span>
+          <span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content" data-en="For the 186 (permanent visa), the SAF levy is paid as a one-time payment at nomination, not annually. Small businesses (turnover under $10M) pay $3,000 and larger businesses pay $5,000 per nominated position." data-es="Para la visa 186 (permanente), la tasa SAF se paga como pago único en la nominación, no anualmente. Las pequeñas empresas (facturación menor a $10M) pagan $3,000 y las más grandes pagan $5,000 por puesto nominado.">For the 186 (permanent visa), the SAF levy is paid as a one-time payment at nomination, not annually. Small businesses (turnover under $10M) pay $3,000 and larger businesses pay $5,000 per nominated position.</div>
+        </div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span data-en="What if my skills assessment is from a few years ago?" data-es="¿Qué pasa si mi evaluación de habilidades es de hace varios años?">What if my skills assessment is from a few years ago?</span>
+          <span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content" data-en="Most skills assessments are valid for 3 years from the date of the assessment (not the date of your visa application). If yours is expiring or has expired, you may need to apply for a reassessment. Some bodies like ACS offer extensions or re-assessments at reduced cost." data-es="La mayoría de las evaluaciones de habilidades son válidas por 3 años desde la fecha de la evaluación (no la fecha de tu solicitud de visa). Si la tuya está por vencer o vencida, puede que necesites una reevaluación. Algunos organismos como ACS ofrecen extensiones o reevaluaciones a costo reducido.">Most skills assessments are valid for 3 years from the date of the assessment (not the date of your visa application). If yours is expiring or has expired, you may need to apply for a reassessment. Some bodies like ACS offer extensions or re-assessments at reduced cost.</div>
+        </div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span data-en="Can my family be included in the 186?" data-es="¿Puede mi familia ser incluida en la 186?">Can my family be included in the 186?</span>
+          <span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content" data-en="Yes. Your partner and dependent children can be included in your 186 visa application. They will also receive permanent residence and will be able to work and study in Australia. Each additional applicant incurs their own VAC." data-es="Sí. Tu pareja e hijos dependientes pueden ser incluidos en tu solicitud de visa 186. También recibirán residencia permanente y podrán trabajar y estudiar en Australia. Cada solicitante adicional incurre en su propio cargo de visa.">Yes. Your partner and dependent children can be included in your 186 visa application. They will also receive permanent residence and will be able to work and study in Australia. Each additional applicant incurs their own VAC.</div>
+        </div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span data-en="What happens after getting the 186?" data-es="¿Qué pasa después de obtener la 186?">What happens after getting the 186?</span>
+          <span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content" data-en="The 186 is a permanent visa — you're an Australian permanent resident from day one. You can live, work, and study anywhere in Australia, sponsor eligible relatives, and after 4 years of residence, apply for Australian citizenship. You're not tied to the original employer after the visa is granted." data-es="La 186 es una visa permanente — eres residente permanente australiano desde el primer día. Puedes vivir, trabajar y estudiar en cualquier parte de Australia, patrocinar familiares elegibles y, después de 4 años de residencia, solicitar la ciudadanía australiana. No estás atado al empleador original después de que se otorgue la visa.">The 186 is a permanent visa — you're an Australian permanent resident from day one. You can live, work, and study anywhere in Australia, sponsor eligible relatives, and after 4 years of residence, apply for Australian citizenship. You're not tied to the original employer after the visa is granted.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESOURCES -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Official resources" data-es="Recursos oficiales">Official resources</h2>
+    <div class="resources-grid">
+      <a href="https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/employer-nomination-scheme-186" target="_blank" class="resource-card">
+        <div class="res-title" data-en="Visa 186 — Home Affairs" data-es="Visa 186 — Home Affairs">Visa 186 — Home Affairs</div>
+        <div class="res-sub" data-en="Official eligibility and requirements" data-es="Elegibilidad y requisitos oficiales">Official eligibility and requirements</div>
+        <div class="res-link">immi.homeaffairs.gov.au ↗</div>
+      </a>
+      <a href="https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/employer-nomination-scheme-186/transition-stream" target="_blank" class="resource-card">
+        <div class="res-title" data-en="Transition stream details" data-es="Detalles corriente transición">Transition stream details</div>
+        <div class="res-sub" data-en="For current 482/457 visa holders" data-es="Para titulares 482/457">For current 482/457 visa holders</div>
+        <div class="res-link">immi.homeaffairs.gov.au ↗</div>
+      </a>
+      <a href="https://immi.homeaffairs.gov.au/visas/working-in-australia/skill-occupation-list" target="_blank" class="resource-card">
+        <div class="res-title">MLTSSL occupation list</div>
+        <div class="res-sub" data-en="Check if your occupation qualifies" data-es="Verifica si tu ocupación califica">Check if your occupation qualifies</div>
+        <div class="res-link">immi.homeaffairs.gov.au ↗</div>
+      </a>
+      <a href="migro-skills-assessment.html" class="resource-card">
+        <div class="res-title" data-en="Skills assessment guide" data-es="Guía evaluación de habilidades">Skills assessment guide</div>
+        <div class="res-sub" data-en="Find your assessing authority" data-es="Encuentra tu organismo evaluador">Find your assessing authority</div>
+        <div class="res-link" data-en="Within Migro →" data-es="Dentro de Migro →">Within Migro →</div>
+      </a>
+      <a href="migro-482.html" class="resource-card">
+        <div class="res-title" data-en="Visa 482 guide" data-es="Guía Visa 482">Visa 482 guide</div>
+        <div class="res-sub" data-en="The temporary step before the 186" data-es="El paso temporal antes de la 186">The temporary step before the 186</div>
+        <div class="res-link" data-en="Within Migro →" data-es="Dentro de Migro →">Within Migro →</div>
+      </a>
+      <a href="migro-agents.html" class="resource-card">
+        <div class="res-title" data-en="Migration agents guide" data-es="Guía de agentes de migración">Migration agents guide</div>
+        <div class="res-sub" data-en="Highly recommended for 186" data-es="Muy recomendado para la 186">Highly recommended for 186</div>
+        <div class="res-link" data-en="Within Migro →" data-es="Dentro de Migro →">Within Migro →</div>
+      </a>
+    </div>
+  </section>
+
+</div>
+
+<script>
+let lang = 'en';
+function setLang(l){
+  lang = l;
+  document.querySelectorAll('[data-en]').forEach(el=>{
+    el.innerHTML = el.getAttribute('data-' + l);
+  });
+  document.querySelector('.lang-btn').textContent = l === 'en' ? 'ES' : 'EN';
+}
+function toggleLang(){ setLang(lang === 'en' ? 'es' : 'en'); }
+
+function toggleAcc(btn){
+  const body = btn.nextElementSibling;
+  const chevron = btn.querySelector('.acc-chevron');
+  const isOpen = body.classList.contains('open');
+  document.querySelectorAll('.acc-body.open').forEach(b=>{ b.classList.remove('open'); b.previousElementSibling.querySelector('.acc-chevron').style.transform=''; });
+  if(!isOpen){ body.classList.add('open'); chevron.style.transform='rotate(180deg)'; }
+}
+
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.08});
+document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>
