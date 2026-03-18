@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Migro — Migration Roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black:#0a0a0a; --white:#ffffff;
+    --gray-50:#f9fafb; --gray-100:#f3f4f6; --gray-200:#e5e7eb;
+    --gray-300:#d1d5db; --gray-400:#9ca3af; --gray-500:#6b7280;
+    --gray-600:#4b5563; --gray-700:#374151; --gray-800:#1f2937;
+    --green:#16a34a;  --green-bg:#f0fdf4;  --green-border:#bbf7d0;
+    --amber:#d97706;  --amber-bg:#fffbeb;  --amber-border:#fde68a;
+    --red:#dc2626;    --red-bg:#fef2f2;    --red-border:#fecaca;
+    --blue:#2563eb;   --blue-bg:#eff6ff;   --blue-border:#bfdbfe;
+    --purple:#7c3aed; --purple-bg:#f5f3ff; --purple-border:#ddd6fe;
+    --teal:#0d9488;   --teal-bg:#f0fdfa;   --teal-border:#99f6e4;
+  }
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior:smooth; }
+  body { font-family:'Inter',sans-serif; color:var(--gray-800); background:var(--gray-50); line-height:1.6; }
+
+  /* NAV */
+  nav { position:sticky; top:0; z-index:100; background:var(--black); color:var(--white); display:flex; align-items:center; justify-content:space-between; padding:0 24px; height:56px; }
+  .nav-brand { font-family:'Playfair Display',serif; font-size:1.3rem; letter-spacing:-.5px; }
+  .nav-brand span { color:var(--amber); }
+  .nav-right { display:flex; align-items:center; gap:16px; }
+  .nav-back { color:var(--gray-300); text-decoration:none; font-size:.85rem; display:flex; align-items:center; gap:6px; transition:color .2s; }
+  .nav-back:hover { color:var(--white); }
+  .lang-btn { background:none; border:1px solid var(--gray-600); color:var(--gray-300); padding:4px 10px; border-radius:4px; font-size:.78rem; cursor:pointer; transition:all .2s; font-family:inherit; }
+  .lang-btn:hover,.lang-btn.active { background:var(--white); color:var(--black); border-color:var(--white); }
+
+  /* HERO */
+  .hero { background:var(--black); color:var(--white); padding:56px 24px 48px; text-align:center; }
+  .hero-tag { display:inline-block; background:var(--teal-bg); color:var(--teal); border:1px solid var(--teal-border); padding:4px 12px; border-radius:20px; font-size:.78rem; font-weight:600; letter-spacing:.5px; text-transform:uppercase; margin-bottom:16px; }
+  .hero h1 { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3rem); line-height:1.15; margin-bottom:16px; }
+  .hero h1 span { color:var(--amber); }
+  .hero p { color:var(--gray-300); font-size:1.05rem; max-width:620px; margin:0 auto; }
+
+  /* LAYOUT */
+  .container { max-width:960px; margin:0 auto; padding:0 24px; }
+  .section { padding:48px 0; }
+  .section-title { font-family:'Playfair Display',serif; font-size:1.6rem; margin-bottom:8px; }
+  .section-sub { color:var(--gray-500); margin-bottom:28px; font-size:.95rem; }
+
+  /* TRACK SELECTOR */
+  .track-bar { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:32px; }
+  .track-btn { flex:1; min-width:120px; padding:12px 16px; border-radius:10px; border:2px solid var(--gray-200); background:var(--white); font-family:inherit; font-size:.88rem; font-weight:600; cursor:pointer; transition:all .2s; color:var(--gray-600); text-align:center; }
+  .track-btn:hover { border-color:var(--gray-400); }
+  .track-btn.active-189 { border-color:var(--blue); background:var(--blue-bg); color:var(--blue); }
+  .track-btn.active-190 { border-color:var(--green); background:var(--green-bg); color:var(--green); }
+  .track-btn.active-491 { border-color:var(--purple); background:var(--purple-bg); color:var(--purple); }
+
+  /* PROGRESS BAR */
+  .progress-wrap { background:var(--white); border:1px solid var(--gray-200); border-radius:12px; padding:20px 24px; margin-bottom:32px; }
+  .progress-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px; }
+  .progress-title { font-weight:600; font-size:.95rem; }
+  .progress-count { font-size:.85rem; color:var(--gray-500); }
+  .progress-bar-bg { background:var(--gray-200); border-radius:99px; height:10px; overflow:hidden; }
+  .progress-bar-fill { height:100%; border-radius:99px; background:linear-gradient(90deg, var(--teal), var(--blue)); transition:width .5s cubic-bezier(.4,0,.2,1); }
+  .progress-est { font-size:.8rem; color:var(--gray-500); margin-top:8px; }
+  .progress-est strong { color:var(--gray-700); }
+
+  /* PHASE HEADERS */
+  .phase-header { display:flex; align-items:center; gap:12px; margin-bottom:16px; padding:12px 18px; border-radius:10px; }
+  .phase-header.ph-purple { background:var(--purple-bg); border:1px solid var(--purple-border); }
+  .phase-header.ph-blue   { background:var(--blue-bg);   border:1px solid var(--blue-border); }
+  .phase-header.ph-amber  { background:var(--amber-bg);  border:1px solid var(--amber-border); }
+  .phase-header.ph-green  { background:var(--green-bg);  border:1px solid var(--green-border); }
+  .phase-num { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.85rem; flex-shrink:0; }
+  .ph-purple .phase-num { background:var(--purple); color:var(--white); }
+  .ph-blue   .phase-num { background:var(--blue); color:var(--white); }
+  .ph-amber  .phase-num { background:var(--amber); color:var(--white); }
+  .ph-green  .phase-num { background:var(--green); color:var(--white); }
+  .phase-label { font-weight:600; font-size:.95rem; }
+  .phase-label.ph-purple { color:var(--purple); }
+  .phase-label.ph-blue   { color:var(--blue); }
+  .phase-label.ph-amber  { color:var(--amber); }
+  .phase-label.ph-green  { color:var(--green); }
+  .phase-time { margin-left:auto; font-size:.78rem; font-weight:600; color:var(--gray-500); white-space:nowrap; }
+
+  /* STEP CARDS */
+  .steps-list { display:flex; flex-direction:column; gap:0; position:relative; margin-bottom:32px; }
+  .step-card { display:flex; gap:0; }
+  .step-left { display:flex; flex-direction:column; align-items:center; width:52px; flex-shrink:0; }
+  .step-circle { width:36px; height:36px; border-radius:50%; border:3px solid var(--gray-300); background:var(--white); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .25s; flex-shrink:0; z-index:1; font-size:.9rem; }
+  .step-circle:hover { border-color:var(--gray-500); }
+  .step-card.done .step-circle { background:var(--green); border-color:var(--green); color:var(--white); }
+  .step-card.done .step-circle::after { content:'✓'; font-weight:700; color:var(--white); font-size:.85rem; }
+  .step-card:not(.done) .step-circle .check-inner { display:none; }
+  .step-vline { flex:1; width:2px; background:var(--gray-200); margin:2px 0; min-height:20px; }
+  .step-card:last-child .step-vline { display:none; }
+  .step-card.done .step-vline { background:var(--green-border); }
+  .step-body { flex:1; padding:0 0 20px 0; }
+  .step-inner { background:var(--white); border:1px solid var(--gray-200); border-radius:10px; padding:14px 16px; margin-left:4px; transition:border-color .2s, box-shadow .2s; cursor:pointer; }
+  .step-inner:hover { border-color:var(--gray-300); box-shadow:0 2px 8px rgba(0,0,0,.05); }
+  .step-card.done .step-inner { background:var(--green-bg); border-color:var(--green-border); }
+  .step-card.hidden-491 { display:none; }
+  .step-card.hidden-189 { display:none; }
+  .step-top { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+  .step-title { font-weight:600; font-size:.9rem; color:var(--gray-800); display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .step-card.done .step-title { color:var(--green); }
+  .step-time { font-size:.72rem; font-weight:600; color:var(--gray-400); background:var(--gray-100); padding:2px 8px; border-radius:20px; white-space:nowrap; flex-shrink:0; }
+  .step-desc { font-size:.83rem; color:var(--gray-600); margin-top:5px; line-height:1.55; }
+  .step-card.done .step-desc { color:var(--green); opacity:.8; }
+  .step-links { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+  .step-link { font-size:.72rem; font-weight:600; padding:3px 10px; border-radius:20px; background:var(--blue-bg); color:var(--blue); border:1px solid var(--blue-border); text-decoration:none; transition:all .18s; }
+  .step-link:hover { background:var(--blue); color:var(--white); }
+  .step-tag { font-size:.7rem; font-weight:700; padding:2px 7px; border-radius:4px; }
+  .tag-190 { background:var(--green-bg); color:var(--green); border:1px solid var(--green-border); }
+  .tag-491 { background:var(--purple-bg); color:var(--purple); border:1px solid var(--purple-border); }
+  .tag-opt { background:var(--gray-100); color:var(--gray-500); }
+
+  /* ESTIMATED TIMELINE SUMMARY */
+  .timeline-summary { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:12px; }
+  .ts-card { background:var(--white); border:1px solid var(--gray-200); border-radius:10px; padding:16px; text-align:center; }
+  .ts-icon { font-size:1.5rem; margin-bottom:6px; }
+  .ts-val { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; margin-bottom:2px; }
+  .ts-label { font-size:.78rem; color:var(--gray-500); }
+
+  /* CALLOUT */
+  .callout { border-radius:10px; padding:16px 18px; margin-bottom:20px; display:flex; gap:12px; }
+  .callout.blue   { background:var(--blue-bg);   border:1px solid var(--blue-border); }
+  .callout.amber  { background:var(--amber-bg);  border:1px solid var(--amber-border); }
+  .callout.green  { background:var(--green-bg);  border:1px solid var(--green-border); }
+  .callout.teal   { background:var(--teal-bg);   border:1px solid var(--teal-border); }
+  .callout-icon { font-size:1.1rem; flex-shrink:0; margin-top:2px; }
+  .callout-body { font-size:.875rem; line-height:1.6; color:var(--gray-700); }
+  .callout-body strong { color:var(--gray-800); }
+
+  /* RESET BTN */
+  .reset-btn { background:none; border:1px solid var(--gray-300); color:var(--gray-500); padding:6px 14px; border-radius:6px; font-family:inherit; font-size:.8rem; cursor:pointer; transition:all .2s; }
+  .reset-btn:hover { border-color:var(--red); color:var(--red); }
+
+  /* FADE */
+  .fade-up { opacity:0; transform:translateY(24px); transition:opacity .5s, transform .5s; }
+  .fade-up.visible { opacity:1; transform:none; }
+
+  footer { background:var(--black); color:var(--gray-400); text-align:center; padding:28px 24px; font-size:.82rem; margin-top:48px; }
+  .footer-brand { font-family:'Playfair Display',serif; color:var(--white); font-size:1rem; margin-bottom:6px; }
+  .footer-brand span { color:var(--amber); }
+
+  @media(max-width:600px){
+    .hero { padding:40px 16px 32px; }
+    .container { padding:0 16px; }
+    .step-left { width:40px; }
+    .track-btn { font-size:.8rem; padding:10px 12px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">Mi<span>gro</span></div>
+  <div class="nav-right">
+    <a href="migro-dashboard.html" class="nav-back">⊞ <span data-en="Dashboard" data-es="Inicio">Dashboard</span></a>
+    <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" id="btn-es" onclick="setLang('es')">ES</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag" data-en="Migration Roadmap" data-es="Hoja de Ruta Migratoria">Migration Roadmap</div>
+  <h1 data-en="Your complete <span style='color:var(--amber)'>journey</span>" data-es="Tu <span style='color:var(--amber)'>viaje</span> completo">Your complete <span style="color:var(--amber)">journey</span></h1>
+  <p data-en="Every step from deciding to migrate to receiving your visa — with estimated timeframes, costs, and links to each Migro tool." data-es="Cada paso desde decidir migrar hasta recibir tu visa — con plazos estimados, costos y links a cada herramienta de Migro.">Every step from deciding to migrate to receiving your visa — with timeframes, costs, and links to each Migro tool.</p>
+</div>
+
+<div class="container">
+
+  <!-- TRACK SELECTOR + PROGRESS -->
+  <div class="section fade-up" style="padding-bottom:0">
+    <h2 class="section-title" data-en="Choose your visa track" data-es="Elige tu vía de visa">Choose your visa track</h2>
+    <p class="section-sub" data-en="The roadmap adapts to your chosen visa. Tick steps as you complete them — your progress is saved." data-es="La hoja de ruta se adapta a tu visa elegida. Marca los pasos al completarlos — tu progreso se guarda.">The roadmap adapts to your chosen visa. Tick steps as you complete them — your progress is saved.</p>
+
+    <div class="track-bar">
+      <button class="track-btn" id="btn-189" onclick="setTrack('189')">
+        <div>🌏 Subclass 189</div>
+        <div style="font-size:.75rem;font-weight:400;opacity:.8" data-en="Independent · No sponsor" data-es="Independiente · Sin patrocinador">Independent · No sponsor</div>
+      </button>
+      <button class="track-btn" id="btn-190" onclick="setTrack('190')">
+        <div>🗺️ Subclass 190</div>
+        <div style="font-size:.75rem;font-weight:400;opacity:.8" data-en="State nominated · +5 pts" data-es="Nominación estatal · +5 pts">State nominated · +5 pts</div>
+      </button>
+      <button class="track-btn" id="btn-491" onclick="setTrack('491')">
+        <div>🌿 Subclass 491</div>
+        <div style="font-size:.75rem;font-weight:400;opacity:.8" data-en="Regional · +15 pts · 191 PR path" data-es="Regional · +15 pts · vía PR 191">Regional · +15 pts · 191 PR path</div>
+      </button>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-head">
+        <div class="progress-title" data-en="Your progress" data-es="Tu progreso">Your progress</div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div class="progress-count" id="progress-count">0 / 0 steps</div>
+          <button class="reset-btn" onclick="resetProgress()" data-en="Reset" data-es="Reiniciar">Reset</button>
+        </div>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar" style="width:0%"></div></div>
+      <div class="progress-est" id="progress-est"></div>
+    </div>
+  </div>
+
+  <!-- ROADMAP -->
+  <div class="section fade-up" style="padding-top:0" id="roadmap-section">
+
+    <!-- PHASE 1 -->
+    <div class="phase-header ph-purple">
+      <div class="phase-num">1</div>
+      <div>
+        <div class="phase-label ph-purple" data-en="Phase 1 — Research & eligibility" data-es="Fase 1 — Investigación y elegibilidad">Phase 1 — Research & eligibility</div>
+      </div>
+      <div class="phase-time" data-en="1–4 weeks" data-es="1–4 semanas">1–4 weeks</div>
+    </div>
+
+    <div class="steps-list" id="phase1-steps">
+
+      <div class="step-card" id="s1" onclick="toggleStep('s1')">
+        <div class="step-left">
+          <div class="step-circle" id="s1-circle">○</div>
+          <div class="step-vline"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-top">
+              <div class="step-title">🔍 <span data-en="Check visa eligibility" data-es="Verificar elegibilidad de visa">Check visa eligibility</span></div>
+              <span class="step-time" data-en="1–3 days" data-es="1–3 días">1–3 days</span>
+            </div>
+            <div class="step-desc" data-en="Confirm your occupation is on the MLTSSL (for 189) or STSOL/ROL (for 190/491). Check you meet age requirements (under 45) and have at least 65 points to be eligible." data-es="Confirma que tu ocupación está en el MLTSSL (para 189) o STSOL/ROL (para 190/491). Verifica que cumples los requisitos de edad (menor de 45) y tienes al menos 65 puntos para ser elegible.">Confirm your occupation is on the MLTSSL (for 189) or STSOL/ROL. Check you meet age requirements (under 45) and have at least 65 points to be eligible.</div>
+            <div class="step-links">
+              <a class="step-link" href="migro-visa-compare.html" data-en="Visa comparator" data-es="Comparador de visas">Visa comparator</a>
+              <a class="step-link" href="migro-points-calc.html" data-en="Points calculator" data-es="Calculadora de puntos">Points calculator</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card" id="s2" onclick="toggleStep('s2')">
+        <div class="step-left">
+          <div class="step-circle" id="s2-circle">○</div>
+          <div class="step-vline"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-top">
+              <div class="step-title">🧮 <span data-en="Calculate your points score" data-es="Calcular tu puntaje de puntos">Calculate your points score</span></div>
+              <span class="step-time" data-en="1 day" data-es="1 día">1 day</span>
+            </div>
+            <div class="step-desc" data-en="Use the interactive points calculator to get your estimated score and identify where you can earn more points. Aim for at least 80–90+ for a realistic chance of invitation." data-es="Usa la calculadora de puntos interactiva para obtener tu puntaje estimado e identificar dónde puedes ganar más puntos. Apunta a al menos 80–90+ para tener una posibilidad realista de invitación.">Use the interactive points calculator. Aim for at least 80–90+ for a realistic invitation chance. Identify areas to improve (English, Australian work experience).</div>
+            <div class="step-links">
+              <a class="step-link" href="migro-points-calc.html" data-en="Points calculator" data-es="Calculadora de puntos">Points calculator</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card" id="s3" onclick="toggleStep('s3')">
+        <div class="step-left">
+          <div class="step-circle" id="s3-circle">○</div>
+          <div class="step-vline"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-top">
+              <div class="step-title">💰 <span data-en="Budget your migration costs" data-es="Presupuesta los costos de tu migración">Budget your migration costs</span></div>
+              <span class="step-time" data-en="1 day" data-es="1 día">1 day</span>
+            </div>
+            <div class="step-desc" data-en="Total cost for a single applicant is typically AUD $6,000–$10,000+. For a family it can exceed $15,000. Use the cost estimator to plan your budget — especially for the large Visa Application Charge that arrives after invitation." data-es="El costo total para un solicitante individual es típicamente AUD $6,000–$10,000+. Para una familia puede superar los $15,000. Usa el estimador de costos para planificar tu presupuesto, especialmente para el gran Cargo de Solicitud de Visa.">Total cost for a single applicant: AUD $6,000–$10,000+. For a family: $15,000+. Use the cost estimator to plan — especially for the large VAC that arrives after invitation.</div>
+            <div class="step-links">
+              <a class="step-link" href="migro-costs.html" data-en="Cost estimator" data-es="Estimador de costos">Cost estimator</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PHASE 2 -->
+    <div class="phase-header ph-blue">
+      <div class="phase-num">2</div>
+      <div>
+        <div class="phase-label ph-blue" data-en="Phase 2 — Skills assessment & English" data-es="Fase 2 — Evaluación de habilidades e inglés">Phase 2 — Skills assessment & English</div>
+      </div>
+      <div class="phase-time" data-en="2–6 months" data-es="2–6 meses">2–6 months</div>
+    </div>
+
+    <div class="steps-list" id="phase2-steps">
+
+      <div class="step-card" id="s4" onclick="toggleStep('s4')">
+        <div class="step-left">
+          <div class="step-circle" id="s4-circle">○</div>
+          <div class="step-vline"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-top">
+              <div class="step-title">🎓 <span data-en="Find your assessing authority" data-es="Encontrar tu autoridad evaluadora">Find your assessing authority</span></div>
+              <span class="step-time" data-en="1 day" data-es="1 día">1 day</span>
+            </div>
+            <div class="step-desc" data-en="Each occupation has one designated assessing authority — ACS for IT, Engineers Australia for engineering, VETASSESS for most business occupations, AHPRA/ANMAC for healthcare, etc. Find yours and read their current requirements carefully." data-es="Cada ocupación tiene una autoridad evaluadora designada: ACS para TI, Engineers Australia para ingeniería, VETASSESS para la mayoría de las ocupaciones de negocios, AHPRA/ANMAC para salud, etc. Encuentra la tuya y lee sus requisitos actuales cuidadosamente.">Each occupation has one designated authority. Find yours and read their current requirements before gathering documents.</div>
+            <div class="step-links">
+              <a class="step-link" href="migro-skills-assessment.html" data-en="Skills assessment guide" data-es="Guía de evaluación">Skills assessment guide</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card" id="s5" onclick="toggleStep('s5')">
+        <div class="step-left">
+          <div class="step-circle" id="s5-circle">○</div>
+          <div class="step-vline"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-top">
+              <div class="step-title">📄 <span data-en="Gather & certify your documents" data-es="Reúne y certifica tus documentos">Gather & certify your documents</span></div>
+              <span class="step-time" data-en="2–6 weeks" data-es="2–6 semanas">2–6 weeks</span>
+            </div>
+            <div class="step-desc" data-en="Get certified copies of degrees and transcripts. Request detailed employment reference letters (on letterhead, with duties listed). Obtain certified NAATI translations if any documents are not in English. This step takes longer than people expect." data-es="Obtén copias certificadas de títulos y expedientes. Solicita cartas de referencia laboral detalladas (en papel con membrete, con funciones listadas). Obtén traducciones certificadas NAATI si algún documento no está en inglés.">Get certified copies of degrees and transcripts. Request detailed employment reference letters. Obtain NAATI translations if needed. This step typically takes longer than expected.</div>
+            <div class="step-links">
+              <a class="step-link" href="migro-docs.html" data-en="Document checklist" data-es="Lista de documentos">Document checklist</a>
+              <a class="step-link" href="migro-skills-assessment.html" data-en="What documents are needed" data-es="Qué documentos se necesitan">What documents are needed</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card" id="s6" onclick="toggleStep('s6')">
+        <div class="step-left">
+          <div class="step-circle" id="s6-circle">○</div>
+          <div class="step-vline"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-top">
+              <div class="step-title">📝 <span data-en="Submit skills assessment application" data-es="Presentar solicitud de evaluación de habilidades">Submit skills assessment application</span></div>
+              <span class="step-time" data-en="1 day to submit" data-es="1 día para presentar">1 day to submit</span>
+            </div>
+            <div class="step-desc" data-en="Apply to your assessing authority with all required documents. Pay the assessment fee ($400–$1,000 depending on authority). Processing takes 4–24 weeks." data-es="Solicita a tu autoridad evaluadora con todos los documentos requeridos. Paga la tarifa de evaluación ($400–$1,000 según la autoridad). El procesamiento tarda 4–24 semanas.">Apply with all required documents. Pay the assessment fee ($400–$1,000). Processing takes 4–24 weeks — start this as early as possible.</div>
+            <div class="step-links">
+              <a class="step-link" href="migro-skills-assessment.html" data-en="Authority guide" data-es="Guía de autoridades">Authority guide</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card" id="s7" onclick="toggleStep('s7')">
+        <div class="step-left">
+          <div class="step-circle" id="s7-circle">○</div>
+          <div class="step-vline"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-top">
+              <div class="step-title">🗣️ <span data-en="Take your English test" data-es="Hacer el examen de inglés">Take your English test</span></div>
+              <span class="step-time" data-en="Prepare 1–3 months" data-es="Prepararse 1–3 meses">Prepare 1–3 months</span>
+            </div>
+            <div class="step-desc" data-en="Minimum: Competent English (IELTS 6.0 in each band). For 10 extra points: Proficient (7.0). For 20 extra points: Superior (8.0). Results are valid for 3 years. Higher English scores are often the fastest way to raise your points total." data-es="Mínimo: Inglés Competente (IELTS 6.0 en cada banda). Para 10 puntos extra: Proficiente (7.0). Para 20 puntos extra: Superior (8.0). Los resultados son válidos por 3 años.">Minimum: Competent (IELTS 6.0 each band). For +10 pts: Proficient (7.0). For +20 pts: Superior (8.0). Results valid 3 years. Higher English is often the fastest points booster.</div>
+            <div class="step-links">
+              <a class="step-link" href="migro-ielts.html" data-en="IELTS tracker & tips" data-es="Seguimiento IELTS y consejos">IELTS tracker & tips</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card" id="s8" onclick="toggleStep('s8')">
+        <div class="step-left">
+          <div class="step-circle" id="s8-circle">○</div>
+          <div class="step-vline"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-top">
+              <div class="step-title">✅ <span data-en="Receive positive skills assessment" data-es="Recibir evaluación de habilidades positiva">Receive positive skills assessment</span></div>
+              <span class="step-time" data-en="4–24 weeks after submission" data-es="4–24 semanas después de presentar">4–24 weeks after submission</span>
+            </div>
+            <div class="step-desc" data-en="You will receive your assessment outcome letter. If positive, you're ready to submit an EOI. If negative, you can request a review or reapply with stronger evidence. Don't be discouraged — many successful applicants needed a second attempt." data-es="Recibirás tu carta de resultado de evaluación. Si es positiva, estás listo para presentar una EOI. Si es negativa, puedes solicitar una revisión o volver a solicitar con evidencia más sólida.">If positive, you're ready to submit an EOI. If negative, you can request a review or reapply with stronger evidence. Many successful applicants needed a second attempt.</div>
+            <div class="step-links">
+              <a class="step-link" href="migro-skills-assessment.html" data-en="What to do if refused" data-es="Qué hacer si te rechazan">What to do if refused</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PHASE 3 -->
+    <div class="phase-header ph-blue" style="--blue:#7c3aed;--blue-bg:#f5f3ff;--blue-border:#ddd6fe">
+      <div class="phase-num" style="background:var(--teal)">3</div>
+      <div>
+        <div class="phase-label" style="color:var(--teal)" data-en="Phase 3 — EOI & invitation" data-es="Fase 3 — EOI e invitación">Phase 3 — EOI & invitation</div>
+      </div>
+      <div class="phase-time" data-en="1 month – 2+ years" data-es="1 mes – 2+ años">1 month – 2+ years</div>
+    </div>
+
+    <div class="steps-list" id="phase3-steps">
+
+      <div class="step-card" id="s9" onclick="toggleStep('s9')">
+        <div class="step-left">
+          <div class="step-circle" id="s9-circle">○</div>
+          <div class="step-vline"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-top">
+              <div class="step-title">💻 <span data-en="Create ImmiAccount & submit EOI" data-es="Crear ImmiAccount y presentar EOI">Create ImmiAccount & submit EOI</span></div>
+              <span class="step-time" data-en="1–2 days" data-es="1–2 días">1–2 days</span>
+            </div>
+            <div class="step-desc" data-en="Log in to immi.homeaffairs.gov.au to create an ImmiAccount. Complete your Expression of Interest carefully — errors can affect your points score. Select all visa subclasses you're eligible for and all states you'd be willing to live in. Submitting early gives you a better tie-breaker date." data-es="Inicia sesión en immi.homeaffairs.gov.au para crear un ImmiAccount. Completa tu Expresión de Interés cuidadosamente. Selecciona todas las subclases de visa para las que eres elegible y todos los estados en los que estarías dispuesto a vivir. Presentar temprano te da una mejor fecha de desempate.">Submit your EOI via ImmiAccount. Select all visa subclasses and states you're eligible for. Submit as early as possible — date in pool is the tie-breaker when scores are equal.</div>
+            <div class="step-links">
+              <a class="step-link" href="migro-eoi.html" data-en="EOI guide" data-es="Guía EOI">EOI guide</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card hidden-189" id="s10" onclick="toggleStep('s10')">
+        <div class="step-left">
+          <div class="step-circle" id="s10-circle">○</div>
+          <div class="step-vline"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-top">
+              <div class="step-title">🗺️ <span data-en="Apply for state nomination (190/491)" data-es="Solicitar nominación estatal (190/491)">Apply for state nomination <span class="step-tag tag-190">190</span> <span class="step-tag tag-491">491</span></span></div>
+              <span class="step-time" data-en="4–12 weeks" data-es="4–12 semanas">4–12 weeks</span>
+            </div>
+            <div class="step-desc" data-en="Apply directly to the state government's immigration program. Different states have different occupation lists and requirements. You can apply to multiple states simultaneously. A job offer or evidence of residing in the state significantly improves your chances." data-es="Solicita directamente al programa de inmigración del gobierno estatal. Diferentes estados tienen diferentes listas de ocupaciones y requisitos. Puedes solicitar a múltiples estados simultáneamente.">Apply to state government immigration programs. Apply to multiple states simultaneously. A job offer or current residence in the state significantly improves chances.</div>
+            <div class="step-links">
+              <a class="step-link" href="migro-state-nomination.html" data-en="State nomination guide" data-es="Guía de nominación estatal">State nomination guide</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card" id="s11" onclick="toggleStep('s11')">
+        <div class="step-left">
+          <div class="step-circle" id="s11-circle">○</div>
+          <div class="step-vline"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-top">
+              <div class="step-title">⏳ <span data-en="Wait in SkillSelect pool" data-es="Esperar en el grupo SkillSelect">Wait in SkillSelect pool</span></div>
+              <span class="step-time" data-en="Weeks to years" data-es="Semanas a años">Weeks to years</span>
+            </div>
+            <div class="step-desc" data-en="Rounds run approximately twice per month. Priority is given by points (highest first), then EOI submission date. Use this time wisely: accumulate Australian work experience, improve your English, or update your EOI if your score improves. Check the SkillSelect data monthly." data-es="Las rondas se realizan aproximadamente dos veces al mes. La prioridad se da por puntos (mayor primero), luego por fecha de envío de EOI. Usa este tiempo sabiamente: acumula experiencia laboral australiana, mejora tu inglés o actualiza tu EOI si tu puntaje mejora.">Rounds run ~twice per month, highest points first then EOI date. Use this time to accumulate Australian work experience, improve English, or update your EOI if your score changes.</div>
+            <div class="step-links">
+              <a class="step-link" href="migro-eoi.html" data-en="Recent rounds data" data-es="Datos de rondas recientes">Recent rounds data</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card" id="s12" onclick="toggleStep('s12')">
+        <div class="step-left">
+          <div class="step-circle" id="s12-circle">○</div>
+          <div class="step-vline"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-top">
+              <div class="step-title">✉️ <span data-en="Receive Invitation to Apply (ITA)" data-es="Recibir Invitación para Solicitar (ITA)">Receive Invitation to Apply (ITA)</span></div>
+              <span class="step-time" data-en="60-day deadline starts now" data-es="El plazo de 60 días comienza ahora">60-day deadline starts now</span>
+            </div>
+            <div class="step-desc" data-en="You'll receive an ITA via ImmiAccount. From this moment you have exactly 60 days to lodge your complete visa application. No extensions are granted. Use the document checklist and have your funds ready." data-es="Recibirás una ITA a través de ImmiAccount. Desde este momento tienes exactamente 60 días para presentar tu solicitud de visa completa. No se otorgan prórrogas. Usa la lista de documentos y ten tus fondos listos.">Notification via ImmiAccount. You have exactly 60 days to lodge — no extensions. Have your documents and funds ready before this moment arrives.</div>
+            <div class="step-links">
+              <a class="step-link" href="migro-docs.html" data-en="Document checklist" data-es="Lista de documentos">Document checklist</a>
+              <a class="step-link" href="migro-costs.html" data-en="Fee overview" data-es="Resumen de tarifas">Fee overview</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PHASE 4 -->
+    <div class="phase-header ph-amber">
+      <div class="phase-num">4</div>
+      <div>
+        <div class="phase-label ph-amber" data-en="Phase 4 — Visa application (60-day window)" data-es="Fase 4 — Solicitud de visa (ventana de 60 días)">Phase 4 — Visa application (60-day window)</div>
+      </div>
+      <div class="phase-time" data-en="Within 60 days of ITA" data-es="Dentro de 60 días de la ITA">Within 60 days</div>
+    </div>
+
+    <div class="steps-list" id="phase4-steps">
+
+      <div class="step-card" id="s13" onclick="toggleStep('s13')">
+        <div class="step-left">
+          <div class="step-circle" id="s13-circle">○</div>
+          <div class="step-vline"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-top">
+              <div class="step-title">📂 <span data-en="Gather all application documents" data-es="Reunir todos los documentos de solicitud">Gather all application documents</span></div>
+              <span class="step-time" data-en="Week 1–3" data-es="Semana 1–3">Week 1–3</span>
+            </div>
+            <div class="step-desc" data-en="Collect employment evidence, skills assessment letter, English results, identity documents, police clearances (from all countries you've lived in for 12+ months), and relationship evidence if including a partner." data-es="Reúne evidencia de empleo, carta de evaluación de habilidades, resultados de inglés, documentos de identidad, antecedentes penales (de todos los países donde viviste 12+ meses) y evidencia de relación si incluyes a una pareja.">Collect all evidence: employment, skills assessment, English results, identity, police clearances (all countries 12+ months), and relationship evidence if applicable.</div>
+            <div class="step-links">
+              <a class="step-link" href="migro-docs.html" data-en="Full document checklist" data-es="Lista completa de documentos">Full document checklist</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card" id="s14" onclick="toggleStep('s14')">
+        <div class="step-left">
+          <div class="step-circle" id="s14-circle">○</div>
+          <div class="step-vline"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-top">
+              <div class="step-title">🏥 <span data-en="Complete health examinations" data-es="Completar exámenes médicos">Complete health examinations</span></div>
+              <span class="step-time" data-en="Week 2–4" data-es="Semana 2–4">Week 2–4</span>
+            </div>
+            <div class="step-desc" data-en="Book with an approved panel physician (HAP-approved doctor) in your country. Typically includes chest X-ray, general medical examination, and sometimes biometrics. Results link electronically to your ImmiAccount — don't delay booking as slots fill up." data-es="Reserva con un médico panel aprobado (médico aprobado por HAP) en tu país. Típicamente incluye radiografía de tórax, examen médico general y a veces biometría. Los resultados se vinculan electrónicamente a tu ImmiAccount.">Book with a HAP-approved panel physician. Typically includes chest X-ray and general medical. Results link electronically to your case. Book early as slots fill up.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card" id="s15" onclick="toggleStep('s15')">
+        <div class="step-left">
+          <div class="step-circle" id="s15-circle">○</div>
+          <div class="step-vline"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-top">
+              <div class="step-title">🔎 <span data-en="Obtain police clearance certificates" data-es="Obtener certificados de antecedentes penales">Obtain police clearance certificates</span></div>
+              <span class="step-time" data-en="2–8 weeks depending on country" data-es="2–8 semanas según el país">2–8 weeks</span>
+            </div>
+            <div class="step-desc" data-en="Required from every country you've lived in for 12 months or more since turning 16. Some countries are very fast (Australia: days); others can take weeks (India, Brazil, Philippines: 4–8 weeks). Request early — these often cause delays." data-es="Requerido de todos los países donde viviste 12 meses o más desde los 16 años. Algunos países son muy rápidos (Australia: días); otros pueden demorar semanas (India, Brasil, Filipinas: 4–8 semanas). Solicita temprano, estos a menudo causan retrasos.">Required from every country where you've lived 12+ months since age 16. Australia: days. India/Brazil/Philippines: 4–8 weeks. Request these early as they often cause delays.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card" id="s16" onclick="toggleStep('s16')">
+        <div class="step-left">
+          <div class="step-circle" id="s16-circle">○</div>
+          <div class="step-vline"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-top">
+              <div class="step-title">💳 <span data-en="Lodge application & pay VAC" data-es="Presentar solicitud y pagar VAC">Lodge application & pay VAC</span></div>
+              <span class="step-time" data-en="Day 45–55 (before day 60!)" data-es="Día 45–55 (¡antes del día 60!)">Day 45–55 (before day 60!)</span>
+            </div>
+            <div class="step-desc" data-en="Upload all documents in ImmiAccount and pay the Visa Application Charge. Do this well before day 60 to leave buffer time. The VAC is non-refundable. Double-check all documents are uploaded before clicking 'submit'." data-es="Sube todos los documentos en ImmiAccount y paga el Cargo de Solicitud de Visa. Hazlo antes del día 60 para tener tiempo de reserva. El VAC no es reembolsable. Verifica que todos los documentos estén subidos antes de hacer clic en 'presentar'.">Upload all documents and pay the non-refundable VAC. Do this before day 55 to leave buffer. Double-check all documents are attached before clicking submit.</div>
+            <div class="step-links">
+              <a class="step-link" href="migro-costs.html" data-en="VAC fee table" data-es="Tabla de tarifas VAC">VAC fee table</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PHASE 5 -->
+    <div class="phase-header ph-green">
+      <div class="phase-num">5</div>
+      <div>
+        <div class="phase-label ph-green" data-en="Phase 5 — Processing & grant" data-es="Fase 5 — Procesamiento y otorgamiento">Phase 5 — Processing & grant</div>
+      </div>
+      <div class="phase-time" data-en="6–18+ months" data-es="6–18+ meses">6–18+ months</div>
+    </div>
+
+    <div class="steps-list" id="phase5-steps">
+
+      <div class="step-card" id="s17" onclick="toggleStep('s17')">
+        <div class="step-left">
+          <div class="step-circle" id="s17-circle">○</div>
+          <div class="step-vline"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-top">
+              <div class="step-title">📋 <span data-en="Application under assessment" data-es="Solicitud en evaluación">Application under assessment</span></div>
+              <span class="step-time" data-en="6–18 months typically" data-es="Típicamente 6–18 meses">6–18 months typically</span>
+            </div>
+            <div class="step-desc" data-en="A case officer is assigned. Keep your email/ImmiAccount monitored. If you receive a s56 (further information request), respond promptly and thoroughly — you typically have 28 days. Ensure your passport, health, and English results don't expire during processing." data-es="Se asigna un oficial de caso. Monitorea tu email/ImmiAccount. Si recibes una solicitud s56 (solicitud de información adicional), responde rápida y completamente. Asegúrate de que tu pasaporte, salud y resultados de inglés no venzan durante el procesamiento.">A case officer will be assigned. Keep ImmiAccount monitored — respond to any s56 (further information request) within 28 days. Ensure passport and English results don't expire during processing.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card" id="s18" onclick="toggleStep('s18')">
+        <div class="step-left">
+          <div class="step-circle" id="s18-circle">○</div>
+          <div class="step-vline"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-top">
+              <div class="step-title">🎉 <span data-en="Visa granted!" data-es="¡Visa otorgada!">Visa granted!</span></div>
+              <span class="step-time" data-en="The finish line" data-es="La línea de llegada">The finish line</span>
+            </div>
+            <div class="step-desc" data-en="You'll receive notification via email and ImmiAccount. Your visa will be linked to your passport electronically (no sticker). For 190/491, you must first enter Australia via the nominating state. For 491, you must live and work in a regional area." data-es="Recibirás notificación por email e ImmiAccount. Tu visa se vinculará a tu pasaporte electrónicamente (sin adhesivo). Para 190/491, debes ingresar primero a Australia por el estado nominante. Para 491, debes vivir y trabajar en un área regional.">Notification via email and ImmiAccount. Visa links electronically to your passport — no sticker. For 190/491: first entry must be via the nominating state. For 491: live and work in a regional area.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card hidden-189" id="s19" onclick="toggleStep('s19')">
+        <div class="step-left">
+          <div class="step-circle" id="s19-circle">○</div>
+          <div class="step-vline"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-inner">
+            <div class="step-top">
+              <div class="step-title">🌿 <span data-en="Apply for 191 PR (491 pathway only)" data-es="Solicitar 191 PR (solo vía 491)">Apply for subclass 191 PR <span class="step-tag tag-491">491 only</span></span></div>
+              <span class="step-time" data-en="After 3 years on 491" data-es="Después de 3 años en 491">After 3 years on 491</span>
+            </div>
+            <div class="step-desc" data-en="After 3 years of living and working in a regional area on the 491, you become eligible to apply for the subclass 191 — Permanent Residence (Regional). This grants permanent residence with no further conditions." data-es="Después de 3 años viviendo y trabajando en un área regional con la 491, te vuelves elegible para solicitar la subclase 191 — Residencia Permanente (Regional). Esto otorga residencia permanente sin más condiciones.">After 3 years living and working in a regional area on the 491, you become eligible for the subclass 191 — Permanent Residence (Regional). This grants unconditional PR.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div><!-- /roadmap-section -->
+
+  <!-- ESTIMATED TOTAL TIMELINE -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="Typical total timelines" data-es="Plazos totales típicos">Typical total timelines</h2>
+    <p class="section-sub" data-en="How long the full process takes, from decision to visa grant. Individual experiences vary widely." data-es="Cuánto dura el proceso completo, desde la decisión hasta el otorgamiento de la visa. Las experiencias individuales varían ampliamente.">How long the full process takes from decision to visa grant. Individual experiences vary widely.</p>
+
+    <div class="timeline-summary" id="timeline-summary">
+      <div class="ts-card">
+        <div class="ts-icon">🌏</div>
+        <div class="ts-val" style="color:var(--blue)">189</div>
+        <div class="ts-label" data-en="Best case: ~18 months" data-es="Mejor caso: ~18 meses">Best case: ~18 months</div>
+        <div class="ts-label" data-en="Typical: 2–3 years" data-es="Típico: 2–3 años">Typical: 2–3 years</div>
+      </div>
+      <div class="ts-card">
+        <div class="ts-icon">🗺️</div>
+        <div class="ts-val" style="color:var(--green)">190</div>
+        <div class="ts-label" data-en="Best case: ~14 months" data-es="Mejor caso: ~14 meses">Best case: ~14 months</div>
+        <div class="ts-label" data-en="Typical: 18–30 months" data-es="Típico: 18–30 meses">Typical: 18–30 months</div>
+      </div>
+      <div class="ts-card">
+        <div class="ts-icon">🌿</div>
+        <div class="ts-val" style="color:var(--purple)">491</div>
+        <div class="ts-label" data-en="Best case: ~12 months" data-es="Mejor caso: ~12 meses">Best case: ~12 months</div>
+        <div class="ts-label" data-en="Typical: 14–24 months (+ 3yr to 191)" data-es="Típico: 14–24 meses (+ 3 años para 191)">Typical: 14–24 months (+ 3yr to 191)</div>
+      </div>
+      <div class="ts-card">
+        <div class="ts-icon">⏳</div>
+        <div class="ts-val" style="color:var(--amber)">VAC</div>
+        <div class="ts-label" data-en="Skills assessment" data-es="Evaluación de habilidades">Skills assessment</div>
+        <div class="ts-label" data-en="4–24 weeks (biggest variable)" data-es="4–24 semanas (mayor variable)">4–24 weeks (biggest variable)</div>
+      </div>
+    </div>
+
+    <div class="callout teal" style="margin-top:20px">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body" data-en="<strong>The biggest time variable is the SkillSelect wait.</strong> At 90 points for 189, you may be invited within months. At 80 points, you could wait years or never receive a 189 invitation — which is why state nomination (190/491) is worth seriously considering." data-es="<strong>La mayor variable de tiempo es la espera en SkillSelect.</strong> Con 90 puntos para el 189, podrías ser invitado en meses. Con 80 puntos, podrías esperar años o nunca recibir una invitación para el 189, por lo que vale la pena considerar seriamente la nominación estatal (190/491)."><strong>The biggest time variable is the SkillSelect wait.</strong> At 90 pts for 189, you may be invited within months. At 80 pts, you could wait years — which is why state nomination (190/491) is worth seriously considering.</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-brand">Mi<span>gro</span></div>
+  <div data-en="Australian immigration guidance — independent &amp; bilingual." data-es="Orientación sobre inmigración australiana — independiente y bilingüe.">Australian immigration guidance — independent &amp; bilingual.</div>
+  <div style="margin-top:4px" data-en="Not legal advice. Always verify with Home Affairs." data-es="No es asesoramiento legal. Siempre verifica con Home Affairs.">Not legal advice. Always verify with Home Affairs.</div>
+</footer>
+
+<script>
+/* ── LANG ── */
+let lang = 'en';
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('[data-en]').forEach(el => {
+    el.innerHTML = el.getAttribute('data-' + l);
+  });
+  document.getElementById('btn-en').classList.toggle('active', l==='en');
+  document.getElementById('btn-es').classList.toggle('active', l==='es');
+  updateProgress();
+}
+
+/* ── localStorage safe ── */
+function lsGet(key, fallback) { try { return JSON.parse(localStorage.getItem(key) || fallback); } catch(e) { return JSON.parse(fallback); } }
+function lsSet(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {} }
+
+/* ── TRACK ── */
+let track = lsGet('migro_roadmap_track', '"189"');
+const ALL_STEPS = ['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11','s12','s13','s14','s15','s16','s17','s18','s19'];
+const STEPS_491_ONLY = ['s10','s19'];
+const STEPS_NO_189  = ['s10','s19'];
+
+function setTrack(t) {
+  track = t;
+  lsSet('migro_roadmap_track', t);
+  document.getElementById('btn-189').className = 'track-btn' + (t==='189' ? ' active-189' : '');
+  document.getElementById('btn-190').className = 'track-btn' + (t==='190' ? ' active-190' : '');
+  document.getElementById('btn-491').className = 'track-btn' + (t==='491' ? ' active-491' : '');
+
+  // s10 = state nomination (show for 190 + 491, hide for 189)
+  // s19 = 191 PR step (show for 491 only)
+  document.getElementById('s10').classList.toggle('hidden-189', t === '189');
+  document.getElementById('s19').classList.toggle('hidden-189', t !== '491');
+
+  updateProgress();
+}
+
+/* ── STEPS ── */
+let doneSteps = new Set(lsGet('migro_roadmap_done', '[]'));
+
+function toggleStep(id) {
+  if (doneSteps.has(id)) { doneSteps.delete(id); }
+  else { doneSteps.add(id); }
+  lsSet('migro_roadmap_done', JSON.stringify([...doneSteps]));
+  renderSteps();
+  updateProgress();
+}
+
+function renderSteps() {
+  ALL_STEPS.forEach(id => {
+    const card = document.getElementById(id);
+    if (!card) return;
+    const isDone = doneSteps.has(id);
+    card.classList.toggle('done', isDone);
+    const circle = document.getElementById(id + '-circle');
+    if (circle) circle.innerHTML = isDone ? '' : '○';
+  });
+}
+
+function getVisibleSteps() {
+  return ALL_STEPS.filter(id => {
+    const card = document.getElementById(id);
+    if (!card) return false;
+    if (card.classList.contains('hidden-189')) return false;
+    return true;
+  });
+}
+
+function updateProgress() {
+  const visible = getVisibleSteps();
+  const total = visible.length;
+  const done  = visible.filter(id => doneSteps.has(id)).length;
+  const pct   = total ? Math.round(done / total * 100) : 0;
+
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-count').textContent = `${done} / ${total} ${lang==='es'?'pasos':'steps'}`;
+
+  const estEl = document.getElementById('progress-est');
+  if (pct === 100) {
+    estEl.innerHTML = `<strong>🎉 ${lang==='es'?'¡Proceso completo! Bien hecho.':'All steps complete! Well done.'}</strong>`;
+  } else if (done === 0) {
+    estEl.innerHTML = lang==='es'
+      ? `Marca los pasos como completados para seguir tu progreso.`
+      : `Tick steps as you complete them to track your progress.`;
+  } else {
+    const remaining = total - done;
+    estEl.innerHTML = lang==='es'
+      ? `<strong>${remaining} paso(s) restante(s).</strong> El plazo estimado depende de la experiencia individual.`
+      : `<strong>${remaining} step(s) remaining.</strong> Estimated time to completion depends on individual circumstances.`;
+  }
+}
+
+function resetProgress() {
+  if (!confirm(lang==='es' ? '¿Reiniciar todo el progreso?' : 'Reset all progress?')) return;
+  doneSteps = new Set();
+  lsSet('migro_roadmap_done', '[]');
+  renderSteps();
+  updateProgress();
+}
+
+/* ── INIT ── */
+(function init() {
+  renderSteps();
+  setTrack(track);
+})();
+
+/* ── FADE-UP ── */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+}, { threshold: 0.08 });
+document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
