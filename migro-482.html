@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Migro — Subclass 482 TSS Visa Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black:#0a0a0a; --white:#ffffff;
+    --gray-50:#f9fafb; --gray-100:#f3f4f6; --gray-200:#e5e7eb;
+    --gray-300:#d1d5db; --gray-400:#9ca3af; --gray-500:#6b7280;
+    --gray-600:#4b5563; --gray-700:#374151; --gray-800:#1f2937;
+    --green:#16a34a;  --green-bg:#f0fdf4;  --green-border:#bbf7d0;
+    --amber:#d97706;  --amber-bg:#fffbeb;  --amber-border:#fde68a;
+    --red:#dc2626;    --red-bg:#fef2f2;    --red-border:#fecaca;
+    --blue:#2563eb;   --blue-bg:#eff6ff;   --blue-border:#bfdbfe;
+    --purple:#7c3aed; --purple-bg:#f5f3ff; --purple-border:#ddd6fe;
+    --teal:#0d9488;   --teal-bg:#f0fdfa;   --teal-border:#99f6e4;
+    --orange:#ea580c; --orange-bg:#fff7ed; --orange-border:#fed7aa;
+  }
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior:smooth; }
+  body { font-family:'Inter',sans-serif; color:var(--gray-800); background:var(--gray-50); line-height:1.6; }
+
+  nav { position:sticky; top:0; z-index:100; background:var(--black); color:var(--white); display:flex; align-items:center; justify-content:space-between; padding:0 24px; height:56px; }
+  .nav-brand { font-family:'Playfair Display',serif; font-size:1.3rem; letter-spacing:-.5px; }
+  .nav-brand span { color:var(--amber); }
+  .nav-right { display:flex; align-items:center; gap:16px; }
+  .nav-back { color:var(--gray-300); text-decoration:none; font-size:.85rem; display:flex; align-items:center; gap:6px; transition:color .2s; }
+  .nav-back:hover { color:var(--white); }
+  .lang-btn { background:none; border:1px solid var(--gray-600); color:var(--gray-300); padding:4px 10px; border-radius:4px; font-size:.78rem; cursor:pointer; transition:all .2s; font-family:inherit; }
+  .lang-btn:hover,.lang-btn.active { background:var(--white); color:var(--black); border-color:var(--white); }
+
+  .hero { background:var(--black); color:var(--white); padding:56px 24px 48px; text-align:center; }
+  .hero-tag { display:inline-block; background:var(--orange-bg); color:var(--orange); border:1px solid var(--orange-border); padding:4px 12px; border-radius:20px; font-size:.78rem; font-weight:600; letter-spacing:.5px; text-transform:uppercase; margin-bottom:16px; }
+  .hero h1 { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3rem); line-height:1.15; margin-bottom:16px; }
+  .hero h1 span { color:var(--amber); }
+  .hero p { color:var(--gray-300); font-size:1.05rem; max-width:620px; margin:0 auto; }
+
+  .container { max-width:960px; margin:0 auto; padding:0 24px; }
+  .section { padding:48px 0; }
+  .section-title { font-family:'Playfair Display',serif; font-size:1.6rem; margin-bottom:8px; }
+  .section-sub { color:var(--gray-500); margin-bottom:28px; font-size:.95rem; }
+
+  /* STREAM CARDS */
+  .stream-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; }
+  .stream-card { background:var(--white); border-radius:12px; overflow:hidden; border:2px solid var(--gray-200); transition:box-shadow .2s; }
+  .stream-card:hover { box-shadow:0 4px 20px rgba(0,0,0,.08); }
+  .stream-head { padding:16px 20px; }
+  .stream-head.sh-blue   { background:var(--blue-bg);   border-bottom:2px solid var(--blue-border); }
+  .stream-head.sh-green  { background:var(--green-bg);  border-bottom:2px solid var(--green-border); }
+  .stream-head.sh-purple { background:var(--purple-bg); border-bottom:2px solid var(--purple-border); }
+  .stream-name { font-weight:700; font-size:1rem; }
+  .stream-name.sc-blue   { color:var(--blue); }
+  .stream-name.sc-green  { color:var(--green); }
+  .stream-name.sc-purple { color:var(--purple); }
+  .stream-sub { font-size:.78rem; color:var(--gray-500); margin-top:2px; }
+  .stream-body { padding:16px 20px; }
+  .stream-row { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed var(--gray-100); font-size:.84rem; gap:12px; }
+  .stream-row:last-child { border:none; padding-bottom:0; }
+  .stream-lbl { color:var(--gray-500); flex-shrink:0; }
+  .stream-val { font-weight:500; text-align:right; }
+  .pill { display:inline-block; padding:2px 8px; border-radius:20px; font-size:.7rem; font-weight:700; }
+  .pill-green  { background:var(--green-bg);  color:var(--green); }
+  .pill-amber  { background:var(--amber-bg);  color:var(--amber); }
+  .pill-blue   { background:var(--blue-bg);   color:var(--blue); }
+  .pill-purple { background:var(--purple-bg); color:var(--purple); }
+  .pill-orange { background:var(--orange-bg); color:var(--orange); }
+  .pill-red    { background:var(--red-bg);     color:var(--red); }
+
+  /* PATHWAY COMPARE */
+  .pathway-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media(max-width:600px){ .pathway-grid { grid-template-columns:1fr; } }
+  .path-card { background:var(--white); border:2px solid var(--gray-200); border-radius:12px; overflow:hidden; }
+  .path-head { padding:16px 20px; }
+  .path-head.ph-orange { background:var(--orange-bg); border-bottom:2px solid var(--orange-border); }
+  .path-head.ph-blue   { background:var(--blue-bg);   border-bottom:2px solid var(--blue-border); }
+  .path-title { font-weight:700; font-size:1rem; }
+  .path-title.pt-orange { color:var(--orange); }
+  .path-title.pt-blue   { color:var(--blue); }
+  .path-sub { font-size:.78rem; color:var(--gray-500); margin-top:2px; }
+  .path-body { padding:16px 20px; }
+  .path-row { display:flex; gap:10px; padding:7px 0; border-bottom:1px solid var(--gray-100); font-size:.84rem; align-items:flex-start; }
+  .path-row:last-child { border:none; padding-bottom:0; }
+  .path-icon { flex-shrink:0; width:20px; text-align:center; }
+  .path-text { color:var(--gray-700); }
+  .pro { color:var(--green); }
+  .con { color:var(--red); }
+
+  /* PROCESS STEPS */
+  .steps { display:flex; flex-direction:column; }
+  .step { display:flex; gap:20px; padding-bottom:28px; }
+  .step:last-child { padding-bottom:0; }
+  .step-left { display:flex; flex-direction:column; align-items:center; flex-shrink:0; width:44px; }
+  .step-num { width:44px; height:44px; border-radius:50%; background:var(--black); color:var(--white); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1rem; flex-shrink:0; }
+  .step-line { flex:1; width:2px; background:var(--gray-200); margin-top:4px; }
+  .step:last-child .step-line { display:none; }
+  .step-body { padding-top:10px; }
+  .step-title { font-weight:600; font-size:1rem; margin-bottom:4px; }
+  .step-desc { color:var(--gray-600); font-size:.9rem; line-height:1.6; }
+  .step-tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:.72rem; font-weight:600; margin-left:6px; vertical-align:middle; }
+  .tag-emp  { background:var(--orange-bg); color:var(--orange); }
+  .tag-gov  { background:var(--blue-bg); color:var(--blue); }
+
+  /* PR PATHWAY VISUAL */
+  .pr-path { display:flex; align-items:center; gap:0; flex-wrap:wrap; margin:16px 0; }
+  .pr-node { background:var(--white); border:2px solid var(--gray-300); border-radius:10px; padding:12px 16px; text-align:center; min-width:100px; }
+  .pr-node.active { border-color:var(--orange); background:var(--orange-bg); }
+  .pr-node.dest   { border-color:var(--green);  background:var(--green-bg);  }
+  .pr-node-visa { font-weight:700; font-size:1rem; }
+  .pr-node.active .pr-node-visa { color:var(--orange); }
+  .pr-node.dest   .pr-node-visa { color:var(--green); }
+  .pr-node-name { font-size:.7rem; color:var(--gray-500); margin-top:2px; }
+  .pr-arrow { font-size:1.3rem; color:var(--gray-300); padding:0 8px; }
+  .pr-req   { font-size:.72rem; color:var(--gray-500); text-align:center; margin-top:4px; }
+
+  /* TABLE */
+  .table-wrap { overflow-x:auto; border-radius:10px; border:1px solid var(--gray-200); background:var(--white); }
+  table { width:100%; border-collapse:collapse; font-size:.85rem; }
+  thead { background:var(--gray-800); color:var(--white); }
+  th { padding:11px 14px; text-align:left; font-weight:600; font-size:.78rem; text-transform:uppercase; letter-spacing:.4px; white-space:nowrap; }
+  td { padding:10px 14px; border-bottom:1px solid var(--gray-100); vertical-align:middle; }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:var(--gray-50); }
+
+  /* TIPS */
+  .tips-list { display:flex; flex-direction:column; gap:12px; }
+  .tip { background:var(--white); border:1px solid var(--gray-200); border-radius:10px; padding:16px 18px; display:flex; gap:14px; align-items:flex-start; }
+  .tip-num { background:var(--black); color:var(--white); width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.78rem; font-weight:700; flex-shrink:0; margin-top:2px; }
+  .tip-title { font-weight:600; font-size:.9rem; margin-bottom:3px; }
+  .tip-body  { font-size:.85rem; color:var(--gray-600); line-height:1.6; }
+
+  /* CALLOUT */
+  .callout { border-radius:10px; padding:16px 18px; margin-bottom:20px; display:flex; gap:12px; }
+  .callout.blue   { background:var(--blue-bg);   border:1px solid var(--blue-border); }
+  .callout.amber  { background:var(--amber-bg);  border:1px solid var(--amber-border); }
+  .callout.orange { background:var(--orange-bg); border:1px solid var(--orange-border); }
+  .callout.green  { background:var(--green-bg);  border:1px solid var(--green-border); }
+  .callout-icon { font-size:1.1rem; flex-shrink:0; margin-top:2px; }
+  .callout-body { font-size:.875rem; line-height:1.6; color:var(--gray-700); }
+  .callout-body strong { color:var(--gray-800); }
+  .callout-body a { color:var(--blue); text-decoration:none; }
+
+  /* ACC */
+  .acc-list { display:flex; flex-direction:column; gap:8px; }
+  .acc-item { background:var(--white); border:1px solid var(--gray-200); border-radius:10px; overflow:hidden; }
+  .acc-head { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; cursor:pointer; user-select:none; gap:12px; }
+  .acc-head:hover { background:var(--gray-50); }
+  .acc-title { font-weight:600; font-size:.95rem; display:flex; align-items:center; gap:10px; }
+  .acc-arrow { color:var(--gray-400); font-size:1.1rem; transition:transform .3s; flex-shrink:0; }
+  .acc-item.open .acc-arrow { transform:rotate(180deg); }
+  .acc-body { max-height:0; overflow:hidden; transition:max-height .4s cubic-bezier(.4,0,.2,1); }
+  .acc-item.open .acc-body { max-height:2000px; }
+  .acc-content { padding:0 20px 20px; color:var(--gray-700); font-size:.9rem; line-height:1.7; }
+  .acc-content ul { padding-left:20px; margin-top:8px; }
+  .acc-content li { margin-bottom:6px; }
+  .acc-content strong { color:var(--gray-800); }
+  .acc-content a { color:var(--blue); text-decoration:none; }
+  .acc-content a:hover { text-decoration:underline; }
+
+  .fade-up { opacity:0; transform:translateY(24px); transition:opacity .5s, transform .5s; }
+  .fade-up.visible { opacity:1; transform:none; }
+
+  footer { background:var(--black); color:var(--gray-400); text-align:center; padding:28px 24px; font-size:.82rem; margin-top:48px; }
+  .footer-brand { font-family:'Playfair Display',serif; color:var(--white); font-size:1rem; margin-bottom:6px; }
+  .footer-brand span { color:var(--amber); }
+
+  @media(max-width:600px){
+    .hero { padding:40px 16px 32px; }
+    .container { padding:0 16px; }
+    th,td { padding:8px 10px; }
+    .pr-path { gap:4px; }
+    .pr-arrow { padding:0 4px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">Mi<span>gro</span></div>
+  <div class="nav-right">
+    <a href="migro-dashboard.html" class="nav-back">⊞ <span data-en="Dashboard" data-es="Inicio">Dashboard</span></a>
+    <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" id="btn-es" onclick="setLang('es')">ES</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag">Subclass 482 · TSS</div>
+  <h1 data-en="Employer-sponsored <span style='color:var(--amber)'>pathway</span>" data-es="Vía de <span style='color:var(--amber)'>patrocinio laboral</span>">Employer-sponsored <span style="color:var(--amber)">pathway</span></h1>
+  <p data-en="The Temporary Skill Shortage visa lets employers sponsor skilled workers when they can't find Australians for the role. It's also a common stepping stone to permanent residence." data-es="La visa de Escasez Temporal de Habilidades permite a los empleadores patrocinar trabajadores calificados cuando no pueden encontrar australianos para el puesto. También es un peldaño común hacia la residencia permanente.">The Temporary Skill Shortage visa lets employers sponsor skilled workers when they can't find Australians for the role — and is a major stepping stone to permanent residence.</p>
+</div>
+
+<div class="container">
+
+  <!-- WHAT IS 482 -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="What is the subclass 482?" data-es="¿Qué es la subclase 482?">What is the subclass 482?</h2>
+    <p class="section-sub" data-en="Australia's main employer-sponsored temporary work visa. Requires a sponsoring employer and an approved occupation." data-es="La principal visa temporal de trabajo patrocinada por empleadores de Australia. Requiere un empleador patrocinador y una ocupación aprobada.">Australia's main employer-sponsored temporary work visa. Requires a sponsoring employer and an approved occupation.</p>
+
+    <div class="callout orange">
+      <div class="callout-icon">🏢</div>
+      <div class="callout-body" data-en="Unlike the 189/190/491 skilled independent visas, the <strong>482 requires an employer to sponsor you</strong>. You cannot apply for it on your own. Your employer must be an approved sponsor, your occupation must be on an eligible list, and your salary must meet the Temporary Skilled Migration Income Threshold (TSMIT)." data-es="A diferencia de las visas independientes calificadas 189/190/491, <strong>la 482 requiere que un empleador te patrocine</strong>. No puedes solicitarla por tu cuenta. Tu empleador debe ser un patrocinador aprobado, tu ocupación debe estar en una lista elegible y tu salario debe cumplir el Umbral de Ingresos de Migración Calificada Temporal (TSMIT).">Unlike the 189/190/491 skills-based visas, the <strong>482 requires an employer to sponsor you</strong>. Your employer must be an approved sponsor, your occupation must be eligible, and your salary must meet the TSMIT (currently AUD $73,150).</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px">
+      <div style="background:var(--white);border:1px solid var(--gray-200);border-radius:10px;padding:18px">
+        <div style="font-size:1.4rem;margin-bottom:8px">🤝</div>
+        <div style="font-weight:600;font-size:.9rem;margin-bottom:4px" data-en="Employer must sponsor" data-es="El empleador debe patrocinar">Employer must sponsor</div>
+        <div style="font-size:.83rem;color:var(--gray-600)" data-en="You cannot self-sponsor. Your employer applies to become an approved sponsor first." data-es="No puedes patrocinarte a ti mismo. Tu empleador solicita primero ser patrocinador aprobado.">You cannot self-sponsor. Your employer applies to become an approved sponsor first.</div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--gray-200);border-radius:10px;padding:18px">
+        <div style="font-size:1.4rem;margin-bottom:8px">📋</div>
+        <div style="font-weight:600;font-size:.9rem;margin-bottom:4px" data-en="Occupation must be eligible" data-es="Ocupación debe ser elegible">Occupation must be eligible</div>
+        <div style="font-size:.83rem;color:var(--gray-600)" data-en="Occupation must be on the MLTSSL (medium-term stream) or STSOL (short-term stream)." data-es="La ocupación debe estar en el MLTSSL (modalidad de mediano plazo) o STSOL (modalidad de corto plazo).">Must be on MLTSSL (medium-term) or STSOL (short-term stream).</div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--gray-200);border-radius:10px;padding:18px">
+        <div style="font-size:1.4rem;margin-bottom:8px">💵</div>
+        <div style="font-weight:600;font-size:.9rem;margin-bottom:4px" data-en="TSMIT salary threshold" data-es="Umbral salarial TSMIT">TSMIT salary threshold</div>
+        <div style="font-size:.83rem;color:var(--gray-600)" data-en="Must be paid at least the TSMIT: AUD $73,150 / year (2024–25). Updated annually on 1 July." data-es="Debe pagarse al menos el TSMIT: AUD $73,150 / año (2024–25). Actualizado anualmente el 1 de julio.">Must earn at least AUD $73,150/year (2024–25 TSMIT), updated 1 July each year.</div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--gray-200);border-radius:10px;padding:18px">
+        <div style="font-size:1.4rem;margin-bottom:8px">🌍</div>
+        <div style="font-weight:600;font-size:.9rem;margin-bottom:4px" data-en="Labour Market Testing" data-es="Prueba del Mercado Laboral">Labour Market Testing</div>
+        <div style="font-size:.83rem;color:var(--gray-600)" data-en="Most sponsors must prove they tried to hire an Australian first (job ads, etc.) before sponsoring overseas workers." data-es="La mayoría de los patrocinadores deben demostrar que intentaron contratar a un australiano primero (anuncios de trabajo, etc.) antes de patrocinar a trabajadores del extranjero.">Most sponsors must prove they tried to hire an Australian first before sponsoring overseas workers.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 STREAMS -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="The three streams" data-es="Las tres modalidades">The three streams</h2>
+    <p class="section-sub" data-en="Which stream you use depends on your occupation and your employer's relationship with the government." data-es="Qué modalidad usas depende de tu ocupación y la relación de tu empleador con el gobierno.">Which stream you use depends on your occupation and your employer's relationship with the government.</p>
+
+    <div class="stream-grid">
+      <!-- SHORT-TERM -->
+      <div class="stream-card">
+        <div class="stream-head sh-amber">
+          <div class="stream-name" style="color:var(--amber)" data-en="Short-term stream" data-es="Modalidad de corto plazo">Short-term stream</div>
+          <div class="stream-sub" data-en="STSOL occupations only" data-es="Solo ocupaciones STSOL">STSOL occupations only</div>
+        </div>
+        <div class="stream-body">
+          <div class="stream-row"><span class="stream-lbl" data-en="Duration" data-es="Duración">Duration</span><span class="stream-val" data-en="Up to 2 years (+ 2 yr renewal)" data-es="Hasta 2 años (+ renovación 2 años)">Up to 2 years (+ 2 yr renewal)</span></div>
+          <div class="stream-row"><span class="stream-lbl" data-en="Max. stay" data-es="Estadía máx.">Max. stay</span><span class="stream-val" data-en="4 years total" data-es="4 años en total">4 years total</span></div>
+          <div class="stream-row"><span class="stream-lbl" data-en="PR pathway" data-es="Vía a residencia">PR pathway</span><span class="stream-val"><span class="pill pill-red" data-en="Limited" data-es="Limitada">Limited</span></span></div>
+          <div class="stream-row"><span class="stream-lbl" data-en="Occupation list" data-es="Lista de ocupaciones">Occupation list</span><span class="stream-val">STSOL</span></div>
+          <div class="stream-row"><span class="stream-lbl" data-en="Change employer?" data-es="¿Cambiar empleador?">Change employer?</span><span class="stream-val" data-en="Requires new nomination" data-es="Requiere nueva nominación">Requires new nomination</span></div>
+        </div>
+      </div>
+
+      <!-- MEDIUM-TERM -->
+      <div class="stream-card" style="border-color:var(--blue)">
+        <div class="stream-head sh-blue">
+          <div class="stream-name sc-blue" data-en="Medium-term stream" data-es="Modalidad de mediano plazo">Medium-term stream</div>
+          <div class="stream-sub" data-en="MLTSSL occupations — pathway to PR" data-es="Ocupaciones MLTSSL — vía a residencia permanente">MLTSSL occupations — pathway to PR</div>
+        </div>
+        <div class="stream-body">
+          <div class="stream-row"><span class="stream-lbl" data-en="Duration" data-es="Duración">Duration</span><span class="stream-val" data-en="Up to 4 years" data-es="Hasta 4 años">Up to 4 years</span></div>
+          <div class="stream-row"><span class="stream-lbl" data-en="Max. stay" data-es="Estadía máx.">Max. stay</span><span class="stream-val" data-en="Up to 4 years per grant" data-es="Hasta 4 años por otorgamiento">Up to 4 years per grant</span></div>
+          <div class="stream-row"><span class="stream-lbl" data-en="PR pathway" data-es="Vía a residencia">PR pathway</span><span class="stream-val"><span class="pill pill-green" data-en="Yes — 186 or 191/189/190" data-es="Sí — 186 o 191/189/190">Yes — 186 or 189/190</span></span></div>
+          <div class="stream-row"><span class="stream-lbl" data-en="Occupation list" data-es="Lista de ocupaciones">Occupation list</span><span class="stream-val">MLTSSL</span></div>
+          <div class="stream-row"><span class="stream-lbl" data-en="Change employer?" data-es="¿Cambiar empleador?">Change employer?</span><span class="stream-val" data-en="Yes, with new nomination" data-es="Sí, con nueva nominación">Yes, with new nomination</span></div>
+        </div>
+      </div>
+
+      <!-- LABOUR AGREEMENT -->
+      <div class="stream-card" style="border-color:var(--purple)">
+        <div class="stream-head sh-purple">
+          <div class="stream-name sc-purple" data-en="Labour agreement stream" data-es="Modalidad de acuerdo laboral">Labour agreement stream</div>
+          <div class="stream-sub" data-en="Special industry arrangements" data-es="Acuerdos especiales por industria">Special industry arrangements</div>
+        </div>
+        <div class="stream-body">
+          <div class="stream-row"><span class="stream-lbl" data-en="Duration" data-es="Duración">Duration</span><span class="stream-val" data-en="Up to 4 years" data-es="Hasta 4 años">Up to 4 years</span></div>
+          <div class="stream-row"><span class="stream-lbl" data-en="Max. stay" data-es="Estadía máx.">Max. stay</span><span class="stream-val" data-en="Varies by agreement" data-es="Varía según el acuerdo">Varies by agreement</span></div>
+          <div class="stream-row"><span class="stream-lbl" data-en="PR pathway" data-es="Vía a residencia">PR pathway</span><span class="stream-val"><span class="pill pill-purple" data-en="Possible via 186" data-es="Posible vía 186">Possible via 186</span></span></div>
+          <div class="stream-row"><span class="stream-lbl" data-en="Who uses this?" data-es="¿Quién lo usa?">Who uses this?</span><span class="stream-val" data-en="Mining, meat processing, on-hire, etc." data-es="Minería, procesamiento de carne, etc.">Mining, meat processing, on-hire</span></div>
+          <div class="stream-row"><span class="stream-lbl" data-en="Employer requirement" data-es="Requisito del empleador">Employer requirement</span><span class="stream-val" data-en="Must have a signed labour agreement with Dept." data-es="Debe tener un acuerdo laboral firmado con el Dept.">Must have signed labour agreement</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW THE PROCESS WORKS -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="How the 482 process works" data-es="Cómo funciona el proceso de la 482">How the 482 process works</h2>
+    <p class="section-sub" data-en="Three separate stages — employer, then you, then the Department." data-es="Tres etapas separadas: empleador, luego tú, luego el Departamento.">Three separate stages — employer, then you, then the Department.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-left"><div class="step-num" style="background:var(--orange)">1</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <div class="step-title" data-en="Employer becomes an approved sponsor" data-es="El empleador se convierte en patrocinador aprobado">Employer becomes an approved sponsor <span class="step-tag tag-emp" data-en="Employer" data-es="Empleador">Employer</span></div>
+          <div class="step-desc" data-en="Your employer lodges a Standard Business Sponsorship (SBS) application with the Department of Home Affairs. This costs AUD $420 and takes 1–4 weeks. Many larger companies are already approved sponsors. The employer commits to meeting sponsorship obligations — paying fair wages, not recovering visa costs from the worker, notifying the Department of changes, etc." data-es="Tu empleador presenta una solicitud de Patrocinio Comercial Estándar (SBS) ante el Departamento de Home Affairs. Esto cuesta AUD $420 y tarda 1–4 semanas. Muchas empresas grandes ya son patrocinadores aprobados. El empleador se compromete a cumplir las obligaciones de patrocinio.">Your employer lodges a Standard Business Sponsorship (SBS) application. Costs AUD $420, takes 1–4 weeks. Many larger companies are already approved. The employer commits to paying fair wages and meeting all sponsorship obligations.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-num" style="background:var(--orange)">2</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <div class="step-title" data-en="Employer nominates the position" data-es="El empleador nomina el puesto">Employer nominates the position <span class="step-tag tag-emp" data-en="Employer" data-es="Empleador">Employer</span></div>
+          <div class="step-desc" data-en="The employer submits a nomination application identifying the specific position and you as the proposed worker. They must prove: the position is genuine, they couldn't fill it with an Australian (Labour Market Testing — usually 2+ weeks of advertising), the salary meets TSMIT, and the occupation is on the eligible list." data-es="El empleador presenta una solicitud de nominación identificando el puesto específico y a ti como el trabajador propuesto. Deben demostrar: que el puesto es genuino, que no pudieron cubrirlo con un australiano (Prueba del Mercado Laboral), que el salario cumple el TSMIT y que la ocupación está en la lista elegible.">Employer nominates the specific position and you as the proposed worker. Must prove: genuine position, Labour Market Testing completed (advertising for 2+ weeks), salary meets TSMIT, occupation is eligible.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-num" style="background:var(--blue)">3</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <div class="step-title" data-en="You lodge your visa application" data-es="Presentas tu solicitud de visa">You lodge your visa application <span class="step-tag tag-gov" data-en="Applicant" data-es="Solicitante">Applicant</span></div>
+          <div class="step-desc" data-en="Once the nomination is approved (or lodged, depending on timing), you submit your visa application via ImmiAccount. You'll need: passport, skills assessment (for most occupations and the medium-term stream), English test results (Competent minimum), 2 years of relevant work experience, and health/character checks." data-es="Una vez aprobada la nominación, presentas tu solicitud de visa a través de ImmiAccount. Necesitarás: pasaporte, evaluación de habilidades (para la mayoría de las ocupaciones en la modalidad de mediano plazo), resultados del examen de inglés (mínimo Competente), 2 años de experiencia laboral relevante y verificaciones de salud y antecedentes.">Submit visa application via ImmiAccount. Requirements: passport, skills assessment (medium-term stream), Competent English, 2 years of relevant work experience, health and character checks.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-num" style="background:var(--blue)">4</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <div class="step-title" data-en="Decision & visa grant" data-es="Decisión y otorgamiento de visa">Decision & visa grant <span class="step-tag tag-gov" data-en="Department" data-es="Departamento">Department</span></div>
+          <div class="step-desc" data-en="The Department assesses both the nomination and visa application together. Typical processing: 3–6 months for medium-term stream, 2–4 months for short-term. Once granted, you can commence work for the sponsoring employer in the nominated role only." data-es="El Departamento evalúa tanto la nominación como la solicitud de visa juntas. Procesamiento típico: 3–6 meses para la modalidad de mediano plazo, 2–4 meses para la de corto plazo. Una vez otorgada, puedes comenzar a trabajar para el empleador patrocinador solo en el rol nominado.">Processing: 3–6 months (medium-term), 2–4 months (short-term). Once granted, you work for the sponsoring employer in the nominated role only.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PR PATHWAYS -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="Pathways to permanent residence" data-es="Vías hacia la residencia permanente">Pathways to permanent residence</h2>
+    <p class="section-sub" data-en="The 482 is one of the most common ways to eventually obtain Australian PR through an employer." data-es="La 482 es una de las formas más comunes de obtener eventualmente la residencia permanente australiana a través de un empleador.">The 482 is one of the most common routes to Australian PR through an employer.</p>
+
+    <!-- 482 → 186 -->
+    <div style="margin-bottom:28px">
+      <h3 style="font-size:1.05rem;font-weight:600;margin-bottom:12px;color:var(--gray-800)" data-en="Route 1: 482 → 186 (Employer Nomination Scheme)" data-es="Ruta 1: 482 → 186 (Esquema de Nominación del Empleador)">Route 1: 482 → 186 (Employer Nomination Scheme)</h3>
+      <div class="pr-path">
+        <div class="pr-node active"><div class="pr-node-visa">482</div><div class="pr-node-name">TSS</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center">
+          <div class="pr-arrow">→</div>
+          <div class="pr-req" data-en="3 yrs in role (MLTSSL)" data-es="3 años en el rol (MLTSSL)">3 yrs in role (MLTSSL)</div>
+        </div>
+        <div class="pr-node dest"><div class="pr-node-visa">186</div><div class="pr-node-name" data-en="PR — ENS" data-es="RP — ENS">PR — ENS</div></div>
+      </div>
+      <div class="callout blue" style="margin-top:12px">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body" data-en="The <strong>Transition Stream</strong> of the 186 ENS visa requires you to have worked for the sponsoring employer for at least 3 years in the nominated occupation (on a 482 or its predecessor the 457). Your employer must nominate you for the 186, and your occupation must be on the MLTSSL. This is the most common path to PR for 482 holders." data-es="La <strong>Modalidad de Transición</strong> de la visa 186 ENS requiere que hayas trabajado para el empleador patrocinador durante al menos 3 años en la ocupación nominada (con una 482 o su predecesora la 457). Tu empleador debe nominarte para la 186 y tu ocupación debe estar en el MLTSSL.">The <strong>Transition Stream</strong> of the 186 ENS requires 3 years working for the same employer in the nominated occupation (on a 482 or its predecessor, the 457). Occupation must be on MLTSSL. Most common path to PR for 482 holders.</div>
+      </div>
+    </div>
+
+    <!-- 482 → points test -->
+    <div style="margin-bottom:28px">
+      <h3 style="font-size:1.05rem;font-weight:600;margin-bottom:12px;color:var(--gray-800)" data-en="Route 2: 482 + Australian work experience → 189/190/491" data-es="Ruta 2: 482 + experiencia laboral australiana → 189/190/491">Route 2: 482 + Australian work experience → 189/190/491</h3>
+      <div class="pr-path">
+        <div class="pr-node active"><div class="pr-node-visa">482</div><div class="pr-node-name">TSS</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center">
+          <div class="pr-arrow">→</div>
+          <div class="pr-req" data-en="Work in AU → earn points" data-es="Trabajar en AU → ganar puntos">Work in AU → earn pts</div>
+        </div>
+        <div class="pr-node" style="border-color:var(--blue);background:var(--blue-bg)"><div class="pr-node-visa" style="color:var(--blue)">EOI</div><div class="pr-node-name">SkillSelect</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center">
+          <div class="pr-arrow">→</div>
+          <div class="pr-req" data-en="Get invited" data-es="Ser invitado">Get invited</div>
+        </div>
+        <div class="pr-node dest"><div class="pr-node-visa">189/190</div><div class="pr-node-name">PR</div></div>
+      </div>
+      <div class="callout blue" style="margin-top:12px">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body" data-en="Working in Australia on a 482 earns you <strong>Australian skilled work experience points</strong> (up to 20 pts for 8+ years). This can dramatically improve your SkillSelect points total, making a 189/190/491 invitation more realistic. Many people combine the 482 pathway with a points-tested visa strategy." data-es="Trabajar en Australia con una 482 te da <strong>puntos por experiencia laboral calificada australiana</strong> (hasta 20 pts por 8+ años). Esto puede mejorar dramáticamente tu puntaje total en SkillSelect, haciendo más realista una invitación para 189/190/491.">Working in Australia on a 482 earns <strong>Australian skilled work experience points</strong> (up to 20 pts for 8+ years). This significantly improves your SkillSelect score. Many people combine both strategies simultaneously.</div>
+      </div>
+    </div>
+
+    <!-- COMPARE -->
+    <h3 style="font-size:1.05rem;font-weight:600;margin-bottom:16px;color:var(--gray-800)" data-en="482 vs points-tested visas — which path suits you?" data-es="482 vs visas por puntaje — ¿qué camino te conviene?">482 vs points-tested visas — which path suits you?</h3>
+    <div class="pathway-grid">
+      <div class="path-card">
+        <div class="path-head ph-orange">
+          <div class="path-title pt-orange" data-en="482 — Employer sponsored" data-es="482 — Patrocinio laboral">482 — Employer sponsored</div>
+          <div class="path-sub" data-en="Good if: you have a job offer or employer willing to sponsor" data-es="Bueno si: tienes oferta de trabajo o empleador dispuesto a patrocinar">Good if: you have a job offer / willing sponsor</div>
+        </div>
+        <div class="path-body">
+          <div class="path-row"><span class="path-icon pro">✓</span><span class="path-text" data-en="Can work in Australia while building points for PR" data-es="Puedes trabajar en Australia mientras construyes puntos para la RP">Can work in Australia while building PR points</span></div>
+          <div class="path-row"><span class="path-icon pro">✓</span><span class="path-text" data-en="No minimum points score required (employer sponsors you)" data-es="No se requiere puntaje mínimo (el empleador te patrocina)">No minimum points score required</span></div>
+          <div class="path-row"><span class="path-icon pro">✓</span><span class="path-text" data-en="Income guaranteed — you must be paid at least TSMIT" data-es="Ingreso garantizado — debes ser pagado al menos el TSMIT">Income guaranteed at TSMIT level</span></div>
+          <div class="path-row"><span class="path-icon pro">✓</span><span class="path-text" data-en="Clear PR path via 186 after 3 years with same employer" data-es="Vía clara a RP vía 186 después de 3 años con el mismo empleador">Clear PR path via 186 after 3 years</span></div>
+          <div class="path-row"><span class="path-icon con">✗</span><span class="path-text" data-en="Tied to one employer — changing jobs is complex" data-es="Vinculado a un empleador — cambiar de trabajo es complejo">Tied to one employer — job changes are complex</span></div>
+          <div class="path-row"><span class="path-icon con">✗</span><span class="path-text" data-en="Employer can withdraw sponsorship if you leave or they have issues" data-es="El empleador puede retirar el patrocinio si te vas o tiene problemas">Employer can withdraw sponsorship</span></div>
+          <div class="path-row"><span class="path-icon con">✗</span><span class="path-text" data-en="Employer must do Labour Market Testing — process takes time" data-es="El empleador debe hacer Prueba del Mercado Laboral — el proceso tarda">LMT process adds time & cost for employer</span></div>
+        </div>
+      </div>
+      <div class="path-card">
+        <div class="path-head ph-blue">
+          <div class="path-title pt-blue" data-en="189/190/491 — Points tested" data-es="189/190/491 — Por puntaje">189/190/491 — Points tested</div>
+          <div class="path-sub" data-en="Good if: you have strong points and can be invited" data-es="Bueno si: tienes buen puntaje y puedes ser invitado">Good if: you have strong points &amp; can be invited</div>
+        </div>
+        <div class="path-body">
+          <div class="path-row"><span class="path-icon pro">✓</span><span class="path-text" data-en="Full freedom — work for any employer, anywhere in Australia" data-es="Plena libertad — trabaja para cualquier empleador, en cualquier lugar de Australia">Full freedom — any employer, anywhere</span></div>
+          <div class="path-row"><span class="path-icon pro">✓</span><span class="path-text" data-en="189 grants immediate PR with no conditions" data-es="La 189 otorga RP inmediata sin condiciones">189 grants immediate unconditional PR</span></div>
+          <div class="path-row"><span class="path-icon pro">✓</span><span class="path-text" data-en="No dependence on a single employer" data-es="Sin dependencia de un solo empleador">No dependence on a single employer</span></div>
+          <div class="path-row"><span class="path-icon con">✗</span><span class="path-text" data-en="Minimum ~80–90 points needed for a realistic invitation chance" data-es="Se necesitan mínimo ~80–90 puntos para una posibilidad realista de invitación">Minimum ~80–90 pts needed for realistic invitation</span></div>
+          <div class="path-row"><span class="path-icon con">✗</span><span class="path-text" data-en="Wait time in SkillSelect pool can be years" data-es="El tiempo de espera en el grupo SkillSelect puede ser años">Wait time in SkillSelect pool can be years</span></div>
+          <div class="path-row"><span class="path-icon con">✗</span><span class="path-text" data-en="Need valid bridging visa while waiting if already in Australia" data-es="Necesitas visa puente válida mientras esperas si ya estás en Australia">Need valid bridging visa if already in Australia</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COSTS TABLE -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="482 visa costs (2025–26)" data-es="Costos de la visa 482 (2025–26)">482 visa costs (2025–26)</h2>
+    <p class="section-sub" data-en="Costs are split between the employer and the worker. It is illegal for employers to recover sponsorship costs from employees." data-es="Los costos se dividen entre el empleador y el trabajador. Es ilegal que los empleadores recuperen los costos de patrocinio de los empleados.">Costs are split between employer and worker. <strong>It is illegal for employers to recover sponsorship or nomination costs from employees.</strong></p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th data-en="Fee item" data-es="Ítem de tarifa">Fee item</th>
+            <th data-en="Who pays" data-es="Quién paga">Who pays</th>
+            <th data-en="Amount (AUD)" data-es="Monto (AUD)">Amount (AUD)</th>
+            <th data-en="Notes" data-es="Notas">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-en="Sponsorship application (SBS)" data-es="Solicitud de patrocinio (SBS)">Sponsorship application (SBS)</td>
+            <td><span class="pill pill-orange" data-en="Employer" data-es="Empleador">Employer</span></td>
+            <td><strong>$420</strong></td>
+            <td data-en="Valid 5 years. One-off unless lapsed." data-es="Válido 5 años. Único a menos que caduque.">Valid 5 years</td>
+          </tr>
+          <tr>
+            <td data-en="Nomination application" data-es="Solicitud de nominación">Nomination application</td>
+            <td><span class="pill pill-orange" data-en="Employer" data-es="Empleador">Employer</span></td>
+            <td><strong>$330</strong></td>
+            <td data-en="Per nomination. Employer cannot charge this to worker." data-es="Por nominación. El empleador no puede cobrar esto al trabajador.">Per nomination. Cannot be passed to worker.</td>
+          </tr>
+          <tr>
+            <td data-en="Skilling Australians Fund (SAF) levy" data-es="Contribución al Fondo de Calificación de Australianos (SAF)">Skilling Australians Fund (SAF) levy</td>
+            <td><span class="pill pill-orange" data-en="Employer" data-es="Empleador">Employer</span></td>
+            <td><strong>$1,200 – $9,000</strong></td>
+            <td data-en="$1,200/yr (small business) or $1,800/yr (large) × visa years. Cannot be charged to worker." data-es="$1,200/año (pequeña empresa) o $1,800/año (grande) × años de visa. No se puede cobrar al trabajador.">$1,200–$1,800/yr × visa length. Cannot be passed to worker.</td>
+          </tr>
+          <tr>
+            <td data-en="Visa application charge — primary (18+)" data-es="Cargo de solicitud de visa — principal (18+)">Visa application charge — primary</td>
+            <td><span class="pill pill-blue" data-en="Applicant" data-es="Solicitante">Applicant</span></td>
+            <td><strong>$3,115</strong></td>
+            <td data-en="Short-term stream" data-es="Modalidad de corto plazo">Short-term stream</td>
+          </tr>
+          <tr>
+            <td data-en="Visa application charge — primary (18+)" data-es="Cargo de solicitud de visa — principal (18+)">Visa application charge — primary</td>
+            <td><span class="pill pill-blue" data-en="Applicant" data-es="Solicitante">Applicant</span></td>
+            <td><strong>$3,115</strong></td>
+            <td data-en="Medium-term stream" data-es="Modalidad de mediano plazo">Medium-term stream</td>
+          </tr>
+          <tr>
+            <td data-en="VAC — partner (18+)" data-es="VAC — pareja (18+)">VAC — partner (18+)</td>
+            <td><span class="pill pill-blue" data-en="Applicant" data-es="Solicitante">Applicant</span></td>
+            <td><strong>$1,560</strong></td>
+            <td data-en="If including partner" data-es="Si incluye pareja">If applicable</td>
+          </tr>
+          <tr>
+            <td data-en="VAC — dependent child" data-es="VAC — hijo dependiente">VAC — dependent child</td>
+            <td><span class="pill pill-blue" data-en="Applicant" data-es="Solicitante">Applicant</span></td>
+            <td><strong>$780</strong></td>
+            <td data-en="Per child under 18" data-es="Por hijo menor de 18">Per child under 18</td>
+          </tr>
+          <tr>
+            <td data-en="Skills assessment (if required)" data-es="Evaluación de habilidades (si se requiere)">Skills assessment (if required)</td>
+            <td><span class="pill pill-blue" data-en="Applicant" data-es="Solicitante">Applicant</span></td>
+            <td><strong>$400 – $1,000</strong></td>
+            <td data-en="Required for medium-term stream for most occupations." data-es="Requerida para la modalidad de mediano plazo para la mayoría de las ocupaciones.">Required for medium-term stream</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout amber" style="margin-top:14px">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body" data-en="<strong>SAF levy warning:</strong> The Skilling Australians Fund levy is a significant cost for employers. It is <strong>illegal</strong> for an employer to ask a visa holder to pay or reimburse the SAF levy, nomination fee, or sponsorship application fee. If your employer asks you to cover any of these costs, report it to the Fair Work Ombudsman." data-es="<strong>Advertencia sobre el SAF:</strong> La contribución al Fondo de Calificación de Australianos es un costo significativo para los empleadores. Es <strong>ilegal</strong> que un empleador le pida a un titular de visa pagar o reembolsar el SAF, la tarifa de nominación o la tarifa de solicitud de patrocinio. Si tu empleador te pide cubrir alguno de estos costos, repórtalo al Defensor del Trabajo Justo."><strong>SAF levy warning:</strong> It is <strong>illegal</strong> for employers to ask you to pay the SAF levy, nomination fee, or sponsorship fee. If your employer asks for this, report it to the Fair Work Ombudsman at <a href="https://www.fairwork.gov.au" target="_blank">fairwork.gov.au</a>.</div>
+    </div>
+  </div>
+
+  <!-- YOUR RIGHTS -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="Your rights on a 482 visa" data-es="Tus derechos con una visa 482">Your rights on a 482 visa</h2>
+    <p class="section-sub" data-en="482 holders have strong workplace protections. Know them." data-es="Los titulares de la 482 tienen fuertes protecciones laborales. Conócelas.">482 holders have strong workplace protections. Know them.</p>
+
+    <div class="tips-list">
+      <div class="tip">
+        <div class="tip-num">→</div>
+        <div>
+          <div class="tip-title" data-en="You must be paid at least the market salary rate — not just TSMIT" data-es="Debes ser pagado al menos la tarifa salarial del mercado, no solo el TSMIT">You must be paid at least the market salary rate — not just TSMIT</div>
+          <div class="tip-body" data-en="Your employer must pay you the 'annual market salary rate' for your occupation and location. This may be significantly higher than the TSMIT floor. You cannot be paid less than comparable Australian workers in the same role at the same location." data-es="Tu empleador debe pagarte la 'tarifa salarial anual del mercado' para tu ocupación y ubicación. Esto puede ser significativamente más alto que el piso del TSMIT. No puedes ser pagado menos que trabajadores australianos comparables en el mismo rol y ubicación.">Your employer must pay the 'annual market salary rate' for your role and location — potentially much higher than TSMIT. You cannot be paid less than comparable Australian workers in the same position.</div>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-num">→</div>
+        <div>
+          <div class="tip-title" data-en="You can change employers — with a new nomination" data-es="Puedes cambiar de empleador — con una nueva nominación">You can change employers — with a new nomination</div>
+          <div class="tip-body" data-en="You're not permanently locked in. If you change jobs, your new employer must submit a fresh nomination (and become a sponsor if they aren't already). While the new nomination is pending, you may be able to continue working under the existing visa — check with a migration agent. There is a 60-day grace period to find a new sponsor if you leave your employer." data-es="No estás permanentemente bloqueado. Si cambias de trabajo, tu nuevo empleador debe presentar una nueva nominación. Hay un período de gracia de 60 días para encontrar un nuevo patrocinador si dejas tu empleador.">You're not locked in permanently. New employer must submit a fresh nomination. There is a 60-day grace period to find a new sponsor after leaving your employer — check with a migration agent to understand your obligations.</div>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-num">→</div>
+        <div>
+          <div class="tip-title" data-en="Your family members can work and study" data-es="Los miembros de tu familia pueden trabajar y estudiar">Your family members can work and study</div>
+          <div class="tip-body" data-en="Secondary applicants (partner, dependent children) on your 482 visa can work for any employer and study in Australia without restriction. They are not tied to your sponsoring employer." data-es="Los solicitantes secundarios (pareja, hijos dependientes) con tu visa 482 pueden trabajar para cualquier empleador y estudiar en Australia sin restricciones. No están vinculados a tu empleador patrocinador.">Secondary applicants (partner, dependent children) can work for any employer and study without restriction. They are not tied to your sponsoring employer.</div>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-num">→</div>
+        <div>
+          <div class="tip-title" data-en="If your employer goes under, you have options" data-es="Si tu empleador cierra, tienes opciones">If your employer goes under, you have options</div>
+          <div class="tip-body" data-en="If your sponsoring employer becomes insolvent, stops trading, or withdraws their sponsorship, you have a 60-day grace period on your visa. During this time, you can seek a new sponsoring employer, apply for a bridging visa, or explore other visa options. Don't ignore the situation — act immediately if you lose your sponsor." data-es="Si tu empleador patrocinador se vuelve insolvente, deja de operar o retira su patrocinio, tienes un período de gracia de 60 días en tu visa. Durante este tiempo, puedes buscar un nuevo empleador patrocinador, solicitar una visa puente o explorar otras opciones de visa.">If your sponsor withdraws or closes, you have a 60-day grace period. During this time: find a new sponsor, apply for a bridging visa, or explore other visa options. Act immediately — don't wait.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="Frequently asked questions" data-es="Preguntas frecuentes">Frequently asked questions</h2>
+    <div class="acc-list">
+
+      <div class="acc-item" id="q1">
+        <div class="acc-head" onclick="toggleAcc('q1')">
+          <div class="acc-title"><span style="font-size:1.1rem">❓</span><span data-en="Can my employer make me pay back the sponsorship costs?" data-es="¿Puede mi empleador hacerme pagar los costos de patrocinio?">Can my employer make me pay back the sponsorship costs?</span></div>
+          <div class="acc-arrow">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p data-en="No. This is explicitly illegal under Australian migration law. An employer cannot require a sponsored worker to pay or reimburse any part of the sponsorship application fee, nomination fee, or Skilling Australians Fund (SAF) levy. If this happens, the employer can be fined, lose their sponsorship approval, and be barred from sponsoring workers in the future. You should report this to the Department of Home Affairs or the Fair Work Ombudsman." data-es="No. Esto es explícitamente ilegal bajo la ley de migración australiana. Un empleador no puede exigir que un trabajador patrocinado pague o reembolse ninguna parte de la tarifa de solicitud de patrocinio, la tarifa de nominación o la contribución SAF. Si esto ocurre, el empleador puede ser multado, perder su aprobación de patrocinio y ser inhabilitado para patrocinar trabajadores en el futuro.">No. This is explicitly illegal. An employer cannot require a sponsored worker to pay or reimburse the sponsorship fee, nomination fee, or SAF levy. Report violations to the <a href="https://www.fairwork.gov.au" target="_blank">Fair Work Ombudsman</a> or Home Affairs.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item" id="q2">
+        <div class="acc-head" onclick="toggleAcc('q2')">
+          <div class="acc-title"><span style="font-size:1.1rem">❓</span><span data-en="Do I need a skills assessment for the 482?" data-es="¿Necesito una evaluación de habilidades para la 482?">Do I need a skills assessment for the 482?</span></div>
+          <div class="acc-arrow">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p data-en="It depends on the stream and occupation. For the <strong>medium-term stream</strong>, a skills assessment is required for most occupations. For the <strong>short-term stream</strong>, a formal skills assessment is generally not required — instead, the employer demonstrates your skills through employment evidence. Some occupations (particularly licensed professions like medicine, nursing, engineering) require registration with a professional body rather than a standard skills assessment." data-es="Depende de la modalidad y la ocupación. Para la <strong>modalidad de mediano plazo</strong>, se requiere una evaluación de habilidades para la mayoría de las ocupaciones. Para la <strong>modalidad de corto plazo</strong>, generalmente no se requiere una evaluación formal. Algunas ocupaciones (como medicina, enfermería, ingeniería) requieren registro con un organismo profesional en lugar de una evaluación estándar.">It depends on the stream and occupation. <strong>Medium-term stream:</strong> skills assessment required for most occupations. <strong>Short-term stream:</strong> generally not required — employer demonstrates your skills. Licensed professions require registration with a professional body.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item" id="q3">
+        <div class="acc-head" onclick="toggleAcc('q3')">
+          <div class="acc-title"><span style="font-size:1.1rem">❓</span><span data-en="Can I bring my family on a 482?" data-es="¿Puedo traer a mi familia con una 482?">Can I bring my family on a 482?</span></div>
+          <div class="acc-arrow">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p data-en="Yes. Your partner (spouse or de facto) and dependent children can be included as secondary applicants on your 482 visa application. They receive the same visa validity as you and can work for any employer and study without restriction in Australia. Dependent children must be under 23 (or under 18 if not in full-time study). You can also add family members after your initial grant." data-es="Sí. Tu pareja (cónyuge o de facto) y los hijos dependientes pueden incluirse como solicitantes secundarios en tu solicitud de visa 482. Reciben la misma validez de visa que tú y pueden trabajar para cualquier empleador y estudiar sin restricciones en Australia. Los hijos dependientes deben ser menores de 23 años (o menores de 18 si no estudian a tiempo completo).">Yes. Partner (spouse or de facto) and dependent children can be included as secondary applicants. They can work for any employer and study without restriction. Children must generally be under 23 (or under 18 if not in full-time study). Family members can also be added after your initial grant.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item" id="q4">
+        <div class="acc-head" onclick="toggleAcc('q4')">
+          <div class="acc-title"><span style="font-size:1.1rem">❓</span><span data-en="What happens to my visa if my employer fires me?" data-es="¿Qué pasa con mi visa si mi empleador me despide?">What happens to my visa if my employer fires me?</span></div>
+          <div class="acc-arrow">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p data-en="Your visa remains valid — it doesn't expire immediately. However, you have a 60-day grace period to find a new approved employer to sponsor you with a fresh nomination. During this period, you can legally remain in Australia but cannot work for a new employer until the new nomination is approved. If you don't secure new sponsorship within 60 days, you must leave Australia or apply for another visa. A bridging visa is an option if you have another substantive visa application in progress." data-es="Tu visa sigue siendo válida, no expira de inmediato. Sin embargo, tienes un período de gracia de 60 días para encontrar un nuevo empleador aprobado que te patrocine con una nueva nominación. Durante este período, puedes permanecer legalmente en Australia pero no puedes trabajar para un nuevo empleador hasta que se apruebe la nueva nominación.">Your visa doesn't expire immediately — you have a 60-day grace period to find a new approved sponsor. During this period you can remain in Australia but cannot work for a new employer until the new nomination is approved. If no new sponsorship secured in 60 days, you must leave or apply for another visa.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item" id="q5">
+        <div class="acc-head" onclick="toggleAcc('q5')">
+          <div class="acc-title"><span style="font-size:1.1rem">❓</span><span data-en="Can I apply for the 482 while outside Australia?" data-es="¿Puedo solicitar la 482 desde fuera de Australia?">Can I apply for the 482 while outside Australia?</span></div>
+          <div class="acc-arrow">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p data-en="Yes. The 482 visa can be applied for from inside or outside Australia, and can be granted while you are outside Australia. Once granted, you enter Australia to commence work. If you are already in Australia on another visa, you can also apply onshore and may be granted a bridging visa to remain while the 482 is processed. Being offshore when the application is decided doesn't affect the outcome." data-es="Sí. La visa 482 puede solicitarse desde dentro o fuera de Australia y puede otorgarse mientras estás fuera de Australia. Una vez otorgada, ingresas a Australia para comenzar a trabajar. Si ya estás en Australia con otra visa, también puedes solicitar en tierra y puede otorgársete una visa puente para permanecer mientras se procesa la 482.">Yes. The 482 can be applied for from inside or outside Australia. Once granted, you enter Australia to start work. If already in Australia on another visa, you can apply onshore and may receive a bridging visa while the 482 is processed.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section fade-up" style="padding-top:0">
+    <div class="callout blue">
+      <div class="callout-icon">ℹ️</div>
+      <div class="callout-body" data-en="<strong>Migro is an independent guidance tool.</strong> The 482 visa involves complex employer obligations and is best navigated with professional advice. Always verify current requirements at <a href='https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-skill-shortage-482' target='_blank'>immi.homeaffairs.gov.au</a>." data-es="<strong>Migro es una herramienta de orientación independiente.</strong> La visa 482 implica complejas obligaciones para el empleador y es mejor navegarla con asesoramiento profesional. Siempre verifica los requisitos actuales en <a href='https://immi.homeaffairs.gov.au' target='_blank'>immi.homeaffairs.gov.au</a>."><strong>Migro is an independent guidance tool.</strong> The 482 visa has complex employer obligations and is best navigated with professional advice. Always verify at <a href='https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-skill-shortage-482' target='_blank'>immi.homeaffairs.gov.au</a>.</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-brand">Mi<span>gro</span></div>
+  <div data-en="Australian immigration guidance — independent &amp; bilingual." data-es="Orientación sobre inmigración australiana — independiente y bilingüe.">Australian immigration guidance — independent &amp; bilingual.</div>
+  <div style="margin-top:4px" data-en="Not legal advice. Always verify with Home Affairs." data-es="No es asesoramiento legal. Siempre verifica con Home Affairs.">Not legal advice. Always verify with Home Affairs.</div>
+</footer>
+
+<script>
+let lang = 'en';
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('[data-en]').forEach(el => {
+    el.innerHTML = el.getAttribute('data-' + l);
+  });
+  document.getElementById('btn-en').classList.toggle('active', l==='en');
+  document.getElementById('btn-es').classList.toggle('active', l==='es');
+}
+function toggleAcc(id) { document.getElementById(id).classList.toggle('open'); }
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+}, { threshold: 0.08 });
+document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
