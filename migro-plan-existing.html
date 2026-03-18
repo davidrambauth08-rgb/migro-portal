@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Migro — Plan: Already in Australia</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --black: #0a0a0a; --white: #ffffff;
+      --gray-100: #f5f5f5; --gray-200: #e8e8e8;
+      --gray-300: #d0d0d0; --gray-400: #999; --gray-600: #555;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--gray-100); color: var(--black); }
+
+    /* NAV */
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; background: var(--white); border-bottom: 1px solid var(--gray-200); position: sticky; top: 0; z-index: 100; }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--black); text-decoration: none; }
+    .nav-logo span { display: inline-block; width: 6px; height: 6px; background: var(--black); border-radius: 50%; margin-left: 2px; vertical-align: super; }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .lang-toggle { display: flex; background: var(--gray-100); border-radius: 6px; padding: 3px; gap: 2px; }
+    .lang-btn { padding: 4px 10px; font-size: 11px; font-weight: 700; border: none; background: transparent; border-radius: 4px; cursor: pointer; color: var(--gray-400); transition: all .2s; }
+    .lang-btn.active { background: var(--black); color: var(--white); }
+    .btn-print { padding: 8px 16px; font-size: 13px; font-weight: 600; border: 1px solid var(--gray-200); border-radius: 6px; background: var(--white); cursor: pointer; color: var(--gray-600); transition: all .2s; }
+    .btn-print:hover { border-color: var(--black); color: var(--black); }
+    .btn-save { padding: 8px 20px; font-size: 13px; font-weight: 700; border: none; border-radius: 6px; background: var(--black); color: var(--white); cursor: pointer; transition: all .2s; }
+    .btn-save:hover { background: #222; }
+
+    /* PROGRESS STRIP */
+    .progress-strip { background: var(--white); border-bottom: 1px solid var(--gray-200); padding: 0 48px; display: flex; overflow-x: auto; }
+    .progress-step { padding: 14px 0; margin-right: 32px; font-size: 12px; font-weight: 600; color: var(--gray-300); border-bottom: 2px solid transparent; white-space: nowrap; }
+    .progress-step.done { color: var(--gray-400); }
+    .progress-step.active { color: var(--black); border-bottom-color: var(--black); }
+
+    /* STATUS BANNER */
+    .status-banner { background: #0d1a0d; padding: 14px 48px; display: flex; align-items: center; justify-content: center; gap: 16px; }
+    .status-dot { width: 8px; height: 8px; background: #4ade80; border-radius: 50%; animation: pulse 2s infinite; flex-shrink: 0; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.3)} }
+    .status-text { font-size: 13px; font-weight: 600; color: #6dcc6d; }
+    .status-text strong { color: #a0f0a0; }
+    .status-badge { background: #1a3a1a; border: 1px solid #2a5a2a; border-radius: 100px; padding: 4px 12px; font-size: 11px; font-weight: 700; color: #4ade80; }
+
+    /* HERO */
+    .hero { background: var(--black); padding: 56px 48px 48px; }
+    .hero-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 48px; }
+    .hero-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #555; margin-bottom: 12px; }
+    .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(28px, 4vw, 50px); font-weight: 700; color: var(--white); line-height: 1.1; letter-spacing: -1px; margin-bottom: 16px; }
+    .hero-sub { font-size: 15px; color: #777; line-height: 1.6; max-width: 520px; margin-bottom: 28px; }
+    .hero-chips { display: flex; gap: 10px; flex-wrap: wrap; }
+    .hero-chip { display: flex; align-items: center; gap: 7px; background: #111; border: 1px solid #222; border-radius: 100px; padding: 7px 14px; font-size: 13px; font-weight: 600; color: #aaa; }
+    .chip-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .chip-green { background: #4ade80; }
+    .chip-yellow { background: #facc15; }
+    .chip-blue { background: #60a5fa; }
+
+    /* STATUS CARD */
+    .status-card { background: #111; border: 1px solid #1a1a1a; border-radius: 16px; padding: 28px 24px; text-align: center; min-width: 200px; }
+    .status-card-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #444; margin-bottom: 10px; }
+    .status-card-visa { font-family: 'Playfair Display', serif; font-size: 40px; font-weight: 700; color: var(--white); line-height: 1; margin-bottom: 6px; }
+    .status-card-name { font-size: 12px; color: #666; margin-bottom: 16px; line-height: 1.4; }
+    .status-card-divider { border: none; border-top: 1px solid #1a1a1a; margin: 0 0 16px; }
+    .status-card-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .status-card-key { font-size: 11px; color: #444; font-weight: 600; }
+    .status-card-val { font-size: 11px; font-weight: 700; color: var(--white); }
+    .status-card-val.green { color: #4ade80; }
+    .status-card-val.yellow { color: #facc15; }
+
+    /* PAGE BODY */
+    .page-body { max-width: 1100px; margin: 0 auto; padding: 40px 48px; display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start; }
+
+    /* SECTION */
+    .section { margin-bottom: 28px; }
+    .section-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+    .section-icon { width: 40px; height: 40px; background: var(--black); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .section-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; }
+    .section-sub { font-size: 13px; color: var(--gray-400); margin-top: 2px; }
+
+    .card { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 16px; overflow: hidden; }
+
+    /* BRIDGING VISA ALERT */
+    .alert-card { border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; display: flex; gap: 14px; align-items: flex-start; }
+    .alert-card.info { background: #eff6ff; border: 1.5px solid #bfdbfe; }
+    .alert-card.warn { background: #fffbeb; border: 1.5px solid #fde68a; }
+    .alert-card.green { background: #f0fdf4; border: 1.5px solid #bbf7d0; }
+    .alert-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .alert-title { font-size: 13px; font-weight: 700; color: var(--black); margin-bottom: 4px; }
+    .alert-desc { font-size: 12px; color: var(--gray-600); line-height: 1.6; }
+    .alert-desc a { color: var(--black); font-weight: 600; }
+
+    /* PATHWAY SELECTOR */
+    .pathway-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+    .pathway-card { border: 1.5px solid var(--gray-200); border-radius: 12px; padding: 16px; cursor: pointer; transition: all .2s; background: var(--white); }
+    .pathway-card:hover { border-color: var(--gray-400); }
+    .pathway-card.active { border-color: var(--black); background: var(--black); }
+    .pathway-icon { font-size: 24px; margin-bottom: 8px; }
+    .pathway-title { font-size: 13px; font-weight: 700; color: var(--black); margin-bottom: 4px; }
+    .pathway-card.active .pathway-title { color: var(--white); }
+    .pathway-desc { font-size: 11px; color: var(--gray-400); line-height: 1.5; }
+    .pathway-card.active .pathway-desc { color: #888; }
+    .pathway-tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 100px; margin-top: 8px; }
+    .pathway-card:not(.active) .pathway-tag.pop { background: #e6f0ff; color: #1a4a8a; }
+    .pathway-card:not(.active) .pathway-tag.fast { background: #e6f9e6; color: #1a6a1a; }
+    .pathway-card.active .pathway-tag { background: #1a1a2a; color: #88aaff; }
+
+    /* TIMELINE */
+    .timeline { padding: 28px; }
+    .timeline-item { display: flex; gap: 20px; position: relative; }
+    .timeline-item:not(:last-child)::before { content: ''; position: absolute; left: 19px; top: 44px; bottom: -8px; width: 2px; background: var(--gray-200); z-index: 0; }
+    .timeline-left { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; z-index: 1; }
+    .timeline-dot { width: 40px; height: 40px; border-radius: 50%; background: var(--black); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; border: 3px solid var(--white); box-shadow: 0 0 0 2px var(--black); }
+    .timeline-dot.pending { background: var(--white); border-color: var(--gray-200); box-shadow: 0 0 0 2px var(--gray-200); }
+    .timeline-content { flex: 1; padding-bottom: 32px; }
+    .timeline-phase { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gray-400); margin-bottom: 4px; }
+    .timeline-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .timeline-desc { font-size: 13px; color: var(--gray-600); line-height: 1.6; margin-bottom: 14px; }
+
+    /* ACCORDION TASKS */
+    .task-list { display: flex; flex-direction: column; gap: 8px; }
+    .task-item { border: 1.5px solid var(--gray-200); border-radius: 10px; overflow: hidden; transition: border-color .2s; }
+    .task-item:hover { border-color: var(--gray-300); }
+    .task-item.open { border-color: var(--black); }
+
+    .task-header { display: flex; align-items: center; gap: 12px; padding: 12px 14px; cursor: pointer; background: var(--white); transition: background .15s; user-select: none; }
+    .task-header:hover { background: var(--gray-100); }
+    .task-item.open .task-header { background: var(--black); }
+
+    .task-check { width: 20px; height: 20px; border-radius: 5px; border: 2px solid var(--gray-300); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: transparent; transition: all .2s; cursor: pointer; }
+    .task-check.checked { background: #4ade80; border-color: #4ade80; color: var(--black); }
+    .task-item.open .task-check { border-color: #555; }
+    .task-item.open .task-check.checked { background: #4ade80; border-color: #4ade80; color: var(--black); }
+
+    .task-main { flex: 1; }
+    .task-label { font-size: 13px; font-weight: 600; color: var(--black); }
+    .task-item.open .task-label { color: var(--white); }
+
+    .task-badges { display: flex; gap: 6px; margin-top: 3px; flex-wrap: wrap; }
+    .task-badge { font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 2px 8px; border-radius: 100px; letter-spacing: .3px; }
+    .badge-urgent { background: #fff0e0; color: #a05000; }
+    .badge-key { background: #e6f0ff; color: #1a4a8a; }
+    .badge-optional { background: var(--gray-100); color: var(--gray-400); border: 1px solid var(--gray-200); }
+    .badge-free { background: #e6f9e6; color: #1a6a1a; }
+    .badge-critical { background: #ffe6e6; color: #8a1a1a; }
+    .task-item.open .badge-urgent { background: #3a1a00; color: #ffb066; }
+    .task-item.open .badge-key { background: #0a1a3a; color: #66aaff; }
+    .task-item.open .badge-optional { background: #1a1a1a; color: #777; border-color: #333; }
+    .task-item.open .badge-free { background: #0a2a0a; color: #66dd66; }
+    .task-item.open .badge-critical { background: #2a0a0a; color: #ff8888; }
+
+    .task-chevron { font-size: 12px; color: var(--gray-400); transition: transform .3s ease; flex-shrink: 0; }
+    .task-item.open .task-chevron { transform: rotate(180deg); color: #666; }
+
+    .task-body { max-height: 0; overflow: hidden; transition: max-height .4s cubic-bezier(0.4,0,0.2,1); background: #fafafa; border-top: 0 solid var(--gray-200); }
+    .task-item.open .task-body { max-height: 620px; border-top: 1px solid var(--gray-200); }
+    .task-body-inner { padding: 16px 14px 16px 46px; }
+    .task-body-desc { font-size: 13px; color: var(--gray-600); line-height: 1.7; margin-bottom: 14px; }
+
+    .task-docs-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 8px; }
+    .task-docs { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .task-doc-item { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: var(--gray-600); }
+    .task-doc-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+
+    .task-info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+    .task-info-cell { background: var(--white); border: 1px solid var(--gray-200); border-radius: 8px; padding: 10px 12px; }
+    .task-info-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--gray-400); margin-bottom: 3px; }
+    .task-info-val { font-size: 13px; font-weight: 700; color: var(--black); }
+
+    .task-links { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+    .task-link { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 6px; border: 1.5px solid var(--gray-200); font-size: 12px; font-weight: 600; color: var(--black); text-decoration: none; transition: all .2s; background: var(--white); }
+    .task-link:hover { border-color: var(--black); background: var(--black); color: var(--white); }
+
+    .task-tip { background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 10px 12px; font-size: 12px; color: #92400e; line-height: 1.6; margin-top: 6px; }
+    .task-tip strong { color: #78350f; }
+
+    /* PHASE HEADER */
+    .phase-header { display: flex; align-items: center; gap: 12px; padding: 16px 20px; background: var(--black); border-radius: 12px 12px 0 0; }
+    .phase-num { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: #333; line-height: 1; }
+    .phase-info { flex: 1; }
+    .phase-title { font-size: 15px; font-weight: 700; color: var(--white); }
+    .phase-sub { font-size: 12px; color: #555; margin-top: 2px; }
+    .phase-badge { font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 100px; background: #111; color: #666; border: 1px solid #222; }
+
+    .phase-block { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 12px; overflow: hidden; margin-bottom: 16px; }
+    .phase-tasks { padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+
+    /* SIDEBAR */
+    .sidebar { display: flex; flex-direction: column; gap: 20px; }
+    .sidebar-card { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 16px; padding: 22px; }
+    .sidebar-card-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 16px; }
+
+    /* JOURNEY SWITCHER */
+    .journey-list { display: flex; flex-direction: column; gap: 8px; }
+    .journey-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; border: 1.5px solid var(--gray-200); text-decoration: none; transition: all .2s; }
+    .journey-item:hover { border-color: var(--gray-400); }
+    .journey-item.current { background: var(--black); border-color: var(--black); }
+    .journey-icon { font-size: 18px; flex-shrink: 0; }
+    .journey-label { font-size: 12px; font-weight: 700; color: var(--black); }
+    .journey-item.current .journey-label { color: var(--white); }
+    .journey-sub { font-size: 11px; color: var(--gray-400); margin-top: 1px; }
+    .journey-item.current .journey-sub { color: #666; }
+
+    /* VISA STATUS MINI */
+    .vevo-card { background: #f0fdf4; border: 1.5px solid #bbf7d0; border-radius: 12px; padding: 16px; }
+    .vevo-title { font-size: 12px; font-weight: 700; color: #166534; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .vevo-rows { display: flex; flex-direction: column; gap: 8px; }
+    .vevo-row { display: flex; justify-content: space-between; align-items: center; }
+    .vevo-key { font-size: 11px; color: #4a7a5a; }
+    .vevo-val { font-size: 12px; font-weight: 700; color: #166534; }
+    .vevo-btn { display: block; margin-top: 12px; text-align: center; padding: 8px; background: #166534; color: var(--white); font-size: 12px; font-weight: 700; border-radius: 8px; text-decoration: none; transition: background .2s; }
+    .vevo-btn:hover { background: #14532d; }
+
+    /* PROGRESS MINI */
+    .mini-progress { }
+    .mini-phase { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--gray-100); }
+    .mini-phase:last-child { border-bottom: none; }
+    .mini-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--gray-200); flex-shrink: 0; }
+    .mini-dot.done { background: #4ade80; }
+    .mini-dot.active { background: var(--black); }
+    .mini-label { font-size: 12px; font-weight: 600; color: var(--gray-400); flex: 1; }
+    .mini-label.active { color: var(--black); }
+    .mini-label.done { color: var(--gray-400); text-decoration: line-through; }
+    .mini-count { font-size: 11px; color: var(--gray-300); }
+
+    /* TIMELINE COMPACT */
+    .compact-timeline { padding: 4px 0; }
+    .ct-item { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid var(--gray-100); }
+    .ct-item:last-child { border-bottom: none; }
+    .ct-bullet { width: 6px; height: 6px; border-radius: 50%; background: var(--black); flex-shrink: 0; margin-top: 5px; }
+    .ct-text { font-size: 12px; color: var(--gray-600); line-height: 1.5; }
+    .ct-text strong { color: var(--black); display: block; font-size: 12px; margin-bottom: 1px; }
+
+    /* CTA */
+    .cta-card { background: var(--black); border-radius: 16px; padding: 24px; }
+    .cta-card-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--white); margin-bottom: 8px; }
+    .cta-card-desc { font-size: 13px; color: #666; line-height: 1.6; margin-bottom: 16px; }
+    .cta-card-btn { display: block; text-align: center; padding: 12px; background: var(--white); color: var(--black); font-size: 13px; font-weight: 700; border-radius: 8px; text-decoration: none; transition: all .2s; }
+    .cta-card-btn:hover { background: var(--gray-100); }
+
+    /* IMPORTANT NOTE */
+    .important-note { background: var(--black); border-radius: 12px; padding: 20px; margin-bottom: 28px; }
+    .important-note-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #555; margin-bottom: 10px; }
+    .important-note-text { font-size: 13px; color: #888; line-height: 1.7; }
+    .important-note-text strong { color: var(--white); }
+
+    @media print {
+      nav, .progress-strip, .status-banner { display: none; }
+      body { background: white; }
+      .page-body { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="migro-landing.html" class="nav-logo">Migro<span></span></a>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en',this)">EN</button>
+      <button class="lang-btn" onclick="setLang('es',this)">ES</button>
+    </div>
+    <button class="btn-print" onclick="window.print()" data-en="Print Plan" data-es="Imprimir Plan">Print Plan</button>
+    <button class="btn-save" data-en="Save Progress" data-es="Guardar Progreso">Save Progress</button>
+  </div>
+</nav>
+
+<!-- PROGRESS STRIP -->
+<div class="progress-strip">
+  <div class="progress-step done" data-en="✓ Profile" data-es="✓ Perfil">✓ Profile</div>
+  <div class="progress-step done" data-en="✓ Score" data-es="✓ Puntaje">✓ Score</div>
+  <div class="progress-step done" data-en="✓ City" data-es="✓ Ciudad">✓ Ciudad</div>
+  <div class="progress-step done" data-en="✓ Options" data-es="✓ Opciones">✓ Options</div>
+  <div class="progress-step done" data-en="✓ Services" data-es="✓ Servicios">✓ Services</div>
+  <div class="progress-step active" data-en="→ Migration Plan" data-es="→ Plan Migratorio">→ Migration Plan</div>
+</div>
+
+<!-- STATUS BANNER -->
+<div class="status-banner">
+  <div class="status-dot"></div>
+  <div class="status-text" data-en="You are <strong>currently in Australia</strong> — your plan uses onshore pathways and bridging visa protections" data-es="Estás <strong>actualmente en Australia</strong> — tu plan usa vías onshore y protecciones de visa puente">
+    You are <strong>currently in Australia</strong> — your plan uses onshore pathways and bridging visa protections
+  </div>
+  <div class="status-badge" data-en="Onshore Applicant" data-es="Solicitante Onshore">Onshore Applicant</div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag" data-en="Migration Plan · Onshore Pathway" data-es="Plan Migratorio · Vía Onshore">Migration Plan · Onshore Pathway</div>
+      <h1 class="hero-title" data-en="You're Already<br>in Australia." data-es="Ya Estás<br>en Australia.">You're Already<br>in Australia.</h1>
+      <p class="hero-sub" data-en="You have an active visa and are ready to take the next step — whether that's employer sponsorship, a skilled migration stream, or changing your visa class. This plan is built for your situation." data-es="Tienes una visa activa y estás listo para dar el siguiente paso — ya sea patrocinio del empleador, migración calificada, o cambio de clase de visa. Este plan está diseñado para tu situación.">
+        You have an active visa and are ready to take the next step — whether that's employer sponsorship, a skilled migration stream, or changing your visa class. This plan is built for your situation.
+      </p>
+      <div class="hero-chips">
+        <div class="hero-chip"><div class="chip-dot chip-green"></div><span data-en="Onshore application" data-es="Solicitud onshore">Onshore application</span></div>
+        <div class="hero-chip"><div class="chip-dot chip-yellow"></div><span data-en="Bridging Visa A applies" data-es="Aplica Visa Puente A">Bridging Visa A applies</span></div>
+        <div class="hero-chip"><div class="chip-dot chip-blue"></div><span data-en="No need to leave Australia" data-es="No necesitas salir de Australia">No need to leave Australia</span></div>
+      </div>
+    </div>
+    <div class="status-card">
+      <div class="status-card-label" data-en="Current Visa" data-es="Visa Actual">Current Visa</div>
+      <div class="status-card-visa">500</div>
+      <div class="status-card-name" data-en="Student Visa<br>Subclass 500" data-es="Visa de Estudiante<br>Subclase 500">Student Visa<br>Subclass 500</div>
+      <hr class="status-card-divider">
+      <div class="status-card-row">
+        <span class="status-card-key" data-en="Expires">Expires</span>
+        <span class="status-card-val yellow">Nov 2026</span>
+      </div>
+      <div class="status-card-row">
+        <span class="status-card-key" data-en="Work rights">Work rights</span>
+        <span class="status-card-val green">48 hrs/fortnight</span>
+      </div>
+      <div class="status-card-row">
+        <span class="status-card-key" data-en="Status">Status</span>
+        <span class="status-card-val green" data-en="Active" data-es="Activa">Active</span>
+      </div>
+      <div class="status-card-row">
+        <span class="status-card-key" data-en="Target visa">Target visa</span>
+        <span class="status-card-val" data-en="482 or 485" data-es="482 o 485">482 or 485</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="page-body">
+  <div>
+
+    <!-- IMPORTANT NOTE -->
+    <div class="important-note">
+      <div class="important-note-title" data-en="⚡ Key Advantage of Being Onshore" data-es="⚡ Ventaja Clave de Estar Onshore">⚡ Key Advantage of Being Onshore</div>
+      <p class="important-note-text" data-en="Because you are already in Australia, you can lodge most visa applications without leaving the country. Once you lodge, a <strong>Bridging Visa A (BVA)</strong> is automatically granted, letting you remain in Australia legally while your application is processed — even if your current visa expires in the meantime." data-es="Como ya estás en Australia, puedes presentar la mayoría de las solicitudes de visa sin salir del país. Una vez que lodges, se otorga automáticamente una <strong>Visa Puente A (BVA)</strong>, lo que te permite permanecer en Australia legalmente mientras se procesa tu solicitud, incluso si tu visa actual vence mientras tanto.">
+        Because you are already in Australia, you can lodge most visa applications without leaving the country. Once you lodge, a <strong>Bridging Visa A (BVA)</strong> is automatically granted, letting you remain in Australia legally while your application is processed — even if your current visa expires in the meantime.
+      </p>
+    </div>
+
+    <!-- ALERTS -->
+    <div class="alert-card warn">
+      <div class="alert-icon">⚠️</div>
+      <div>
+        <div class="alert-title" data-en="Check your visa expiry date" data-es="Verifica la fecha de vencimiento de tu visa">Check your visa expiry date</div>
+        <div class="alert-desc" data-en="You must lodge your new application BEFORE your current visa expires to be eligible for a Bridging Visa. If your visa has already expired, you may be unlawfully present. <a href='https://immi.homeaffairs.gov.au/visas/already-have-a-visa/check-visa-details-and-conditions/check-conditions-online' target='_blank'>Check your visa status on VEVO →</a>" data-es="Debes presentar tu nueva solicitud ANTES de que venza tu visa actual para ser elegible a una Visa Puente. Si tu visa ya venció, puedes estar en situación irregular. <a href='https://immi.homeaffairs.gov.au/visas/already-have-a-visa/check-visa-details-and-conditions/check-conditions-online' target='_blank'>Verifica tu estado de visa en VEVO →</a>">
+          You must lodge your new application BEFORE your current visa expires to be eligible for a Bridging Visa. If your visa has already expired, you may be unlawfully present. <a href="https://immi.homeaffairs.gov.au/visas/already-have-a-visa/check-visa-details-and-conditions/check-conditions-online" target="_blank">Check your visa status on VEVO →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert-card info">
+      <div class="alert-icon">ℹ️</div>
+      <div>
+        <div class="alert-title" data-en="Which visa are you changing to?" data-es="¿A qué visa estás cambiando?">Which visa are you changing to?</div>
+        <div class="alert-desc" data-en="This plan covers the two most common onshore pathways: Subclass 485 (Temporary Graduate) for recent graduates, and Subclass 482 (TSS) for those with employer sponsorship. Select your pathway below to tailor the plan." data-es="Este plan cubre las dos vías onshore más comunes: Subclase 485 (Graduado Temporal) para graduados recientes, y Subclase 482 (TSS) para quienes tienen patrocinio de empleador. Selecciona tu vía a continuación para personalizar el plan.">
+          This plan covers the two most common onshore pathways: Subclass 485 (Temporary Graduate) for recent graduates, and Subclass 482 (TSS) for those with employer sponsorship. Select your pathway below to tailor the plan.
+        </div>
+      </div>
+    </div>
+
+    <!-- PATHWAY SELECTOR -->
+    <div class="pathway-grid">
+      <div class="pathway-card active" onclick="selectPathway(this, '485')">
+        <div class="pathway-icon">🎓</div>
+        <div class="pathway-title" data-en="Subclass 485" data-es="Subclase 485">Subclass 485</div>
+        <div class="pathway-desc" data-en="Temporary Graduate Visa. For international students who just finished an Australian degree." data-es="Visa de Graduado Temporal. Para estudiantes internacionales que acaban de terminar un título australiano.">Temporary Graduate Visa. For international students who just finished an Australian degree.</div>
+        <span class="pathway-tag fast" data-en="Fastest route" data-es="Ruta más rápida">Fastest route</span>
+      </div>
+      <div class="pathway-card" onclick="selectPathway(this, '482')">
+        <div class="pathway-icon">💼</div>
+        <div class="pathway-title" data-en="Subclass 482 (TSS)" data-es="Subclase 482 (TSS)">Subclass 482 (TSS)</div>
+        <div class="pathway-desc" data-en="Temporary Skill Shortage. Requires an employer willing to sponsor you for a skilled position." data-es="Escasez Temporal de Habilidades. Requiere un empleador dispuesto a patrocinarte para un puesto calificado.">Temporary Skill Shortage. Requires an employer willing to sponsor you for a skilled position.</div>
+        <span class="pathway-tag pop" data-en="Leads to PR" data-es="Lleva a PR">Leads to PR</span>
+      </div>
+    </div>
+
+    <!-- PHASE 1 -->
+    <div class="phase-block">
+      <div class="phase-header">
+        <div class="phase-num">01</div>
+        <div class="phase-info">
+          <div class="phase-title" data-en="Verify Your Eligibility" data-es="Verifica Tu Elegibilidad">Verify Your Eligibility</div>
+          <div class="phase-sub" data-en="Confirm you qualify before spending money on applications" data-es="Confirma que calificas antes de gastar dinero en solicitudes">Confirm you qualify before spending money on applications</div>
+        </div>
+        <div class="phase-badge" data-en="Week 1–2" data-es="Semana 1–2">Week 1–2</div>
+      </div>
+      <div class="phase-tasks">
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Check visa conditions on VEVO" data-es="Verifica condiciones de visa en VEVO">Check visa conditions on VEVO</div>
+              <div class="task-badges"><span class="task-badge badge-critical" data-en="Do first" data-es="Haz primero">Do first</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="The Visa Entitlement Verification Online (VEVO) system lets you instantly verify your current visa conditions, work rights, study rights, and expiry date. This is the first thing to do — you need to confirm you are still holding a valid visa and that your conditions allow you to apply for a new visa while onshore." data-es="El sistema VEVO te permite verificar instantáneamente las condiciones de tu visa actual, derechos laborales, derechos de estudio y fecha de vencimiento. Esto es lo primero que debes hacer — necesitas confirmar que aún tienes una visa válida y que tus condiciones te permiten solicitar una nueva visa estando onshore.">
+              The Visa Entitlement Verification Online (VEVO) system lets you instantly verify your current visa conditions, work rights, study rights, and expiry date. This is the first thing to do — you need to confirm you are still holding a valid visa and that your conditions allow you to apply for a new visa while onshore.
+            </p>
+            <div class="task-docs-title" data-en="What you need" data-es="Qué necesitas">What you need</div>
+            <div class="task-docs">
+              <div class="task-doc-item"><span class="task-doc-icon">🔑</span><span data-en="Your ImmiAccount login or passport number" data-es="Tu login de ImmiAccount o número de pasaporte">Your ImmiAccount login or passport number</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📋</span><span data-en="Your Transaction Reference Number (TRN) from grant notification" data-es="Tu Número de Referencia de Transacción (TRN) de la notificación de otorgamiento">Your Transaction Reference Number (TRN) from grant notification</span></div>
+            </div>
+            <div class="task-info-grid">
+              <div class="task-info-cell"><div class="task-info-label" data-en="Time" data-es="Tiempo">Time</div><div class="task-info-val" data-en="5 minutes" data-es="5 minutos">5 minutes</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Cost" data-es="Costo">Cost</div><div class="task-info-val" data-en="Free" data-es="Gratis">Free</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Where" data-es="Dónde">Where</div><div class="task-info-val">Online</div></div>
+            </div>
+            <div class="task-links">
+              <a class="task-link" href="https://immi.homeaffairs.gov.au/visas/already-have-a-visa/check-visa-details-and-conditions/check-conditions-online" target="_blank">🌐 VEVO – Check visa online</a>
+            </div>
+            <div class="task-tip"><strong data-en="Tip:" data-es="Tip:">Tip:</strong> <span data-en="You can also share your VEVO status with your employer. Employers can check your work rights at no cost before onboarding." data-es="También puedes compartir tu estado VEVO con tu empleador. Los empleadores pueden verificar tus derechos laborales sin costo antes de incorporarte.">You can also share your VEVO status with your employer. Employers can check your work rights at no cost before onboarding.</span></div>
+          </div></div>
+        </div>
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Confirm 485 eligibility (graduates only)" data-es="Confirma elegibilidad para 485 (solo graduados)">Confirm 485 eligibility (graduates only)</div>
+              <div class="task-badges"><span class="task-badge badge-key" data-en="485 pathway" data-es="Vía 485">485 pathway</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="For the 485 Graduate visa, you must have completed an eligible qualification at an Australian educational institution while holding a student visa. The degree must have taken at least 2 academic years to complete. You must also have held a student visa for at least some of the time you were studying." data-es="Para la visa de Graduado 485, debes haber completado una calificación elegible en una institución educativa australiana mientras tenías una visa de estudiante. El título debe haber tardado al menos 2 años académicos en completarse. También debes haber tenido una visa de estudiante durante al menos parte del tiempo que estabas estudiando.">
+              For the 485 Graduate visa, you must have completed an eligible qualification at an Australian educational institution while holding a student visa. The degree must have taken at least 2 academic years to complete. You must also have held a student visa for at least some of the time you were studying.
+            </p>
+            <div class="task-docs-title" data-en="Eligibility requirements" data-es="Requisitos de elegibilidad">Eligibility requirements</div>
+            <div class="task-docs">
+              <div class="task-doc-item"><span class="task-doc-icon">🎓</span><span data-en="Completed a bachelor's, master's, or doctoral degree from an Australian institution" data-es="Completado una licenciatura, maestría o doctorado de una institución australiana">Completed a bachelor's, master's, or doctoral degree from an Australian institution</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📅</span><span data-en="Applied within 6 months of completing your degree (6 months grace period)" data-es="Solicitado dentro de los 6 meses de completar tu título (período de gracia de 6 meses)">Applied within 6 months of completing your degree (6 months grace period)</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">✅</span><span data-en="Satisfy the English language requirement (IELTS 6.0 overall)" data-es="Cumplir con el requisito de idioma inglés (IELTS 6.0 general)">Satisfy the English language requirement (IELTS 6.0 overall)</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">🏥</span><span data-en="Meet health and character requirements" data-es="Cumplir con requisitos de salud y carácter">Meet health and character requirements</span></div>
+            </div>
+            <div class="task-info-grid">
+              <div class="task-info-cell"><div class="task-info-label" data-en="Visa Length" data-es="Duración">Visa Length</div><div class="task-info-val" data-en="2–4 years" data-es="2–4 años">2–4 years</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Work rights" data-es="Derechos lab.">Work rights</div><div class="task-info-val" data-en="Unlimited" data-es="Ilimitados">Unlimited</div></div>
+              <div class="task-info-cell"><div class="task-info-cell"><div class="task-info-label" data-en="Cost" data-es="Costo">Cost</div><div class="task-info-val">AUD $1,895</div></div></div>
+            </div>
+            <div class="task-links">
+              <a class="task-link" href="https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-graduate-485" target="_blank">🌐 485 Visa info</a>
+              <a class="task-link" href="migro-ielts.html">📝 IELTS Practice</a>
+            </div>
+            <div class="task-tip"><strong data-en="Tip:" data-es="Tip:">Tip:</strong> <span data-en="If you studied a STEM degree in a regional area, you may qualify for up to 5 years on your 485 visa instead of 2. Check the regional study requirement." data-es="Si estudiaste una carrera STEM en un área regional, podrías calificar hasta 5 años en tu visa 485 en lugar de 2. Verifica el requisito de estudio regional.">If you studied a STEM degree in a regional area, you may qualify for up to 5 years on your 485 visa instead of 2. Check the regional study requirement.</span></div>
+          </div></div>
+        </div>
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Confirm 482 eligibility (employer sponsor)" data-es="Confirma elegibilidad para 482 (empleador patrocinador)">Confirm 482 eligibility (employer sponsor)</div>
+              <div class="task-badges"><span class="task-badge badge-key" data-en="482 pathway" data-es="Vía 482">482 pathway</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="The 482 TSS visa requires an approved sponsor employer, a nominated occupation on the relevant list (MLTSSL or STSOL), and the required skills/qualifications. The employer must pay at least the market salary rate and the Temporary Skilled Migration Income Threshold (TSMIT), currently AUD $70,000/year." data-es="La visa 482 TSS requiere un empleador patrocinador aprobado, una ocupación nominada en la lista relevante (MLTSSL o STSOL), y las habilidades/calificaciones requeridas. El empleador debe pagar al menos la tasa salarial de mercado y el Umbral de Ingresos de Migración Calificada Temporal (TSMIT), actualmente AUD $70,000/año.">
+              The 482 TSS visa requires an approved sponsor employer, a nominated occupation on the relevant list (MLTSSL or STSOL), and the required skills/qualifications. The employer must pay at least the market salary rate and the Temporary Skilled Migration Income Threshold (TSMIT), currently AUD $70,000/year.
+            </p>
+            <div class="task-docs-title" data-en="Key requirements" data-es="Requisitos clave">Key requirements</div>
+            <div class="task-docs">
+              <div class="task-doc-item"><span class="task-doc-icon">🏢</span><span data-en="Employer must be an approved standard business sponsor (SBS)" data-es="El empleador debe ser un patrocinador comercial estándar aprobado (SBS)">Employer must be an approved standard business sponsor (SBS)</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📋</span><span data-en="Occupation on the Skills in Demand (SID) list or MLTSSL" data-es="Ocupación en la lista de Habilidades en Demanda (SID) o MLTSSL">Occupation on the Skills in Demand (SID) list or MLTSSL</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">💰</span><span data-en="Salary at or above TSMIT (AUD $70,000/year)" data-es="Salario igual o superior al TSMIT (AUD $70,000/año)">Salary at or above TSMIT (AUD $70,000/year)</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">🗣️</span><span data-en="English: IELTS 5.0 average each band (minimum)" data-es="Inglés: IELTS 5.0 promedio cada banda (mínimo)">English: IELTS 5.0 average each band (minimum)</span></div>
+            </div>
+            <div class="task-info-grid">
+              <div class="task-info-cell"><div class="task-info-label" data-en="Visa Length" data-es="Duración">Visa Length</div><div class="task-info-val" data-en="Up to 4 years" data-es="Hasta 4 años">Up to 4 years</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Cost (you)" data-es="Costo (tú)">Cost (you)</div><div class="task-info-val">AUD $3,115</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="SAF levy" data-es="Tasa SAF">SAF levy</div><div class="task-info-val" data-en="Employer pays" data-es="Empleador paga">Employer pays</div></div>
+            </div>
+            <div class="task-links">
+              <a class="task-link" href="https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-skill-shortage-482" target="_blank">🌐 482 Visa info</a>
+              <a class="task-link" href="https://immi.homeaffairs.gov.au/visas/working-in-australia/skill-occupation-list" target="_blank">📋 Occupation lists</a>
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PHASE 2 -->
+    <div class="phase-block">
+      <div class="phase-header">
+        <div class="phase-num">02</div>
+        <div class="phase-info">
+          <div class="phase-title" data-en="Gather Documents" data-es="Reúne Documentos">Gather Documents</div>
+          <div class="phase-sub" data-en="Collect everything required to lodge your application" data-es="Reúne todo lo necesario para presentar tu solicitud">Collect everything required to lodge your application</div>
+        </div>
+        <div class="phase-badge" data-en="Week 2–5" data-es="Semana 2–5">Week 2–5</div>
+      </div>
+      <div class="phase-tasks">
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Obtain certified copies of academic qualifications" data-es="Obtén copias certificadas de calificaciones académicas">Obtain certified copies of academic qualifications</div>
+              <div class="task-badges"><span class="task-badge badge-key" data-en="Required" data-es="Requerido">Required</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="You need certified copies of your Australian qualification (if applying for 485) or your relevant overseas degree (if applying for 482). Certifications must be done by a Justice of the Peace (JP), a registered migration agent, or an authorised officer at your university. Original documents are not required — certified copies are accepted." data-es="Necesitas copias certificadas de tu calificación australiana (si solicitas 485) o tu título extranjero relevante (si solicitas 482). Las certificaciones deben ser realizadas por un Juez de Paz (JP), un agente de migración registrado, o un funcionario autorizado de tu universidad. Los documentos originales no son necesarios — se aceptan copias certificadas.">
+              You need certified copies of your Australian qualification (if applying for 485) or your relevant overseas degree (if applying for 482). Certifications must be done by a Justice of the Peace (JP), a registered migration agent, or an authorised officer at your university.
+            </p>
+            <div class="task-docs-title" data-en="Documents to certify" data-es="Documentos a certificar">Documents to certify</div>
+            <div class="task-docs">
+              <div class="task-doc-item"><span class="task-doc-icon">📄</span><span data-en="Academic transcript (official sealed copy)" data-es="Transcripción académica (copia sellada oficial)">Academic transcript (official sealed copy)</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">🎓</span><span data-en="Degree certificate / testamur" data-es="Certificado de título / testamur">Degree certificate / testamur</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📊</span><span data-en="Course completion letter from your institution" data-es="Carta de finalización del curso de tu institución">Course completion letter from your institution</span></div>
+            </div>
+            <div class="task-info-grid">
+              <div class="task-info-cell"><div class="task-info-label" data-en="Time" data-es="Tiempo">Time</div><div class="task-info-val" data-en="1–2 weeks" data-es="1–2 semanas">1–2 weeks</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Cost" data-es="Costo">Cost</div><div class="task-info-val" data-en="~AUD $20–50" data-es="~AUD $20–50">~AUD $20–50</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Where" data-es="Dónde">Where</div><div class="task-info-val" data-en="JP / Uni office" data-es="JP / Oficina Uni">JP / Uni office</div></div>
+            </div>
+            <div class="task-tip"><strong data-en="Tip:" data-es="Tip:">Tip:</strong> <span data-en="JPs are available for free at many Australia Post offices, local councils, and courts. Just bring your original document and a clear photocopy." data-es="Los JPs están disponibles de forma gratuita en muchas oficinas de Australia Post, municipios y tribunales. Solo trae tu documento original y una fotocopia clara.">JPs are available for free at many Australia Post offices, local councils, and courts. Just bring your original document and a clear photocopy.</span></div>
+          </div></div>
+        </div>
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Provide valid English test results" data-es="Proporciona resultados de prueba de inglés válidos">Provide valid English test results</div>
+              <div class="task-badges"><span class="task-badge badge-key" data-en="Required" data-es="Requerido">Required</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="For the 485 visa, you need IELTS 6.0 overall (no band less than 5.0), or equivalent. For 482, the minimum is IELTS 5.0 each band. Results must be no older than 3 years at the time of application. If you studied your entire degree in English in Australia, you may be exempt — check with your migration agent." data-es="Para la visa 485, necesitas IELTS 6.0 general (sin banda menor a 5.0), o equivalente. Para 482, el mínimo es IELTS 5.0 cada banda. Los resultados no deben tener más de 3 años en el momento de la solicitud. Si estudias todo tu título en inglés en Australia, es posible que estés exento — consulta con tu agente de migración.">
+              For the 485 visa, you need IELTS 6.0 overall (no band less than 5.0), or equivalent. For 482, the minimum is IELTS 5.0 each band. Results must be no older than 3 years at the time of application.
+            </p>
+            <div class="task-docs-title" data-en="Accepted tests" data-es="Pruebas aceptadas">Accepted tests</div>
+            <div class="task-docs">
+              <div class="task-doc-item"><span class="task-doc-icon">📝</span><span data-en="IELTS Academic or General Training — 6.0 overall" data-es="IELTS Académico o General — 6.0 general">IELTS Academic or General Training — 6.0 overall</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📝</span><span data-en="PTE Academic — 50 overall" data-es="PTE Académico — 50 general">PTE Academic — 50 overall</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📝</span><span data-en="TOEFL iBT — 64 overall" data-es="TOEFL iBT — 64 general">TOEFL iBT — 64 overall</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📝</span><span data-en="Cambridge C1 / C2 Advanced — 169 overall" data-es="Cambridge C1 / C2 Avanzado — 169 general">Cambridge C1 / C2 Advanced — 169 overall</span></div>
+            </div>
+            <div class="task-info-grid">
+              <div class="task-info-cell"><div class="task-info-label" data-en="Validity" data-es="Validez">Validity</div><div class="task-info-val" data-en="3 years" data-es="3 años">3 years</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="IELTS cost" data-es="Costo IELTS">IELTS cost</div><div class="task-info-val">AUD $375</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Results in" data-es="Resultados en">Results in</div><div class="task-info-val" data-en="13 days" data-es="13 días">13 days</div></div>
+            </div>
+            <div class="task-links">
+              <a class="task-link" href="https://www.ielts.org" target="_blank">🌐 Book IELTS</a>
+              <a class="task-link" href="migro-ielts.html">📝 IELTS Practice Simulator</a>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Obtain police clearance certificates" data-es="Obtén certificados de antecedentes policiales">Obtain police clearance certificates</div>
+              <div class="task-badges"><span class="task-badge badge-key" data-en="Required" data-es="Requerido">Required</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="You need a police clearance from Australia (Australian Federal Police) plus from every country you have lived in for 12+ months since turning 16. Since you're already in Australia, the Australian Federal Police check can be done entirely online and usually takes 15 days." data-es="Necesitas un certificado de antecedentes de Australia (Policía Federal Australiana) más de cada país en el que hayas vivido durante 12+ meses desde que cumpliste 16 años. Como ya estás en Australia, la verificación de la Policía Federal Australiana se puede hacer completamente en línea y generalmente tarda 15 días.">
+              You need a police clearance from Australia (Australian Federal Police) plus from every country you have lived in for 12+ months since turning 16. Since you're already in Australia, the AFP check can be done entirely online.
+            </p>
+            <div class="task-docs-title" data-en="Required certificates" data-es="Certificados requeridos">Required certificates</div>
+            <div class="task-docs">
+              <div class="task-doc-item"><span class="task-doc-icon">🇦🇺</span><span data-en="Australian Federal Police (AFP) National Police Check" data-es="Verificación Nacional de Antecedentes de la Policía Federal Australiana (AFP)">Australian Federal Police (AFP) National Police Check</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">🌍</span><span data-en="Police clearance from country of citizenship (if lived there 12+ months)" data-es="Certificado de antecedentes de tu país de ciudadanía (si viviste allí 12+ meses)">Police clearance from country of citizenship (if lived there 12+ months)</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">🌍</span><span data-en="Police clearance from any other country where you lived 12+ months since age 16" data-es="Certificado de antecedentes de cualquier otro país donde viviste 12+ meses desde los 16 años">Police clearance from any other country where you lived 12+ months since age 16</span></div>
+            </div>
+            <div class="task-info-grid">
+              <div class="task-info-cell"><div class="task-info-label" data-en="AFP time" data-es="Tiempo AFP">AFP time</div><div class="task-info-val" data-en="~15 days" data-es="~15 días">~15 days</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="AFP cost" data-es="Costo AFP">AFP cost</div><div class="task-info-val">AUD $56</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Validity" data-es="Validez">Validity</div><div class="task-info-val" data-en="12 months" data-es="12 meses">12 months</div></div>
+            </div>
+            <div class="task-links">
+              <a class="task-link" href="https://www.afp.gov.au/what-we-do/services/criminal-records/national-police-checks" target="_blank">🌐 AFP National Police Check</a>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Complete overseas skills assessment (482 only)" data-es="Completa evaluación de habilidades en el extranjero (solo 482)">Complete overseas skills assessment (482 only)</div>
+              <div class="task-badges"><span class="task-badge badge-key" data-en="482 only" data-es="Solo 482">482 only</span><span class="task-badge badge-urgent" data-en="8–14 weeks" data-es="8–14 semanas">8–14 weeks</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="If your occupation requires a skills assessment for the 482 visa, you must get your overseas qualifications and experience assessed by the relevant assessing authority for your ANZSCO occupation code. Note: not all 482 occupations require a skills assessment — check the specific requirements for your nominated occupation." data-es="Si tu ocupación requiere una evaluación de habilidades para la visa 482, debes tener tus calificaciones y experiencia en el extranjero evaluadas por la autoridad evaluadora relevante para tu código de ocupación ANZSCO. Nota: no todas las ocupaciones 482 requieren una evaluación de habilidades — verifica los requisitos específicos para tu ocupación nominada.">
+              If your occupation requires a skills assessment for the 482 visa, you must get your overseas qualifications and experience assessed by the relevant assessing authority for your ANZSCO occupation code. Not all 482 occupations require a skills assessment — check the specific requirements for your nominated occupation.
+            </p>
+            <div class="task-docs-title" data-en="Common assessing bodies" data-es="Organismos evaluadores comunes">Common assessing bodies</div>
+            <div class="task-docs">
+              <div class="task-doc-item"><span class="task-doc-icon">💻</span><span data-en="ACS (Australian Computer Society) — ICT occupations" data-es="ACS (Australian Computer Society) — ocupaciones TIC">ACS (Australian Computer Society) — ICT occupations</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">⚙️</span><span data-en="Engineers Australia — engineering occupations" data-es="Engineers Australia — ocupaciones de ingeniería">Engineers Australia — engineering occupations</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">🏥</span><span data-en="AHPRA — health professionals (nurses, doctors, pharmacists)" data-es="AHPRA — profesionales de la salud (enfermeros, médicos, farmacéuticos)">AHPRA — health professionals (nurses, doctors, pharmacists)</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">🏗️</span><span data-en="VETASSESS — wide range of trades and professional occupations" data-es="VETASSESS — amplia gama de oficios y ocupaciones profesionales">VETASSESS — wide range of trades and professional occupations</span></div>
+            </div>
+            <div class="task-info-grid">
+              <div class="task-info-cell"><div class="task-info-label" data-en="Time" data-es="Tiempo">Time</div><div class="task-info-val" data-en="8–14 weeks" data-es="8–14 semanas">8–14 weeks</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Cost" data-es="Costo">Cost</div><div class="task-info-val">AUD $500–900</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Validity" data-es="Validez">Validity</div><div class="task-info-val" data-en="3 years" data-es="3 años">3 years</div></div>
+            </div>
+            <div class="task-links">
+              <a class="task-link" href="https://www.acs.org.au/msa" target="_blank">🌐 ACS Skills Assessment</a>
+              <a class="task-link" href="https://www.engineersaustralia.org.au/skills-assessment" target="_blank">🌐 Engineers Australia</a>
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PHASE 3 -->
+    <div class="phase-block">
+      <div class="phase-header">
+        <div class="phase-num">03</div>
+        <div class="phase-info">
+          <div class="phase-title" data-en="Health Examinations" data-es="Exámenes Médicos">Health Examinations</div>
+          <div class="phase-sub" data-en="Mandatory health checks through an approved panel physician" data-es="Chequeos médicos obligatorios a través de un médico de panel aprobado">Mandatory health checks through an approved panel physician</div>
+        </div>
+        <div class="phase-badge" data-en="Week 3–6" data-es="Semana 3–6">Week 3–6</div>
+      </div>
+      <div class="phase-tasks">
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Book health examination with approved panel physician" data-es="Reserva examen médico con médico de panel aprobado">Book health examination with approved panel physician</div>
+              <div class="task-badges"><span class="task-badge badge-key" data-en="Mandatory" data-es="Obligatorio">Mandatory</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="All 482 and 485 applicants must undergo a medical examination conducted by an approved panel physician in Australia. The exam includes a chest X-ray, blood tests, and a general physical assessment. You'll receive a HAP ID (Health Advice Preparation) that is linked directly to your ImmiAccount." data-es="Todos los solicitantes de 482 y 485 deben someterse a un examen médico realizado por un médico de panel aprobado en Australia. El examen incluye una radiografía de tórax, análisis de sangre y una evaluación física general. Recibirás un HAP ID (Preparación de Asesoramiento de Salud) que está vinculado directamente a tu ImmiAccount.">
+              All 482 and 485 applicants must undergo a medical examination conducted by an approved panel physician in Australia. The exam includes a chest X-ray, blood tests, and a general physical assessment. You'll receive a HAP ID linked to your ImmiAccount.
+            </p>
+            <div class="task-docs-title" data-en="What to bring" data-es="Qué llevar">What to bring</div>
+            <div class="task-docs">
+              <div class="task-doc-item"><span class="task-doc-icon">🛂</span><span data-en="Valid passport (original)" data-es="Pasaporte válido (original)">Valid passport (original)</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">🔢</span><span data-en="HAP ID from ImmiAccount" data-es="HAP ID de ImmiAccount">HAP ID from ImmiAccount</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📸</span><span data-en="2 passport-size photos" data-es="2 fotos tamaño pasaporte">2 passport-size photos</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📋</span><span data-en="Medical records if you have a pre-existing condition" data-es="Registros médicos si tienes una condición preexistente">Medical records if you have a pre-existing condition</span></div>
+            </div>
+            <div class="task-info-grid">
+              <div class="task-info-cell"><div class="task-info-label" data-en="Cost" data-es="Costo">Cost</div><div class="task-info-val">AUD $350–500</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Results" data-es="Resultados">Results</div><div class="task-info-val" data-en="2–5 days" data-es="2–5 días">2–5 days</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Validity" data-es="Validez">Validity</div><div class="task-info-val" data-en="12 months" data-es="12 meses">12 months</div></div>
+            </div>
+            <div class="task-links">
+              <a class="task-link" href="https://immi.homeaffairs.gov.au/help-support/meeting-our-requirements/health/arrange-your-health-examination/in-australia" target="_blank">🌐 Find a Panel Physician</a>
+            </div>
+            <div class="task-tip"><strong data-en="Tip:" data-es="Tip:">Tip:</strong> <span data-en="Get your HAP ID from ImmiAccount BEFORE booking your medical appointment. The physician needs this to upload your results directly to the Department." data-es="Obtén tu HAP ID de ImmiAccount ANTES de reservar tu cita médica. El médico necesita esto para subir tus resultados directamente al Departamento.">Get your HAP ID from ImmiAccount BEFORE booking your medical appointment. The physician needs this to upload your results directly to the Department.</span></div>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PHASE 4 -->
+    <div class="phase-block">
+      <div class="phase-header">
+        <div class="phase-num">04</div>
+        <div class="phase-info">
+          <div class="phase-title" data-en="Lodge Application Online" data-es="Presenta la Solicitud en Línea">Lodge Application Online</div>
+          <div class="phase-sub" data-en="Submit via ImmiAccount — stay in Australia while it's processed" data-es="Envía a través de ImmiAccount — permanece en Australia mientras se procesa">Submit via ImmiAccount — stay in Australia while it's processed</div>
+        </div>
+        <div class="phase-badge" data-en="Week 6–8" data-es="Semana 6–8">Week 6–8</div>
+      </div>
+      <div class="phase-tasks">
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Lodge application via ImmiAccount" data-es="Presenta la solicitud a través de ImmiAccount">Lodge application via ImmiAccount</div>
+              <div class="task-badges"><span class="task-badge badge-key" data-en="Critical step" data-es="Paso crítico">Critical step</span><span class="task-badge badge-urgent" data-en="Before visa expires" data-es="Antes de que venza la visa">Before visa expires</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="Submit your 485 or 482 application online through ImmiAccount. This must be done before your current visa expires. Upon lodgement, a Bridging Visa A (BVA) is automatically granted, allowing you to remain in Australia with the same work rights while your application is in progress — even if your student visa expires." data-es="Presenta tu solicitud 485 o 482 en línea a través de ImmiAccount. Esto debe hacerse antes de que venza tu visa actual. Al presentar, se otorga automáticamente una Visa Puente A (BVA), lo que te permite permanecer en Australia con los mismos derechos laborales mientras tu solicitud está en proceso, incluso si tu visa de estudiante vence.">
+              Submit your 485 or 482 application online through ImmiAccount. This must be done before your current visa expires. Upon lodgement, a Bridging Visa A (BVA) is automatically granted, allowing you to remain in Australia with the same work rights while your application is in progress.
+            </p>
+            <div class="task-docs-title" data-en="Before you lodge — final checklist" data-es="Antes de presentar — lista de verificación final">Before you lodge — final checklist</div>
+            <div class="task-docs">
+              <div class="task-doc-item"><span class="task-doc-icon">✅</span><span data-en="All documents scanned and ready (PDF, clear quality)" data-es="Todos los documentos escaneados y listos (PDF, calidad clara)">All documents scanned and ready (PDF, clear quality)</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">✅</span><span data-en="Health examination completed and results uploaded to Department" data-es="Examen médico completado y resultados subidos al Departamento">Health examination completed and results uploaded to Department</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">✅</span><span data-en="English test results within 3-year validity" data-es="Resultados de la prueba de inglés dentro de la validez de 3 años">English test results within 3-year validity</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">✅</span><span data-en="Payment ready (credit card or BPAY)" data-es="Pago listo (tarjeta de crédito o BPAY)">Payment ready (credit card or BPAY)</span></div>
+            </div>
+            <div class="task-info-grid">
+              <div class="task-info-cell"><div class="task-info-label" data-en="485 fee" data-es="Tarifa 485">485 fee</div><div class="task-info-val">AUD $1,895</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="482 fee" data-es="Tarifa 482">482 fee</div><div class="task-info-val">AUD $3,115</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Processing" data-es="Procesamiento">Processing</div><div class="task-info-val" data-en="4–12 months" data-es="4–12 meses">4–12 months</div></div>
+            </div>
+            <div class="task-links">
+              <a class="task-link" href="https://immi.homeaffairs.gov.au/help-support/applying-online-or-on-paper/online/immiaccount" target="_blank">🌐 ImmiAccount</a>
+              <a class="task-link" href="https://migro-services.html">👤 Find Migration Agent</a>
+            </div>
+            <div class="task-tip"><strong data-en="BVA Tip:" data-es="Tip BVA:">BVA Tip:</strong> <span data-en="Once your BVA is granted, do NOT travel overseas unless you also have a Bridging Visa B (BVB). Leaving Australia without BVB will cancel your BVA and you won't be able to return." data-es="Una vez que se otorgue tu BVA, NO viajes al extranjero a menos que también tengas una Visa Puente B (BVB). Salir de Australia sin BVB cancelará tu BVA y no podrás regresar.">Once your BVA is granted, do NOT travel overseas unless you also have a Bridging Visa B (BVB). Leaving Australia without BVB will cancel your BVA and you won't be able to return.</span></div>
+          </div></div>
+        </div>
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Respond to any requests for further information (RFI)" data-es="Responde a cualquier solicitud de información adicional (RFI)">Respond to any requests for further information (RFI)</div>
+              <div class="task-badges"><span class="task-badge badge-urgent" data-en="28-day deadline" data-es="Plazo 28 días">28-day deadline</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="During processing, the Department may send you a Request for Further Information (s56 or s57 request) via ImmiAccount. You typically have 28 days to respond. Failing to respond in time can result in your application being refused. Check your ImmiAccount and email regularly during processing." data-es="Durante el procesamiento, el Departamento puede enviarte una Solicitud de Información Adicional (solicitud s56 o s57) a través de ImmiAccount. Generalmente tienes 28 días para responder. No responder a tiempo puede resultar en que tu solicitud sea rechazada. Revisa tu ImmiAccount y correo electrónico regularmente durante el procesamiento.">
+              During processing, the Department may send you a Request for Further Information via ImmiAccount. You typically have 28 days to respond. Failing to respond in time can result in your application being refused. Check your ImmiAccount and email regularly.
+            </p>
+            <div class="task-docs-title" data-en="Common RFI documents requested" data-es="Documentos de RFI comúnmente solicitados">Common RFI documents requested</div>
+            <div class="task-docs">
+              <div class="task-doc-item"><span class="task-doc-icon">📄</span><span data-en="Updated employment evidence (payslips, contract)" data-es="Evidencia de empleo actualizada (recibos de sueldo, contrato)">Updated employment evidence (payslips, contract)</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📄</span><span data-en="Updated passport biodata page (if renewed)" data-es="Página de datos biográficos del pasaporte actualizada (si fue renovado)">Updated passport biodata page (if renewed)</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📄</span><span data-en="Statutory declaration for name changes or identity" data-es="Declaración estatutaria para cambios de nombre o identidad">Statutory declaration for name changes or identity</span></div>
+            </div>
+            <div class="task-info-grid">
+              <div class="task-info-cell"><div class="task-info-label" data-en="Deadline" data-es="Plazo">Deadline</div><div class="task-info-val" data-en="28 days" data-es="28 días">28 days</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="How" data-es="Cómo">How</div><div class="task-info-val">ImmiAccount</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Cost" data-es="Costo">Cost</div><div class="task-info-val" data-en="Free" data-es="Gratis">Free</div></div>
+            </div>
+            <div class="task-tip"><strong data-en="Tip:" data-es="Tip:">Tip:</strong> <span data-en="Add your migration agent as a legal representative in ImmiAccount so they receive all RFI notifications on your behalf and can act quickly." data-es="Agrega a tu agente de migración como representante legal en ImmiAccount para que reciba todas las notificaciones de RFI en tu nombre y pueda actuar rápidamente.">Add your migration agent as a legal representative in ImmiAccount so they receive all RFI notifications on your behalf and can act quickly.</span></div>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PHASE 5 -->
+    <div class="phase-block">
+      <div class="phase-header">
+        <div class="phase-num">05</div>
+        <div class="phase-info">
+          <div class="phase-title" data-en="After Decision: Next Steps" data-es="Después de la Decisión: Próximos Pasos">After Decision: Next Steps</div>
+          <div class="phase-sub" data-en="What to do once your new visa is granted" data-es="Qué hacer una vez que se otorgue tu nueva visa">What to do once your new visa is granted</div>
+        </div>
+        <div class="phase-badge" data-en="Months 4–12" data-es="Meses 4–12">Months 4–12</div>
+      </div>
+      <div class="phase-tasks">
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Verify new visa grant on VEVO" data-es="Verifica el otorgamiento de la nueva visa en VEVO">Verify new visa grant on VEVO</div>
+              <div class="task-badges"><span class="task-badge badge-key" data-en="First thing" data-es="Lo primero">First thing</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="Once the Department grants your visa, you'll receive a grant notification in your ImmiAccount and by email. Immediately verify the new visa conditions on VEVO to confirm work rights, travel rights, and expiry. Keep a screenshot for your records." data-es="Una vez que el Departamento otorgue tu visa, recibirás una notificación de otorgamiento en tu ImmiAccount y por correo electrónico. Verifica inmediatamente las nuevas condiciones de la visa en VEVO para confirmar derechos laborales, derechos de viaje y vencimiento. Guarda una captura de pantalla para tus registros.">
+              Once the Department grants your visa, you'll receive a grant notification in ImmiAccount and by email. Immediately verify the new visa conditions on VEVO to confirm work rights, travel rights, and expiry. Keep a screenshot for your records.
+            </p>
+            <div class="task-links">
+              <a class="task-link" href="https://immi.homeaffairs.gov.au/visas/already-have-a-visa/check-visa-details-and-conditions/check-conditions-online" target="_blank">🌐 VEVO Check</a>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Update Medicare, bank, and employer with new visa" data-es="Actualiza Medicare, banco y empleador con la nueva visa">Update Medicare, bank, and employer with new visa</div>
+              <div class="task-badges"><span class="task-badge badge-key" data-en="Important" data-es="Importante">Important</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="After your visa grant, update your records with: Medicare (you may now be eligible for the full Medicare card if you weren't before), your bank (some accounts require visa verification), your employer or HR department (so they can update your working rights), and the ATO (for correct tax residency status)." data-es="Después del otorgamiento de tu visa, actualiza tus registros con: Medicare (ahora puedes ser elegible para la tarjeta Medicare completa si no lo eras antes), tu banco (algunas cuentas requieren verificación de visa), tu empleador o departamento de RRHH (para que actualicen tus derechos laborales), y la ATO (para el estado de residencia fiscal correcto).">
+              After your visa grant, update your records with Medicare, your bank, your employer, and the ATO to reflect your new visa status and work rights.
+            </p>
+            <div class="task-docs-title" data-en="Who to notify" data-es="A quién notificar">Who to notify</div>
+            <div class="task-docs">
+              <div class="task-doc-item"><span class="task-doc-icon">🏥</span><span data-en="Medicare — update visa class for full entitlement" data-es="Medicare — actualizar clase de visa para derecho completo">Medicare — update visa class for full entitlement</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">🏦</span><span data-en="Bank — some institutions require visa status updates" data-es="Banco — algunas instituciones requieren actualizaciones del estado de visa">Bank — some institutions require visa status updates</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">🏢</span><span data-en="Employer HR — provide updated VEVO printout" data-es="RRHH del empleador — proporcionar impresión VEVO actualizada">Employer HR — provide updated VEVO printout</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">💰</span><span data-en="ATO — update tax file number record if needed" data-es="ATO — actualizar registro de número de archivo fiscal si es necesario">ATO — update tax file number record if needed</span></div>
+            </div>
+            <div class="task-links">
+              <a class="task-link" href="https://www.servicesaustralia.gov.au/medicare" target="_blank">🌐 Medicare</a>
+              <a class="task-link" href="https://www.ato.gov.au" target="_blank">🌐 ATO</a>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Start planning your pathway to Permanent Residency" data-es="Empieza a planificar tu camino hacia la Residencia Permanente">Start planning your pathway to Permanent Residency</div>
+              <div class="task-badges"><span class="task-badge badge-optional" data-en="Next milestone" data-es="Próximo hito">Next milestone</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="Now that you have a pathway visa, the next goal is Permanent Residency. From a 485 visa, you would typically seek employer sponsorship (482) and then nominate for 186 (ENS) after 3 years. From a 482, you may be eligible for the Subclass 186 ENS Transition Stream after 3 years with the same employer, or pursue a 189/190 Points-Based visa." data-es="Ahora que tienes una visa de tránsito, el próximo objetivo es la Residencia Permanente. Desde una visa 485, típicamente buscarías patrocinio del empleador (482) y luego nominación para 186 (ENS) después de 3 años. Desde una 482, puedes ser elegible para la Subclase 186 ENS Transición después de 3 años con el mismo empleador, o buscar una visa 189/190 basada en puntos.">
+              Now that you have a pathway visa, the next goal is Permanent Residency. From a 485, you'd typically seek employer sponsorship (482) then 186 ENS after 3 years. From a 482, you may be eligible for 186 ENS Transition Stream after 3 years with the same employer.
+            </p>
+            <div class="task-docs-title" data-en="PR pathways from here" data-es="Vías de RP desde aquí">PR pathways from here</div>
+            <div class="task-docs">
+              <div class="task-doc-item"><span class="task-doc-icon">🏆</span><span data-en="Subclass 186 ENS (Transition) — 3 years on 482 with same employer" data-es="Subclase 186 ENS (Transición) — 3 años en 482 con el mismo empleador">Subclass 186 ENS (Transition) — 3 years on 482 with same employer</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">⭐</span><span data-en="Subclass 189 — Independent skilled points-tested stream" data-es="Subclase 189 — Corriente independiente calificada por puntos">Subclass 189 — Independent skilled points-tested stream</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📍</span><span data-en="Subclass 190 — State-nominated points-tested (5 bonus points)" data-es="Subclase 190 — Nominado por estado basado en puntos (5 puntos adicionales)">Subclass 190 — State-nominated points-tested (5 bonus points)</span></div>
+            </div>
+            <div class="task-links">
+              <a class="task-link" href="migro-profile.html">📊 View My Score</a>
+              <a class="task-link" href="migro-services.html">👤 Find Migration Agent</a>
+            </div>
+            <div class="task-tip"><strong data-en="Big picture:" data-es="Panorama general:">Big picture:</strong> <span data-en="From student visa → 485 → 482 → 186 PR is typically a 5–7 year journey. Starting early, maintaining good records, and working with a registered migration agent dramatically improves your chances." data-es="De visa de estudiante → 485 → 482 → 186 PR es típicamente un viaje de 5 a 7 años. Empezar temprano, mantener buenos registros y trabajar con un agente de migración registrado mejora dramáticamente tus posibilidades.">From student visa → 485 → 482 → 186 PR is typically a 5–7 year journey. Starting early, maintaining good records, and working with a registered migration agent dramatically improves your chances.</span></div>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <!-- JOURNEY SWITCHER -->
+    <div class="sidebar-card">
+      <div class="sidebar-card-title" data-en="Choose Your Journey" data-es="Elige Tu Recorrido">Choose Your Journey</div>
+      <div class="journey-list">
+        <a href="migro-plan.html" class="journey-item">
+          <div class="journey-icon">✈️</div>
+          <div>
+            <div class="journey-label" data-en="New applicant abroad" data-es="Nuevo solicitante en el exterior">New applicant abroad</div>
+            <div class="journey-sub" data-en="Applying from outside Australia" data-es="Solicitando desde fuera de Australia">Applying from outside Australia</div>
+          </div>
+        </a>
+        <a href="migro-plan-existing.html" class="journey-item current">
+          <div class="journey-icon">🏠</div>
+          <div>
+            <div class="journey-label" data-en="Already in Australia" data-es="Ya en Australia">Already in Australia</div>
+            <div class="journey-sub" data-en="Changing or upgrading visa" data-es="Cambiando o actualizando visa">Changing or upgrading visa</div>
+          </div>
+        </a>
+        <a href="migro-plan-extension.html" class="journey-item">
+          <div class="journey-icon">🔄</div>
+          <div>
+            <div class="journey-label" data-en="Extend / Renew visa" data-es="Extender / Renovar visa">Extend / Renew visa</div>
+            <div class="journey-sub" data-en="Same visa class, more time" data-es="Misma clase de visa, más tiempo">Same visa class, more time</div>
+          </div>
+        </a>
+        <a href="migro-plan-citizenship.html" class="journey-item">
+          <div class="journey-icon">🇦🇺</div>
+          <div>
+            <div class="journey-label" data-en="PR → Citizenship" data-es="RP → Ciudadanía">PR → Citizenship</div>
+            <div class="journey-sub" data-en="Permanent resident applying" data-es="Residente permanente solicitando">Permanent resident applying</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- VEVO CHECK CARD -->
+    <div class="vevo-card">
+      <div class="vevo-title">✅ <span data-en="Your Current Visa Status" data-es="Tu Estado de Visa Actual">Your Current Visa Status</span></div>
+      <div class="vevo-rows">
+        <div class="vevo-row">
+          <span class="vevo-key" data-en="Visa class">Visa class</span>
+          <span class="vevo-val">Subclass 500</span>
+        </div>
+        <div class="vevo-row">
+          <span class="vevo-key" data-en="Expiry">Expiry</span>
+          <span class="vevo-val">Nov 2026</span>
+        </div>
+        <div class="vevo-row">
+          <span class="vevo-key" data-en="Work rights">Work rights</span>
+          <span class="vevo-val" data-en="48 hrs/fortnight" data-es="48 hrs/quincena">48 hrs/fortnight</span>
+        </div>
+        <div class="vevo-row">
+          <span class="vevo-key" data-en="Months left">Months left</span>
+          <span class="vevo-val" data-en="~20 months" data-es="~20 meses">~20 months</span>
+        </div>
+      </div>
+      <a class="vevo-btn" href="https://immi.homeaffairs.gov.au/visas/already-have-a-visa/check-visa-details-and-conditions/check-conditions-online" target="_blank" data-en="Check on VEVO →" data-es="Verificar en VEVO →">Check on VEVO →</a>
+    </div>
+
+    <!-- PROGRESS TRACKER -->
+    <div class="sidebar-card">
+      <div class="sidebar-card-title" data-en="Plan Progress" data-es="Progreso del Plan">Plan Progress</div>
+      <div class="mini-progress">
+        <div class="mini-phase">
+          <div class="mini-dot active"></div>
+          <div class="mini-label active" data-en="01 — Verify Eligibility" data-es="01 — Verificar Elegibilidad">01 — Verify Eligibility</div>
+          <div class="mini-count">0/3</div>
+        </div>
+        <div class="mini-phase">
+          <div class="mini-dot"></div>
+          <div class="mini-label" data-en="02 — Gather Documents" data-es="02 — Reunir Documentos">02 — Gather Documents</div>
+          <div class="mini-count">0/4</div>
+        </div>
+        <div class="mini-phase">
+          <div class="mini-dot"></div>
+          <div class="mini-label" data-en="03 — Health Exam" data-es="03 — Examen Médico">03 — Health Exam</div>
+          <div class="mini-count">0/1</div>
+        </div>
+        <div class="mini-phase">
+          <div class="mini-dot"></div>
+          <div class="mini-label" data-en="04 — Lodge Application" data-es="04 — Presentar Solicitud">04 — Lodge Application</div>
+          <div class="mini-count">0/2</div>
+        </div>
+        <div class="mini-phase">
+          <div class="mini-dot"></div>
+          <div class="mini-label" data-en="05 — After Decision" data-es="05 — Después de la Decisión">05 — After Decision</div>
+          <div class="mini-count">0/3</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIMELINE ESTIMATE -->
+    <div class="sidebar-card">
+      <div class="sidebar-card-title" data-en="Estimated Timeline" data-es="Cronograma Estimado">Estimated Timeline</div>
+      <div class="compact-timeline">
+        <div class="ct-item">
+          <div class="ct-bullet"></div>
+          <div class="ct-text"><strong data-en="Week 1–2: Eligibility check" data-es="Semana 1–2: Verificación de elegibilidad">Week 1–2: Eligibility check</strong><span data-en="VEVO, 485/482 requirements" data-es="VEVO, requisitos 485/482">VEVO, 485/482 requirements</span></div>
+        </div>
+        <div class="ct-item">
+          <div class="ct-bullet"></div>
+          <div class="ct-text"><strong data-en="Week 2–5: Documents" data-es="Semana 2–5: Documentos">Week 2–5: Documents</strong><span data-en="IELTS, police checks, transcripts" data-es="IELTS, antecedentes policiales, transcripciones">IELTS, police checks, transcripts</span></div>
+        </div>
+        <div class="ct-item">
+          <div class="ct-bullet"></div>
+          <div class="ct-text"><strong data-en="Week 3–6: Health exam" data-es="Semana 3–6: Examen médico">Week 3–6: Health exam</strong><span data-en="Panel physician appointment" data-es="Cita con médico de panel">Panel physician appointment</span></div>
+        </div>
+        <div class="ct-item">
+          <div class="ct-bullet"></div>
+          <div class="ct-text"><strong data-en="Week 6–8: Lodge" data-es="Semana 6–8: Presentar">Week 6–8: Lodge</strong><span data-en="Submit via ImmiAccount + BVA" data-es="Enviar via ImmiAccount + BVA">Submit via ImmiAccount + BVA</span></div>
+        </div>
+        <div class="ct-item">
+          <div class="ct-bullet"></div>
+          <div class="ct-text"><strong data-en="Month 4–12: Decision" data-es="Mes 4–12: Decisión">Month 4–12: Decision</strong><span data-en="485 faster, 482 varies" data-es="485 más rápido, 482 variable">485 faster, 482 varies</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-card">
+      <div class="cta-card-title" data-en="Need Expert Guidance?" data-es="¿Necesitas Orientación Experta?">Need Expert Guidance?</div>
+      <p class="cta-card-desc" data-en="A registered migration agent can review your complete profile, advise on the best pathway, and handle the entire application process for you." data-es="Un agente de migración registrado puede revisar tu perfil completo, asesorarte sobre la mejor vía y manejar todo el proceso de solicitud por ti.">A registered migration agent can review your complete profile, advise on the best pathway, and handle the entire application process for you.</p>
+      <a href="migro-services.html" class="cta-card-btn" data-en="Find Migration Agents →" data-es="Encontrar Agentes de Migración →">Find Migration Agents →</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  let lang = 'en';
+
+  function setLang(l, btn) {
+    lang = l;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('[data-en]').forEach(el => {
+      el.innerHTML = l === 'en' ? el.dataset.en : (el.dataset.es || el.dataset.en);
+    });
+  }
+
+  function toggleTask(item) {
+    const wasOpen = item.classList.contains('open');
+    // Close siblings in same phase
+    item.closest('.phase-tasks')?.querySelectorAll('.task-item').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  }
+
+  function checkTask(e, checkbox) {
+    e.stopPropagation();
+    checkbox.classList.toggle('checked');
+    if (checkbox.classList.contains('checked')) {
+      checkbox.textContent = '✓';
+    } else {
+      checkbox.textContent = '';
+    }
+  }
+
+  function selectPathway(card, code) {
+    document.querySelectorAll('.pathway-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+  }
+</script>
+</body>
+</html>
