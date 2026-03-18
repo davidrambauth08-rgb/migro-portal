@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Migro — Document Checklist</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --black: #0a0a0a; --white: #ffffff;
+      --gray-100: #f5f5f5; --gray-200: #e8e8e8;
+      --gray-300: #d0d0d0; --gray-400: #999;
+      --gray-600: #555; --gray-800: #222;
+      --green: #16a34a; --green-bg: #f0fdf4; --green-border: #bbf7d0;
+      --amber: #b45309; --amber-bg: #fffbeb; --amber-border: #fde68a;
+      --red: #dc2626; --red-bg: #fef2f2; --red-border: #fecaca;
+      --blue: #2563eb; --blue-bg: #eff6ff; --blue-border: #bfdbfe;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--gray-100); color: var(--black); }
+
+    /* NAV */
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 48px; background: var(--white); border-bottom: 1px solid var(--gray-200); position: sticky; top: 0; z-index: 100; }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--black); text-decoration: none; }
+    .nav-logo span { display: inline-block; width: 6px; height: 6px; background: var(--black); border-radius: 50%; margin-left: 2px; vertical-align: super; }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .lang-toggle { display: flex; background: var(--gray-100); border-radius: 6px; padding: 3px; gap: 2px; }
+    .lang-btn { padding: 4px 10px; font-size: 11px; font-weight: 700; border: none; background: transparent; border-radius: 4px; cursor: pointer; color: var(--gray-400); transition: all .2s; }
+    .lang-btn.active { background: var(--black); color: var(--white); }
+    .nav-back { font-size: 13px; font-weight: 500; color: var(--gray-600); text-decoration: none; padding: 7px 14px; border-radius: 6px; border: 1px solid var(--gray-200); transition: all .2s; }
+    .nav-back:hover { border-color: var(--black); color: var(--black); }
+
+    /* HERO */
+    .hero { background: var(--black); padding: 52px 48px 40px; }
+    .hero-inner { max-width: 1200px; margin: 0 auto; }
+    .hero-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #555; margin-bottom: 12px; }
+    .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(28px, 3.5vw, 46px); font-weight: 700; color: var(--white); line-height: 1.1; letter-spacing: -1px; margin-bottom: 14px; }
+    .hero-sub { font-size: 15px; color: #777; max-width: 560px; line-height: 1.6; margin-bottom: 28px; }
+    .hero-chips { display: flex; gap: 10px; flex-wrap: wrap; }
+    .hero-chip { display: flex; align-items: center; gap: 8px; background: #111; border: 1px solid #222; border-radius: 100px; padding: 7px 14px; font-size: 13px; font-weight: 600; color: #aaa; }
+    .chip-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .chip-dot.green { background: #4ade80; }
+    .chip-dot.amber { background: #fbbf24; }
+
+    /* FILTER BAR */
+    .filter-bar { background: var(--white); border-bottom: 1px solid var(--gray-200); padding: 14px 48px; }
+    .filter-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .filter-label { font-size: 12px; font-weight: 700; color: var(--gray-400); }
+    .filter-chip { padding: 6px 14px; border: 1.5px solid var(--gray-200); border-radius: 100px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all .2s; color: var(--gray-600); background: var(--white); }
+    .filter-chip:hover { border-color: var(--gray-400); }
+    .filter-chip.active { background: var(--black); border-color: var(--black); color: var(--white); }
+    .filter-sep { color: var(--gray-200); margin: 0 2px; }
+    .progress-chip { margin-left: auto; font-size: 12px; font-weight: 700; color: var(--black); background: var(--gray-100); padding: 6px 14px; border-radius: 100px; }
+    .reset-btn { font-size: 12px; font-weight: 600; color: var(--gray-400); background: none; border: none; cursor: pointer; padding: 6px 10px; transition: color .2s; }
+    .reset-btn:hover { color: var(--red); }
+
+    /* PAGE BODY */
+    .page-body { max-width: 1200px; margin: 0 auto; padding: 36px 48px; display: grid; grid-template-columns: 1fr 300px; gap: 28px; align-items: start; }
+
+    /* SECTION CARD */
+    .section-card { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); overflow: hidden; margin-bottom: 16px; transition: border-color .2s; }
+    .section-card.complete { border-color: var(--green); }
+    .section-hdr { padding: 18px 22px; display: flex; align-items: center; gap: 14px; cursor: pointer; user-select: none; }
+    .section-icon { font-size: 20px; flex-shrink: 0; }
+    .section-info { flex: 1; }
+    .section-name { font-size: 15px; font-weight: 700; color: var(--black); }
+    .section-meta { font-size: 12px; color: var(--gray-400); margin-top: 2px; }
+    .section-progress { display: flex; align-items: center; gap: 10px; }
+    .sec-pct { font-size: 13px; font-weight: 800; color: var(--black); min-width: 36px; text-align: right; }
+    .sec-bar-bg { width: 60px; height: 5px; background: var(--gray-200); border-radius: 100px; overflow: hidden; }
+    .sec-bar-fill { height: 100%; background: var(--black); border-radius: 100px; transition: width .4s; }
+    .section-card.complete .sec-bar-fill { background: var(--green); }
+    .section-chevron { font-size: 10px; color: var(--gray-300); transition: transform .3s; margin-left: 6px; }
+    .section-card.open .section-chevron { transform: rotate(180deg); }
+    .section-body { max-height: 0; overflow: hidden; transition: max-height .4s cubic-bezier(.4,0,.2,1); }
+    .section-card.open .section-body { max-height: 2000px; }
+
+    /* DOC ITEMS */
+    .doc-list { padding: 0 22px 18px; }
+    .doc-category { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; color: var(--gray-300); margin: 16px 0 8px; }
+    .doc-item { display: flex; align-items: flex-start; gap: 12px; padding: 11px 14px; border-radius: 9px; border: 1.5px solid var(--gray-200); margin-bottom: 7px; transition: all .2s; cursor: pointer; background: var(--white); }
+    .doc-item:hover { border-color: var(--gray-300); background: var(--gray-100); }
+    .doc-item.checked { background: var(--green-bg); border-color: var(--green-border); }
+    .doc-item.na { background: var(--gray-100); border-color: var(--gray-200); opacity: 0.55; }
+    .doc-check { width: 20px; height: 20px; border: 2px solid var(--gray-300); border-radius: 5px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all .2s; margin-top: 1px; }
+    .doc-item.checked .doc-check { background: var(--green); border-color: var(--green); }
+    .doc-item.checked .doc-check::after { content: '✓'; font-size: 12px; font-weight: 800; color: var(--white); }
+    .doc-item.na .doc-check { background: var(--gray-200); border-color: var(--gray-200); }
+    .doc-item.na .doc-check::after { content: '—'; font-size: 10px; font-weight: 700; color: var(--gray-400); }
+    .doc-content { flex: 1; }
+    .doc-name { font-size: 13px; font-weight: 600; color: var(--black); line-height: 1.3; }
+    .doc-item.checked .doc-name { color: var(--green); text-decoration: line-through; text-decoration-color: var(--green-border); }
+    .doc-item.na .doc-name { color: var(--gray-400); }
+    .doc-note { font-size: 11px; color: var(--gray-400); margin-top: 3px; line-height: 1.4; }
+    .doc-item.checked .doc-note { color: var(--green); opacity: 0.7; }
+    .doc-badges { display: flex; gap: 5px; margin-top: 5px; flex-wrap: wrap; }
+    .doc-badge { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 100px; }
+    .doc-badge.required { background: var(--red-bg); color: var(--red); }
+    .doc-badge.optional { background: var(--gray-100); color: var(--gray-400); }
+    .doc-badge.v189 { background: #f5f3ff; color: #7c3aed; }
+    .doc-badge.v190 { background: var(--blue-bg); color: var(--blue); }
+    .doc-badge.v482 { background: #eff6ff; color: #1d4ed8; }
+    .doc-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+    .btn-na { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 5px; border: 1.5px solid var(--gray-200); background: none; color: var(--gray-400); cursor: pointer; transition: all .2s; white-space: nowrap; }
+    .btn-na:hover { border-color: var(--gray-400); color: var(--gray-600); }
+    .doc-item.na .btn-na { background: var(--gray-200); color: var(--gray-600); }
+
+    /* RIGHT PANEL */
+    .right-panel { position: sticky; top: 84px; display: flex; flex-direction: column; gap: 16px; }
+
+    /* PROGRESS CARD */
+    .progress-card { background: var(--black); border-radius: 14px; padding: 24px; }
+    .prog-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #555; margin-bottom: 14px; }
+    .prog-total { font-family: 'Playfair Display', serif; font-size: 56px; font-weight: 700; color: var(--white); line-height: 1; }
+    .prog-of { font-size: 13px; color: #444; margin-top: 4px; margin-bottom: 18px; }
+    .prog-bar-bg { height: 6px; background: #1a1a1a; border-radius: 100px; overflow: hidden; margin-bottom: 18px; }
+    .prog-bar-fill { height: 100%; background: var(--white); border-radius: 100px; transition: width .5s cubic-bezier(.4,0,.2,1); }
+    .prog-rows { display: flex; flex-direction: column; gap: 9px; }
+    .prog-row { display: flex; align-items: center; gap: 10px; }
+    .prog-row-icon { font-size: 14px; flex-shrink: 0; }
+    .prog-row-label { font-size: 12px; color: #666; flex: 1; }
+    .prog-row-val { font-size: 12px; font-weight: 800; color: #444; min-width: 40px; text-align: right; }
+    .prog-row-val.done { color: var(--white); }
+
+    /* SUMMARY CARD */
+    .summary-card { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); overflow: hidden; }
+    .summary-header { padding: 18px 20px; border-bottom: 1px solid var(--gray-100); }
+    .summary-title { font-size: 14px; font-weight: 700; }
+    .summary-item { display: flex; align-items: center; gap: 10px; padding: 11px 20px; border-bottom: 1px solid var(--gray-100); }
+    .summary-item:last-child { border-bottom: none; }
+    .summary-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .summary-dot.green { background: var(--green); }
+    .summary-dot.amber { background: var(--amber); }
+    .summary-dot.red { background: var(--red); }
+    .summary-dot.gray { background: var(--gray-300); }
+    .summary-name { font-size: 13px; font-weight: 600; flex: 1; }
+    .summary-count { font-size: 12px; font-weight: 800; color: var(--black); }
+
+    /* EXPORT / SHARE */
+    .export-card { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); padding: 20px; }
+    .export-title { font-size: 14px; font-weight: 700; margin-bottom: 12px; }
+    .btn-export { width: 100%; padding: 11px; background: var(--black); color: var(--white); border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; margin-bottom: 8px; transition: all .2s; }
+    .btn-export:hover { background: var(--gray-800); }
+    .btn-export-ghost { width: 100%; padding: 11px; background: none; border: 1.5px solid var(--gray-200); border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--gray-600); cursor: pointer; transition: all .2s; }
+    .btn-export-ghost:hover { border-color: var(--gray-400); color: var(--black); }
+
+    /* IMPORTANT NOTICES */
+    .notices-card { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); overflow: hidden; }
+    .notices-header { padding: 18px 20px; border-bottom: 1px solid var(--gray-100); }
+    .notices-title { font-size: 14px; font-weight: 700; }
+    .notice-item { display: flex; align-items: flex-start; gap: 10px; padding: 12px 20px; border-bottom: 1px solid var(--gray-100); }
+    .notice-item:last-child { border-bottom: none; }
+    .notice-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+    .notice-text { font-size: 12px; color: var(--gray-600); line-height: 1.5; }
+    .notice-text strong { color: var(--black); }
+
+    /* FADE UP */
+    .fade-up { opacity: 0; transform: translateY(18px); transition: opacity .5s ease, transform .5s ease; }
+    .fade-up.visible { opacity: 1; transform: none; }
+
+    @media (max-width: 900px) {
+      nav { padding: 14px 20px; }
+      .hero { padding: 36px 20px 28px; }
+      .filter-bar { padding: 12px 20px; }
+      .page-body { padding: 20px; grid-template-columns: 1fr; }
+      .right-panel { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="migro-dashboard.html" class="nav-logo">Migro<span></span></a>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('es')">ES</button>
+    </div>
+    <a href="migro-dashboard.html" class="nav-back">⊞ Dashboard</a>
+    <a href="migro-plan.html" class="nav-back" data-en="📋 My plan" data-es="📋 Mi plan">📋 My plan</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag" data-en="Application Preparation" data-es="Preparación de Solicitud">Application Preparation</div>
+    <h1 class="hero-title" data-en="Document<br/>checklist" data-es="Lista de<br/>documentos">Document<br/>checklist</h1>
+    <p class="hero-sub" data-en="Every document you need for your visa application, organised by category. Check them off as you gather them — your progress is saved automatically." data-es="Todos los documentos que necesitas para tu solicitud de visa, organizados por categoría. Márcalos a medida que los reúnes — tu progreso se guarda automáticamente.">Every document you need for your visa application, organised by category. Check them off as you gather them — your progress is saved automatically.</p>
+    <div class="hero-chips">
+      <div class="hero-chip"><div class="chip-dot green"></div><span data-en="Auto-saved progress" data-es="Progreso guardado automáticamente">Auto-saved progress</span></div>
+      <div class="hero-chip"><div class="chip-dot amber"></div><span data-en="482 · 189 · 190 visas" data-es="Visas 482 · 189 · 190">482 · 189 · 190 visas</span></div>
+      <div class="hero-chip"><div class="chip-dot green"></div><span data-en="Official requirements" data-es="Requisitos oficiales">Official requirements</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <div class="filter-inner">
+    <span class="filter-label" data-en="Filter:" data-es="Filtrar:">Filter:</span>
+    <button class="filter-chip active" onclick="filterDocs('all',this)" data-en="All documents" data-es="Todos">All documents</button>
+    <button class="filter-chip" onclick="filterDocs('pending',this)" data-en="Pending" data-es="Pendiente">Pending</button>
+    <button class="filter-chip" onclick="filterDocs('checked',this)" data-en="Complete" data-es="Completo">Complete</button>
+    <span class="filter-sep">|</span>
+    <button class="filter-chip" onclick="filterDocs('v482',this)">482 TSS</button>
+    <button class="filter-chip" onclick="filterDocs('v189',this)">189</button>
+    <button class="filter-chip" onclick="filterDocs('v190',this)">190</button>
+    <div class="progress-chip" id="headerProgress">0 / 0 complete</div>
+    <button class="reset-btn" onclick="resetAll()" data-en="↺ Reset all" data-es="↺ Reiniciar">↺ Reset all</button>
+  </div>
+</div>
+
+<!-- PAGE BODY -->
+<div class="page-body">
+
+  <!-- LEFT: CHECKLIST SECTIONS -->
+  <div id="checklistSections">
+
+    <!-- ══ 1. IDENTITY & PASSPORT ══ -->
+    <div class="section-card open fade-up" id="sec-identity" data-section="identity">
+      <div class="section-hdr" onclick="toggleSection('sec-identity')">
+        <div class="section-icon">🪪</div>
+        <div class="section-info">
+          <div class="section-name" data-en="Identity &amp; Passport" data-es="Identidad y Pasaporte">Identity &amp; Passport</div>
+          <div class="section-meta" data-en="Required for all visa types" data-es="Requerido para todos los tipos de visa">Required for all visa types</div>
+        </div>
+        <div class="section-progress">
+          <span class="sec-pct" id="pct-identity">0%</span>
+          <div class="sec-bar-bg"><div class="sec-bar-fill" id="bar-identity" style="width:0%"></div></div>
+        </div>
+        <div class="section-chevron">▼</div>
+      </div>
+      <div class="section-body">
+        <div class="doc-list">
+          <div class="doc-category" data-en="CORE IDENTITY" data-es="IDENTIDAD PRINCIPAL">CORE IDENTITY</div>
+          <div class="doc-item" id="doc-passport-main" onclick="toggleDoc('doc-passport-main','identity')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="Valid passport (all pages)" data-es="Pasaporte vigente (todas las páginas)">Valid passport (all pages)</div>
+              <div class="doc-note" data-en="Must be valid for the duration of your visa. Scan all pages including blank pages." data-es="Debe ser vigente durante toda la visa. Escanea todas las páginas incluyendo las en blanco.">Must be valid for the duration of your visa. Scan all pages including blank pages.</div>
+              <div class="doc-badges"><span class="doc-badge required" data-en="Required" data-es="Requerido">Required</span><span class="doc-badge v482">482</span><span class="doc-badge v189">189</span><span class="doc-badge v190">190</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-passport-main','identity')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+          <div class="doc-item" id="doc-passport-old" onclick="toggleDoc('doc-passport-old','identity')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="Previous passports (if any)" data-es="Pasaportes anteriores (si los hay)">Previous passports (if any)</div>
+              <div class="doc-note" data-en="Required if you have held other passports — include if applicable." data-es="Requerido si has tenido otros pasaportes — incluye si aplica.">Required if you have held other passports — include if applicable.</div>
+              <div class="doc-badges"><span class="doc-badge optional" data-en="If applicable" data-es="Si aplica">If applicable</span><span class="doc-badge v482">482</span><span class="doc-badge v189">189</span><span class="doc-badge v190">190</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-passport-old','identity')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+          <div class="doc-item" id="doc-birth-cert" onclick="toggleDoc('doc-birth-cert','identity')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="Birth certificate" data-es="Acta de nacimiento">Birth certificate</div>
+              <div class="doc-note" data-en="Official certified copy. May require an official translation into English." data-es="Copia certificada oficial. Puede requerir traducción oficial al inglés.">Official certified copy. May require an official translation into English.</div>
+              <div class="doc-badges"><span class="doc-badge required" data-en="Required" data-es="Requerido">Required</span><span class="doc-badge v482">482</span><span class="doc-badge v189">189</span><span class="doc-badge v190">190</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-birth-cert','identity')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+          <div class="doc-item" id="doc-national-id" onclick="toggleDoc('doc-national-id','identity')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="National ID / Cédula" data-es="Documento de identidad / Cédula">National ID / Cédula</div>
+              <div class="doc-note" data-en="Front and back copy. Include if used as a form of ID in your home country." data-es="Copia anverso y reverso. Incluye si se usa como documento de identidad en tu país.">Front and back copy. Include if used as a form of ID in your home country.</div>
+              <div class="doc-badges"><span class="doc-badge optional" data-en="Recommended" data-es="Recomendado">Recommended</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-national-id','identity')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+          <div class="doc-category" data-en="BIOMETRICS" data-es="BIOMETRÍA">BIOMETRICS</div>
+          <div class="doc-item" id="doc-photo" onclick="toggleDoc('doc-photo','identity')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="Passport-style photographs" data-es="Fotografías estilo pasaporte">Passport-style photographs</div>
+              <div class="doc-note" data-en="Recent (within 6 months), white background, 45×35mm. Usually uploaded digitally." data-es="Recientes (últimos 6 meses), fondo blanco, 45×35mm. Generalmente se suben de forma digital.">Recent (within 6 months), white background, 45×35mm. Usually uploaded digitally.</div>
+              <div class="doc-badges"><span class="doc-badge required" data-en="Required" data-es="Requerido">Required</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-photo','identity')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ 2. SKILLS ASSESSMENT ══ -->
+    <div class="section-card fade-up" id="sec-skills" data-section="skills">
+      <div class="section-hdr" onclick="toggleSection('sec-skills')">
+        <div class="section-icon">🎯</div>
+        <div class="section-info">
+          <div class="section-name" data-en="Skills Assessment" data-es="Evaluación de Habilidades">Skills Assessment</div>
+          <div class="section-meta" data-en="Required for 189 and 190 — allows your occupation to be assessed" data-es="Requerido para 189 y 190 — permite evaluar tu ocupación">Required for 189 and 190 — allows your occupation to be assessed</div>
+        </div>
+        <div class="section-progress">
+          <span class="sec-pct" id="pct-skills">0%</span>
+          <div class="sec-bar-bg"><div class="sec-bar-fill" id="bar-skills" style="width:0%"></div></div>
+        </div>
+        <div class="section-chevron">▼</div>
+      </div>
+      <div class="section-body">
+        <div class="doc-list">
+          <div class="doc-category" data-en="ASSESSMENT BODY" data-es="ORGANISMO EVALUADOR">ASSESSMENT BODY</div>
+          <div class="doc-item" id="doc-sa-outcome" onclick="toggleDoc('doc-sa-outcome','skills')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="Skills assessment outcome letter" data-es="Carta de resultado de evaluación de habilidades">Skills assessment outcome letter</div>
+              <div class="doc-note" data-en="Positive assessment from your assessing authority (ACS, Engineers Australia, VETASSESS, etc.)" data-es="Evaluación positiva de tu organismo (ACS, Engineers Australia, VETASSESS, etc.)">Positive assessment from your assessing authority (ACS, Engineers Australia, VETASSESS, etc.)</div>
+              <div class="doc-badges"><span class="doc-badge required" data-en="Required" data-es="Requerido">Required</span><span class="doc-badge v189">189</span><span class="doc-badge v190">190</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-sa-outcome','skills')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+          <div class="doc-item" id="doc-sa-transcripts" onclick="toggleDoc('doc-sa-transcripts','skills')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="Academic transcripts (all universities)" data-es="Transcripciones académicas (todas las universidades)">Academic transcripts (all universities)</div>
+              <div class="doc-note" data-en="Official transcripts from all institutions. May need certified translations." data-es="Transcripciones oficiales de todas las instituciones. Pueden requerir traducciones certificadas.">Official transcripts from all institutions. May need certified translations.</div>
+              <div class="doc-badges"><span class="doc-badge required" data-en="Required" data-es="Requerido">Required</span><span class="doc-badge v189">189</span><span class="doc-badge v190">190</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-sa-transcripts','skills')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+          <div class="doc-item" id="doc-sa-degree" onclick="toggleDoc('doc-sa-degree','skills')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="Degree / diploma certificates" data-es="Diplomas / certificados de título">Degree / diploma certificates</div>
+              <div class="doc-note" data-en="Certified copies of all qualifications submitted to the assessing body." data-es="Copias certificadas de todas las calificaciones enviadas al organismo evaluador.">Certified copies of all qualifications submitted to the assessing body.</div>
+              <div class="doc-badges"><span class="doc-badge required" data-en="Required" data-es="Requerido">Required</span><span class="doc-badge v189">189</span><span class="doc-badge v190">190</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-sa-degree','skills')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+          <div class="doc-category" data-en="EMPLOYMENT EVIDENCE" data-es="EVIDENCIA DE EMPLEO">EMPLOYMENT EVIDENCE</div>
+          <div class="doc-item" id="doc-sa-ref" onclick="toggleDoc('doc-sa-ref','skills')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="Employment reference letters" data-es="Cartas de referencia laboral">Employment reference letters</div>
+              <div class="doc-note" data-en="On company letterhead, signed, with job title, duties, dates and hours. One per employer." data-es="En papel membretado de la empresa, firmado, con cargo, funciones, fechas y horas. Una por empleador.">On company letterhead, signed, with job title, duties, dates and hours. One per employer.</div>
+              <div class="doc-badges"><span class="doc-badge required" data-en="Required" data-es="Requerido">Required</span><span class="doc-badge v189">189</span><span class="doc-badge v190">190</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-sa-ref','skills')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+          <div class="doc-item" id="doc-sa-payslips" onclick="toggleDoc('doc-sa-payslips','skills')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="Payslips (3–6 months per employer)" data-es="Recibos de sueldo (3–6 meses por empleador)">Payslips (3–6 months per employer)</div>
+              <div class="doc-note" data-en="To verify employment history. Required by most assessing authorities." data-es="Para verificar el historial laboral. Requerido por la mayoría de los organismos evaluadores.">To verify employment history. Required by most assessing authorities.</div>
+              <div class="doc-badges"><span class="doc-badge required" data-en="Required" data-es="Requerido">Required</span><span class="doc-badge v189">189</span><span class="doc-badge v190">190</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-sa-payslips','skills')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ 3. ENGLISH LANGUAGE ══ -->
+    <div class="section-card fade-up" id="sec-english" data-section="english">
+      <div class="section-hdr" onclick="toggleSection('sec-english')">
+        <div class="section-icon">🗣️</div>
+        <div class="section-info">
+          <div class="section-name" data-en="English Language" data-es="Idioma Inglés">English Language</div>
+          <div class="section-meta" data-en="IELTS, PTE, TOEFL iBT or Cambridge results" data-es="Resultados de IELTS, PTE, TOEFL iBT o Cambridge">IELTS, PTE, TOEFL iBT or Cambridge results</div>
+        </div>
+        <div class="section-progress">
+          <span class="sec-pct" id="pct-english">0%</span>
+          <div class="sec-bar-bg"><div class="sec-bar-fill" id="bar-english" style="width:0%"></div></div>
+        </div>
+        <div class="section-chevron">▼</div>
+      </div>
+      <div class="section-body">
+        <div class="doc-list">
+          <div class="doc-item" id="doc-ielts" onclick="toggleDoc('doc-ielts','english')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="IELTS Test Report Form (TRF)" data-es="Formulario de Resultados IELTS (TRF)">IELTS Test Report Form (TRF)</div>
+              <div class="doc-note" data-en="Official TRF from IDP or British Council. Must be less than 3 years old." data-es="TRF oficial de IDP o British Council. Debe tener menos de 3 años de antigüedad.">Official TRF from IDP or British Council. Must be less than 3 years old.</div>
+              <div class="doc-badges"><span class="doc-badge required" data-en="One of these required" data-es="Uno de estos es requerido">One of these required</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-ielts','english')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+          <div class="doc-item" id="doc-pte" onclick="toggleDoc('doc-pte','english')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="PTE Academic Scorecard" data-es="Scorecard de PTE Academic">PTE Academic Scorecard</div>
+              <div class="doc-note" data-en="Official Pearson score report. Valid for 2 years." data-es="Reporte oficial de Pearson. Válido por 2 años.">Official Pearson score report. Valid for 2 years.</div>
+              <div class="doc-badges"><span class="doc-badge optional" data-en="Alternative" data-es="Alternativa">Alternative</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-pte','english')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+          <div class="doc-item" id="doc-toefl" onclick="toggleDoc('doc-toefl','english')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="TOEFL iBT Score Report" data-es="Reporte de resultados TOEFL iBT">TOEFL iBT Score Report</div>
+              <div class="doc-note" data-en="Official ETS score report sent to DIBP. Valid for 2 years." data-es="Reporte oficial de ETS enviado a DIBP. Válido por 2 años.">Official ETS score report sent to DIBP. Valid for 2 years.</div>
+              <div class="doc-badges"><span class="doc-badge optional" data-en="Alternative" data-es="Alternativa">Alternative</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-toefl','english')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ 4. WORK EXPERIENCE ══ -->
+    <div class="section-card fade-up" id="sec-work" data-section="work">
+      <div class="section-hdr" onclick="toggleSection('sec-work')">
+        <div class="section-icon">💼</div>
+        <div class="section-info">
+          <div class="section-name" data-en="Work Experience" data-es="Experiencia Laboral">Work Experience</div>
+          <div class="section-meta" data-en="Employment history documents for the past 10 years" data-es="Documentos de historial laboral de los últimos 10 años">Employment history documents for the past 10 years</div>
+        </div>
+        <div class="section-progress">
+          <span class="sec-pct" id="pct-work">0%</span>
+          <div class="sec-bar-bg"><div class="sec-bar-fill" id="bar-work" style="width:0%"></div></div>
+        </div>
+        <div class="section-chevron">▼</div>
+      </div>
+      <div class="section-body">
+        <div class="doc-list">
+          <div class="doc-category" data-en="PER EMPLOYER" data-es="POR EMPLEADOR">PER EMPLOYER</div>
+          <div class="doc-item" id="doc-ref-letters" onclick="toggleDoc('doc-ref-letters','work')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="Employment reference letters (all employers)" data-es="Cartas de referencia laboral (todos los empleadores)">Employment reference letters (all employers)</div>
+              <div class="doc-note" data-en="Must be on company letterhead, include: full name, job title, key duties, start/end dates, weekly hours, supervisor signature." data-es="Deben estar en papel membretado, incluir: nombre completo, cargo, funciones, fechas de inicio/fin, horas semanales, firma del supervisor.">Must be on company letterhead, include: full name, job title, key duties, start/end dates, weekly hours, supervisor signature.</div>
+              <div class="doc-badges"><span class="doc-badge required" data-en="Required" data-es="Requerido">Required</span><span class="doc-badge v189">189</span><span class="doc-badge v190">190</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-ref-letters','work')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+          <div class="doc-item" id="doc-contract" onclick="toggleDoc('doc-contract','work')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="Employment contracts" data-es="Contratos de trabajo">Employment contracts</div>
+              <div class="doc-note" data-en="Signed employment contracts for each position, especially if reference letters aren't available." data-es="Contratos de trabajo firmados para cada puesto, especialmente si no hay cartas de referencia disponibles.">Signed employment contracts for each position.</div>
+              <div class="doc-badges"><span class="doc-badge optional" data-en="Recommended" data-es="Recomendado">Recommended</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-contract','work')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+          <div class="doc-item" id="doc-payslips-work" onclick="toggleDoc('doc-payslips-work','work')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="Payslips / pay stubs" data-es="Recibos de nómina">Payslips / pay stubs</div>
+              <div class="doc-note" data-en="3–6 months of payslips per employer, showing employer name, your name, dates and amount." data-es="3–6 meses de recibos por empleador, mostrando nombre del empleador, tu nombre, fechas e importe.">3–6 months of payslips per employer.</div>
+              <div class="doc-badges"><span class="doc-badge required" data-en="Required" data-es="Requerido">Required</span><span class="doc-badge v189">189</span><span class="doc-badge v190">190</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-payslips-work','work')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+          <div class="doc-item" id="doc-tax-records" onclick="toggleDoc('doc-tax-records','work')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="Tax records / income statements" data-es="Declaraciones de impuestos / estados de ingresos">Tax records / income statements</div>
+              <div class="doc-note" data-en="Annual tax returns or income tax certificates. Strengthen your work history evidence." data-es="Declaraciones de renta anuales o certificados de ingreso. Refuerzan la evidencia de historial laboral.">Annual tax returns or income tax certificates.</div>
+              <div class="doc-badges"><span class="doc-badge optional" data-en="Strongly recommended" data-es="Muy recomendado">Strongly recommended</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-tax-records','work')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+          <div class="doc-category" data-en="482 SPONSOR DOCUMENTS" data-es="DOCUMENTOS PATROCINADOR 482">482 SPONSOR DOCUMENTS</div>
+          <div class="doc-item" id="doc-482-offer" onclick="toggleDoc('doc-482-offer','work')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="Formal job offer / employment contract (AU)" data-es="Oferta de trabajo formal / contrato (AU)">Formal job offer / employment contract (AU)</div>
+              <div class="doc-note" data-en="From your approved Australian sponsor. Must specify position, salary, location and conditions." data-es="De tu patrocinador australiano aprobado. Debe especificar cargo, salario, ubicación y condiciones.">From your approved Australian sponsor. Must specify position, salary, location and conditions.</div>
+              <div class="doc-badges"><span class="doc-badge required" data-en="Required" data-es="Requerido">Required</span><span class="doc-badge v482">482</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-482-offer','work')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+          <div class="doc-item" id="doc-482-sponsor" onclick="toggleDoc('doc-482-sponsor','work')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="Sponsor accreditation / approval letter" data-es="Carta de acreditación del patrocinador">Sponsor accreditation / approval letter</div>
+              <div class="doc-note" data-en="Evidence that your employer is an approved standard business sponsor (SBS)." data-es="Evidencia de que tu empleador es un patrocinador de negocios estándar aprobado (SBS).">Evidence that your employer is an approved standard business sponsor (SBS).</div>
+              <div class="doc-badges"><span class="doc-badge required" data-en="Required" data-es="Requerido">Required</span><span class="doc-badge v482">482</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-482-sponsor','work')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ 5. HEALTH & CHARACTER ══ -->
+    <div class="section-card fade-up" id="sec-health" data-section="health">
+      <div class="section-hdr" onclick="toggleSection('sec-health')">
+        <div class="section-icon">🏥</div>
+        <div class="section-info">
+          <div class="section-name" data-en="Health &amp; Character" data-es="Salud y Antecedentes">Health &amp; Character</div>
+          <div class="section-meta" data-en="Medical examinations and police clearances" data-es="Exámenes médicos y certificados de antecedentes penales">Medical examinations and police clearances</div>
+        </div>
+        <div class="section-progress">
+          <span class="sec-pct" id="pct-health">0%</span>
+          <div class="sec-bar-bg"><div class="sec-bar-fill" id="bar-health" style="width:0%"></div></div>
+        </div>
+        <div class="section-chevron">▼</div>
+      </div>
+      <div class="section-body">
+        <div class="doc-list">
+          <div class="doc-category" data-en="HEALTH" data-es="SALUD">HEALTH</div>
+          <div class="doc-item" id="doc-medical" onclick="toggleDoc('doc-medical','health')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="Medical examination (HAP ID)" data-es="Examen médico (HAP ID)">Medical examination (HAP ID)</div>
+              <div class="doc-note" data-en="Booked via ImmiAccount. Complete through an approved BUPA Health Services panel clinic. HAP ID is generated when you lodge your visa." data-es="Se reserva mediante ImmiAccount. Se completa en una clínica panel aprobada de BUPA Health Services. El HAP ID se genera al presentar la visa.">Book via ImmiAccount at an approved BUPA panel clinic. Results are sent directly to Home Affairs.</div>
+              <div class="doc-badges"><span class="doc-badge required" data-en="Required" data-es="Requerido">Required</span><span class="doc-badge v482">482</span><span class="doc-badge v189">189</span><span class="doc-badge v190">190</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-medical','health')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+          <div class="doc-item" id="doc-chest-xray" onclick="toggleDoc('doc-chest-xray','health')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="Chest X-ray" data-es="Radiografía de tórax">Chest X-ray</div>
+              <div class="doc-note" data-en="Usually required if you are 11 years or older. Conducted as part of the medical examination." data-es="Generalmente requerida para mayores de 11 años. Se realiza como parte del examen médico.">Usually required if 11 years or older. Done at the medical exam.</div>
+              <div class="doc-badges"><span class="doc-badge required" data-en="Required" data-es="Requerido">Required</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-chest-xray','health')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+          <div class="doc-category" data-en="CHARACTER" data-es="ANTECEDENTES">CHARACTER</div>
+          <div class="doc-item" id="doc-police-home" onclick="toggleDoc('doc-police-home','health')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="Police clearance — Colombia" data-es="Certificado de antecedentes — Colombia">Police clearance — Colombia</div>
+              <div class="doc-note" data-en="Antecedentes Judiciales from Policía Nacional de Colombia. Required for any country where you lived 12+ months after age 16." data-es="Antecedentes Judiciales de la Policía Nacional de Colombia. Requerido para países donde viviste 12+ meses desde los 16 años.">Antecedentes Judiciales — Policía Nacional de Colombia.</div>
+              <div class="doc-badges"><span class="doc-badge required" data-en="Required" data-es="Requerido">Required</span><span class="doc-badge v482">482</span><span class="doc-badge v189">189</span><span class="doc-badge v190">190</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-police-home','health')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+          <div class="doc-item" id="doc-police-au" onclick="toggleDoc('doc-police-au','health')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="Australian Federal Police (AFP) check" data-es="Verificación de antecedentes de la AFP australiana">Australian Federal Police (AFP) check</div>
+              <div class="doc-note" data-en="Required if you have lived in Australia for 12+ months in the past 10 years. Apply at afp.gov.au." data-es="Requerido si viviste en Australia por 12+ meses en los últimos 10 años. Solicítalo en afp.gov.au.">Required if you lived in Australia 12+ months. Apply at afp.gov.au.</div>
+              <div class="doc-badges"><span class="doc-badge required" data-en="Required" data-es="Requerido">Required</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-police-au','health')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+          <div class="doc-item" id="doc-police-other" onclick="toggleDoc('doc-police-other','health')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="Police clearances — other countries" data-es="Certificados de antecedentes — otros países">Police clearances — other countries</div>
+              <div class="doc-note" data-en="Required for every country where you lived 12+ months since turning 16 (e.g. USA, Spain, UK if applicable)." data-es="Requerido para cada país donde viviste 12+ meses desde los 16 años (ej. EE.UU., España, etc.).">For every other country you lived 12+ months since age 16.</div>
+              <div class="doc-badges"><span class="doc-badge optional" data-en="If applicable" data-es="Si aplica">If applicable</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-police-other','health')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ 6. PARTNER & FAMILY ══ -->
+    <div class="section-card fade-up" id="sec-family" data-section="family">
+      <div class="section-hdr" onclick="toggleSection('sec-family')">
+        <div class="section-icon">👨‍👩‍👧</div>
+        <div class="section-info">
+          <div class="section-name" data-en="Partner &amp; Family Members" data-es="Pareja y Familia">Partner &amp; Family Members</div>
+          <div class="section-meta" data-en="Required for each person included in your application" data-es="Requerido para cada persona incluida en tu solicitud">Required for each person included in your application</div>
+        </div>
+        <div class="section-progress">
+          <span class="sec-pct" id="pct-family">0%</span>
+          <div class="sec-bar-bg"><div class="sec-bar-fill" id="bar-family" style="width:0%"></div></div>
+        </div>
+        <div class="section-chevron">▼</div>
+      </div>
+      <div class="section-body">
+        <div class="doc-list">
+          <div class="doc-item" id="doc-partner-passport" onclick="toggleDoc('doc-partner-passport','family')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="Partner's passport (all pages)" data-es="Pasaporte del cónyuge (todas las páginas)">Partner's passport (all pages)</div>
+              <div class="doc-note" data-en="Same requirements as the main applicant's passport." data-es="Mismos requisitos que el pasaporte del solicitante principal.">Same requirements as the main applicant.</div>
+              <div class="doc-badges"><span class="doc-badge optional" data-en="If including partner" data-es="Si incluyes pareja">If including partner</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-partner-passport','family')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+          <div class="doc-item" id="doc-marriage" onclick="toggleDoc('doc-marriage','family')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="Marriage certificate / de facto evidence" data-es="Acta de matrimonio / evidencia de unión libre">Marriage certificate / de facto evidence</div>
+              <div class="doc-note" data-en="Official marriage certificate with certified translation. For de facto: joint bank statements, lease agreements, photos." data-es="Acta de matrimonio oficial con traducción certificada. Para unión libre: extractos bancarios conjuntos, contratos de arriendo, fotos.">Official marriage certificate with certified translation if not in English.</div>
+              <div class="doc-badges"><span class="doc-badge optional" data-en="If including partner" data-es="Si incluyes pareja">If including partner</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-marriage','family')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+          <div class="doc-item" id="doc-partner-health" onclick="toggleDoc('doc-partner-health','family')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="Partner's medical examination" data-es="Examen médico del cónyuge">Partner's medical examination</div>
+              <div class="doc-note" data-en="Same medical requirements apply to all family members being included in the application." data-es="Los mismos requisitos médicos aplican a todos los miembros de la familia incluidos en la solicitud.">Same as main applicant — required for all family members.</div>
+              <div class="doc-badges"><span class="doc-badge optional" data-en="If including partner" data-es="Si incluyes pareja">If including partner</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-partner-health','family')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+          <div class="doc-item" id="doc-partner-police" onclick="toggleDoc('doc-partner-police','family')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="Partner's police clearance(s)" data-es="Certificados de antecedentes del cónyuge">Partner's police clearance(s)</div>
+              <div class="doc-note" data-en="Required for partner if they are 16 or over and lived in any country 12+ months." data-es="Requerido para la pareja si tiene 16 años o más y ha vivido en algún país 12+ meses.">Required for all countries lived 12+ months since age 16.</div>
+              <div class="doc-badges"><span class="doc-badge optional" data-en="If including partner" data-es="Si incluyes pareja">If including partner</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-partner-police','family')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ 7. FINANCIAL & SUPPORTING ══ -->
+    <div class="section-card fade-up" id="sec-financial" data-section="financial">
+      <div class="section-hdr" onclick="toggleSection('sec-financial')">
+        <div class="section-icon">💰</div>
+        <div class="section-info">
+          <div class="section-name" data-en="Financial &amp; Supporting Documents" data-es="Documentos Financieros y de Apoyo">Financial &amp; Supporting Documents</div>
+          <div class="section-meta" data-en="Bank statements, translations, and EOI/nomination evidence" data-es="Extractos bancarios, traducciones y evidencia de EOI/nominación">Bank statements, translations, and EOI evidence</div>
+        </div>
+        <div class="section-progress">
+          <span class="sec-pct" id="pct-financial">0%</span>
+          <div class="sec-bar-bg"><div class="sec-bar-fill" id="bar-financial" style="width:0%"></div></div>
+        </div>
+        <div class="section-chevron">▼</div>
+      </div>
+      <div class="section-body">
+        <div class="doc-list">
+          <div class="doc-category" data-en="FINANCIAL" data-es="FINANCIERO">FINANCIAL</div>
+          <div class="doc-item" id="doc-bank" onclick="toggleDoc('doc-bank','financial')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="Bank statements (3–6 months)" data-es="Extractos bancarios (3–6 meses)">Bank statements (3–6 months)</div>
+              <div class="doc-note" data-en="Showing your name, account number, and sufficient funds. Relevant mostly for student and some skilled visas." data-es="Mostrando tu nombre, número de cuenta y fondos suficientes. Relevante principalmente para visas de estudiante y algunas visas de habilidades.">Showing name, account, and sufficient funds.</div>
+              <div class="doc-badges"><span class="doc-badge optional" data-en="Recommended" data-es="Recomendado">Recommended</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-bank','financial')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+          <div class="doc-category" data-en="EOI &amp; NOMINATION" data-es="EOI Y NOMINACIÓN">EOI &amp; NOMINATION</div>
+          <div class="doc-item" id="doc-eoi" onclick="toggleDoc('doc-eoi','financial')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="Expression of Interest (EOI) confirmation" data-es="Confirmación de Expresión de Interés (EOI)">Expression of Interest (EOI) confirmation</div>
+              <div class="doc-note" data-en="Screenshot or PDF of your EOI submission in SkillSelect. Keep updated with any changes to your profile." data-es="Captura de pantalla o PDF de tu EOI en SkillSelect. Mantén actualizado ante cambios en tu perfil.">SkillSelect EOI submission confirmation.</div>
+              <div class="doc-badges"><span class="doc-badge required" data-en="Required" data-es="Requerido">Required</span><span class="doc-badge v189">189</span><span class="doc-badge v190">190</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-eoi','financial')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+          <div class="doc-item" id="doc-invitation" onclick="toggleDoc('doc-invitation','financial')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="Invitation to Apply (ITA)" data-es="Invitación a Solicitar (ITA)">Invitation to Apply (ITA)</div>
+              <div class="doc-note" data-en="Issued by Home Affairs via SkillSelect. You have 60 days to lodge after receiving your ITA." data-es="Emitida por el Departamento de Home Affairs a través de SkillSelect. Tienes 60 días para presentar la solicitud.">You have 60 days to lodge after receiving your ITA.</div>
+              <div class="doc-badges"><span class="doc-badge required" data-en="Required" data-es="Requerido">Required</span><span class="doc-badge v189">189</span><span class="doc-badge v190">190</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-invitation','financial')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+          <div class="doc-item" id="doc-nomination" onclick="toggleDoc('doc-nomination','financial')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="State nomination certificate" data-es="Certificado de nominación estatal">State nomination certificate</div>
+              <div class="doc-note" data-en="Official letter from the state or territory government confirming your nomination. Required for 190." data-es="Carta oficial del gobierno estatal o territorial confirmando tu nominación. Requerido para la visa 190.">Official state/territory nomination letter for 190.</div>
+              <div class="doc-badges"><span class="doc-badge required" data-en="Required" data-es="Requerido">Required</span><span class="doc-badge v190">190</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-nomination','financial')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+          <div class="doc-category" data-en="TRANSLATIONS" data-es="TRADUCCIONES">TRANSLATIONS</div>
+          <div class="doc-item" id="doc-translations" onclick="toggleDoc('doc-translations','financial')">
+            <div class="doc-check"></div>
+            <div class="doc-content">
+              <div class="doc-name" data-en="Certified English translations of all non-English documents" data-es="Traducciones certificadas al inglés de todos los documentos en otro idioma">Certified English translations of all non-English documents</div>
+              <div class="doc-note" data-en="Must be translated by a NAATI-certified translator or a professional translator. Includes birth certs, diplomas, employment letters, police clearances." data-es="Deben ser traducidas por un traductor certificado NAATI o profesional. Incluye actas, diplomas, cartas laborales, certificados de antecedentes.">All non-English docs must be translated by a NAATI-certified translator.</div>
+              <div class="doc-badges"><span class="doc-badge required" data-en="Required" data-es="Requerido">Required</span></div>
+            </div>
+            <div class="doc-actions"><button class="btn-na" onclick="toggleNA(event,'doc-translations','financial')" data-en="N/A" data-es="N/A">N/A</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /checklistSections -->
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+
+    <!-- PROGRESS CARD -->
+    <div class="progress-card">
+      <div class="prog-label" data-en="Overall progress" data-es="Progreso general">Overall progress</div>
+      <div class="prog-total" id="progTotal">0</div>
+      <div class="prog-of" id="progOf" data-en="documents completed" data-es="documentos completados">documents completed</div>
+      <div class="prog-bar-bg"><div class="prog-bar-fill" id="progBarFill" style="width:0%"></div></div>
+      <div class="prog-rows" id="progRows"></div>
+    </div>
+
+    <!-- SECTION SUMMARY -->
+    <div class="summary-card">
+      <div class="summary-header"><div class="summary-title" data-en="By section" data-es="Por sección">By section</div></div>
+      <div id="sectionSummary"></div>
+    </div>
+
+    <!-- EXPORT -->
+    <div class="export-card">
+      <div class="export-title" data-en="Export checklist" data-es="Exportar lista">Export checklist</div>
+      <button class="btn-export" onclick="copyChecklist()" data-en="📋 Copy to clipboard" data-es="📋 Copiar al portapapeles">📋 Copy to clipboard</button>
+      <button class="btn-export-ghost" onclick="printChecklist()" data-en="🖨 Print checklist" data-es="🖨 Imprimir lista">🖨 Print checklist</button>
+    </div>
+
+    <!-- NOTICES -->
+    <div class="notices-card">
+      <div class="notices-header"><div class="notices-title" data-en="Important notes" data-es="Notas importantes">Important notes</div></div>
+      <div class="notice-item">
+        <div class="notice-dot" style="background:var(--red);"></div>
+        <div class="notice-text" data-en="<strong>Police clearances</strong> must be obtained within 12 months of your visa application." data-es="<strong>Los certificados de antecedentes</strong> deben obtenerse dentro de los 12 meses previos a la solicitud."><strong>Police clearances</strong> must be obtained within 12 months of your visa application.</div>
+      </div>
+      <div class="notice-item">
+        <div class="notice-dot" style="background:var(--amber);"></div>
+        <div class="notice-text" data-en="<strong>English test results</strong> — IELTS valid 3 years, PTE/TOEFL valid 2 years from test date." data-es="<strong>Resultados de inglés</strong> — IELTS válido 3 años, PTE/TOEFL válido 2 años desde la fecha del examen."><strong>English test results</strong> — IELTS valid 3 years, PTE/TOEFL valid 2 years.</div>
+      </div>
+      <div class="notice-item">
+        <div class="notice-dot" style="background:var(--blue);"></div>
+        <div class="notice-text" data-en="<strong>Medical exams</strong> are typically valid for 12 months. Don't book too early." data-es="<strong>Los exámenes médicos</strong> son generalmente válidos por 12 meses. No los reserves demasiado pronto."><strong>Medical exams</strong> are typically valid for 12 months.</div>
+      </div>
+      <div class="notice-item">
+        <div class="notice-dot" style="background:var(--green);"></div>
+        <div class="notice-text" data-en="<strong>NAATI translations</strong> — Spanish speakers: you may qualify for NAATI accreditation yourself (+5 points)." data-es="<strong>Traducciones NAATI</strong> — si eres hispanohablante: puedes calificar para la acreditación NAATI tú mismo (+5 puntos)."><strong>NAATI translations</strong> — Spanish speakers may qualify for NAATI accreditation (+5 pts).</div>
+      </div>
+    </div>
+
+  </div><!-- /right-panel -->
+
+</div><!-- /page-body -->
+
+<script>
+  let lang = 'en';
+
+  // ─── DATA ────────────────────────────────────────────────────────────────
+  const SECTIONS = ['identity','skills','english','work','health','family','financial'];
+  const SECTION_NAMES = {
+    en: { identity:'Identity & Passport', skills:'Skills Assessment', english:'English Language', work:'Work Experience', health:'Health & Character', family:'Partner & Family', financial:'Financial & Supporting' },
+    es: { identity:'Identidad y Pasaporte', skills:'Evaluación de Habilidades', english:'Idioma Inglés', work:'Experiencia Laboral', health:'Salud y Antecedentes', family:'Pareja y Familia', financial:'Financieros y de Apoyo' }
+  };
+  const SECTION_ICONS = { identity:'🪪', skills:'🎯', english:'🗣️', work:'💼', health:'🏥', family:'👨‍👩‍👧', financial:'💰' };
+
+  // load state — safe localStorage wrapper
+  function lsGet(key, fallback) { try { return JSON.parse(localStorage.getItem(key) || fallback); } catch(e) { return JSON.parse(fallback); } }
+  function lsSet(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {} }
+  let state = lsGet('migro_docs_state', '{}');
+
+  // ─── TOGGLE DOC ──────────────────────────────────────────────────────────
+  function toggleDoc(id, section) {
+    const el = document.getElementById(id);
+    if (el.classList.contains('na')) return;
+    const isChecked = el.classList.toggle('checked');
+    state[id] = isChecked ? 'checked' : 'unchecked';
+    saveState();
+    updateProgress();
+  }
+
+  function toggleNA(e, id, section) {
+    e.stopPropagation();
+    const el = document.getElementById(id);
+    if (el.classList.contains('na')) {
+      el.classList.remove('na');
+      state[id] = 'unchecked';
+    } else {
+      el.classList.remove('checked');
+      el.classList.add('na');
+      state[id] = 'na';
+    }
+    saveState();
+    updateProgress();
+  }
+
+  // ─── SECTION TOGGLE ──────────────────────────────────────────────────────
+  function toggleSection(id) {
+    document.getElementById(id).classList.toggle('open');
+  }
+
+  // ─── PROGRESS ────────────────────────────────────────────────────────────
+  function updateProgress() {
+    let totalDocs = 0, totalChecked = 0;
+
+    SECTIONS.forEach(sec => {
+      const secEl = document.getElementById('sec-' + sec);
+      const items = secEl.querySelectorAll('.doc-item');
+      const naItems = secEl.querySelectorAll('.doc-item.na');
+      const checkedItems = secEl.querySelectorAll('.doc-item.checked');
+      const active = items.length - naItems.length;
+      const checked = checkedItems.length;
+      totalDocs += active;
+      totalChecked += checked;
+
+      // section bar
+      const pct = active > 0 ? Math.round(checked / active * 100) : 100;
+      document.getElementById('pct-' + sec).textContent = pct + '%';
+      document.getElementById('bar-' + sec).style.width = pct + '%';
+      if (pct >= 100 && active > 0) secEl.classList.add('complete');
+      else secEl.classList.remove('complete');
+    });
+
+    // overall bar
+    const overallPct = totalDocs > 0 ? Math.round(totalChecked / totalDocs * 100) : 0;
+    document.getElementById('progTotal').textContent = totalChecked;
+    document.getElementById('progOf').textContent = lang === 'en'
+      ? `of ${totalDocs} documents complete`
+      : `de ${totalDocs} documentos completos`;
+    document.getElementById('progBarFill').style.width = overallPct + '%';
+    document.getElementById('headerProgress').textContent = `${totalChecked} / ${totalDocs} ${lang==='en'?'complete':'completos'}`;
+
+    // prog rows
+    buildProgRows();
+    buildSectionSummary();
+  }
+
+  function buildProgRows() {
+    const el = document.getElementById('progRows');
+    el.innerHTML = SECTIONS.map(sec => {
+      const secEl = document.getElementById('sec-' + sec);
+      const items = secEl.querySelectorAll('.doc-item');
+      const na = secEl.querySelectorAll('.doc-item.na').length;
+      const checked = secEl.querySelectorAll('.doc-item.checked').length;
+      const active = items.length - na;
+      const done = checked === active && active > 0;
+      return `<div class="prog-row">
+        <div class="prog-row-icon">${SECTION_ICONS[sec]}</div>
+        <div class="prog-row-label">${SECTION_NAMES[lang][sec]}</div>
+        <div class="prog-row-val ${done?'done':''}">${checked}/${active}</div>
+      </div>`;
+    }).join('');
+  }
+
+  function buildSectionSummary() {
+    const el = document.getElementById('sectionSummary');
+    el.innerHTML = SECTIONS.map(sec => {
+      const secEl = document.getElementById('sec-' + sec);
+      const items = secEl.querySelectorAll('.doc-item');
+      const na = secEl.querySelectorAll('.doc-item.na').length;
+      const checked = secEl.querySelectorAll('.doc-item.checked').length;
+      const active = items.length - na;
+      const pending = active - checked;
+      let dotClass = 'gray';
+      if (checked === active && active > 0) dotClass = 'green';
+      else if (checked > 0) dotClass = 'amber';
+      else if (pending > 0) dotClass = 'red';
+      return `<div class="summary-item">
+        <div class="summary-dot ${dotClass}"></div>
+        <div class="summary-name">${SECTION_NAMES[lang][sec]}</div>
+        <div class="summary-count">${checked}/${active}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // ─── FILTER ───────────────────────────────────────────────────────────────
+  function filterDocs(mode, btn) {
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.doc-item').forEach(item => {
+      let show = true;
+      if (mode === 'pending') show = !item.classList.contains('checked') && !item.classList.contains('na');
+      else if (mode === 'checked') show = item.classList.contains('checked');
+      else if (mode === 'v482') show = item.querySelector('.doc-badge.v482') !== null;
+      else if (mode === 'v189') show = item.querySelector('.doc-badge.v189') !== null;
+      else if (mode === 'v190') show = item.querySelector('.doc-badge.v190') !== null;
+      item.style.display = show ? '' : 'none';
+    });
+    // open all sections when filtering
+    if (mode !== 'all') document.querySelectorAll('.section-card').forEach(c => c.classList.add('open'));
+  }
+
+  // ─── RESET ────────────────────────────────────────────────────────────────
+  function resetAll() {
+    if (!confirm(lang==='en'?'Reset all checkboxes? This cannot be undone.':'¿Reiniciar todas las casillas? Esto no se puede deshacer.')) return;
+    state = {};
+    saveState();
+    document.querySelectorAll('.doc-item').forEach(el => { el.classList.remove('checked','na'); el.style.display=''; });
+    updateProgress();
+  }
+
+  // ─── EXPORT ───────────────────────────────────────────────────────────────
+  function copyChecklist() {
+    const lines = [lang==='en'?'MIGRO — Document Checklist':'MIGRO — Lista de Documentos', '─'.repeat(40)];
+    SECTIONS.forEach(sec => {
+      lines.push('');
+      lines.push(`${SECTION_ICONS[sec]} ${SECTION_NAMES[lang][sec].toUpperCase()}`);
+      document.getElementById('sec-' + sec).querySelectorAll('.doc-item').forEach(item => {
+        const name = item.querySelector('.doc-name').textContent.trim();
+        const isChecked = item.classList.contains('checked');
+        const isNA = item.classList.contains('na');
+        lines.push(`  ${isChecked?'[✓]':isNA?'[—]':'[ ]'} ${name}`);
+      });
+    });
+    navigator.clipboard.writeText(lines.join('\n')).then(() => {
+      const btn = document.querySelector('.btn-export');
+      const orig = btn.textContent;
+      btn.textContent = lang==='en'?'✓ Copied!':'✓ ¡Copiado!';
+      setTimeout(()=>btn.textContent=orig, 2000);
+    }).catch(()=>alert(lines.join('\n')));
+  }
+
+  function printChecklist() { window.print(); }
+
+  // ─── PERSIST ─────────────────────────────────────────────────────────────
+  function saveState() { lsSet('migro_docs_state', state); }
+
+  function loadState() {
+    Object.entries(state).forEach(([id, val]) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.remove('checked','na');
+      if (val === 'checked') el.classList.add('checked');
+      if (val === 'na') el.classList.add('na');
+    });
+  }
+
+  // ─── LANG ─────────────────────────────────────────────────────────────────
+  function setLang(l) {
+    lang = l;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent===l.toUpperCase()));
+    document.querySelectorAll('[data-en]').forEach(el => { const t=el.getAttribute('data-'+l); if(t) el.innerHTML=t; });
+    updateProgress();
+  }
+
+  // ─── FADE UP ──────────────────────────────────────────────────────────────
+  const fadeObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){e.target.classList.add('visible'); fadeObs.unobserve(e.target);} });
+  }, { threshold: 0.05 });
+  document.querySelectorAll('.fade-up').forEach(el => fadeObs.observe(el));
+
+  // ─── INIT ─────────────────────────────────────────────────────────────────
+  window.addEventListener('DOMContentLoaded', () => {
+    loadState();
+    updateProgress();
+  });
+</script>
+</body>
+</html>
