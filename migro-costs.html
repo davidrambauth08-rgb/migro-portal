@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Migro — Visa Costs & Fees Estimator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black:#0a0a0a; --white:#ffffff;
+    --gray-50:#f9fafb; --gray-100:#f3f4f6; --gray-200:#e5e7eb;
+    --gray-300:#d1d5db; --gray-400:#9ca3af; --gray-500:#6b7280;
+    --gray-600:#4b5563; --gray-700:#374151; --gray-800:#1f2937;
+    --green:#16a34a;  --green-bg:#f0fdf4;  --green-border:#bbf7d0;
+    --amber:#d97706;  --amber-bg:#fffbeb;  --amber-border:#fde68a;
+    --red:#dc2626;    --red-bg:#fef2f2;    --red-border:#fecaca;
+    --blue:#2563eb;   --blue-bg:#eff6ff;   --blue-border:#bfdbfe;
+    --purple:#7c3aed; --purple-bg:#f5f3ff; --purple-border:#ddd6fe;
+    --teal:#0d9488;   --teal-bg:#f0fdfa;   --teal-border:#99f6e4;
+  }
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior:smooth; }
+  body { font-family:'Inter',sans-serif; color:var(--gray-800); background:var(--gray-50); line-height:1.6; }
+
+  /* NAV */
+  nav { position:sticky; top:0; z-index:100; background:var(--black); color:var(--white); display:flex; align-items:center; justify-content:space-between; padding:0 24px; height:56px; }
+  .nav-brand { font-family:'Playfair Display',serif; font-size:1.3rem; letter-spacing:-.5px; }
+  .nav-brand span { color:var(--amber); }
+  .nav-right { display:flex; align-items:center; gap:16px; }
+  .nav-back { color:var(--gray-300); text-decoration:none; font-size:.85rem; display:flex; align-items:center; gap:6px; transition:color .2s; }
+  .nav-back:hover { color:var(--white); }
+  .lang-btn { background:none; border:1px solid var(--gray-600); color:var(--gray-300); padding:4px 10px; border-radius:4px; font-size:.78rem; cursor:pointer; transition:all .2s; font-family:inherit; }
+  .lang-btn:hover,.lang-btn.active { background:var(--white); color:var(--black); border-color:var(--white); }
+
+  /* HERO */
+  .hero { background:var(--black); color:var(--white); padding:56px 24px 48px; text-align:center; }
+  .hero-tag { display:inline-block; background:var(--green-bg); color:var(--green); border:1px solid var(--green-border); padding:4px 12px; border-radius:20px; font-size:.78rem; font-weight:600; letter-spacing:.5px; text-transform:uppercase; margin-bottom:16px; }
+  .hero h1 { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3rem); line-height:1.15; margin-bottom:16px; }
+  .hero h1 span { color:var(--amber); }
+  .hero p { color:var(--gray-300); font-size:1.05rem; max-width:600px; margin:0 auto; }
+
+  /* LAYOUT */
+  .container { max-width:960px; margin:0 auto; padding:0 24px; }
+  .section { padding:48px 0; }
+  .section-title { font-family:'Playfair Display',serif; font-size:1.6rem; margin-bottom:8px; }
+  .section-sub { color:var(--gray-500); margin-bottom:28px; font-size:.95rem; }
+
+  /* ESTIMATOR */
+  .estimator { background:var(--white); border:1px solid var(--gray-200); border-radius:14px; overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,.06); }
+  .est-head { background:var(--gray-800); color:var(--white); padding:20px 28px; }
+  .est-head h3 { font-size:1.05rem; font-weight:600; margin-bottom:2px; }
+  .est-head p { font-size:.82rem; color:var(--gray-400); }
+  .est-body { padding:28px; }
+  .est-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  @media(max-width:580px){ .est-grid { grid-template-columns:1fr; } }
+  .field label { display:block; font-size:.8rem; font-weight:600; color:var(--gray-600); margin-bottom:6px; text-transform:uppercase; letter-spacing:.4px; }
+  .field select, .field input[type=number] { width:100%; padding:10px 12px; border:1px solid var(--gray-300); border-radius:8px; font-family:inherit; font-size:.9rem; background:var(--gray-50); color:var(--gray-800); transition:border-color .2s; }
+  .field select:focus,.field input:focus { outline:none; border-color:var(--blue); background:var(--white); }
+  .est-divider { border:none; border-top:1px solid var(--gray-200); margin:24px 0; }
+  .calc-btn { width:100%; padding:13px; background:var(--black); color:var(--white); border:none; border-radius:9px; font-family:inherit; font-size:.95rem; font-weight:600; cursor:pointer; transition:background .2s; margin-bottom:20px; }
+  .calc-btn:hover { background:var(--gray-700); }
+
+  /* RESULT PANEL */
+  .result-panel { display:none; }
+  .result-panel.show { display:block; }
+  .result-total { background:var(--black); color:var(--white); border-radius:10px; padding:20px 24px; display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px; }
+  .result-total-label { font-size:.85rem; color:var(--gray-300); }
+  .result-total-amount { font-family:'Playfair Display',serif; font-size:2rem; color:var(--amber); }
+  .result-total-note { font-size:.75rem; color:var(--gray-400); }
+  .result-rows { display:flex; flex-direction:column; gap:8px; }
+  .result-row { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; background:var(--gray-50); border-radius:8px; border:1px solid var(--gray-200); }
+  .result-row-left { display:flex; align-items:center; gap:10px; }
+  .result-row-icon { font-size:1.1rem; }
+  .result-row-label { font-size:.875rem; color:var(--gray-700); }
+  .result-row-stage { font-size:.72rem; color:var(--gray-400); font-weight:500; }
+  .result-row-amount { font-weight:700; font-size:.95rem; color:var(--gray-800); }
+  .result-row.highlight { background:var(--amber-bg); border-color:var(--amber-border); }
+  .result-row.highlight .result-row-amount { color:var(--amber); }
+
+  /* TABLE */
+  .table-wrap { overflow-x:auto; border-radius:10px; border:1px solid var(--gray-200); background:var(--white); }
+  table { width:100%; border-collapse:collapse; font-size:.85rem; }
+  thead { background:var(--gray-800); color:var(--white); }
+  th { padding:11px 14px; text-align:left; font-weight:600; font-size:.78rem; text-transform:uppercase; letter-spacing:.4px; white-space:nowrap; }
+  td { padding:10px 14px; border-bottom:1px solid var(--gray-100); vertical-align:middle; }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:var(--gray-50); }
+  td.amt { font-weight:700; white-space:nowrap; }
+  td.amt.high { color:var(--red); }
+  td.amt.mid  { color:var(--amber); }
+  td.amt.low  { color:var(--green); }
+  .stage-pill { display:inline-block; padding:2px 8px; border-radius:20px; font-size:.7rem; font-weight:600; white-space:nowrap; }
+  .stage-before  { background:var(--purple-bg); color:var(--purple); }
+  .stage-ita     { background:var(--blue-bg);   color:var(--blue); }
+  .stage-grant   { background:var(--green-bg);  color:var(--green); }
+
+  /* TIMELINE */
+  .tl { display:flex; flex-direction:column; }
+  .tl-item { display:flex; gap:16px; padding-bottom:24px; }
+  .tl-item:last-child { padding-bottom:0; }
+  .tl-left { display:flex; flex-direction:column; align-items:center; width:36px; flex-shrink:0; }
+  .tl-dot { width:14px; height:14px; border-radius:50%; flex-shrink:0; margin-top:4px; border:3px solid var(--white); box-shadow:0 0 0 2px currentColor; }
+  .tl-dot.purple { color:var(--purple); background:var(--purple); }
+  .tl-dot.blue   { color:var(--blue);   background:var(--blue); }
+  .tl-dot.amber  { color:var(--amber);  background:var(--amber); }
+  .tl-dot.green  { color:var(--green);  background:var(--green); }
+  .tl-line { flex:1; width:2px; background:var(--gray-200); margin-top:4px; }
+  .tl-item:last-child .tl-line { display:none; }
+  .tl-label { font-size:.72rem; font-weight:600; text-transform:uppercase; letter-spacing:.5px; margin-bottom:2px; }
+  .tl-label.purple { color:var(--purple); }
+  .tl-label.blue   { color:var(--blue); }
+  .tl-label.amber  { color:var(--amber); }
+  .tl-label.green  { color:var(--green); }
+  .tl-title { font-weight:600; font-size:.9rem; margin-bottom:2px; }
+  .tl-desc  { font-size:.85rem; color:var(--gray-500); }
+  .tl-costs { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+  .tl-cost-tag { background:var(--white); border:1px solid var(--gray-200); padding:3px 10px; border-radius:20px; font-size:.75rem; color:var(--gray-700); }
+
+  /* TIPS */
+  .tips-list { display:flex; flex-direction:column; gap:12px; }
+  .tip { background:var(--white); border:1px solid var(--gray-200); border-radius:10px; padding:16px 18px; display:flex; gap:14px; align-items:flex-start; }
+  .tip-num { background:var(--black); color:var(--white); width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.78rem; font-weight:700; flex-shrink:0; margin-top:2px; }
+  .tip-title { font-weight:600; font-size:.9rem; margin-bottom:3px; }
+  .tip-body  { font-size:.85rem; color:var(--gray-600); line-height:1.6; }
+
+  /* CALLOUT */
+  .callout { border-radius:10px; padding:16px 18px; margin-bottom:20px; display:flex; gap:12px; }
+  .callout.blue   { background:var(--blue-bg);   border:1px solid var(--blue-border); }
+  .callout.amber  { background:var(--amber-bg);  border:1px solid var(--amber-border); }
+  .callout.green  { background:var(--green-bg);  border:1px solid var(--green-border); }
+  .callout-icon { font-size:1.1rem; flex-shrink:0; margin-top:2px; }
+  .callout-body { font-size:.875rem; line-height:1.6; color:var(--gray-700); }
+  .callout-body strong { color:var(--gray-800); }
+
+  /* FADE */
+  .fade-up { opacity:0; transform:translateY(24px); transition:opacity .5s, transform .5s; }
+  .fade-up.visible { opacity:1; transform:none; }
+
+  footer { background:var(--black); color:var(--gray-400); text-align:center; padding:28px 24px; font-size:.82rem; margin-top:48px; }
+  .footer-brand { font-family:'Playfair Display',serif; color:var(--white); font-size:1rem; margin-bottom:6px; }
+  .footer-brand span { color:var(--amber); }
+
+  @media(max-width:600px){
+    .hero { padding:40px 16px 32px; }
+    .container { padding:0 16px; }
+    th,td { padding:8px 10px; }
+    .result-total { flex-direction:column; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">Mi<span>gro</span></div>
+  <div class="nav-right">
+    <a href="migro-dashboard.html" class="nav-back">⊞ <span data-en="Dashboard" data-es="Inicio">Dashboard</span></a>
+    <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" id="btn-es" onclick="setLang('es')">ES</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag" data-en="Costs & Fees" data-es="Costos y Tarifas">Costs & Fees</div>
+  <h1 data-en="How much does <span style='color:var(--amber)'>it all cost?</span>" data-es="¿Cuánto <span style='color:var(--amber)'>cuesta todo?</span>">How much does <span style="color:var(--amber)">it all cost?</span></h1>
+  <p data-en="Estimate your total migration costs from skills assessment to visa grant. All amounts in Australian Dollars (AUD)." data-es="Estima tus costos totales de migración desde la evaluación de habilidades hasta el otorgamiento de la visa. Todos los montos en Dólares Australianos (AUD).">Estimate your total migration costs from skills assessment to visa grant. All amounts in Australian Dollars (AUD).</p>
+</div>
+
+<div class="container">
+
+  <!-- COST ESTIMATOR -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="Cost estimator" data-es="Estimador de costos">Cost estimator</h2>
+    <p class="section-sub" data-en="Enter your situation to get a personalised estimate of what your migration will cost." data-es="Ingresa tu situación para obtener una estimación personalizada de lo que costará tu migración.">Enter your situation to get a personalised estimate of what your migration will cost.</p>
+
+    <div class="estimator">
+      <div class="est-head">
+        <h3 data-en="Your migration profile" data-es="Tu perfil de migración">Your migration profile</h3>
+        <p data-en="Estimates based on 2025–26 official fee schedules. Actual costs may vary." data-es="Estimaciones basadas en los aranceles oficiales 2025–26. Los costos reales pueden variar.">Estimates based on 2025–26 official fee schedules. Actual costs may vary.</p>
+      </div>
+      <div class="est-body">
+        <div class="est-grid">
+          <div class="field">
+            <label data-en="Visa subclass" data-es="Subclase de visa">Visa subclass</label>
+            <select id="est-visa" onchange="calcCosts()">
+              <option value="189">189 — Skilled Independent</option>
+              <option value="190">190 — Skilled Nominated</option>
+              <option value="491">491 — Regional Provisional</option>
+            </select>
+          </div>
+          <div class="field">
+            <label data-en="Primary applicant age" data-es="Edad del solicitante principal">Primary applicant age</label>
+            <select id="est-age" onchange="calcCosts()">
+              <option value="adult" data-en="18 or older" data-es="18 años o más">18 or older</option>
+              <option value="minor" data-en="Under 18" data-es="Menor de 18">Under 18</option>
+            </select>
+          </div>
+          <div class="field">
+            <label data-en="Partner / spouse?" data-es="¿Pareja / cónyuge?">Partner / spouse?</label>
+            <select id="est-partner" onchange="calcCosts()">
+              <option value="0" data-en="No partner" data-es="Sin pareja">No partner</option>
+              <option value="1" data-en="Yes — partner included" data-es="Sí — pareja incluida">Yes — partner included</option>
+            </select>
+          </div>
+          <div class="field">
+            <label data-en="Number of dependent children" data-es="Número de hijos dependientes">Number of dependent children</label>
+            <select id="est-children" onchange="calcCosts()">
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4+</option>
+            </select>
+          </div>
+          <div class="field">
+            <label data-en="Assessing authority" data-es="Autoridad evaluadora">Assessing authority</label>
+            <select id="est-auth" onchange="calcCosts()">
+              <option value="560" data-en="ACS (~$560)" data-es="ACS (~$560)">ACS (~$560)</option>
+              <option value="750" data-en="Engineers Australia (~$750)" data-es="Engineers Australia (~$750)">Engineers Australia (~$750)</option>
+              <option value="700" data-en="VETASSESS (~$700)" data-es="VETASSESS (~$700)">VETASSESS (~$700)</option>
+              <option value="900" data-en="AHPRA (~$900)" data-es="AHPRA (~$900)">AHPRA (~$900)</option>
+              <option value="700" data-en="ANMAC (~$700)" data-es="ANMAC (~$700)">ANMAC (~$700)</option>
+              <option value="500" data-en="CPA / CAANZ (~$500)" data-es="CPA / CAANZ (~$500)">CPA / CAANZ (~$500)</option>
+              <option value="550" data-en="TRA (~$550)" data-es="TRA (~$550)">TRA (~$550)</option>
+              <option value="500" data-en="AITSL (~$500)" data-es="AITSL (~$500)">AITSL (~$500)</option>
+              <option value="480" data-en="AASW (~$480)" data-es="AASW (~$480)">AASW (~$480)</option>
+              <option value="400" data-en="AIQS (~$400)" data-es="AIQS (~$400)">AIQS (~$400)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label data-en="English test" data-es="Examen de inglés">English test</label>
+            <select id="est-english" onchange="calcCosts()">
+              <option value="295" data-en="IELTS Academic (~$295)" data-es="IELTS Academic (~$295)">IELTS Academic (~$295)</option>
+              <option value="365" data-en="IELTS Computer (~$365)" data-es="IELTS Computer (~$365)">IELTS Computer (~$365)</option>
+              <option value="470" data-en="PTE Academic (~$470)" data-es="PTE Academic (~$470)">PTE Academic (~$470)</option>
+              <option value="440" data-en="TOEFL iBT (~$440)" data-es="TOEFL iBT (~$440)">TOEFL iBT (~$440)</option>
+              <option value="0" data-en="Already have valid result ($0)" data-es="Ya tengo resultado válido ($0)">Already have valid result ($0)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label data-en="Migration agent?" data-es="¿Agente de migración?">Migration agent?</label>
+            <select id="est-agent" onchange="calcCosts()">
+              <option value="0" data-en="No — DIY" data-es="No — por mi cuenta">No — DIY</option>
+              <option value="2500" data-en="Yes — basic EOI/application help (~$2,500)" data-es="Sí — ayuda básica EOI (~$2,500)">Yes — basic help (~$2,500)</option>
+              <option value="4500" data-en="Yes — full service (~$4,500)" data-es="Sí — servicio completo (~$4,500)">Yes — full service (~$4,500)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label data-en="Translations needed?" data-es="¿Traducciones necesarias?">Translations needed?</label>
+            <select id="est-trans" onchange="calcCosts()">
+              <option value="0" data-en="No — all docs in English" data-es="No — todos en inglés">No — all docs in English</option>
+              <option value="300" data-en="1–2 documents (~$300)" data-es="1–2 documentos (~$300)">1–2 documents (~$300)</option>
+              <option value="600" data-en="3–5 documents (~$600)" data-es="3–5 documentos (~$600)">3–5 documents (~$600)</option>
+              <option value="1000" data-en="Many documents (~$1,000)" data-es="Muchos documentos (~$1,000)">Many documents (~$1,000)</option>
+            </select>
+          </div>
+        </div>
+
+        <hr class="est-divider">
+        <button class="calc-btn" onclick="calcCosts()" data-en="Calculate total cost →" data-es="Calcular costo total →">Calculate total cost →</button>
+
+        <div class="result-panel" id="result-panel">
+          <div class="result-total">
+            <div>
+              <div class="result-total-label" data-en="Estimated total cost" data-es="Costo total estimado">Estimated total cost</div>
+              <div class="result-total-amount" id="result-total-amount">AUD $0</div>
+              <div class="result-total-note" data-en="Approximate. Fees may change. Exchange rates not included." data-es="Aproximado. Las tarifas pueden cambiar. No incluye tipos de cambio.">Approximate. Fees may change. Exchange rates not included.</div>
+            </div>
+            <div style="text-align:right">
+              <div class="result-total-label" data-en="Visa application charge" data-es="Cargo de solicitud de visa">Visa application charge</div>
+              <div style="font-size:1.1rem;font-weight:700;color:var(--white)" id="result-vac-amount">AUD $0</div>
+              <div class="result-total-note" data-en="(largest single cost)" data-es="(costo único más grande)">(largest single cost)</div>
+            </div>
+          </div>
+          <div class="result-rows" id="result-rows"></div>
+          <div class="callout amber" style="margin-top:16px;margin-bottom:0">
+            <div class="callout-icon">💡</div>
+            <div class="callout-body" id="result-tip"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VISA APPLICATION CHARGES TABLE -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="Visa Application Charges (VAC)" data-es="Cargos de Solicitud de Visa (VAC)">Visa Application Charges (VAC)</h2>
+    <p class="section-sub" data-en="Official fees set by the Department of Home Affairs, updated 1 July each year. Figures are for 2025–26." data-es="Tarifas oficiales establecidas por el Departamento de Home Affairs, actualizadas el 1 de julio de cada año. Las cifras son para 2025–26.">Official fees set by the Department of Home Affairs, updated 1 July each year. Figures are for 2025–26.</p>
+
+    <div class="callout amber">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body" data-en="<strong>VAC is the single largest cost</strong> and is paid after receiving your Invitation to Apply — not at EOI stage. These fees are <strong>non-refundable</strong> once your application is lodged, even if your visa is refused." data-es="<strong>El VAC es el costo único más grande</strong> y se paga después de recibir tu Invitación para Solicitar, no en la etapa EOI. Estas tarifas son <strong>no reembolsables</strong> una vez presentada tu solicitud, incluso si tu visa es rechazada."><strong>VAC is the single largest cost</strong> and is paid after receiving your Invitation to Apply — not at EOI stage. These fees are <strong>non-refundable</strong> once your application is lodged, even if your visa is refused.</div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th data-en="Applicant type" data-es="Tipo de solicitante">Applicant type</th>
+            <th>189</th>
+            <th>190</th>
+            <th>491</th>
+            <th data-en="Notes" data-es="Notas">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-en="Primary applicant (18+)" data-es="Solicitante principal (18+)">Primary applicant (18+)</td>
+            <td class="amt high">$4,770</td>
+            <td class="amt high">$4,770</td>
+            <td class="amt mid">$4,770</td>
+            <td data-en="Main applicant fee" data-es="Tarifa del solicitante principal">Main applicant fee</td>
+          </tr>
+          <tr>
+            <td data-en="Partner / spouse (18+)" data-es="Pareja / cónyuge (18+)">Partner / spouse (18+)</td>
+            <td class="amt high">$2,385</td>
+            <td class="amt high">$2,385</td>
+            <td class="amt mid">$2,385</td>
+            <td data-en="50% of primary applicant fee" data-es="50% de la tarifa del solicitante principal">50% of primary fee</td>
+          </tr>
+          <tr>
+            <td data-en="Dependent child (under 18)" data-es="Hijo dependiente (menor de 18)">Dependent child (under 18)</td>
+            <td class="amt low">$1,195</td>
+            <td class="amt low">$1,195</td>
+            <td class="amt low">$1,195</td>
+            <td data-en="25% of primary fee per child" data-es="25% de la tarifa principal por hijo">25% of primary fee per child</td>
+          </tr>
+          <tr>
+            <td data-en="Dependent child turning 18 during processing" data-es="Hijo dependiente que cumple 18 durante el procesamiento">Child turning 18 during processing</td>
+            <td class="amt mid">$2,385</td>
+            <td class="amt mid">$2,385</td>
+            <td class="amt mid">$2,385</td>
+            <td data-en="Fee may increase at time of grant" data-es="La tarifa puede aumentar al momento del otorgamiento">Fee may increase at grant</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:.8rem;color:var(--gray-400);margin-top:10px" data-en="* Fees are reviewed annually on 1 July. Check the official Home Affairs website for the latest amounts before lodging." data-es="* Las tarifas se revisan anualmente el 1 de julio. Verifique el sitio oficial de Home Affairs para los montos más recientes antes de presentar.">* Fees are reviewed annually on 1 July. Check the official Home Affairs website for the latest amounts before lodging.</p>
+  </div>
+
+  <!-- ALL COSTS BREAKDOWN TABLE -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="Full cost breakdown" data-es="Desglose completo de costos">Full cost breakdown</h2>
+    <p class="section-sub" data-en="Every cost you may encounter on the path to a skilled visa." data-es="Cada costo que puedes encontrar en el camino hacia una visa calificada.">Every cost you may encounter on the path to a skilled visa.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th data-en="Cost item" data-es="Ítem de costo">Cost item</th>
+            <th data-en="Typical range (AUD)" data-es="Rango típico (AUD)">Typical range (AUD)</th>
+            <th data-en="When paid" data-es="Cuándo se paga">When paid</th>
+            <th data-en="Required?" data-es="¿Requerido?">Required?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-en="Skills assessment (primary applicant)" data-es="Evaluación de habilidades (solicitante principal)">Skills assessment</td>
+            <td class="amt mid">$400 – $1,000</td>
+            <td><span class="stage-pill stage-before" data-en="Before EOI" data-es="Antes de EOI">Before EOI</span></td>
+            <td data-en="Yes" data-es="Sí">Yes</td>
+          </tr>
+          <tr>
+            <td data-en="English test (IELTS / PTE / TOEFL)" data-es="Examen de inglés (IELTS / PTE / TOEFL)">English test</td>
+            <td class="amt low">$295 – $470</td>
+            <td><span class="stage-pill stage-before" data-en="Before EOI" data-es="Antes de EOI">Before EOI</span></td>
+            <td data-en="Yes" data-es="Sí">Yes</td>
+          </tr>
+          <tr>
+            <td data-en="English test retake (if needed)" data-es="Repetición examen de inglés (si necesario)">English test retake</td>
+            <td class="amt low">$295 – $470</td>
+            <td><span class="stage-pill stage-before" data-en="Before EOI" data-es="Antes de EOI">Before EOI</span></td>
+            <td data-en="If first attempt insufficient" data-es="Si el primer intento es insuficiente">If needed</td>
+          </tr>
+          <tr>
+            <td data-en="NAATI-certified translations" data-es="Traducciones certificadas NAATI">NAATI translations</td>
+            <td class="amt low">$0 – $1,000+</td>
+            <td><span class="stage-pill stage-before" data-en="Before/after EOI" data-es="Antes/después de EOI">Before/after EOI</span></td>
+            <td data-en="If docs not in English" data-es="Si docs no están en inglés">If needed</td>
+          </tr>
+          <tr>
+            <td data-en="Document certification (JP / notary)" data-es="Certificación de documentos (JP / notario)">Document certification</td>
+            <td class="amt low">$50 – $300</td>
+            <td><span class="stage-pill stage-before" data-en="Before EOI" data-es="Antes de EOI">Before EOI</span></td>
+            <td data-en="Often required" data-es="A menudo requerido">Often required</td>
+          </tr>
+          <tr>
+            <td data-en="State nomination application fee" data-es="Tarifa de solicitud de nominación estatal">State nomination fee (190/491)</td>
+            <td class="amt low">$0 – $300</td>
+            <td><span class="stage-pill stage-before" data-en="Before ITA" data-es="Antes de ITA">Before ITA</span></td>
+            <td data-en="For 190/491 only" data-es="Solo para 190/491">For 190/491</td>
+          </tr>
+          <tr style="background:var(--amber-bg)">
+            <td style="font-weight:600" data-en="Visa Application Charge — primary (18+)" data-es="Cargo de Solicitud de Visa — principal (18+)">Visa Application Charge — primary (18+)</td>
+            <td class="amt high">$4,770</td>
+            <td><span class="stage-pill stage-ita" data-en="After ITA" data-es="Después de ITA">After ITA</span></td>
+            <td data-en="Yes" data-es="Sí">Yes</td>
+          </tr>
+          <tr>
+            <td data-en="VAC — partner (18+)" data-es="VAC — pareja (18+)">VAC — partner (18+)</td>
+            <td class="amt high">$2,385</td>
+            <td><span class="stage-pill stage-ita" data-en="After ITA" data-es="Después de ITA">After ITA</span></td>
+            <td data-en="If including partner" data-es="Si incluye pareja">If applicable</td>
+          </tr>
+          <tr>
+            <td data-en="VAC — dependent child (under 18)" data-es="VAC — hijo dependiente (menor de 18)">VAC — dependent child (&lt;18)</td>
+            <td class="amt mid">$1,195 per child</td>
+            <td><span class="stage-pill stage-ita" data-en="After ITA" data-es="Después de ITA">After ITA</span></td>
+            <td data-en="If including children" data-es="Si incluye hijos">If applicable</td>
+          </tr>
+          <tr>
+            <td data-en="Health examination — primary applicant" data-es="Examen médico — solicitante principal">Health examination — primary</td>
+            <td class="amt low">$300 – $500</td>
+            <td><span class="stage-pill stage-ita" data-en="After ITA" data-es="Después de ITA">After ITA</span></td>
+            <td data-en="Yes" data-es="Sí">Yes</td>
+          </tr>
+          <tr>
+            <td data-en="Health examination — partner" data-es="Examen médico — pareja">Health examination — partner</td>
+            <td class="amt low">$300 – $500</td>
+            <td><span class="stage-pill stage-ita" data-en="After ITA" data-es="Después de ITA">After ITA</span></td>
+            <td data-en="If including partner" data-es="Si incluye pareja">If applicable</td>
+          </tr>
+          <tr>
+            <td data-en="Health examination — per child" data-es="Examen médico — por hijo">Health examination — per child</td>
+            <td class="amt low">$150 – $300</td>
+            <td><span class="stage-pill stage-ita" data-en="After ITA" data-es="Después de ITA">After ITA</span></td>
+            <td data-en="If including children" data-es="Si incluye hijos">If applicable</td>
+          </tr>
+          <tr>
+            <td data-en="Police clearance certificates (per country)" data-es="Certificados de antecedentes penales (por país)">Police clearances (per country)</td>
+            <td class="amt low">$50 – $200 each</td>
+            <td><span class="stage-pill stage-ita" data-en="After ITA" data-es="Después de ITA">After ITA</span></td>
+            <td data-en="Yes — all countries lived in 12+ months" data-es="Sí — todos los países donde viviste 12+ meses">Yes</td>
+          </tr>
+          <tr>
+            <td data-en="Registered Migration Agent (optional)" data-es="Agente de Migración Registrado (opcional)">Migration agent (optional)</td>
+            <td class="amt mid">$1,500 – $6,000</td>
+            <td><span class="stage-pill stage-before" data-en="Various stages" data-es="Varias etapas">Various</span></td>
+            <td data-en="Optional but recommended" data-es="Opcional pero recomendado">Optional</td>
+          </tr>
+          <tr>
+            <td data-en="Biometrics (if required by country of passport)" data-es="Biometría (si lo requiere el país del pasaporte)">Biometrics (if required)</td>
+            <td class="amt low">$50 – $150</td>
+            <td><span class="stage-pill stage-ita" data-en="After ITA" data-es="Después de ITA">After ITA</span></td>
+            <td data-en="Depends on nationality" data-es="Depende de la nacionalidad">Some nationalities</td>
+          </tr>
+          <tr>
+            <td data-en="Skills assessment review / reapplication" data-es="Revisión / nueva solicitud de evaluación">Skills assessment review</td>
+            <td class="amt low">$200 – $500</td>
+            <td><span class="stage-pill stage-before" data-en="Before EOI" data-es="Antes de EOI">Before EOI</span></td>
+            <td data-en="Only if first attempt negative" data-es="Solo si el primer intento es negativo">If refused</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- WHEN YOU PAY — TIMELINE -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="When do you pay each cost?" data-es="¿Cuándo se paga cada costo?">When do you pay each cost?</h2>
+    <p class="section-sub" data-en="Migration costs are spread across 3 distinct phases. Budget for each phase separately." data-es="Los costos de migración se distribuyen en 3 fases distintas. Presupuesta para cada fase por separado.">Migration costs are spread across 3 distinct phases. Budget for each phase separately.</p>
+
+    <div class="tl">
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-dot purple"></div>
+          <div class="tl-line"></div>
+        </div>
+        <div>
+          <div class="tl-label purple" data-en="Phase 1 — Before EOI" data-es="Fase 1 — Antes de EOI">Phase 1 — Before EOI</div>
+          <div class="tl-title" data-en="Preparation costs" data-es="Costos de preparación">Preparation costs</div>
+          <div class="tl-desc" data-en="These are paid upfront, before you even submit your Expression of Interest." data-es="Estos se pagan por adelantado, antes de presentar tu Expresión de Interés.">These are paid upfront, before you submit your Expression of Interest.</div>
+          <div class="tl-costs">
+            <span class="tl-cost-tag" data-en="Skills assessment" data-es="Evaluación de habilidades">Skills assessment</span>
+            <span class="tl-cost-tag" data-en="English test" data-es="Examen de inglés">English test</span>
+            <span class="tl-cost-tag" data-en="Translations (NAATI)" data-es="Traducciones (NAATI)">Translations (NAATI)</span>
+            <span class="tl-cost-tag" data-en="Document certification" data-es="Certificación de docs">Document certification</span>
+          </div>
+          <div style="margin-top:8px;font-size:.83rem;font-weight:600;color:var(--purple)" data-en="Typical range: $700 – $2,500" data-es="Rango típico: $700 – $2,500">Typical range: $700 – $2,500</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-dot blue"></div>
+          <div class="tl-line"></div>
+        </div>
+        <div>
+          <div class="tl-label blue" data-en="Phase 2 — After EOI, before ITA" data-es="Fase 2 — Después de EOI, antes de ITA">Phase 2 — After EOI, before ITA</div>
+          <div class="tl-title" data-en="State nomination costs (190/491 only)" data-es="Costos de nominación estatal (solo 190/491)">State nomination costs (190/491 only)</div>
+          <div class="tl-desc" data-en="If you're applying for state nomination, there may be an application fee. Some states are free, some charge up to $300." data-es="Si estás solicitando la nominación estatal, puede haber una tarifa de solicitud. Algunos estados son gratuitos, otros cobran hasta $300.">If applying for state nomination, there may be a small application fee.</div>
+          <div class="tl-costs">
+            <span class="tl-cost-tag" data-en="State nomination fee ($0–$300)" data-es="Tarifa de nominación estatal ($0–$300)">State nomination fee ($0–$300)</span>
+          </div>
+          <div style="margin-top:8px;font-size:.83rem;font-weight:600;color:var(--blue)" data-en="Typical range: $0 – $300" data-es="Rango típico: $0 – $300">Typical range: $0 – $300</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-dot amber"></div>
+          <div class="tl-line"></div>
+        </div>
+        <div>
+          <div class="tl-label amber" data-en="Phase 3 — After ITA (60-day window)" data-es="Fase 3 — Después de ITA (ventana de 60 días)">Phase 3 — After ITA (60-day window)</div>
+          <div class="tl-title" data-en="The big payment — visa application" data-es="El gran pago — solicitud de visa">The big payment — visa application</div>
+          <div class="tl-desc" data-en="The largest costs arrive once you receive your Invitation to Apply. You have 60 days to pay these and lodge your complete application." data-es="Los costos más grandes llegan cuando recibes tu Invitación para Solicitar. Tienes 60 días para pagar estos y presentar tu solicitud completa.">The largest costs arrive once you receive your ITA. You have 60 days to pay and lodge your complete application.</div>
+          <div class="tl-costs">
+            <span class="tl-cost-tag" data-en="Visa Application Charge (VAC)" data-es="Cargo de Solicitud de Visa (VAC)">Visa Application Charge</span>
+            <span class="tl-cost-tag" data-en="Health examinations" data-es="Exámenes médicos">Health examinations</span>
+            <span class="tl-cost-tag" data-en="Police clearances" data-es="Antecedentes penales">Police clearances</span>
+            <span class="tl-cost-tag" data-en="Migration agent (if using)" data-es="Agente de migración (si usa)">Migration agent</span>
+          </div>
+          <div style="margin-top:8px;font-size:.83rem;font-weight:600;color:var(--amber)" data-en="Typical range: $5,000 – $12,000+ (depends on family size)" data-es="Rango típico: $5,000 – $12,000+ (depende del tamaño de la familia)">Typical range: $5,000 – $12,000+ (depends on family size)</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-dot green"></div>
+        </div>
+        <div>
+          <div class="tl-label green" data-en="Visa granted 🎉" data-es="Visa otorgada 🎉">Visa granted 🎉</div>
+          <div class="tl-title" data-en="No more migration fees" data-es="No más tarifas de migración">No more migration fees</div>
+          <div class="tl-desc" data-en="Once your visa is granted, there are no further fees to the Department. You may have settlement costs (flights, housing, etc.) but no immigration fees." data-es="Una vez otorgada tu visa, no hay más tarifas para el Departamento. Puedes tener costos de asentamiento (vuelos, vivienda, etc.) pero sin tarifas de inmigración.">Once granted, no further fees to the Department. Settlement costs (flights, housing, etc.) are separate.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MONEY-SAVING TIPS -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="Save money on your migration" data-es="Ahorra dinero en tu migración">Save money on your migration</h2>
+    <p class="section-sub" data-en="Smart strategies to reduce costs without compromising your application." data-es="Estrategias inteligentes para reducir costos sin comprometer tu solicitud.">Smart strategies to reduce costs without compromising your application.</p>
+
+    <div class="tips-list">
+      <div class="tip">
+        <div class="tip-num">1</div>
+        <div>
+          <div class="tip-title" data-en="Get your documents right the first time" data-es="Consigue tus documentos correctamente la primera vez">Get your documents right the first time</div>
+          <div class="tip-body" data-en="A negative skills assessment means paying again to reapply ($200–$750+). Invest time in getting the right reference letters and documents before submitting — it's far cheaper than repeating the process." data-es="Una evaluación de habilidades negativa significa volver a pagar para repostular ($200–$750+). Invierte tiempo en obtener las cartas de referencia y documentos correctos antes de presentar: es mucho más barato que repetir el proceso.">A negative skills assessment means paying again to reapply ($200–$750+). Invest time getting reference letters and documents right before submitting — far cheaper than repeating.</div>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-num">2</div>
+        <div>
+          <div class="tip-title" data-en="Use paper IELTS if you're near-proficient" data-es="Usa IELTS en papel si estás cerca de ser Proficiente">Use paper IELTS if you're near-proficient</div>
+          <div class="tip-body" data-en="Paper-based IELTS (~$295) is significantly cheaper than computer-based (~$365) or PTE (~$470). If you're confident in your score, the cheaper format still gives the same result. However, some people score better on computer-based tests — try both formats if you're unsure." data-es="El IELTS en papel (~$295) es significativamente más barato que el basado en computadora (~$365) o PTE (~$470). Si tienes confianza en tu puntaje, el formato más económico da el mismo resultado. Sin embargo, algunas personas obtienen mejores puntajes en exámenes basados en computadora.">Paper IELTS (~$295) is significantly cheaper than computer-based (~$365) or PTE (~$470). Same result for skilled migration. Some score better on computer — try a practice test first to decide.</div>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-num">3</div>
+        <div>
+          <div class="tip-title" data-en="DIY your EOI — agents aren't needed for this step" data-es="Haz tu EOI tú mismo — no necesitas agente para este paso">DIY your EOI — agents aren't needed for this step</div>
+          <div class="tip-body" data-en="Submitting an EOI is free and straightforward. The ImmiAccount form is clear and you don't need an agent for this step. If you do hire an agent, focus them on the full visa application (after ITA) where errors are most costly — not just the EOI." data-es="Presentar una EOI es gratuito y sencillo. El formulario de ImmiAccount es claro y no necesitas un agente para este paso. Si contratas un agente, enfócalo en la solicitud de visa completa (después de la ITA), donde los errores son más costosos, no solo en la EOI.">Submitting an EOI is free and you don't need an agent for this step. If you hire an agent, focus them on the full visa application (after ITA) where mistakes are most costly — not the EOI itself.</div>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-num">4</div>
+        <div>
+          <div class="tip-title" data-en="Save before you get invited — not after" data-es="Ahorra antes de ser invitado — no después">Save before you get invited — not after</div>
+          <div class="tip-body" data-en="You have 60 days from invitation to pay the VAC and lodge. For a couple with 2 kids, the VAC alone can be over $9,000 plus medical and police costs. Having this money ready before the invitation arrives prevents rushed decisions or missed deadlines." data-es="Tienes 60 días desde la invitación para pagar el VAC y presentar. Para una pareja con 2 hijos, solo el VAC puede superar los $9,000 más los costos médicos y de antecedentes penales. Tener este dinero listo antes de que llegue la invitación evita decisiones apresuradas o plazos perdidos.">You have 60 days from invitation to pay the VAC and lodge. For a couple with 2 kids, the VAC alone exceeds $9,000. Have this money ready before the invitation arrives — not after.</div>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-num">5</div>
+        <div>
+          <div class="tip-title" data-en="Request a group discount for police clearances" data-es="Solicita descuento grupal para antecedentes penales">Request a group discount for police clearances</div>
+          <div class="tip-body" data-en="If you and your partner both need police clearances from the same country, many authorities offer a small discount for simultaneous applications. Also, start requesting these early — some countries (e.g. Brazil, India, Philippines) can take 4–8 weeks to process." data-es="Si tú y tu pareja necesitan antecedentes penales del mismo país, muchas autoridades ofrecen un pequeño descuento para solicitudes simultáneas. Además, comienza a solicitarlos temprano: algunos países (p.ej. Brasil, India, Filipinas) pueden demorar 4–8 semanas en procesar.">If you and your partner need clearances from the same country, request simultaneously — some authorities offer discounts. Also, start early: Brazil, India, Philippines can take 4–8 weeks to process.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section fade-up" style="padding-top:0">
+    <div class="callout blue">
+      <div class="callout-icon">ℹ️</div>
+      <div class="callout-body" data-en="<strong>All fees are approximate and in AUD.</strong> The Visa Application Charge is set by the Department of Home Affairs and reviewed annually on 1 July. Always verify the current VAC at <a href='https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-independent-189' target='_blank'>immi.homeaffairs.gov.au</a> before lodging your application." data-es="<strong>Todas las tarifas son aproximadas y en AUD.</strong> El Cargo de Solicitud de Visa es establecido por el Departamento de Home Affairs y revisado anualmente el 1 de julio. Siempre verifica el VAC actual en <a href='https://immi.homeaffairs.gov.au' target='_blank'>immi.homeaffairs.gov.au</a> antes de presentar tu solicitud."><strong>All fees are approximate and in AUD.</strong> The Visa Application Charge is reviewed annually on 1 July. Always verify the current VAC at <a href='https://immi.homeaffairs.gov.au' target='_blank'>immi.homeaffairs.gov.au</a> before lodging.</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-brand">Mi<span>gro</span></div>
+  <div data-en="Australian immigration guidance — independent &amp; bilingual." data-es="Orientación sobre inmigración australiana — independiente y bilingüe.">Australian immigration guidance — independent &amp; bilingual.</div>
+  <div style="margin-top:4px" data-en="Not legal advice. Always verify with Home Affairs." data-es="No es asesoramiento legal. Siempre verifica con Home Affairs.">Not legal advice. Always verify with Home Affairs.</div>
+</footer>
+
+<script>
+/* ── LANG ── */
+let lang = 'en';
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('[data-en]').forEach(el => {
+    el.innerHTML = el.getAttribute('data-' + l);
+  });
+  document.getElementById('btn-en').classList.toggle('active', l==='en');
+  document.getElementById('btn-es').classList.toggle('active', l==='es');
+  calcCosts();
+}
+
+/* ── VAC FEES ── */
+const VAC = {
+  '189': { primary: 4770, partner: 2385, child: 1195 },
+  '190': { primary: 4770, partner: 2385, child: 1195 },
+  '491': { primary: 4770, partner: 2385, child: 1195 }
+};
+
+function fmt(n) {
+  return 'AUD $' + n.toLocaleString('en-AU');
+}
+
+function calcCosts() {
+  const visa      = document.getElementById('est-visa').value;
+  const partner   = parseInt(document.getElementById('est-partner').value, 10);
+  const children  = parseInt(document.getElementById('est-children').value, 10) > 4 ? 4 : parseInt(document.getElementById('est-children').value, 10);
+  const authCost  = parseInt(document.getElementById('est-auth').value, 10);
+  const engCost   = parseInt(document.getElementById('est-english').value, 10);
+  const agentCost = parseInt(document.getElementById('est-agent').value, 10);
+  const transCost = parseInt(document.getElementById('est-trans').value, 10);
+
+  const vac     = VAC[visa];
+  const vacMain = vac.primary;
+  const vacPartner = partner * vac.partner;
+  const vacChildren = children * vac.child;
+  const vacTotal = vacMain + vacPartner + vacChildren;
+
+  const healthMain    = 400;
+  const healthPartner = partner * 400;
+  const healthChild   = children * 220;
+  const healthTotal   = healthMain + healthPartner + healthChild;
+
+  const policeMain    = 120;
+  const policePartner = partner * 120;
+  const policeTotal   = policeMain + policePartner;
+
+  const stateNom = (visa === '190' || visa === '491') ? 150 : 0;
+
+  const grandTotal = authCost + engCost + transCost + stateNom + vacTotal + healthTotal + policeTotal + agentCost;
+
+  // Show panel
+  document.getElementById('result-panel').classList.add('show');
+  document.getElementById('result-total-amount').textContent = fmt(grandTotal);
+  document.getElementById('result-vac-amount').textContent = fmt(vacTotal);
+
+  const isES = lang === 'es';
+  const rows = [
+    { icon:'🎓', label: isES ? 'Evaluación de habilidades' : 'Skills assessment',       amount: authCost,    stage: isES ? 'Antes de EOI' : 'Before EOI' },
+    { icon:'🗣️', label: isES ? 'Examen de inglés'          : 'English test',             amount: engCost,     stage: isES ? 'Antes de EOI' : 'Before EOI' },
+    { icon:'🌐', label: isES ? 'Traducciones NAATI'         : 'NAATI translations',       amount: transCost,   stage: isES ? 'Antes de EOI' : 'Before EOI' },
+    stateNom > 0 ? { icon:'🗺️', label: isES ? 'Nominación estatal' : 'State nomination', amount: stateNom,    stage: isES ? 'Antes de ITA' : 'Before ITA' } : null,
+    { icon:'💳', label: isES ? `VAC — solicitante principal (${visa})` : `VAC — primary applicant (${visa})`, amount: vacMain,  stage: isES ? 'Después de ITA' : 'After ITA', highlight: true },
+    partner  ? { icon:'💳', label: isES ? 'VAC — pareja'     : 'VAC — partner',           amount: vacPartner,  stage: isES ? 'Después de ITA' : 'After ITA', highlight: true } : null,
+    children ? { icon:'💳', label: isES ? `VAC — ${children} hijo(s)` : `VAC — ${children} child(ren)`, amount: vacChildren, stage: isES ? 'Después de ITA' : 'After ITA', highlight: true } : null,
+    { icon:'🏥', label: isES ? `Exámenes médicos (${1+partner+children} persona(s))` : `Health exams (${1+partner+children} person(s))`, amount: healthTotal, stage: isES ? 'Después de ITA' : 'After ITA' },
+    { icon:'🔎', label: isES ? 'Antecedentes penales' : 'Police clearances',              amount: policeTotal, stage: isES ? 'Después de ITA' : 'After ITA' },
+    agentCost ? { icon:'👤', label: isES ? 'Agente de migración' : 'Migration agent',      amount: agentCost,   stage: isES ? 'Varias etapas' : 'Various stages' } : null,
+  ].filter(Boolean);
+
+  document.getElementById('result-rows').innerHTML = rows.map(r => `
+    <div class="result-row ${r.highlight ? 'highlight' : ''}">
+      <div class="result-row-left">
+        <span class="result-row-icon">${r.icon}</span>
+        <div>
+          <div class="result-row-label">${r.label}</div>
+          <div class="result-row-stage">${r.stage}</div>
+        </div>
+      </div>
+      <div class="result-row-amount">${fmt(r.amount)}</div>
+    </div>`).join('');
+
+  // Contextual tip
+  let tip = '';
+  if (grandTotal > 15000) {
+    tip = isES
+      ? `<strong>Presupuesto alto.</strong> Con una familia de ${1+partner+children} personas y agente de migración, tu migración supera los ${fmt(grandTotal)}. El VAC de ${fmt(vacTotal)} es la mayor partida: asegúrate de tener este monto disponible <em>antes</em> de recibir tu invitación.`
+      : `<strong>High-budget migration.</strong> With ${1+partner+children} applicant(s) and a migration agent, your total exceeds ${fmt(grandTotal)}. The ${fmt(vacTotal)} VAC is the largest item — have this ready <em>before</em> your invitation arrives.`;
+  } else if (agentCost === 0 && grandTotal > 7000) {
+    tip = isES
+      ? `<strong>Consejo:</strong> Estás haciendo el proceso sin agente. Considera al menos una consulta puntual (~$300–500) con un Agente de Migración Registrado al momento de la solicitud de visa para evitar errores costosos.`
+      : `<strong>Tip:</strong> You're going DIY — great for saving money. Consider at least a one-off consultation (~$300–500) with a Registered Migration Agent at visa lodgement time to catch any errors.`;
+  } else {
+    tip = isES
+      ? `<strong>Buen presupuesto.</strong> Tu estimación total es ${fmt(grandTotal)}. Recuerda que el mayor desembolso único (${fmt(vacTotal)}) llega después de la invitación: ahorra este monto con anticipación.`
+      : `<strong>Good budget.</strong> Your estimated total is ${fmt(grandTotal)}. Remember the biggest single payment (${fmt(vacTotal)}) comes after invitation — save this amount in advance.`;
+  }
+  document.getElementById('result-tip').innerHTML = tip;
+}
+
+// Run on load with defaults
+calcCosts();
+
+/* ── FADE-UP ── */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+}, { threshold: 0.08 });
+document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
