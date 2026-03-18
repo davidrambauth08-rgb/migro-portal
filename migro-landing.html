@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Migro — Your Migration Journey Starts Here</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #0a0a0a;
+      --white: #ffffff;
+      --gray-100: #f5f5f5;
+      --gray-200: #e8e8e8;
+      --gray-400: #999999;
+      --gray-600: #555555;
+      --gray-800: #222222;
+      --accent: #1a1a1a;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--white);
+      color: var(--black);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 24px 60px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--gray-200);
+      transition: all 0.3s ease;
+    }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--black);
+      text-decoration: none;
+    }
+
+    .nav-logo span {
+      display: inline-block;
+      width: 8px; height: 8px;
+      background: var(--black);
+      border-radius: 50%;
+      margin-left: 2px;
+      vertical-align: super;
+    }
+
+    .nav-links {
+      display: flex; gap: 36px; align-items: center;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 14px; font-weight: 500;
+      color: var(--gray-600); text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--black); }
+
+    .nav-cta {
+      display: flex; gap: 12px; align-items: center;
+    }
+
+    .btn-outline {
+      padding: 10px 24px;
+      border: 1.5px solid var(--black);
+      border-radius: 6px;
+      font-size: 14px; font-weight: 500;
+      color: var(--black);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .btn-outline:hover {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    .btn-primary {
+      padding: 10px 24px;
+      background: var(--black);
+      border: 1.5px solid var(--black);
+      border-radius: 6px;
+      font-size: 14px; font-weight: 600;
+      color: var(--white);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .btn-primary:hover {
+      background: var(--gray-800);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+
+    /* ── LANG TOGGLE ── */
+    .lang-toggle {
+      display: flex;
+      background: var(--gray-100);
+      border-radius: 6px;
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .lang-btn {
+      padding: 5px 12px;
+      font-size: 12px; font-weight: 600;
+      border: none; background: transparent;
+      border-radius: 4px; cursor: pointer;
+      color: var(--gray-400);
+      transition: all 0.2s;
+    }
+
+    .lang-btn.active {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      text-align: center;
+      padding: 140px 60px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, #f0f0f0 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--black);
+      color: var(--white);
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 12px; font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+
+    .hero-badge-dot {
+      width: 6px; height: 6px;
+      background: #4ade80;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.3); }
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(52px, 7vw, 96px);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -2px;
+      color: var(--black);
+      margin-bottom: 24px;
+      max-width: 900px;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      position: relative;
+    }
+
+    .hero-title em::after {
+      content: '';
+      position: absolute;
+      bottom: 6px; left: 0; right: 0;
+      height: 3px;
+      background: var(--black);
+      transform: scaleX(0);
+      animation: underline 1s 0.8s forwards;
+    }
+
+    @keyframes underline {
+      to { transform: scaleX(1); }
+    }
+
+    .hero-subtitle {
+      font-size: clamp(16px, 2vw, 20px);
+      font-weight: 400;
+      color: var(--gray-600);
+      max-width: 580px;
+      line-height: 1.7;
+      margin-bottom: 48px;
+    }
+
+    .hero-actions {
+      display: flex; gap: 16px; align-items: center;
+      flex-wrap: wrap; justify-content: center;
+      margin-bottom: 72px;
+    }
+
+    .btn-hero {
+      padding: 16px 40px;
+      font-size: 16px; font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.25s;
+      text-decoration: none;
+      display: inline-flex; align-items: center; gap: 10px;
+    }
+
+    .btn-hero-primary {
+      background: var(--black);
+      color: var(--white);
+      border: 2px solid var(--black);
+    }
+
+    .btn-hero-primary:hover {
+      background: var(--gray-800);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    }
+
+    .btn-hero-secondary {
+      background: transparent;
+      color: var(--black);
+      border: 2px solid var(--gray-200);
+    }
+
+    .btn-hero-secondary:hover {
+      border-color: var(--black);
+      transform: translateY(-2px);
+    }
+
+    .arrow-icon {
+      transition: transform 0.2s;
+    }
+
+    .btn-hero-primary:hover .arrow-icon {
+      transform: translateX(4px);
+    }
+
+    /* ── STATS ── */
+    .hero-stats {
+      display: flex; gap: 60px;
+      padding: 32px 60px;
+      border-top: 1px solid var(--gray-200);
+      border-bottom: 1px solid var(--gray-200);
+      flex-wrap: wrap; justify-content: center;
+    }
+
+    .stat-item { text-align: center; }
+
+    .stat-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 36px; font-weight: 700;
+      color: var(--black);
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 13px; color: var(--gray-400);
+      font-weight: 500; margin-top: 4px;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .section {
+      padding: 100px 60px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-tag {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 2px;
+      color: var(--gray-400);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 4vw, 52px);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -1px;
+      max-width: 600px;
+      margin-bottom: 60px;
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2px;
+      background: var(--gray-200);
+      border: 1px solid var(--gray-200);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .step-card {
+      background: var(--white);
+      padding: 40px 36px;
+      transition: background 0.2s;
+    }
+
+    .step-card:hover { background: var(--gray-100); }
+
+    .step-number {
+      font-size: 12px; font-weight: 700;
+      color: var(--gray-400);
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+
+    .step-icon {
+      width: 48px; height: 48px;
+      background: var(--black);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+      font-size: 22px;
+    }
+
+    .step-name {
+      font-size: 18px; font-weight: 700;
+      color: var(--black);
+      margin-bottom: 10px;
+    }
+
+    .step-desc {
+      font-size: 14px;
+      color: var(--gray-600);
+      line-height: 1.6;
+    }
+
+    /* ── VISA TYPES ── */
+    .visas-section {
+      background: var(--black);
+      padding: 100px 60px;
+    }
+
+    .visas-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .visas-section .section-tag { color: #666; }
+    .visas-section .section-title { color: var(--white); }
+
+    .visas-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .visa-card {
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 32px 28px;
+      transition: all 0.25s;
+      cursor: pointer;
+    }
+
+    .visa-card:hover {
+      border-color: #555;
+      background: #111;
+      transform: translateY(-3px);
+    }
+
+    .visa-emoji { font-size: 32px; margin-bottom: 16px; display: block; }
+
+    .visa-type {
+      font-size: 18px; font-weight: 700;
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+
+    .visa-type-es {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 12px;
+    }
+
+    .visa-desc {
+      font-size: 13px;
+      color: #888;
+      line-height: 1.6;
+    }
+
+    /* ── DESTINATIONS ── */
+    .destinations-section {
+      padding: 100px 60px;
+      background: var(--gray-100);
+    }
+
+    .destinations-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .dest-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .dest-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .dest-card {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 28px 24px;
+      display: flex; align-items: center; gap: 16px;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+
+    .dest-card:hover {
+      border-color: var(--black);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    .dest-card.featured {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    .dest-flag { font-size: 32px; }
+
+    .dest-info { flex: 1; }
+
+    .dest-name {
+      font-size: 16px; font-weight: 700;
+      color: inherit;
+    }
+
+    .dest-card.featured .dest-name { color: var(--white); }
+
+    .dest-tag {
+      font-size: 11px; font-weight: 600;
+      color: var(--gray-400);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 3px;
+    }
+
+    .dest-card.featured .dest-tag { color: #888; }
+
+    .dest-badge {
+      font-size: 10px; font-weight: 700;
+      background: var(--white);
+      color: var(--black);
+      padding: 3px 8px;
+      border-radius: 100px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── PROCESS ── */
+    .process-section {
+      padding: 100px 60px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .process-list {
+      margin-top: 48px;
+    }
+
+    .process-item {
+      display: flex;
+      gap: 32px;
+      padding: 32px 0;
+      border-bottom: 1px solid var(--gray-200);
+      align-items: flex-start;
+      transition: all 0.2s;
+    }
+
+    .process-item:hover { padding-left: 8px; }
+    .process-item:last-child { border-bottom: none; }
+
+    .process-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 48px; font-weight: 700;
+      color: var(--gray-200);
+      line-height: 1;
+      min-width: 60px;
+    }
+
+    .process-content { flex: 1; padding-top: 8px; }
+
+    .process-title {
+      font-size: 22px; font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .process-title-es {
+      font-size: 14px; color: var(--gray-400);
+      margin-bottom: 12px;
+    }
+
+    .process-desc {
+      font-size: 15px; color: var(--gray-600);
+      line-height: 1.7; max-width: 560px;
+    }
+
+    /* ── CTA BANNER ── */
+    .cta-section {
+      padding: 100px 60px;
+      background: var(--black);
+      text-align: center;
+    }
+
+    .cta-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(40px, 5vw, 68px);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin-bottom: 20px;
+    }
+
+    .cta-sub {
+      font-size: 18px; color: #888;
+      max-width: 500px;
+      margin: 0 auto 48px;
+      line-height: 1.6;
+    }
+
+    .btn-cta {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--white);
+      color: var(--black);
+      padding: 18px 48px;
+      border-radius: 8px;
+      font-size: 17px; font-weight: 700;
+      text-decoration: none;
+      transition: all 0.25s;
+    }
+
+    .btn-cta:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(255,255,255,0.15);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--black);
+      border-top: 1px solid #1a1a1a;
+      padding: 60px 60px 40px;
+    }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 60px;
+      flex-wrap: wrap; gap: 40px;
+    }
+
+    .footer-brand .nav-logo { color: var(--white); font-size: 32px; }
+
+    .footer-tagline {
+      font-size: 13px; color: #555;
+      margin-top: 8px; max-width: 220px;
+    }
+
+    .footer-links-group h4 {
+      font-size: 12px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.5px;
+      color: #555; margin-bottom: 16px;
+    }
+
+    .footer-links-group ul { list-style: none; }
+
+    .footer-links-group li { margin-bottom: 10px; }
+
+    .footer-links-group a {
+      font-size: 14px; color: #777;
+      text-decoration: none; transition: color 0.2s;
+    }
+
+    .footer-links-group a:hover { color: var(--white); }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 24px;
+      border-top: 1px solid #1a1a1a;
+      flex-wrap: wrap; gap: 16px;
+    }
+
+    .footer-copy {
+      font-size: 13px; color: #444;
+    }
+
+    .footer-note {
+      font-size: 12px; color: #333;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 20px 24px; }
+      .nav-links { display: none; }
+      .hero { padding: 120px 24px 60px; }
+      .hero-stats { padding: 24px; gap: 32px; }
+      .section, .process-section { padding: 60px 24px; }
+      .visas-section, .destinations-section, .cta-section { padding: 60px 24px; }
+      footer { padding: 40px 24px; }
+    }
+
+    /* ── FADE IN ANIMATION ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.7s ease;
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">Migro<span></span></a>
+    <ul class="nav-links">
+      <li><a href="#how" data-en="How it works" data-es="Cómo funciona">How it works</a></li>
+      <li><a href="#visas" data-en="Visas" data-es="Visas">Visas</a></li>
+      <li><a href="#destinations" data-en="Destinations" data-es="Destinos">Destinations</a></li>
+    </ul>
+    <div class="nav-cta">
+      <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('es')">ES</button>
+      </div>
+      <a href="#" class="btn-outline" data-en="Sign in" data-es="Iniciar sesión">Sign in</a>
+      <a href="#start" class="btn-primary" data-en="Get started" data-es="Comenzar">Get started</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="start">
+    <div class="hero-bg"></div>
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      <span data-en="Your migration journey starts here" data-es="Tu camino migratorio empieza aquí">Your migration journey starts here</span>
+    </div>
+    <h1 class="hero-title">
+      <span data-en="Find your path<br/>to a <em>new life</em>" data-es="Encuentra tu camino<br/>hacia una <em>nueva vida</em>">Find your path<br/>to a <em>new life</em></span>
+    </h1>
+    <p class="hero-subtitle" data-en="Answer a few questions. Get a personalized migration plan with visa routes, costs, timelines, and next steps — all in one place." data-es="Responde unas preguntas. Obtén un plan migratorio personalizado con rutas de visa, costos, tiempos y próximos pasos — todo en un solo lugar.">
+      Answer a few questions. Get a personalized migration plan with visa routes, costs, timelines, and next steps — all in one place.
+    </p>
+    <div class="hero-actions">
+      <a href="#how" class="btn-hero btn-hero-primary">
+        <span data-en="Build my plan" data-es="Crear mi plan">Build my plan</span>
+        <span class="arrow-icon">→</span>
+      </a>
+      <a href="#how" class="btn-hero btn-hero-secondary">
+        <span data-en="See how it works" data-es="Ver cómo funciona">See how it works</span>
+      </a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-number">50+</span>
+        <span class="stat-label" data-en="Visa types covered" data-es="Tipos de visa cubiertos">Visa types covered</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">15+</span>
+        <span class="stat-label" data-en="Destination countries" data-es="Países destino">Destination countries</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">100%</span>
+        <span class="stat-label" data-en="Official sources" data-es="Fuentes oficiales">Official sources</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">Free</span>
+        <span class="stat-label" data-en="Always free to use" data-es="Siempre gratis">Always free to use</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section" id="how">
+    <p class="section-tag" data-en="HOW IT WORKS" data-es="CÓMO FUNCIONA">HOW IT WORKS</p>
+    <h2 class="section-title" data-en="From profile to plan in minutes" data-es="De perfil a plan en minutos">From profile to plan in minutes</h2>
+
+    <div class="steps-grid">
+      <div class="step-card fade-up">
+        <p class="step-number">01</p>
+        <div class="step-icon">🧭</div>
+        <h3 class="step-name" data-en="Build your profile" data-es="Crea tu perfil">Build your profile</h3>
+        <p class="step-desc" data-en="Tell us your nationality, age, education, work experience, and current status." data-es="Cuéntanos tu nacionalidad, edad, educación, experiencia laboral y situación actual.">Tell us your nationality, age, education, work experience, and current status.</p>
+      </div>
+      <div class="step-card fade-up">
+        <p class="step-number">02</p>
+        <div class="step-icon">🎯</div>
+        <h3 class="step-name" data-en="Define your goal" data-es="Define tu objetivo">Define your goal</h3>
+        <p class="step-desc" data-en="Work, study, permanent residency, or visa renewal — you choose the direction." data-es="Trabajar, estudiar, residencia permanente o renovación de visa — tú eliges la dirección.">Work, study, permanent residency, or visa renewal — you choose the direction.</p>
+      </div>
+      <div class="step-card fade-up">
+        <p class="step-number">03</p>
+        <div class="step-icon">🗺️</div>
+        <h3 class="step-name" data-en="Get your routes" data-es="Obtén tus rutas">Get your routes</h3>
+        <p class="step-desc" data-en="We show you every visa path available for your profile, with requirements, costs, and timelines." data-es="Te mostramos cada ruta de visa disponible para tu perfil, con requisitos, costos y tiempos.">We show you every visa path available for your profile, with requirements, costs, and timelines.</p>
+      </div>
+      <div class="step-card fade-up">
+        <p class="step-number">04</p>
+        <div class="step-icon">🏙️</div>
+        <h3 class="step-name" data-en="Choose your city" data-es="Elige tu ciudad">Choose your city</h3>
+        <p class="step-desc" data-en="Filter by climate, cost of living, beach, job opportunities — find where you actually want to live." data-es="Filtra por clima, costo de vida, playa, oportunidades laborales — encuentra donde realmente quieres vivir.">Filter by climate, cost of living, beach, job opportunities — find where you actually want to live.</p>
+      </div>
+      <div class="step-card fade-up">
+        <p class="step-number">05</p>
+        <div class="step-icon">📋</div>
+        <h3 class="step-name" data-en="Explore options" data-es="Explora opciones">Explore options</h3>
+        <p class="step-desc" data-en="Schools, universities, employers, and opportunities curated for your visa type and city." data-es="Escuelas, universidades, empleadores y oportunidades curadas para tu tipo de visa y ciudad.">Schools, universities, employers, and opportunities curated for your visa type and city.</p>
+      </div>
+      <div class="step-card fade-up">
+        <p class="step-number">06</p>
+        <div class="step-icon">✅</div>
+        <h3 class="step-name" data-en="Get your plan" data-es="Obtén tu plan">Get your plan</h3>
+        <p class="step-desc" data-en="A clear, personalized migration plan with every step, document, and timeline laid out." data-es="Un plan migratorio claro y personalizado con cada paso, documento y cronograma detallado.">A clear, personalized migration plan with every step, document, and timeline laid out.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- VISA TYPES -->
+  <section class="visas-section" id="visas">
+    <div class="visas-inner">
+      <p class="section-tag" data-en="VISA TYPES" data-es="TIPOS DE VISA">VISA TYPES</p>
+      <h2 class="section-title" data-en="Every path to your destination" data-es="Cada camino hacia tu destino">Every path to your destination</h2>
+
+      <div class="visas-grid">
+        <div class="visa-card fade-up">
+          <span class="visa-emoji">💼</span>
+          <h3 class="visa-type" data-en="Work Visa" data-es="Visa de Trabajo">Work Visa</h3>
+          <p class="visa-type-es" data-en="Skilled & Employer Sponsored" data-es="Calificado y Patrocinado">Skilled & Employer Sponsored</p>
+          <p class="visa-desc" data-en="Subclass 482, 186, 189, 190 and more. Find the right work pathway for your skills." data-es="Subclase 482, 186, 189, 190 y más. Encuentra el camino laboral correcto para tus habilidades.">Subclass 482, 186, 189, 190 and more. Find the right work pathway for your skills.</p>
+        </div>
+        <div class="visa-card fade-up">
+          <span class="visa-emoji">🎓</span>
+          <h3 class="visa-type" data-en="Student Visa" data-es="Visa de Estudiante">Student Visa</h3>
+          <p class="visa-type-es" data-en="Study & Graduate" data-es="Estudio y Posgrado">Study & Graduate</p>
+          <p class="visa-desc" data-en="Subclass 500 and 485. Study in Australia and explore pathways to permanent residence." data-es="Subclase 500 y 485. Estudia en Australia y explora caminos hacia la residencia permanente.">Subclass 500 and 485. Study in Australia and explore pathways to permanent residence.</p>
+        </div>
+        <div class="visa-card fade-up">
+          <span class="visa-emoji">🏡</span>
+          <h3 class="visa-type" data-en="Permanent Residency" data-es="Residencia Permanente">Permanent Residency</h3>
+          <p class="visa-type-es" data-en="Points-tested & Sponsored" data-es="Por puntos y Patrocinado">Points-tested & Sponsored</p>
+          <p class="visa-desc" data-en="189, 190, 191 visas. Build your score and make Australia your permanent home." data-es="Visas 189, 190, 191. Construye tu puntaje y convierte Australia en tu hogar permanente.">189, 190, 191 visas. Build your score and make Australia your permanent home.</p>
+        </div>
+        <div class="visa-card fade-up">
+          <span class="visa-emoji">🔄</span>
+          <h3 class="visa-type" data-en="Visa Extension" data-es="Extensión de Visa">Visa Extension</h3>
+          <p class="visa-type-es" data-en="Bridge & Renewal" data-es="Puente y Renovación">Bridge & Renewal</p>
+          <p class="visa-desc" data-en="Already in Australia? Know your options to extend, bridge, or transition to a new visa." data-es="¿Ya estás en Australia? Conoce tus opciones para extender, puente o cambiar a una nueva visa.">Already in Australia? Know your options to extend, bridge, or transition to a new visa.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DESTINATIONS -->
+  <section class="destinations-section" id="destinations">
+    <div class="destinations-inner">
+      <div class="dest-header">
+        <div>
+          <p class="section-tag" data-en="DESTINATIONS" data-es="DESTINOS">DESTINATIONS</p>
+          <h2 class="section-title" style="margin-bottom:0" data-en="Starting with Australia.<br/>Expanding worldwide." data-es="Comenzando con Australia.<br/>Expandiendo globalmente.">Starting with Australia.<br/>Expanding worldwide.</h2>
+        </div>
+        <a href="#" class="btn-outline" data-en="View all destinations" data-es="Ver todos los destinos">View all destinations</a>
+      </div>
+
+      <div class="dest-grid">
+        <div class="dest-card featured">
+          <span class="dest-flag">🇦🇺</span>
+          <div class="dest-info">
+            <div class="dest-name">Australia</div>
+            <div class="dest-tag" data-en="Available now" data-es="Disponible ahora">Available now</div>
+          </div>
+          <span class="dest-badge">Live</span>
+        </div>
+        <div class="dest-card">
+          <span class="dest-flag">🇨🇦</span>
+          <div class="dest-info">
+            <div class="dest-name">Canada</div>
+            <div class="dest-tag" data-en="Coming soon" data-es="Próximamente">Coming soon</div>
+          </div>
+        </div>
+        <div class="dest-card">
+          <span class="dest-flag">🇬🇧</span>
+          <div class="dest-info">
+            <div class="dest-name">United Kingdom</div>
+            <div class="dest-tag" data-en="Coming soon" data-es="Próximamente">Coming soon</div>
+          </div>
+        </div>
+        <div class="dest-card">
+          <span class="dest-flag">🇩🇪</span>
+          <div class="dest-info">
+            <div class="dest-name">Germany</div>
+            <div class="dest-tag" data-en="Coming soon" data-es="Próximamente">Coming soon</div>
+          </div>
+        </div>
+        <div class="dest-card">
+          <span class="dest-flag">🇪🇸</span>
+          <div class="dest-info">
+            <div class="dest-name">Spain</div>
+            <div class="dest-tag" data-en="Coming soon" data-es="Próximamente">Coming soon</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS DETAIL -->
+  <section class="process-section">
+    <p class="section-tag" data-en="THE PROCESS" data-es="EL PROCESO">THE PROCESS</p>
+    <h2 class="section-title" data-en="Everything you need.<br/>Nothing you don't." data-es="Todo lo que necesitas.<br/>Nada más.">Everything you need.<br/>Nothing you don't.</h2>
+
+    <div class="process-list">
+      <div class="process-item fade-up">
+        <span class="process-num">01</span>
+        <div class="process-content">
+          <h3 class="process-title" data-en="Initial Filter" data-es="Filtro Inicial">Initial Filter</h3>
+          <p class="process-title-es" data-en="5 minute questionnaire" data-es="Cuestionario de 5 minutos">5 minute questionnaire</p>
+          <p class="process-desc" data-en="We ask about your nationality, age, English level, education, work experience, and current migration status to build an accurate picture of your eligibility." data-es="Preguntamos sobre tu nacionalidad, edad, nivel de inglés, educación, experiencia laboral y situación migratoria actual para construir un perfil preciso de tu elegibilidad.">We ask about your nationality, age, English level, education, work experience, and current migration status to build an accurate picture of your eligibility.</p>
+        </div>
+      </div>
+      <div class="process-item fade-up">
+        <span class="process-num">02</span>
+        <div class="process-content">
+          <h3 class="process-title" data-en="Migration Profile" data-es="Perfil Migratorio">Migration Profile</h3>
+          <p class="process-title-es" data-en="Based on official data" data-es="Basado en datos oficiales">Based on official data</p>
+          <p class="process-desc" data-en="Based on your answers, we generate a migration profile that shows your points score, visa eligibility, and probability of success for each available pathway." data-es="Basándonos en tus respuestas, generamos un perfil migratorio que muestra tu puntuación, elegibilidad de visa y probabilidad de éxito para cada camino disponible.">Based on your answers, we generate a migration profile that shows your points score, visa eligibility, and probability of success for each available pathway.</p>
+        </div>
+      </div>
+      <div class="process-item fade-up">
+        <span class="process-num">03</span>
+        <div class="process-content">
+          <h3 class="process-title" data-en="Visa Routes & Costs" data-es="Rutas y Costos de Visa">Visa Routes & Costs</h3>
+          <p class="process-title-es" data-en="Transparent, complete information" data-es="Información transparente y completa">Transparent, complete information</p>
+          <p class="process-desc" data-en="Every visa option comes with government application fees, processing times, required documents, and step-by-step guidance — all sourced directly from official government portals." data-es="Cada opción de visa incluye tarifas de solicitud del gobierno, tiempos de procesamiento, documentos requeridos y guía paso a paso — todo obtenido directamente de portales gubernamentales oficiales.">Every visa option comes with government application fees, processing times, required documents, and step-by-step guidance — all sourced directly from official government portals.</p>
+        </div>
+      </div>
+      <div class="process-item fade-up">
+        <span class="process-num">04</span>
+        <div class="process-content">
+          <h3 class="process-title" data-en="Your Personalized Plan" data-es="Tu Plan Personalizado">Your Personalized Plan</h3>
+          <p class="process-title-es" data-en="Clear steps, real outcomes" data-es="Pasos claros, resultados reales">Clear steps, real outcomes</p>
+          <p class="process-desc" data-en="Walk away with a complete migration roadmap: chosen visa, target city, schools or employers, professional services, and a clear timeline to follow — all tailored to you." data-es="Llévate un mapa migratorio completo: visa elegida, ciudad destino, escuelas o empleadores, servicios profesionales y un cronograma claro a seguir — todo adaptado a ti.">Walk away with a complete migration roadmap: chosen visa, target city, schools or employers, professional services, and a clear timeline to follow — all tailored to you.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <h2 class="cta-title" data-en="Ready to find<br/>your path?" data-es="¿Listo para encontrar<br/>tu camino?">Ready to find<br/>your path?</h2>
+    <p class="cta-sub" data-en="Join thousands of people who used Migro to plan their move abroad." data-es="Únete a miles de personas que usaron Migro para planear su mudanza al exterior.">Join thousands of people who used Migro to plan their move abroad.</p>
+    <a href="#start" class="btn-cta">
+      <span data-en="Start for free" data-es="Comenzar gratis">Start for free</span>
+      <span>→</span>
+    </a>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo">Migro<span style="background:white"></span></a>
+        <p class="footer-tagline" data-en="Your migration journey, clearly mapped." data-es="Tu camino migratorio, claramente trazado.">Your migration journey, clearly mapped.</p>
+      </div>
+      <div class="footer-links-group">
+        <h4 data-en="PRODUCT" data-es="PRODUCTO">PRODUCT</h4>
+        <ul>
+          <li><a href="#" data-en="How it works" data-es="Cómo funciona">How it works</a></li>
+          <li><a href="#" data-en="Visa types" data-es="Tipos de visa">Visa types</a></li>
+          <li><a href="#" data-en="Destinations" data-es="Destinos">Destinations</a></li>
+        </ul>
+      </div>
+      <div class="footer-links-group">
+        <h4 data-en="RESOURCES" data-es="RECURSOS">RESOURCES</h4>
+        <ul>
+          <li><a href="#" data-en="Blog" data-es="Blog">Blog</a></li>
+          <li><a href="#" data-en="FAQ" data-es="Preguntas frecuentes">FAQ</a></li>
+          <li><a href="#" data-en="Official sources" data-es="Fuentes oficiales">Official sources</a></li>
+        </ul>
+      </div>
+      <div class="footer-links-group">
+        <h4 data-en="COMPANY" data-es="EMPRESA">COMPANY</h4>
+        <ul>
+          <li><a href="#" data-en="About" data-es="Acerca de">About</a></li>
+          <li><a href="#" data-en="Contact" data-es="Contacto">Contact</a></li>
+          <li><a href="#" data-en="Privacy" data-es="Privacidad">Privacy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 Migro. All rights reserved.</p>
+      <p class="footer-note" data-en="Information sourced from official government portals. Not legal advice." data-es="Información obtenida de portales gubernamentales oficiales. No es asesoría legal.">Information sourced from official government portals. Not legal advice.</p>
+    </div>
+  </footer>
+
+  <script>
+    // ── LANGUAGE TOGGLE ──
+    let currentLang = 'en';
+
+    function setLang(lang) {
+      currentLang = lang;
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent === lang.toUpperCase());
+      });
+      document.querySelectorAll('[data-en]').forEach(el => {
+        const text = el.getAttribute('data-' + lang);
+        if (text) el.innerHTML = text;
+      });
+    }
+
+    // ── SCROLL ANIMATIONS ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // ── NAV SCROLL EFFECT ──
+    window.addEventListener('scroll', () => {
+      const nav = document.querySelector('nav');
+      nav.style.boxShadow = window.scrollY > 20
+        ? '0 2px 20px rgba(0,0,0,0.08)'
+        : 'none';
+    });
+  </script>
+</body>
+</html>
