@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Migro — Professional Services</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --black: #0a0a0a; --white: #ffffff;
+      --gray-100: #f5f5f5; --gray-200: #e8e8e8;
+      --gray-300: #d0d0d0; --gray-400: #999;
+      --gray-600: #555; --gray-800: #222;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--gray-100); color: var(--black); min-height: 100vh; }
+
+    /* NAV */
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; background: var(--white); border-bottom: 1px solid var(--gray-200); position: sticky; top: 0; z-index: 100; }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--black); text-decoration: none; }
+    .nav-logo span { display: inline-block; width: 6px; height: 6px; background: var(--black); border-radius: 50%; margin-left: 2px; vertical-align: super; }
+    .nav-right { display: flex; align-items: center; gap: 16px; }
+    .lang-toggle { display: flex; background: var(--gray-100); border-radius: 6px; padding: 3px; gap: 2px; }
+    .lang-btn { padding: 4px 10px; font-size: 11px; font-weight: 700; border: none; background: transparent; border-radius: 4px; cursor: pointer; color: var(--gray-400); transition: all .2s; }
+    .lang-btn.active { background: var(--black); color: var(--white); }
+    .nav-back { font-size: 13px; font-weight: 500; color: var(--gray-600); text-decoration: none; padding: 8px 16px; border-radius: 6px; border: 1px solid var(--gray-200); transition: all .2s; }
+    .nav-back:hover { border-color: var(--black); color: var(--black); }
+
+    /* PROGRESS */
+    .progress-strip { background: var(--white); border-bottom: 1px solid var(--gray-200); padding: 0 48px; display: flex; }
+    .progress-step { padding: 14px 0; margin-right: 32px; font-size: 12px; font-weight: 600; color: var(--gray-300); border-bottom: 2px solid transparent; white-space: nowrap; }
+    .progress-step.done { color: var(--gray-400); }
+    .progress-step.active { color: var(--black); border-bottom-color: var(--black); }
+
+    /* HERO */
+    .hero { background: var(--black); padding: 52px 48px 40px; }
+    .hero-inner { max-width: 1100px; margin: 0 auto; }
+    .hero-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #555; margin-bottom: 12px; }
+    .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(28px, 3.5vw, 46px); font-weight: 700; color: var(--white); line-height: 1.1; letter-spacing: -1px; margin-bottom: 14px; }
+    .hero-sub { font-size: 15px; color: #777; max-width: 520px; line-height: 1.6; margin-bottom: 32px; }
+    .context-strip { display: flex; gap: 12px; flex-wrap: wrap; }
+    .context-tag { display: flex; align-items: center; gap: 8px; background: #111; border: 1px solid #222; border-radius: 100px; padding: 7px 14px; font-size: 13px; font-weight: 600; color: #aaa; }
+    .context-dot { width: 6px; height: 6px; background: #4ade80; border-radius: 50%; }
+
+    /* TABS */
+    .tabs-wrap { background: var(--white); border-bottom: 1px solid var(--gray-200); padding: 0 48px; display: flex; }
+    .tab-btn { padding: 18px 0; margin-right: 36px; font-size: 14px; font-weight: 600; color: var(--gray-400); border: none; background: transparent; cursor: pointer; border-bottom: 2px solid transparent; transition: all .2s; white-space: nowrap; }
+    .tab-btn.active { color: var(--black); border-bottom-color: var(--black); }
+    .tab-btn:hover { color: var(--black); }
+
+    /* BODY */
+    .page-body { max-width: 1100px; margin: 0 auto; padding: 36px 48px; }
+
+    /* TAB PANELS */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* SECTION HEADER */
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+    .section-title-sm { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; }
+    .section-sub { font-size: 14px; color: var(--gray-400); margin-top: 4px; }
+
+    /* GRID */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px; margin-bottom: 40px; }
+
+    /* AGENT CARD */
+    .agent-card { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 16px; overflow: hidden; transition: all .25s; }
+    .agent-card:hover { border-color: var(--black); transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,0,0,0.09); }
+    .agent-card.featured { border-color: var(--black); }
+
+    .agent-header { padding: 22px 22px 0; display: flex; align-items: flex-start; gap: 14px; }
+    .agent-avatar { width: 52px; height: 52px; border-radius: 50%; background: var(--black); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+    .agent-avatar.light { background: var(--gray-100); border: 1px solid var(--gray-200); }
+    .agent-meta { flex: 1; }
+    .agent-name { font-size: 16px; font-weight: 700; color: var(--black); }
+    .agent-title { font-size: 12px; color: var(--gray-400); margin-top: 2px; }
+    .agent-badge { font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 4px 10px; border-radius: 100px; flex-shrink: 0; }
+    .badge-verified { background: #e6f9e6; color: #1a6a1a; }
+    .badge-top { background: var(--black); color: var(--white); }
+    .badge-pro { background: #fff0e0; color: #a05000; }
+
+    .agent-body { padding: 16px 22px; }
+    .agent-desc { font-size: 13px; color: var(--gray-600); line-height: 1.6; margin-bottom: 14px; }
+
+    .agent-stats { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 14px; }
+    .agent-stat { font-size: 12px; color: var(--gray-400); }
+    .agent-stat strong { color: var(--black); font-weight: 700; display: block; font-size: 15px; }
+
+    .agent-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 4px; }
+    .agent-tag { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 100px; background: var(--gray-100); color: var(--gray-600); }
+
+    .agent-footer { padding: 14px 22px; border-top: 1px solid var(--gray-200); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .agent-price { font-size: 13px; color: var(--gray-400); }
+    .agent-price strong { color: var(--black); font-size: 15px; font-weight: 700; }
+    .btn-contact { padding: 9px 20px; background: var(--black); color: var(--white); border: none; border-radius: 7px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all .2s; }
+    .btn-contact:hover { background: var(--gray-800); transform: translateY(-1px); }
+
+    /* STARS */
+    .stars { color: #f0b429; font-size: 13px; letter-spacing: 1px; }
+    .stars-row { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; }
+    .review-count { font-size: 12px; color: var(--gray-400); }
+
+    /* LAWYER CARD — same structure */
+    /* HOUSING CARD */
+    .housing-card { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 16px; overflow: hidden; transition: all .25s; }
+    .housing-card:hover { border-color: var(--black); transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,0,0,0.09); }
+
+    .housing-visual { height: 130px; display: flex; align-items: center; justify-content: center; font-size: 64px; position: relative; }
+    .housing-badge { position: absolute; top: 12px; right: 12px; font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 4px 10px; border-radius: 100px; }
+
+    .housing-body { padding: 18px 20px; }
+    .housing-name { font-size: 16px; font-weight: 700; margin-bottom: 3px; }
+    .housing-type { font-size: 12px; color: var(--gray-400); margin-bottom: 10px; }
+    .housing-desc { font-size: 13px; color: var(--gray-600); line-height: 1.6; margin-bottom: 14px; }
+    .housing-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+    .h-stat { background: var(--gray-100); border-radius: 8px; padding: 10px 12px; }
+    .h-stat-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--gray-400); margin-bottom: 3px; }
+    .h-stat-val { font-size: 14px; font-weight: 700; }
+    .housing-footer { padding: 12px 20px; border-top: 1px solid var(--gray-200); display: flex; justify-content: space-between; align-items: center; }
+    .housing-link { font-size: 13px; font-weight: 700; color: var(--black); text-decoration: none; }
+    .housing-tag { font-size: 11px; color: var(--gray-400); }
+
+    /* INFO BANNER */
+    .info-banner { display: flex; gap: 16px; align-items: flex-start; background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 12px; padding: 18px 20px; margin-bottom: 24px; }
+    .info-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+    .info-text { flex: 1; }
+    .info-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .info-desc { font-size: 13px; color: var(--gray-600); line-height: 1.6; }
+    .info-link { font-size: 13px; font-weight: 700; color: var(--black); text-decoration: none; border-bottom: 1px solid var(--gray-300); transition: border-color .2s; }
+    .info-link:hover { border-color: var(--black); }
+
+    /* CTA BOTTOM */
+    .cta-bottom { background: var(--black); border-radius: 16px; padding: 48px 40px; text-align: center; margin-top: 16px; }
+    .cta-bottom-title { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; color: var(--white); margin-bottom: 12px; letter-spacing: -0.5px; }
+    .cta-bottom-sub { font-size: 15px; color: #888; margin-bottom: 28px; max-width: 420px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+    .cta-bottom-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-cta-primary { display: inline-flex; align-items: center; gap: 10px; background: var(--white); color: var(--black); padding: 15px 36px; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; border: none; transition: all .2s; text-decoration: none; }
+    .btn-cta-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,255,255,.15); }
+    .btn-cta-outline { display: inline-flex; align-items: center; gap: 10px; background: transparent; color: var(--white); padding: 15px 36px; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; border: 1.5px solid #333; transition: all .2s; text-decoration: none; }
+    .btn-cta-outline:hover { border-color: #666; transform: translateY(-2px); }
+
+    /* REVIEWS */
+    .reviews-toggle { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: var(--gray-400); cursor: pointer; background: none; border: none; padding: 0; transition: color .2s; text-decoration: underline; text-underline-offset: 2px; }
+    .reviews-toggle:hover { color: var(--black); }
+    .reviews-panel { max-height: 0; overflow: hidden; transition: max-height .4s cubic-bezier(0.4,0,0.2,1); }
+    .reviews-panel.open { max-height: 600px; }
+    .reviews-inner { padding: 14px 22px 16px; border-top: 1px solid var(--gray-100); background: var(--gray-100); }
+    .reviews-heading { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+    .reviews-heading .write-review { font-size: 11px; font-weight: 700; color: var(--black); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+    .review-item { background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; }
+    .review-item:last-child { margin-bottom: 0; }
+    .review-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .review-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--black); display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--white); font-weight: 700; flex-shrink: 0; }
+    .review-name { font-size: 12px; font-weight: 700; color: var(--black); }
+    .review-date { font-size: 11px; color: var(--gray-400); margin-left: auto; }
+    .review-stars { color: #f0b429; font-size: 11px; letter-spacing: 1px; }
+    .review-text { font-size: 12px; color: var(--gray-600); line-height: 1.6; margin-top: 4px; }
+    .review-verified { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: #1a6a1a; background: #e6f9e6; padding: 2px 7px; border-radius: 100px; margin-top: 6px; font-weight: 600; }
+    .write-review-form { background: var(--white); border: 1.5px dashed var(--gray-300); border-radius: 10px; padding: 14px; margin-top: 8px; display: none; }
+    .write-review-form.open { display: block; }
+    .write-review-form textarea { width: 100%; min-height: 80px; padding: 10px; border: 1.5px solid var(--gray-200); border-radius: 6px; font-size: 12px; font-family: 'Inter', sans-serif; resize: vertical; }
+    .write-review-form textarea:focus { outline: none; border-color: var(--black); }
+    .star-select { display: flex; gap: 4px; margin-bottom: 8px; }
+    .star-btn { font-size: 20px; cursor: pointer; color: var(--gray-300); transition: color .1s; }
+    .star-btn.active { color: #f0b429; }
+    .submit-review-btn { margin-top: 8px; padding: 8px 16px; background: var(--black); color: var(--white); border: none; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; }
+
+    /* FADE */
+    .fade-up { opacity: 0; transform: translateY(20px); transition: all .5s ease; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    @media(max-width: 768px) {
+      nav, .progress-strip, .hero, .tabs-wrap, .page-body { padding-left: 24px; padding-right: 24px; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .progress-step { display: none; }
+      .progress-step.active { display: block; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="migro-landing.html" class="nav-logo">Migro<span></span></a>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('es')">ES</button>
+    </div>
+    <a href="migro-dashboard.html" class="nav-back" data-en="⊞ Dashboard" data-es="⊞ Dashboard">⊞ Dashboard</a>
+    <a href="migro-options.html" class="nav-back" data-en="← Options" data-es="← Opciones">← Options</a>
+  </div>
+</nav>
+
+<!-- PROGRESS -->
+<div class="progress-strip">
+  <div class="progress-step done" data-en="✓ Profile" data-es="✓ Perfil">✓ Profile</div>
+  <div class="progress-step done" data-en="✓ Visa Routes" data-es="✓ Rutas">✓ Visa Routes</div>
+  <div class="progress-step done" data-en="✓ Sydney" data-es="✓ Sydney">✓ Sydney</div>
+  <div class="progress-step done" data-en="✓ Options" data-es="✓ Opciones">✓ Options</div>
+  <div class="progress-step active" data-en="→ Services" data-es="→ Servicios">→ Services</div>
+  <div class="progress-step" data-en="My Plan" data-es="Mi Plan">My Plan</div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <p class="hero-tag" data-en="STEP 6 · PROFESSIONAL SERVICES" data-es="PASO 6 · SERVICIOS PROFESIONALES">STEP 6 · PROFESSIONAL SERVICES</p>
+    <h1 class="hero-title" data-en="Get the right experts<br/>in your corner." data-es="Ten a los expertos<br/>correctos de tu lado.">Get the right experts<br/>in your corner.</h1>
+    <p class="hero-sub" data-en="Connect with registered migration agents, immigration lawyers, and housing services trusted by thousands of migrants every year." data-es="Conéctate con agentes migratorios registrados, abogados de inmigración y servicios de alojamiento en los que confían miles de migrantes cada año.">Connect with registered migration agents, immigration lawyers, and housing services trusted by thousands of migrants every year.</p>
+    <div class="context-strip">
+      <div class="context-tag"><span class="context-dot"></span> 🗺️ Sydney</div>
+      <div class="context-tag">🎯 <span data-en="Subclass 482" data-es="Subclase 482">Subclass 482</span></div>
+      <div class="context-tag">🇨🇴 <span data-en="Colombia" data-es="Colombia">Colombia</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <button class="tab-btn active" onclick="switchTab('agents', this)" data-en="🧭 Migration Agents (12)" data-es="🧭 Agentes Migratorios (12)">🧭 Migration Agents (12)</button>
+  <button class="tab-btn" onclick="switchTab('lawyers', this)" data-en="⚖️ Immigration Lawyers (8)" data-es="⚖️ Abogados (8)">⚖️ Immigration Lawyers (8)</button>
+  <button class="tab-btn" onclick="switchTab('housing', this)" data-en="🏠 Housing & Relocation (10)" data-es="🏠 Alojamiento (10)">🏠 Housing & Relocation (10)</button>
+</div>
+
+<!-- PAGE BODY -->
+<div class="page-body">
+
+  <!-- ── AGENTS TAB ── -->
+  <div class="tab-panel active" id="tab-agents">
+
+    <div class="info-banner fade-up">
+      <span class="info-icon">ℹ️</span>
+      <div class="info-text">
+        <div class="info-title" data-en="What is a Registered Migration Agent?" data-es="¿Qué es un Agente Migratorio Registrado?">What is a Registered Migration Agent?</div>
+        <div class="info-desc" data-en="In Australia, only registered agents (MARA) can legally provide migration advice and represent you. Always verify your agent's registration before paying any fees. <a class='info-link' href='#'>Verify on MARA →</a>" data-es="En Australia, solo los agentes registrados (MARA) pueden legalmente brindar asesoría migratoria y representarte. Siempre verifica el registro de tu agente antes de pagar honorarios. <a class='info-link' href='#'>Verificar en MARA →</a>">In Australia, only registered agents (MARA) can legally provide migration advice and represent you. Always verify your agent's registration before paying any fees. <a class='info-link' href='#'>Verify on MARA →</a></div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <div>
+        <h2 class="section-title-sm" data-en="Registered Migration Agents" data-es="Agentes Migratorios Registrados">Registered Migration Agents</h2>
+        <p class="section-sub" data-en="All agents verified with the Office of the Migration Agents Registration Authority (OMARA)" data-es="Todos los agentes verificados con la Autoridad de Registro de Agentes Migratorios (OMARA)">All agents verified with OMARA</p>
+      </div>
+    </div>
+
+    <div class="cards-grid">
+
+      <div class="agent-card featured fade-up">
+        <div class="agent-header">
+          <div class="agent-avatar">👩</div>
+          <div class="agent-meta">
+            <div class="agent-name">Sarah Chen</div>
+            <div class="agent-title" data-en="Registered Migration Agent · MARN 1912847" data-es="Agente Migratoria Registrada · MARN 1912847">Registered Migration Agent · MARN 1912847</div>
+          </div>
+          <span class="agent-badge badge-top" data-en="Top rated" data-es="Mejor calificada">Top rated</span>
+        </div>
+        <div class="agent-body">
+          <div class="stars-row">
+            <span class="stars">★★★★★</span>
+            <span class="review-count">4.9</span>
+            <button class="reviews-toggle" onclick="toggleReviews(this)" data-en="· 142 reviews" data-es="· 142 reseñas">· 142 reviews</button>
+          </div>
+          <div class="reviews-panel" id="reviews-sarah">
+            <div class="reviews-inner">
+              <div class="reviews-heading"><span data-en="RECENT REVIEWS" data-es="RESEÑAS RECIENTES">RECENT REVIEWS</span><span class="write-review" onclick="toggleWriteReview('wr-sarah')" data-en="+ Write a review" data-es="+ Escribir reseña">+ Write a review</span></div>
+              <div class="review-item">
+                <div class="review-header"><div class="review-avatar">C</div><div class="review-name">Carlos R.</div><div class="review-date">Feb 2025</div></div>
+                <div class="review-stars">★★★★★</div>
+                <p class="review-text" data-en="Sarah guided me through my entire 482 application process. She was incredibly thorough, caught several issues in my documents before lodgement, and my visa was granted in 4 months. Couldn't recommend her more highly." data-es="Sarah me guió durante todo mi proceso de solicitud de visa 482. Fue increíblemente minuciosa, detectó varios problemas en mis documentos antes de presentarlos y mi visa fue aprobada en 4 meses. La recomiendo ampliamente.">Sarah guided me through my entire 482 application process. She was incredibly thorough, caught several issues in my documents before lodgement, and my visa was granted in 4 months. Couldn't recommend her more highly.</p>
+                <div class="review-verified">✓ <span data-en="Verified client" data-es="Cliente verificado">Verified client</span></div>
+              </div>
+              <div class="review-item">
+                <div class="review-header"><div class="review-avatar">A</div><div class="review-name">Alejandra M.</div><div class="review-date">Jan 2025</div></div>
+                <div class="review-stars">★★★★★</div>
+                <p class="review-text" data-en="Habla español perfectamente, lo que me dio mucha tranquilidad. Explicó cada paso en detalle. Muy profesional y respondió todos mis mensajes rápidamente. Mi visa 186 fue aprobada sin problemas." data-es="Habla español perfectamente, lo que me dio mucha tranquilidad. Explicó cada paso en detalle. Muy profesional y respondió todos mis mensajes rápidamente. Mi visa 186 fue aprobada sin problemas.">Habla español perfectamente, lo que me dio mucha tranquilidad. Explicó cada paso en detalle. Muy profesional y respondió todos mis mensajes rápidamente. Mi visa 186 fue aprobada sin problemas.</p>
+                <div class="review-verified">✓ <span data-en="Verified client" data-es="Cliente verificado">Verified client</span></div>
+              </div>
+              <div class="write-review-form" id="wr-sarah">
+                <div class="star-select" id="star-sarah"><span class="star-btn" onclick="setStar('star-sarah',1)">☆</span><span class="star-btn" onclick="setStar('star-sarah',2)">☆</span><span class="star-btn" onclick="setStar('star-sarah',3)">☆</span><span class="star-btn" onclick="setStar('star-sarah',4)">☆</span><span class="star-btn" onclick="setStar('star-sarah',5)">☆</span></div>
+                <textarea placeholder="Share your experience with Sarah Chen..."></textarea>
+                <button class="submit-review-btn" onclick="submitReview(this)" data-en="Submit Review" data-es="Enviar Reseña">Submit Review</button>
+              </div>
+            </div>
+          </div>
+          <p class="agent-desc" data-en="12 years specializing in employer-sponsored visas (482, 186) for skilled workers from Latin America and Asia. Fluent in English, Mandarin and Spanish." data-es="12 años especializándose en visas patrocinadas por empleadores (482, 186) para trabajadores calificados de Latinoamérica y Asia. Fluida en inglés, mandarín y español.">12 years specializing in employer-sponsored visas (482, 186) for skilled workers from Latin America and Asia. Fluent in English, Mandarin and Spanish.</p>
+          <div class="agent-stats">
+            <div class="agent-stat"><strong>12 yrs</strong> <span data-en="experience" data-es="experiencia">experience</span></div>
+            <div class="agent-stat"><strong>98%</strong> <span data-en="success rate" data-es="tasa de éxito">success rate</span></div>
+            <div class="agent-stat"><strong>500+</strong> <span data-en="visas granted" data-es="visas aprobadas">visas granted</span></div>
+          </div>
+          <div class="agent-tags">
+            <span class="agent-tag">🇨🇴 Habla español</span>
+            <span class="agent-tag">482 specialist</span>
+            <span class="agent-tag">Sydney CBD</span>
+            <span class="agent-tag">Online consult</span>
+          </div>
+        </div>
+        <div class="agent-footer">
+          <div class="agent-price"><span data-en="From" data-es="Desde">From</span> <strong>AUD $350</strong> <span data-en="/ consult" data-es="/ consulta">/ consult</span></div>
+          <button class="btn-contact" data-en="Contact →" data-es="Contactar →">Contact →</button>
+        </div>
+      </div>
+
+      <div class="agent-card fade-up">
+        <div class="agent-header">
+          <div class="agent-avatar">👨</div>
+          <div class="agent-meta">
+            <div class="agent-name">James O'Brien</div>
+            <div class="agent-title" data-en="Registered Migration Agent · MARN 2001234" data-es="Agente Migratorio Registrado · MARN 2001234">Registered Migration Agent · MARN 2001234</div>
+          </div>
+          <span class="agent-badge badge-verified" data-en="Verified" data-es="Verificado">Verified</span>
+        </div>
+        <div class="agent-body">
+          <div class="stars-row">
+            <span class="stars">★★★★★</span>
+            <span class="review-count">4.8</span>
+            <button class="reviews-toggle" onclick="toggleReviews(this)" data-en="· 98 reviews" data-es="· 98 reseñas">· 98 reviews</button>
+          </div>
+          <div class="reviews-panel" id="reviews-james">
+            <div class="reviews-inner">
+              <div class="reviews-heading"><span data-en="RECENT REVIEWS" data-es="RESEÑAS RECIENTES">RECENT REVIEWS</span><span class="write-review" onclick="toggleWriteReview('wr-james')" data-en="+ Write a review" data-es="+ Escribir reseña">+ Write a review</span></div>
+              <div class="review-item">
+                <div class="review-header"><div class="review-avatar">M</div><div class="review-name">Miguel T.</div><div class="review-date">Mar 2025</div></div>
+                <div class="review-stars">★★★★★</div>
+                <p class="review-text" data-en="James's points strategy was spot-on. He identified 5 extra points I had missed and my EOI jumped from 70 to 80 overnight. Got an invite for 189 two months later. Absolutely worth it." data-es="La estrategia de puntaje de James fue perfecta. Identificó 5 puntos adicionales que yo había perdido y mi EOI subió de 70 a 80 de un día para otro. Recibí invitación para la 189 dos meses después. Valió totalmente la pena.">James's points strategy was spot-on. He identified 5 extra points I had missed and my EOI jumped from 70 to 80 overnight. Got an invite for 189 two months later. Absolutely worth it.</p>
+                <div class="review-verified">✓ <span data-en="Verified client" data-es="Cliente verificado">Verified client</span></div>
+              </div>
+              <div class="review-item">
+                <div class="review-header"><div class="review-avatar">L</div><div class="review-name">Laura V.</div><div class="review-date">Jan 2025</div></div>
+                <div class="review-stars">★★★★★</div>
+                <p class="review-text" data-en="Very knowledgeable about state nomination pathways. He explained the 190 vs 189 tradeoffs clearly and helped me choose the right path for my occupation. Highly recommend for points-based visas." data-es="Muy conocedor de las rutas de nominación estatal. Explicó claramente las diferencias entre 190 y 189 y me ayudó a elegir el camino correcto para mi ocupación. Lo recomiendo mucho para visas basadas en puntos.">Very knowledgeable about state nomination pathways. He explained the 190 vs 189 tradeoffs clearly and helped me choose the right path for my occupation. Highly recommend for points-based visas.</p>
+                <div class="review-verified">✓ <span data-en="Verified client" data-es="Cliente verificado">Verified client</span></div>
+              </div>
+              <div class="write-review-form" id="wr-james">
+                <div class="star-select" id="star-james"><span class="star-btn" onclick="setStar('star-james',1)">☆</span><span class="star-btn" onclick="setStar('star-james',2)">☆</span><span class="star-btn" onclick="setStar('star-james',3)">☆</span><span class="star-btn" onclick="setStar('star-james',4)">☆</span><span class="star-btn" onclick="setStar('star-james',5)">☆</span></div>
+                <textarea placeholder="Share your experience with James O'Brien..."></textarea>
+                <button class="submit-review-btn" onclick="submitReview(this)" data-en="Submit Review" data-es="Enviar Reseña">Submit Review</button>
+              </div>
+            </div>
+          </div>
+          <p class="agent-desc" data-en="Specialist in skilled independent and state nomination (189, 190). Expert in points test strategy and EOI management to maximize chances of invitation." data-es="Especialista en independiente calificado y nominación estatal (189, 190). Experto en estrategia de puntajes y gestión de EOI para maximizar posibilidades de invitación.">Specialist in skilled independent and state nomination (189, 190). Expert in points test strategy and EOI management to maximize chances of invitation.</p>
+          <div class="agent-stats">
+            <div class="agent-stat"><strong>8 yrs</strong> <span data-en="experience" data-es="experiencia">experience</span></div>
+            <div class="agent-stat"><strong>95%</strong> <span data-en="success rate" data-es="tasa de éxito">success rate</span></div>
+            <div class="agent-stat"><strong>320+</strong> <span data-en="visas granted" data-es="visas aprobadas">visas granted</span></div>
+          </div>
+          <div class="agent-tags">
+            <span class="agent-tag">189 / 190 expert</span>
+            <span class="agent-tag">Points strategy</span>
+            <span class="agent-tag">Online only</span>
+          </div>
+        </div>
+        <div class="agent-footer">
+          <div class="agent-price"><span data-en="From" data-es="Desde">From</span> <strong>AUD $280</strong> <span data-en="/ consult" data-es="/ consulta">/ consult</span></div>
+          <button class="btn-contact" data-en="Contact →" data-es="Contactar →">Contact →</button>
+        </div>
+      </div>
+
+      <div class="agent-card fade-up">
+        <div class="agent-header">
+          <div class="agent-avatar">👩</div>
+          <div class="agent-meta">
+            <div class="agent-name">María González</div>
+            <div class="agent-title" data-en="Registered Migration Agent · MARN 1905632" data-es="Agente Migratoria Registrada · MARN 1905632">Registered Migration Agent · MARN 1905632</div>
+          </div>
+          <span class="agent-badge badge-pro" data-en="Spanish speaker" data-es="Habla español">Spanish speaker</span>
+        </div>
+        <div class="agent-body">
+          <div class="stars-row">
+            <span class="stars">★★★★★</span>
+            <span class="review-count">4.9</span>
+            <button class="reviews-toggle" onclick="toggleReviews(this)" data-en="· 76 reviews" data-es="· 76 reseñas">· 76 reviews</button>
+          </div>
+          <div class="reviews-panel" id="reviews-maria">
+            <div class="reviews-inner">
+              <div class="reviews-heading"><span data-en="RECENT REVIEWS" data-es="RESEÑAS RECIENTES">RECENT REVIEWS</span><span class="write-review" onclick="toggleWriteReview('wr-maria')" data-en="+ Write a review" data-es="+ Escribir reseña">+ Write a review</span></div>
+              <div class="review-item">
+                <div class="review-header"><div class="review-avatar">S</div><div class="review-name">Sebastián R.</div><div class="review-date">Feb 2025</div></div>
+                <div class="review-stars">★★★★★</div>
+                <p class="review-text" data-en="Best decision I made was hiring María. She is from Mexico so she completely understands Latin American credential systems and she explained every step in perfect Spanish. My student visa and then 485 were both approved with her help." data-es="La mejor decisión fue contratar a María. Es de México y entiende perfectamente los sistemas de credenciales latinoamericanos. Explicó cada paso en español impecable. Mi visa de estudiante y luego la 485 fueron aprobadas con su ayuda.">Best decision I made was hiring María. She is from Mexico so she completely understands Latin American credential systems and she explained every step in perfect Spanish. My student visa and then 485 were both approved with her help.</p>
+                <div class="review-verified">✓ <span data-en="Verified client" data-es="Cliente verificado">Verified client</span></div>
+              </div>
+              <div class="review-item">
+                <div class="review-header"><div class="review-avatar">D</div><div class="review-name">Daniela F.</div><div class="review-date">Dec 2024</div></div>
+                <div class="review-stars">★★★★★</div>
+                <p class="review-text" data-en="María handles everything — from reviewing your documents to communicating with the Department. She speaks fluent Spanish and always answered my WhatsApp messages within the hour. I wouldn't go through this process without her." data-es="María lo maneja todo: desde revisar tus documentos hasta comunicarse con el Departamento. Habla español fluido y siempre respondió mis mensajes de WhatsApp en menos de una hora. No pasaría por este proceso sin ella.">María handles everything — from reviewing your documents to communicating with the Department. She speaks fluent Spanish and always answered my WhatsApp messages within the hour. I wouldn't go through this process without her.</p>
+                <div class="review-verified">✓ <span data-en="Verified client" data-es="Cliente verificado">Verified client</span></div>
+              </div>
+              <div class="write-review-form" id="wr-maria">
+                <div class="star-select" id="star-maria"><span class="star-btn" onclick="setStar('star-maria',1)">☆</span><span class="star-btn" onclick="setStar('star-maria',2)">☆</span><span class="star-btn" onclick="setStar('star-maria',3)">☆</span><span class="star-btn" onclick="setStar('star-maria',4)">☆</span><span class="star-btn" onclick="setStar('star-maria',5)">☆</span></div>
+                <textarea placeholder="Share your experience with María González..."></textarea>
+                <button class="submit-review-btn" onclick="submitReview(this)" data-en="Submit Review" data-es="Enviar Reseña">Submit Review</button>
+              </div>
+            </div>
+          </div>
+          <p class="agent-desc" data-en="Originally from Mexico, María specializes in helping Latin American professionals navigate the Australian visa system. Full service in Spanish available." data-es="Originaria de México, María se especializa en ayudar a profesionales latinoamericanos a navegar el sistema de visas australiano. Servicio completo en español disponible.">Originally from Mexico, María specializes in helping Latin American professionals navigate the Australian visa system. Full service in Spanish available.</p>
+          <div class="agent-stats">
+            <div class="agent-stat"><strong>6 yrs</strong> <span data-en="experience" data-es="experiencia">experience</span></div>
+            <div class="agent-stat"><strong>96%</strong> <span data-en="success rate" data-es="tasa de éxito">success rate</span></div>
+            <div class="agent-stat"><strong>210+</strong> <span data-en="visas granted" data-es="visas aprobadas">visas granted</span></div>
+          </div>
+          <div class="agent-tags">
+            <span class="agent-tag">🇲🇽 Nativa español</span>
+            <span class="agent-tag">All visa types</span>
+            <span class="agent-tag">Sydney + online</span>
+          </div>
+        </div>
+        <div class="agent-footer">
+          <div class="agent-price"><span data-en="From" data-es="Desde">From</span> <strong>AUD $300</strong> <span data-en="/ consult" data-es="/ consulta">/ consult</span></div>
+          <button class="btn-contact" data-en="Contact →" data-es="Contactar →">Contact →</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── LAWYERS TAB ── -->
+  <div class="tab-panel" id="tab-lawyers">
+
+    <div class="info-banner fade-up">
+      <span class="info-icon">⚖️</span>
+      <div class="info-text">
+        <div class="info-title" data-en="Agent vs. Lawyer — what's the difference?" data-es="Agente vs. Abogado — ¿cuál es la diferencia?">Agent vs. Lawyer — what's the difference?</div>
+        <div class="info-desc" data-en="Migration agents handle standard applications. Immigration lawyers handle complex cases, visa refusals, appeals, character issues, and tribunal reviews." data-es="Los agentes migratorios manejan solicitudes estándar. Los abogados de inmigración manejan casos complejos, rechazos de visa, apelaciones, cuestiones de carácter y revisiones de tribunal.">Migration agents handle standard applications. Immigration lawyers handle complex cases, visa refusals, appeals, character issues, and tribunal reviews.</div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <div>
+        <h2 class="section-title-sm" data-en="Immigration Lawyers in Sydney" data-es="Abogados de Inmigración en Sydney">Immigration Lawyers in Sydney</h2>
+        <p class="section-sub" data-en="For complex cases, refusals, appeals and tribunal reviews" data-es="Para casos complejos, rechazos, apelaciones y revisiones">For complex cases, refusals, appeals and tribunal reviews</p>
+      </div>
+    </div>
+
+    <div class="cards-grid">
+
+      <div class="agent-card featured fade-up">
+        <div class="agent-header">
+          <div class="agent-avatar light">⚖️</div>
+          <div class="agent-meta">
+            <div class="agent-name">Minter Ellison Immigration</div>
+            <div class="agent-title" data-en="Top-tier law firm · Sydney CBD" data-es="Firma de abogados de primer nivel · Sydney CBD">Top-tier law firm · Sydney CBD</div>
+          </div>
+          <span class="agent-badge badge-top" data-en="Tier 1" data-es="Nivel 1">Tier 1</span>
+        </div>
+        <div class="agent-body">
+          <div class="stars-row">
+            <span class="stars">★★★★★</span>
+            <span class="review-count">4.9</span>
+            <button class="reviews-toggle" onclick="toggleReviews(this)" data-en="· 203 reviews" data-es="· 203 reseñas">· 203 reviews</button>
+          </div>
+          <div class="reviews-panel" id="reviews-minter">
+            <div class="reviews-inner">
+              <div class="reviews-heading"><span data-en="RECENT REVIEWS" data-es="RESEÑAS RECIENTES">RECENT REVIEWS</span><span class="write-review" onclick="toggleWriteReview('wr-minter')" data-en="+ Write a review" data-es="+ Escribir reseña">+ Write a review</span></div>
+              <div class="review-item">
+                <div class="review-header"><div class="review-avatar">R</div><div class="review-name">Richard K.</div><div class="review-date">Apr 2025</div></div>
+                <div class="review-stars">★★★★★</div>
+                <p class="review-text" data-en="After a visa refusal from a previous agent, Minter Ellison took on my AAT appeal and won. Their immigration team is on a completely different level — thorough, professional, and they communicate every step of the process." data-es="Después de un rechazo de visa con un agente anterior, Minter Ellison tomó mi apelación al AAT y ganó. Su equipo de inmigración es de un nivel completamente diferente: minucioso, profesional y comunica cada paso del proceso.">After a visa refusal from a previous agent, Minter Ellison took on my AAT appeal and won. Their immigration team is on a completely different level — thorough, professional, and they communicate every step of the process.</p>
+                <div class="review-verified">✓ <span data-en="Verified client" data-es="Cliente verificado">Verified client</span></div>
+              </div>
+              <div class="review-item">
+                <div class="review-header"><div class="review-avatar">P</div><div class="review-name">Paula C.</div><div class="review-date">Feb 2025</div></div>
+                <div class="review-stars">★★★★★</div>
+                <p class="review-text" data-en="Complex character issue (spent conviction overseas). Other firms refused to take the case. Minter Ellison handled it with precision and my visa was approved. Expensive but absolutely worth every dollar." data-es="Tenía un problema de carácter complejo (condena cumplida en el extranjero). Otras firmas se negaron a tomar el caso. Minter Ellison lo manejó con precisión y mi visa fue aprobada. Caro pero absolutamente vale cada centavo.">Complex character issue (spent conviction overseas). Other firms refused to take the case. Minter Ellison handled it with precision and my visa was approved. Expensive but absolutely worth every dollar.</p>
+                <div class="review-verified">✓ <span data-en="Verified client" data-es="Cliente verificado">Verified client</span></div>
+              </div>
+              <div class="write-review-form" id="wr-minter">
+                <div class="star-select" id="star-minter"><span class="star-btn" onclick="setStar('star-minter',1)">☆</span><span class="star-btn" onclick="setStar('star-minter',2)">☆</span><span class="star-btn" onclick="setStar('star-minter',3)">☆</span><span class="star-btn" onclick="setStar('star-minter',4)">☆</span><span class="star-btn" onclick="setStar('star-minter',5)">☆</span></div>
+                <textarea placeholder="Share your experience with Minter Ellison..."></textarea>
+                <button class="submit-review-btn" onclick="submitReview(this)" data-en="Submit Review" data-es="Enviar Reseña">Submit Review</button>
+              </div>
+            </div>
+          </div>
+          <p class="agent-desc" data-en="One of Australia's largest law firms. Dedicated immigration team handling corporate visas, appeals, AAT reviews, and complex character matters." data-es="Una de las firmas legales más grandes de Australia. Equipo de inmigración dedicado que maneja visas corporativas, apelaciones, revisiones AAT y asuntos de carácter complejos.">One of Australia's largest law firms. Dedicated immigration team handling corporate visas, appeals, AAT reviews, and complex character matters.</p>
+          <div class="agent-stats">
+            <div class="agent-stat"><strong>30+ yrs</strong> <span data-en="firm history" data-es="historia de la firma">firm history</span></div>
+            <div class="agent-stat"><strong>50+</strong> <span data-en="immigration lawyers" data-es="abogados">immigration lawyers</span></div>
+          </div>
+          <div class="agent-tags">
+            <span class="agent-tag">AAT Appeals</span>
+            <span class="agent-tag">Corporate 482</span>
+            <span class="agent-tag">Visa refusals</span>
+            <span class="agent-tag">Character issues</span>
+          </div>
+        </div>
+        <div class="agent-footer">
+          <div class="agent-price"><span data-en="From" data-es="Desde">From</span> <strong>AUD $600</strong> <span data-en="/ hr" data-es="/ hr">/ hr</span></div>
+          <button class="btn-contact" data-en="Book consult →" data-es="Reservar consulta →">Book consult →</button>
+        </div>
+      </div>
+
+      <div class="agent-card fade-up">
+        <div class="agent-header">
+          <div class="agent-avatar light">🏛️</div>
+          <div class="agent-meta">
+            <div class="agent-name">Global Migration Law</div>
+            <div class="agent-title" data-en="Boutique immigration firm · Sydney" data-es="Firma boutique de inmigración · Sydney">Boutique immigration firm · Sydney</div>
+          </div>
+          <span class="agent-badge badge-verified" data-en="Verified" data-es="Verificado">Verified</span>
+        </div>
+        <div class="agent-body">
+          <div class="stars-row">
+            <span class="stars">★★★★☆</span>
+            <span class="review-count">4.7</span>
+            <button class="reviews-toggle" onclick="toggleReviews(this)" data-en="· 88 reviews" data-es="· 88 reseñas">· 88 reviews</button>
+          </div>
+          <div class="reviews-panel" id="reviews-global">
+            <div class="reviews-inner">
+              <div class="reviews-heading"><span data-en="RECENT REVIEWS" data-es="RESEÑAS RECIENTES">RECENT REVIEWS</span><span class="write-review" onclick="toggleWriteReview('wr-global')" data-en="+ Write a review" data-es="+ Escribir reseña">+ Write a review</span></div>
+              <div class="review-item">
+                <div class="review-header"><div class="review-avatar">A</div><div class="review-name">Andrés M.</div><div class="review-date">Mar 2025</div></div>
+                <div class="review-stars">★★★★★</div>
+                <p class="review-text" data-en="My visa was cancelled due to a technicality and I was facing removal. Global Migration Law took my case at short notice and successfully overturned the cancellation at the AAT. Their knowledge of the law is exceptional." data-es="Mi visa fue cancelada por una tecnicidad y enfrentaba remoción del país. Global Migration Law tomó mi caso con poco tiempo y revocó exitosamente la cancelación en el AAT. Su conocimiento de la ley es excepcional.">My visa was cancelled due to a technicality and I was facing removal. Global Migration Law took my case at short notice and successfully overturned the cancellation at the AAT. Their knowledge of the law is exceptional.</p>
+                <div class="review-verified">✓ <span data-en="Verified client" data-es="Cliente verificado">Verified client</span></div>
+              </div>
+              <div class="review-item">
+                <div class="review-header"><div class="review-avatar">C</div><div class="review-name">Carolina P.</div><div class="review-date">Jan 2025</div></div>
+                <div class="review-stars">★★★★☆</div>
+                <p class="review-text" data-en="Good lawyers, handled my family visa case well. Communication could be faster at times but the outcome was excellent. They have a Spanish-speaking paralegal which was a huge help for understanding complex documents." data-es="Buenos abogados, manejaron bien mi caso de visa familiar. La comunicación podría ser más rápida a veces, pero el resultado fue excelente. Tienen un paralegal hispanohablante que fue de gran ayuda para entender documentos complejos.">Good lawyers, handled my family visa case well. Communication could be faster at times but the outcome was excellent. They have a Spanish-speaking paralegal which was a huge help for understanding complex documents.</p>
+                <div class="review-verified">✓ <span data-en="Verified client" data-es="Cliente verificado">Verified client</span></div>
+              </div>
+              <div class="write-review-form" id="wr-global">
+                <div class="star-select" id="star-global"><span class="star-btn" onclick="setStar('star-global',1)">☆</span><span class="star-btn" onclick="setStar('star-global',2)">☆</span><span class="star-btn" onclick="setStar('star-global',3)">☆</span><span class="star-btn" onclick="setStar('star-global',4)">☆</span><span class="star-btn" onclick="setStar('star-global',5)">☆</span></div>
+                <textarea placeholder="Share your experience with Global Migration Law..."></textarea>
+                <button class="submit-review-btn" onclick="submitReview(this)" data-en="Submit Review" data-es="Enviar Reseña">Submit Review</button>
+              </div>
+            </div>
+          </div>
+          <p class="agent-desc" data-en="Boutique firm focused exclusively on immigration law. Known for strong results in visa cancellation reviews and Family Court proceedings." data-es="Firma boutique enfocada exclusivamente en derecho migratorio. Conocida por resultados sólidos en revisiones de cancelación de visa y procedimientos del Tribunal de Familia.">Boutique firm focused exclusively on immigration law. Known for strong results in visa cancellation reviews and Family Court proceedings.</p>
+          <div class="agent-stats">
+            <div class="agent-stat"><strong>15 yrs</strong> <span data-en="experience" data-es="experiencia">experience</span></div>
+            <div class="agent-stat"><strong>1,200+</strong> <span data-en="cases won" data-es="casos ganados">cases won</span></div>
+          </div>
+          <div class="agent-tags">
+            <span class="agent-tag">Visa cancellations</span>
+            <span class="agent-tag">Family visas</span>
+            <span class="agent-tag">🇪🇸 Habla español</span>
+          </div>
+        </div>
+        <div class="agent-footer">
+          <div class="agent-price"><span data-en="From" data-es="Desde">From</span> <strong>AUD $450</strong> <span data-en="/ hr" data-es="/ hr">/ hr</span></div>
+          <button class="btn-contact" data-en="Book consult →" data-es="Reservar consulta →">Book consult →</button>
+        </div>
+      </div>
+
+      <div class="agent-card fade-up">
+        <div class="agent-header">
+          <div class="agent-avatar light">🌏</div>
+          <div class="agent-meta">
+            <div class="agent-name">Pacific Immigration Law</div>
+            <div class="agent-title" data-en="Latin America specialist · Sydney" data-es="Especialista en Latinoamérica · Sydney">Latin America specialist · Sydney</div>
+          </div>
+          <span class="agent-badge badge-pro" data-en="Spanish & Portuguese" data-es="Español y Portugués">Spanish & Portuguese</span>
+        </div>
+        <div class="agent-body">
+          <div class="stars-row">
+            <span class="stars">★★★★★</span>
+            <span class="review-count">4.8</span>
+            <button class="reviews-toggle" onclick="toggleReviews(this)" data-en="· 64 reviews" data-es="· 64 reseñas">· 64 reviews</button>
+          </div>
+          <div class="reviews-panel" id="reviews-pacific">
+            <div class="reviews-inner">
+              <div class="reviews-heading"><span data-en="RECENT REVIEWS" data-es="RESEÑAS RECIENTES">RECENT REVIEWS</span><span class="write-review" onclick="toggleWriteReview('wr-pacific')" data-en="+ Write a review" data-es="+ Escribir reseña">+ Write a review</span></div>
+              <div class="review-item">
+                <div class="review-header"><div class="review-avatar">F</div><div class="review-name">Felipe O.</div><div class="review-date">Apr 2025</div></div>
+                <div class="review-stars">★★★★★</div>
+                <p class="review-text" data-en="As a Brazilian, finding a law firm that handles everything in Portuguese was a dream. Pacific Immigration Law's team fought successfully for my 482 appeal after my sponsor changed ownership. Outstanding service." data-es="Como brasileño, encontrar una firma que maneja todo en portugués fue un sueño. El equipo de Pacific Immigration Law luchó exitosamente por mi apelación 482 después de que mi patrocinador cambió de propietario. Servicio excepcional.">As a Brazilian, finding a law firm that handles everything in Portuguese was a dream. Pacific Immigration Law's team fought successfully for my 482 appeal after my sponsor changed ownership. Outstanding service.</p>
+                <div class="review-verified">✓ <span data-en="Verified client" data-es="Cliente verificado">Verified client</span></div>
+              </div>
+              <div class="review-item">
+                <div class="review-header"><div class="review-avatar">V</div><div class="review-name">Valentina R.</div><div class="review-date">Feb 2025</div></div>
+                <div class="review-stars">★★★★★</div>
+                <p class="review-text" data-en="They understand Colombian and Venezuelan credential systems perfectly. My nursing registration appeal was complex and they navigated it flawlessly. All communication in Spanish made the stress so much easier to manage." data-es="Entienden perfectamente los sistemas de credenciales colombianos y venezolanos. Mi apelación de registro de enfermería fue compleja y la manejaron impecablemente. Toda la comunicación en español hizo el estrés mucho más manejable.">They understand Colombian and Venezuelan credential systems perfectly. My nursing registration appeal was complex and they navigated it flawlessly. All communication in Spanish made the stress so much easier to manage.</p>
+                <div class="review-verified">✓ <span data-en="Verified client" data-es="Cliente verificado">Verified client</span></div>
+              </div>
+              <div class="write-review-form" id="wr-pacific">
+                <div class="star-select" id="star-pacific"><span class="star-btn" onclick="setStar('star-pacific',1)">☆</span><span class="star-btn" onclick="setStar('star-pacific',2)">☆</span><span class="star-btn" onclick="setStar('star-pacific',3)">☆</span><span class="star-btn" onclick="setStar('star-pacific',4)">☆</span><span class="star-btn" onclick="setStar('star-pacific',5)">☆</span></div>
+                <textarea placeholder="Share your experience with Pacific Immigration Law..."></textarea>
+                <button class="submit-review-btn" onclick="submitReview(this)" data-en="Submit Review" data-es="Enviar Reseña">Submit Review</button>
+              </div>
+            </div>
+          </div>
+          <p class="agent-desc" data-en="Specialized in Latin American and Brazilian clients. Full services in Spanish and Portuguese. Strong track record with 482 and skilled migration appeals." data-es="Especializada en clientes latinoamericanos y brasileños. Servicios completos en español y portugués. Sólido historial en apelaciones de 482 y migración calificada.">Specialized in Latin American and Brazilian clients. Full services in Spanish and Portuguese. Strong track record with 482 and skilled migration appeals.</p>
+          <div class="agent-stats">
+            <div class="agent-stat"><strong>10 yrs</strong> <span data-en="experience" data-es="experiencia">experience</span></div>
+            <div class="agent-stat"><strong>800+</strong> <span data-en="cases handled" data-es="casos manejados">cases handled</span></div>
+          </div>
+          <div class="agent-tags">
+            <span class="agent-tag">🇨🇴🇲🇽🇧🇷 LATAM</span>
+            <span class="agent-tag">Español / Português</span>
+            <span class="agent-tag">482 appeals</span>
+          </div>
+        </div>
+        <div class="agent-footer">
+          <div class="agent-price"><span data-en="From" data-es="Desde">From</span> <strong>AUD $400</strong> <span data-en="/ hr" data-es="/ hr">/ hr</span></div>
+          <button class="btn-contact" data-en="Book consult →" data-es="Reservar consulta →">Book consult →</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── HOUSING TAB ── -->
+  <div class="tab-panel" id="tab-housing">
+
+    <div class="info-banner fade-up">
+      <span class="info-icon">🏠</span>
+      <div class="info-text">
+        <div class="info-title" data-en="Finding housing as a new migrant" data-es="Encontrar alojamiento como nuevo migrante">Finding housing as a new migrant</div>
+        <div class="info-desc" data-en="Sydney's rental market is competitive. Most landlords require proof of income or employment. These services specialize in helping new arrivals secure housing before they land." data-es="El mercado de alquiler de Sydney es competitivo. La mayoría de los propietarios requieren prueba de ingresos o empleo. Estos servicios se especializan en ayudar a los recién llegados a conseguir alojamiento antes de aterrizar.">Sydney's rental market is competitive. Most landlords require proof of income or employment. These services specialize in helping new arrivals secure housing before they land.</div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <div>
+        <h2 class="section-title-sm" data-en="Housing & Relocation Services" data-es="Servicios de Alojamiento y Reubicación">Housing & Relocation Services</h2>
+        <p class="section-sub" data-en="From temporary accommodation to long-term rental support" data-es="Desde alojamiento temporal hasta apoyo de arriendo a largo plazo">From temporary accommodation to long-term rental support</p>
+      </div>
+    </div>
+
+    <div class="cards-grid">
+
+      <div class="housing-card fade-up">
+        <div class="housing-visual" style="background: linear-gradient(135deg, #f0f0f0, #e0e0e0);">
+          <span>🏢</span>
+          <span class="housing-badge badge-verified" style="background:#e6f9e6;color:#1a6a1a;" data-en="Migrant-friendly" data-es="Amigable migrantes">Migrant-friendly</span>
+        </div>
+        <div class="housing-body">
+          <div class="housing-name">MigrateStay Sydney</div>
+          <div class="housing-type" data-en="Temporary & short-term accommodation" data-es="Alojamiento temporal y de corto plazo">Temporary & short-term accommodation</div>
+          <p class="housing-desc" data-en="Furnished rooms and apartments designed for new arrivals. No rental history required. Weekly rates with flexible leases from 2 weeks to 6 months." data-es="Habitaciones y apartamentos amueblados diseñados para recién llegados. No se requiere historial de alquiler. Tarifas semanales con contratos flexibles de 2 semanas a 6 meses.">Furnished rooms and apartments designed for new arrivals. No rental history required. Weekly rates with flexible leases from 2 weeks to 6 months.</p>
+          <div class="housing-stats">
+            <div class="h-stat">
+              <div class="h-stat-label" data-en="FROM / WEEK" data-es="DESDE / SEMANA">FROM / WEEK</div>
+              <div class="h-stat-val">AUD $320</div>
+            </div>
+            <div class="h-stat">
+              <div class="h-stat-label" data-en="MIN. STAY" data-es="ESTADÍA MÍN.">MIN. STAY</div>
+              <div class="h-stat-val" data-en="2 weeks" data-es="2 semanas">2 weeks</div>
+            </div>
+            <div class="h-stat">
+              <div class="h-stat-label" data-en="LOCATIONS" data-es="UBICACIONES">LOCATIONS</div>
+              <div class="h-stat-val">CBD, Surry Hills</div>
+            </div>
+            <div class="h-stat">
+              <div class="h-stat-label" data-en="INCLUDED" data-es="INCLUIDO">INCLUDED</div>
+              <div class="h-stat-val" data-en="Wi-Fi, bills" data-es="Wi-Fi, servicios">Wi-Fi, bills</div>
+            </div>
+          </div>
+        </div>
+        <div class="stars-row" style="padding: 0 20px 12px;">
+          <span class="stars">★★★★★</span>
+          <span class="review-count">4.8</span>
+          <button class="reviews-toggle" onclick="toggleReviews(this)" data-en="· 119 reviews" data-es="· 119 reseñas">· 119 reviews</button>
+        </div>
+        <div class="reviews-panel" id="reviews-migratestay">
+          <div class="reviews-inner">
+            <div class="reviews-heading"><span data-en="RECENT REVIEWS" data-es="RESEÑAS RECIENTES">RECENT REVIEWS</span><span class="write-review" onclick="toggleWriteReview('wr-migratestay')" data-en="+ Write a review" data-es="+ Escribir reseña">+ Write a review</span></div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">J</div><div class="review-name">Juliana C.</div><div class="review-date">Mar 2025</div></div>
+              <div class="review-stars">★★★★★</div>
+              <p class="review-text" data-en="I booked from Colombia two weeks before arriving in Sydney. The room was clean, fully furnished, and exactly as described. WiFi was fast and the location near the CBD was perfect for job hunting. No questions asked about rental history." data-es="Reservé desde Colombia dos semanas antes de llegar a Sydney. La habitación estaba limpia, completamente amueblada y exactamente como se describía. El WiFi era rápido y la ubicación cerca del CBD fue perfecta para buscar trabajo. No preguntaron sobre historial de alquiler.">I booked from Colombia two weeks before arriving in Sydney. The room was clean, fully furnished, and exactly as described. WiFi was fast and the location near the CBD was perfect for job hunting. No questions asked about rental history.</p>
+              <div class="review-verified">✓ <span data-en="Verified guest" data-es="Huésped verificado">Verified guest</span></div>
+            </div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">E</div><div class="review-name">Eduardo M.</div><div class="review-date">Jan 2025</div></div>
+              <div class="review-stars">★★★★★</div>
+              <p class="review-text" data-en="Stayed 6 weeks while searching for a long-term flat. The flexible lease was a lifesaver — I could extend week by week without penalty. The staff were incredibly helpful when I needed a rental reference letter." data-es="Me quedé 6 semanas mientras buscaba un apartamento a largo plazo. El contrato flexible fue un salvavidas — pude extender semana a semana sin penalización. El personal fue increíblemente útil cuando necesité una carta de referencia de alquiler.">Stayed 6 weeks while searching for a long-term flat. The flexible lease was a lifesaver — I could extend week by week without penalty. The staff were incredibly helpful when I needed a rental reference letter.</p>
+              <div class="review-verified">✓ <span data-en="Verified guest" data-es="Huésped verificado">Verified guest</span></div>
+            </div>
+            <div class="write-review-form" id="wr-migratestay">
+              <div class="star-select" id="star-migratestay"><span class="star-btn" onclick="setStar('star-migratestay',1)">☆</span><span class="star-btn" onclick="setStar('star-migratestay',2)">☆</span><span class="star-btn" onclick="setStar('star-migratestay',3)">☆</span><span class="star-btn" onclick="setStar('star-migratestay',4)">☆</span><span class="star-btn" onclick="setStar('star-migratestay',5)">☆</span></div>
+              <textarea placeholder="Share your experience with MigrateStay Sydney..."></textarea>
+              <button class="submit-review-btn" onclick="submitReview(this)" data-en="Submit Review" data-es="Enviar Reseña">Submit Review</button>
+            </div>
+          </div>
+        </div>
+        <div class="housing-footer">
+          <span class="housing-tag" data-en="No rental history needed" data-es="Sin historial de alquiler">No rental history needed</span>
+          <a href="#" class="housing-link" data-en="View rooms →" data-es="Ver habitaciones →">View rooms →</a>
+        </div>
+      </div>
+
+      <div class="housing-card fade-up">
+        <div class="housing-visual" style="background: linear-gradient(135deg, #e8ecf0, #d4dce8);">
+          <span>🔑</span>
+          <span class="housing-badge" style="background:var(--black);color:var(--white);" data-en="Full relocation" data-es="Reubicación completa">Full relocation</span>
+        </div>
+        <div class="housing-body">
+          <div class="housing-name">LandSafe Relocation</div>
+          <div class="housing-type" data-en="Full relocation support service" data-es="Servicio completo de reubicación">Full relocation support service</div>
+          <p class="housing-desc" data-en="Complete relocation package: airport pickup, temporary stay, suburb search, rental applications, bank account setup, and SIM card. Trusted by 5,000+ migrants." data-es="Paquete completo de reubicación: recogida en aeropuerto, estadía temporal, búsqueda de barrio, solicitudes de alquiler, apertura de cuenta bancaria y tarjeta SIM. Confiado por más de 5,000 migrantes.">Complete relocation package: airport pickup, temporary stay, suburb search, rental applications, bank account setup, and SIM card. Trusted by 5,000+ migrants.</p>
+          <div class="housing-stats">
+            <div class="h-stat">
+              <div class="h-stat-label" data-en="PACKAGE FROM" data-es="PAQUETE DESDE">PACKAGE FROM</div>
+              <div class="h-stat-val">AUD $990</div>
+            </div>
+            <div class="h-stat">
+              <div class="h-stat-label" data-en="SUPPORT" data-es="SOPORTE">SUPPORT</div>
+              <div class="h-stat-val" data-en="30 days" data-es="30 días">30 days</div>
+            </div>
+            <div class="h-stat">
+              <div class="h-stat-label" data-en="LANGUAGE" data-es="IDIOMA">LANGUAGE</div>
+              <div class="h-stat-val">EN / ES / PT</div>
+            </div>
+            <div class="h-stat">
+              <div class="h-stat-label" data-en="RATING" data-es="CALIFICACIÓN">RATING</div>
+              <div class="h-stat-val">⭐ 4.9 / 5</div>
+            </div>
+          </div>
+        </div>
+        <div class="stars-row" style="padding: 0 20px 12px;">
+          <span class="stars">★★★★★</span>
+          <span class="review-count">4.9</span>
+          <button class="reviews-toggle" onclick="toggleReviews(this)" data-en="· 241 reviews" data-es="· 241 reseñas">· 241 reviews</button>
+        </div>
+        <div class="reviews-panel" id="reviews-landsafe">
+          <div class="reviews-inner">
+            <div class="reviews-heading"><span data-en="RECENT REVIEWS" data-es="RESEÑAS RECIENTES">RECENT REVIEWS</span><span class="write-review" onclick="toggleWriteReview('wr-landsafe')" data-en="+ Write a review" data-es="+ Escribir reseña">+ Write a review</span></div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">G</div><div class="review-name">Gabriela S.</div><div class="review-date">Apr 2025</div></div>
+              <div class="review-stars">★★★★★</div>
+              <p class="review-text" data-en="LandSafe picked me up from the airport at 6am, had a room ready, and within 10 days had helped me open a bank account and get a SIM card. They even drove me around suburbs to help me decide where to live long-term. Beyond expectations." data-es="LandSafe me recogió del aeropuerto a las 6am, tenía una habitación lista y en 10 días me había ayudado a abrir una cuenta bancaria y obtener una SIM. Incluso me llevaron a ver barrios para ayudarme a decidir dónde vivir a largo plazo. Superó mis expectativas.">LandSafe picked me up from the airport at 6am, had a room ready, and within 10 days had helped me open a bank account and get a SIM card. They even drove me around suburbs to help me decide where to live long-term. Beyond expectations.</p>
+              <div class="review-verified">✓ <span data-en="Verified client" data-es="Cliente verificado">Verified client</span></div>
+            </div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">R</div><div class="review-name">Roberto A.</div><div class="review-date">Mar 2025</div></div>
+              <div class="review-stars">★★★★★</div>
+              <p class="review-text" data-en="I used the full package arriving from Peru with my wife and two kids. Everything was handled — accommodation, school enrolment enquiries, suburb selection. The 30 days of support felt like having a local friend guiding us through everything. Worth every dollar of the $990." data-es="Usé el paquete completo al llegar desde Perú con mi esposa y dos hijos. Todo fue manejado: alojamiento, consultas sobre inscripción escolar, selección de barrio. Los 30 días de apoyo se sintieron como tener un amigo local guiándonos. Valió cada centavo de los $990.">I used the full package arriving from Peru with my wife and two kids. Everything was handled — accommodation, school enrolment enquiries, suburb selection. The 30 days of support felt like having a local friend guiding us through everything. Worth every dollar of the $990.</p>
+              <div class="review-verified">✓ <span data-en="Verified client" data-es="Cliente verificado">Verified client</span></div>
+            </div>
+            <div class="write-review-form" id="wr-landsafe">
+              <div class="star-select" id="star-landsafe"><span class="star-btn" onclick="setStar('star-landsafe',1)">☆</span><span class="star-btn" onclick="setStar('star-landsafe',2)">☆</span><span class="star-btn" onclick="setStar('star-landsafe',3)">☆</span><span class="star-btn" onclick="setStar('star-landsafe',4)">☆</span><span class="star-btn" onclick="setStar('star-landsafe',5)">☆</span></div>
+              <textarea placeholder="Share your experience with LandSafe Relocation..."></textarea>
+              <button class="submit-review-btn" onclick="submitReview(this)" data-en="Submit Review" data-es="Enviar Reseña">Submit Review</button>
+            </div>
+          </div>
+        </div>
+        <div class="housing-footer">
+          <span class="housing-tag" data-en="✓ Spanish-speaking staff" data-es="✓ Personal hispanohablante">✓ Spanish-speaking staff</span>
+          <a href="#" class="housing-link" data-en="Get package →" data-es="Ver paquete →">Get package →</a>
+        </div>
+      </div>
+
+      <div class="housing-card fade-up">
+        <div class="housing-visual" style="background: linear-gradient(135deg, #f5f0e8, #ece0cc);">
+          <span>🏘️</span>
+          <span class="housing-badge" style="background:#fff0e0;color:#a05000;" data-en="Long-term rentals" data-es="Arriendo largo plazo">Long-term rentals</span>
+        </div>
+        <div class="housing-body">
+          <div class="housing-name">NewHome Sydney</div>
+          <div class="housing-type" data-en="Long-term rental assistance" data-es="Asistencia de alquiler a largo plazo">Long-term rental assistance</div>
+          <p class="housing-desc" data-en="Specialized agency helping migrants apply for long-term rentals without Australian rental history. Cover letters, reference letters, and employer verification included." data-es="Agencia especializada que ayuda a migrantes a solicitar alquileres a largo plazo sin historial de alquiler australiano. Incluye cartas de presentación, cartas de referencia y verificación de empleador.">Specialized agency helping migrants apply for long-term rentals without Australian rental history. Cover letters, reference letters, and employer verification included.</p>
+          <div class="housing-stats">
+            <div class="h-stat">
+              <div class="h-stat-label" data-en="SERVICE FEE" data-es="TARIFA">SERVICE FEE</div>
+              <div class="h-stat-val">AUD $450</div>
+            </div>
+            <div class="h-stat">
+              <div class="h-stat-label" data-en="SUCCESS RATE" data-es="TASA DE ÉXITO">SUCCESS RATE</div>
+              <div class="h-stat-val">89%</div>
+            </div>
+            <div class="h-stat">
+              <div class="h-stat-label" data-en="LEASE TYPE" data-es="TIPO CONTRATO">LEASE TYPE</div>
+              <div class="h-stat-val" data-en="6–12 months" data-es="6–12 meses">6–12 months</div>
+            </div>
+            <div class="h-stat">
+              <div class="h-stat-label" data-en="SUBURBS" data-es="BARRIOS">SUBURBS</div>
+              <div class="h-stat-val" data-en="All Sydney" data-es="Todo Sydney">All Sydney</div>
+            </div>
+          </div>
+        </div>
+        <div class="stars-row" style="padding: 0 20px 12px;">
+          <span class="stars">★★★★☆</span>
+          <span class="review-count">4.6</span>
+          <button class="reviews-toggle" onclick="toggleReviews(this)" data-en="· 87 reviews" data-es="· 87 reseñas">· 87 reviews</button>
+        </div>
+        <div class="reviews-panel" id="reviews-newhome">
+          <div class="reviews-inner">
+            <div class="reviews-heading"><span data-en="RECENT REVIEWS" data-es="RESEÑAS RECIENTES">RECENT REVIEWS</span><span class="write-review" onclick="toggleWriteReview('wr-newhome')" data-en="+ Write a review" data-es="+ Escribir reseña">+ Write a review</span></div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">N</div><div class="review-name">Nicolás B.</div><div class="review-date">Mar 2025</div></div>
+              <div class="review-stars">★★★★★</div>
+              <p class="review-text" data-en="After being knocked back on 3 rental applications by myself, NewHome Sydney stepped in and within 2 weeks I had an approved 12-month lease in Newtown. Their cover letter and employer reference package was the difference maker." data-es="Después de ser rechazado en 3 solicitudes de alquiler por mi cuenta, NewHome Sydney intervino y en 2 semanas tenía un contrato de 12 meses aprobado en Newtown. Su carta de presentación y paquete de referencia de empleador fue la diferencia.">After being knocked back on 3 rental applications by myself, NewHome Sydney stepped in and within 2 weeks I had an approved 12-month lease in Newtown. Their cover letter and employer reference package was the difference maker.</p>
+              <div class="review-verified">✓ <span data-en="Verified client" data-es="Cliente verificado">Verified client</span></div>
+            </div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">I</div><div class="review-name">Isabel V.</div><div class="review-date">Feb 2025</div></div>
+              <div class="review-stars">★★★★☆</div>
+              <p class="review-text" data-en="Good service overall. The fee is worth it if you have been struggling with applications. They got me a lease in Surry Hills after 3 rejections. Took about 3 weeks which felt slow but the result was what mattered." data-es="Buen servicio en general. La tarifa vale la pena si has tenido dificultades con las solicitudes. Me consiguieron un contrato en Surry Hills después de 3 rechazos. Tardó unas 3 semanas, lo que se sintió lento, pero el resultado fue lo que importaba.">Good service overall. The fee is worth it if you have been struggling with applications. They got me a lease in Surry Hills after 3 rejections. Took about 3 weeks which felt slow but the result was what mattered.</p>
+              <div class="review-verified">✓ <span data-en="Verified client" data-es="Cliente verificado">Verified client</span></div>
+            </div>
+            <div class="write-review-form" id="wr-newhome">
+              <div class="star-select" id="star-newhome"><span class="star-btn" onclick="setStar('star-newhome',1)">☆</span><span class="star-btn" onclick="setStar('star-newhome',2)">☆</span><span class="star-btn" onclick="setStar('star-newhome',3)">☆</span><span class="star-btn" onclick="setStar('star-newhome',4)">☆</span><span class="star-btn" onclick="setStar('star-newhome',5)">☆</span></div>
+              <textarea placeholder="Share your experience with NewHome Sydney..."></textarea>
+              <button class="submit-review-btn" onclick="submitReview(this)" data-en="Submit Review" data-es="Enviar Reseña">Submit Review</button>
+            </div>
+          </div>
+        </div>
+        <div class="housing-footer">
+          <span class="housing-tag" data-en="✓ No Aus. rental history needed" data-es="✓ Sin historial australiano">✓ No Aus. rental history needed</span>
+          <a href="#" class="housing-link" data-en="Learn more →" data-es="Saber más →">Learn more →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CTA BOTTOM -->
+  <div class="cta-bottom fade-up">
+    <div class="cta-bottom-title" data-en="You're almost there.<br/>Let's build your plan." data-es="Ya casi terminas.<br/>Construyamos tu plan.">You're almost there.<br/>Let's build your plan.</div>
+    <p class="cta-bottom-sub" data-en="All your choices in one place — your personalized migration roadmap with every step clearly laid out." data-es="Todas tus elecciones en un solo lugar — tu hoja de ruta migratoria personalizada con cada paso claramente detallado.">All your choices in one place — your personalized migration roadmap with every step clearly laid out.</p>
+    <div class="cta-bottom-actions">
+      <a href="migro-plan.html" class="btn-cta-primary">
+        <span data-en="→ Build my final plan" data-es="→ Crear mi plan final">→ Build my final plan</span>
+      </a>
+      <a href="migro-options.html" class="btn-cta-outline">
+        <span data-en="← Back to options" data-es="← Volver a opciones">← Back to options</span>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let currentLang = 'en';
+
+  function setLang(lang) {
+    currentLang = lang;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent === lang.toUpperCase()));
+    document.querySelectorAll('[data-en]').forEach(el => {
+      const t = el.getAttribute('data-' + lang);
+      if (t) el.innerHTML = t;
+    });
+  }
+
+  function switchTab(name, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+    document.querySelectorAll('#tab-' + name + ' .fade-up').forEach((el, i) => {
+      setTimeout(() => el.classList.add('visible'), i * 80);
+    });
+  }
+
+  /* ── REVIEWS ── */
+  function toggleReviews(btn) {
+    // btn lives in .stars-row; reviews-panel is its next sibling
+    const panel = btn.parentElement.nextElementSibling;
+    if (!panel || !panel.classList.contains('reviews-panel')) return;
+    const open = panel.classList.toggle('open');
+    btn.style.color = open ? 'var(--black)' : '';
+  }
+
+  function toggleWriteReview(id) {
+    const form = document.getElementById(id);
+    if (!form) return;
+    form.classList.toggle('open');
+    // Make sure parent panel is tall enough
+    const panel = form.closest('.reviews-panel');
+    if (panel && form.classList.contains('open')) {
+      panel.style.maxHeight = '900px';
+    } else if (panel) {
+      panel.style.maxHeight = '600px';
+    }
+  }
+
+  function setStar(groupId, n) {
+    const group = document.getElementById(groupId);
+    if (!group) return;
+    group.querySelectorAll('.star-btn').forEach((btn, i) => {
+      btn.textContent = i < n ? '★' : '☆';
+      btn.classList.toggle('active', i < n);
+    });
+    group.dataset.rating = n;
+  }
+
+  function submitReview(btn) {
+    const form = btn.closest('.write-review-form');
+    const textarea = form.querySelector('textarea');
+    const starGroup = form.querySelector('.star-select');
+    const rating = parseInt(starGroup.dataset.rating || 0);
+    const text = textarea.value.trim();
+    if (!rating) { alert('Please select a star rating first.'); return; }
+    if (text.length < 10) { alert('Please write at least a sentence about your experience.'); return; }
+    // Build stars string
+    const stars = '★'.repeat(rating) + '☆'.repeat(5 - rating);
+    // Build new review item
+    const item = document.createElement('div');
+    item.className = 'review-item';
+    item.style.animation = 'none';
+    const now = new Date();
+    const month = now.toLocaleString('en-AU', { month: 'short', year: 'numeric' });
+    item.innerHTML = `
+      <div class="review-header">
+        <div class="review-avatar" style="background:#555;">Y</div>
+        <div class="review-name">${currentLang === 'es' ? 'Tú' : 'You'}</div>
+        <div class="review-date">${month}</div>
+      </div>
+      <div class="review-stars">${stars}</div>
+      <p class="review-text">${text.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</p>
+      <div class="review-verified">✓ <span>${currentLang === 'es' ? 'Enviado' : 'Just submitted'}</span></div>`;
+    // Insert before form
+    form.parentElement.insertBefore(item, form);
+    // Reset form
+    form.classList.remove('open');
+    textarea.value = '';
+    starGroup.querySelectorAll('.star-btn').forEach(b => { b.textContent = '☆'; b.classList.remove('active'); });
+    delete starGroup.dataset.rating;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 100);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
