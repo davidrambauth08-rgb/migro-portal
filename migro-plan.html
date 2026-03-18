@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Migro — Your Migration Plan</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --black: #0a0a0a; --white: #ffffff;
+      --gray-100: #f5f5f5; --gray-200: #e8e8e8;
+      --gray-300: #d0d0d0; --gray-400: #999; --gray-600: #555;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--gray-100); color: var(--black); }
+
+    /* NAV */
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; background: var(--white); border-bottom: 1px solid var(--gray-200); position: sticky; top: 0; z-index: 100; }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--black); text-decoration: none; }
+    .nav-logo span { display: inline-block; width: 6px; height: 6px; background: var(--black); border-radius: 50%; margin-left: 2px; vertical-align: super; }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .lang-toggle { display: flex; background: var(--gray-100); border-radius: 6px; padding: 3px; gap: 2px; }
+    .lang-btn { padding: 4px 10px; font-size: 11px; font-weight: 700; border: none; background: transparent; border-radius: 4px; cursor: pointer; color: var(--gray-400); transition: all .2s; }
+    .lang-btn.active { background: var(--black); color: var(--white); }
+    .btn-print { padding: 8px 16px; font-size: 13px; font-weight: 600; border: 1px solid var(--gray-200); border-radius: 6px; background: var(--white); cursor: pointer; color: var(--gray-600); transition: all .2s; }
+    .btn-print:hover { border-color: var(--black); color: var(--black); }
+    .btn-save { padding: 8px 20px; font-size: 13px; font-weight: 700; border: none; border-radius: 6px; background: var(--black); color: var(--white); cursor: pointer; transition: all .2s; }
+    .btn-save:hover { background: #222; }
+
+    /* PROGRESS STRIP */
+    .progress-strip { background: var(--white); border-bottom: 1px solid var(--gray-200); padding: 0 48px; display: flex; }
+    .progress-step { padding: 14px 0; margin-right: 32px; font-size: 12px; font-weight: 600; color: var(--gray-300); border-bottom: 2px solid transparent; white-space: nowrap; }
+    .progress-step.done { color: var(--gray-400); }
+    .progress-step.active { color: var(--black); border-bottom-color: var(--black); }
+
+    /* CONGRATS */
+    .congrats-bar { background: var(--black); padding: 14px 48px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+    .congrats-text { font-size: 14px; font-weight: 600; color: #aaa; }
+    .congrats-text strong { color: var(--white); }
+
+    /* HERO */
+    .hero { background: var(--black); padding: 56px 48px 48px; }
+    .hero-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 48px; }
+    .hero-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #555; margin-bottom: 12px; }
+    .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(32px, 4vw, 54px); font-weight: 700; color: var(--white); line-height: 1.1; letter-spacing: -1px; margin-bottom: 16px; }
+    .hero-sub { font-size: 15px; color: #777; line-height: 1.6; max-width: 500px; margin-bottom: 28px; }
+    .hero-chips { display: flex; gap: 10px; flex-wrap: wrap; }
+    .hero-chip { display: flex; align-items: center; gap: 7px; background: #111; border: 1px solid #222; border-radius: 100px; padding: 7px 14px; font-size: 13px; font-weight: 600; color: #aaa; }
+    .chip-dot { width: 6px; height: 6px; background: #4ade80; border-radius: 50%; }
+
+    /* SCORE CARD */
+    .plan-score { background: #111; border: 1px solid #1a1a1a; border-radius: 16px; padding: 28px 24px; text-align: center; min-width: 200px; }
+    .plan-score-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #444; margin-bottom: 12px; }
+    .plan-score-num { font-family: 'Playfair Display', serif; font-size: 52px; font-weight: 700; color: var(--white); line-height: 1; margin-bottom: 4px; }
+    .plan-score-sub { font-size: 12px; color: #555; }
+    .plan-score-divider { border: none; border-top: 1px solid #1a1a1a; margin: 16px 0; }
+    .plan-score-stat { margin-bottom: 10px; }
+    .plan-score-stat-label { font-size: 11px; color: #444; font-weight: 600; }
+    .plan-score-stat-val { font-size: 14px; font-weight: 700; color: var(--white); margin-top: 2px; }
+
+    /* BODY */
+    .page-body { max-width: 1100px; margin: 0 auto; padding: 40px 48px; display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start; }
+
+    /* SECTION */
+    .section { margin-bottom: 28px; }
+    .section-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+    .section-icon { width: 40px; height: 40px; background: var(--black); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .section-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; }
+    .section-sub { font-size: 13px; color: var(--gray-400); margin-top: 2px; }
+
+    .card { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 16px; overflow: hidden; }
+
+    /* TIMELINE */
+    .timeline { padding: 28px; }
+    .timeline-item { display: flex; gap: 20px; position: relative; }
+    .timeline-item:not(:last-child)::before { content: ''; position: absolute; left: 19px; top: 44px; bottom: -8px; width: 2px; background: var(--gray-200); z-index: 0; }
+    .timeline-left { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; z-index: 1; }
+    .timeline-dot { width: 40px; height: 40px; border-radius: 50%; background: var(--black); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; border: 3px solid var(--white); box-shadow: 0 0 0 2px var(--black); }
+    .timeline-dot.pending { background: var(--white); border-color: var(--gray-200); box-shadow: 0 0 0 2px var(--gray-200); }
+    .timeline-content { flex: 1; padding-bottom: 32px; }
+    .timeline-phase { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gray-400); margin-bottom: 4px; }
+    .timeline-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .timeline-desc { font-size: 13px; color: var(--gray-600); line-height: 1.6; margin-bottom: 14px; }
+    .timeline-meta { display: flex; gap: 16px; margin-top: 14px; flex-wrap: wrap; }
+    .t-meta-item { font-size: 12px; color: var(--gray-400); }
+    .t-meta-item strong { color: var(--black); font-weight: 700; }
+
+    /* ── ACCORDION TASKS ── */
+    .task-list { display: flex; flex-direction: column; gap: 8px; }
+
+    .task-item {
+      border: 1.5px solid var(--gray-200);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: border-color .2s;
+    }
+    .task-item:hover { border-color: var(--gray-300); }
+    .task-item.open { border-color: var(--black); }
+
+    /* TASK HEADER — always visible */
+    .task-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px;
+      cursor: pointer;
+      background: var(--white);
+      transition: background .15s;
+      user-select: none;
+    }
+    .task-header:hover { background: var(--gray-100); }
+    .task-item.open .task-header { background: var(--black); }
+
+    .task-check {
+      width: 20px; height: 20px; border-radius: 5px;
+      border: 2px solid var(--gray-300);
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 800; color: transparent;
+      transition: all .2s; cursor: pointer;
+    }
+    .task-check.checked { background: #4ade80; border-color: #4ade80; color: var(--black); }
+    .task-item.open .task-check { border-color: #555; }
+    .task-item.open .task-check.checked { background: #4ade80; border-color: #4ade80; color: var(--black); }
+
+    .task-main { flex: 1; }
+    .task-label { font-size: 13px; font-weight: 600; color: var(--black); }
+    .task-item.open .task-label { color: var(--white); }
+
+    .task-badges { display: flex; gap: 6px; margin-top: 3px; flex-wrap: wrap; }
+    .task-badge { font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 2px 8px; border-radius: 100px; letter-spacing: .3px; }
+    .badge-urgent { background: #fff0e0; color: #a05000; }
+    .badge-key { background: #e6f0ff; color: #1a4a8a; }
+    .badge-optional { background: var(--gray-100); color: var(--gray-400); border: 1px solid var(--gray-200); }
+    .badge-free { background: #e6f9e6; color: #1a6a1a; }
+    .task-item.open .badge-urgent { background: #3a1a00; color: #ffb066; }
+    .task-item.open .badge-key { background: #0a1a3a; color: #66aaff; }
+    .task-item.open .badge-optional { background: #1a1a1a; color: #777; border-color: #333; }
+    .task-item.open .badge-free { background: #0a2a0a; color: #66dd66; }
+
+    .task-chevron {
+      font-size: 12px; color: var(--gray-400);
+      transition: transform .3s ease;
+      flex-shrink: 0;
+    }
+    .task-item.open .task-chevron { transform: rotate(180deg); color: #666; }
+
+    /* TASK ACCORDION BODY — hidden by default */
+    .task-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .4s cubic-bezier(0.4,0,0.2,1);
+      background: #fafafa;
+      border-top: 0 solid var(--gray-200);
+    }
+    .task-item.open .task-body {
+      max-height: 600px;
+      border-top: 1px solid var(--gray-200);
+    }
+    .task-body-inner { padding: 16px 14px 16px 46px; }
+
+    .task-body-desc {
+      font-size: 13px; color: var(--gray-600); line-height: 1.7;
+      margin-bottom: 14px;
+    }
+
+    /* DOCS LIST */
+    .task-docs-title {
+      font-size: 11px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--gray-400); margin-bottom: 8px;
+    }
+    .task-docs { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .task-doc-item {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 12px; color: var(--gray-600);
+    }
+    .task-doc-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+
+    /* INFO GRID */
+    .task-info-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 8px; margin-bottom: 14px;
+    }
+    .task-info-cell {
+      background: var(--white); border: 1px solid var(--gray-200);
+      border-radius: 8px; padding: 10px 12px;
+    }
+    .task-info-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--gray-400); margin-bottom: 3px; }
+    .task-info-val { font-size: 13px; font-weight: 700; color: var(--black); }
+
+    /* LINKS */
+    .task-links { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+    .task-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 12px; border-radius: 6px;
+      border: 1.5px solid var(--gray-200);
+      font-size: 12px; font-weight: 600; color: var(--black);
+      text-decoration: none; transition: all .2s;
+      background: var(--white);
+    }
+    .task-link:hover { border-color: var(--black); background: var(--black); color: var(--white); }
+
+    /* TIP BOX */
+    .task-tip {
+      display: flex; gap: 10px; align-items: flex-start;
+      background: #fffbeb; border: 1px solid #f0d060;
+      border-radius: 8px; padding: 10px 12px; margin-top: 12px;
+    }
+    .task-tip-icon { font-size: 15px; flex-shrink: 0; }
+    .task-tip-text { font-size: 12px; color: #7a5a00; line-height: 1.5; }
+    .task-tip-text strong { color: #5a3a00; }
+
+    /* SIDEBAR */
+    .checklist-widget { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 16px; margin-bottom: 20px; overflow: hidden; }
+    .widget-header { padding: 16px 20px; border-bottom: 1px solid var(--gray-200); display: flex; justify-content: space-between; align-items: center; }
+    .widget-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); }
+    .widget-progress { font-size: 13px; font-weight: 700; color: var(--black); }
+    .widget-bar { height: 4px; background: var(--gray-200); }
+    .widget-bar-fill { height: 4px; background: var(--black); transition: width .5s ease; }
+    .widget-body { padding: 16px 20px; }
+    .mini-task { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--gray-100); cursor: pointer; }
+    .mini-task:last-child { border-bottom: none; }
+    .mini-check { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--gray-300); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; transition: all .2s; }
+    .mini-check.done { background: var(--black); border-color: var(--black); color: var(--white); }
+    .mini-label { font-size: 13px; font-weight: 500; flex: 1; transition: all .2s; }
+    .mini-label.done { color: var(--gray-400); text-decoration: line-through; }
+
+    /* PROFILE TYPES CARD */
+    .profile-types-card { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 16px; margin-bottom: 20px; overflow: hidden; }
+    .profile-type-item { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border-bottom: 1px solid var(--gray-100); cursor: pointer; transition: all .2s; text-decoration: none; }
+    .profile-type-item:last-child { border-bottom: none; }
+    .profile-type-item:hover { background: var(--gray-100); }
+    .profile-type-item.current { background: var(--black); }
+    .profile-type-icon { width: 36px; height: 36px; border-radius: 8px; background: var(--gray-100); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .profile-type-item.current .profile-type-icon { background: #222; }
+    .profile-type-text { flex: 1; }
+    .profile-type-name { font-size: 13px; font-weight: 700; color: var(--black); }
+    .profile-type-item.current .profile-type-name { color: var(--white); }
+    .profile-type-desc { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+    .profile-type-item.current .profile-type-desc { color: #666; }
+    .profile-type-arrow { font-size: 14px; color: var(--gray-300); }
+    .profile-type-item.current .profile-type-arrow { color: #555; }
+
+    /* SUMMARY */
+    .summary-card { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 16px; margin-bottom: 20px; overflow: hidden; }
+    .summary-section-header { padding: 12px 20px; background: var(--black); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #666; }
+    .summary-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-bottom: 1px solid var(--gray-100); }
+    .summary-row:last-child { border-bottom: none; }
+    .summary-label { font-size: 13px; color: var(--gray-400); }
+    .summary-val { font-size: 13px; font-weight: 700; }
+
+    /* COSTS */
+    .cost-card { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 16px; margin-bottom: 20px; overflow: hidden; }
+    .cost-row { display: flex; justify-content: space-between; align-items: center; padding: 11px 20px; border-bottom: 1px solid var(--gray-100); }
+    .cost-row:last-child { border-bottom: none; }
+    .cost-label { font-size: 13px; color: var(--gray-600); }
+    .cost-amount { font-size: 14px; font-weight: 700; }
+    .cost-total { background: var(--black); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .cost-total-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #666; }
+    .cost-total-amount { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--white); }
+
+    /* DOWNLOAD */
+    .download-card { background: var(--black); border-radius: 16px; padding: 24px; text-align: center; margin-bottom: 20px; }
+    .download-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--white); margin-bottom: 8px; }
+    .download-sub { font-size: 13px; color: #777; margin-bottom: 20px; line-height: 1.5; }
+    .btn-dl { display: block; width: 100%; padding: 13px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all .2s; margin-bottom: 8px; border: none; }
+    .btn-dl-primary { background: var(--white); color: var(--black); }
+    .btn-dl-primary:hover { opacity: .9; }
+    .btn-dl-outline { background: transparent; color: #777; border: 1px solid #222 !important; border: none; }
+    .btn-dl-outline:hover { border-color: #555; color: var(--white); }
+    .start-over { text-align: center; padding: 12px; }
+    .start-over a { font-size: 13px; color: var(--gray-400); text-decoration: none; border-bottom: 1px solid var(--gray-300); }
+    .start-over a:hover { color: var(--black); }
+
+    /* FADE */
+    .fade-up { opacity: 0; transform: translateY(20px); transition: all .5s ease; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    @media(max-width:900px) {
+      .page-body { grid-template-columns: 1fr; padding: 24px; }
+      .hero-inner { grid-template-columns: 1fr; }
+      .plan-score { display: none; }
+      nav, .progress-strip, .hero, .congrats-bar { padding-left: 24px; padding-right: 24px; }
+    }
+    @media print {
+      nav, .progress-strip, .congrats-bar, .download-card, .start-over { display: none !important; }
+      body { background: white; }
+      .page-body { grid-template-columns: 1fr; }
+      .fade-up { opacity: 1 !important; transform: none !important; }
+      .task-body { max-height: none !important; border-top: 1px solid var(--gray-200) !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- CONGRATS -->
+<div class="congrats-bar">
+  <span style="font-size:20px">🎉</span>
+  <p class="congrats-text" data-en="<strong>Your migration plan is ready.</strong> Click any task to expand full details." data-es="<strong>Tu plan migratorio está listo.</strong> Haz click en cada tarea para ver más detalles."><strong>Your migration plan is ready.</strong> Click any task to expand full details.</p>
+  <span style="font-size:20px">🎉</span>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="migro-landing.html" class="nav-logo">Migro<span></span></a>
+  <div class="nav-right">
+    <a href="migro-dashboard.html" style="font-size:13px;font-weight:600;color:var(--gray-600);text-decoration:none;padding:7px 14px;border:1px solid var(--gray-200);border-radius:6px;transition:all .2s;" data-en="← Dashboard" data-es="← Dashboard">← Dashboard</a>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('es')">ES</button>
+    </div>
+    <button class="btn-print" onclick="window.print()" data-en="🖨 Print" data-es="🖨 Imprimir">🖨 Print</button>
+    <button class="btn-save" data-en="💾 Save plan" data-es="💾 Guardar">💾 Save plan</button>
+  </div>
+</nav>
+
+<!-- PROGRESS -->
+<div class="progress-strip">
+  <div class="progress-step done">✓ Profile</div>
+  <div class="progress-step done">✓ Visa Routes</div>
+  <div class="progress-step done">✓ Sydney</div>
+  <div class="progress-step done">✓ Options</div>
+  <div class="progress-step done">✓ Services</div>
+  <div class="progress-step active">✓ My Plan</div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <p class="hero-tag" data-en="YOUR PERSONALIZED MIGRATION PLAN" data-es="TU PLAN MIGRATORIO PERSONALIZADO">YOUR PERSONALIZED MIGRATION PLAN</p>
+      <h1 class="hero-title" data-en="Your roadmap to<br/>Australia is ready." data-es="Tu hoja de ruta a<br/>Australia está lista.">Your roadmap to<br/>Australia is ready.</h1>
+      <p class="hero-sub" data-en="5 phases, clear steps, real links. Click any task to expand full details, documents and official sources." data-es="5 fases, pasos claros, links reales. Haz click en cualquier tarea para ver documentos, costos y fuentes oficiales.">5 phases, clear steps, real links. Click any task to expand full details.</p>
+      <div class="hero-chips">
+        <div class="hero-chip"><span class="chip-dot"></span>🇨🇴 Colombia → 🇦🇺 Sydney</div>
+        <div class="hero-chip">🎯 Subclass 482</div>
+        <div class="hero-chip">📅 <span data-en="4–8 months" data-es="4–8 meses">4–8 months</span></div>
+        <div class="hero-chip">✅ 75 pts</div>
+      </div>
+    </div>
+    <div class="plan-score">
+      <div class="plan-score-label" data-en="READINESS SCORE" data-es="PUNTAJE">READINESS SCORE</div>
+      <div class="plan-score-num">75</div>
+      <div class="plan-score-sub" data-en="points · above minimum" data-es="puntos · sobre mínimo">points · above minimum</div>
+      <hr class="plan-score-divider"/>
+      <div class="plan-score-stat"><div class="plan-score-stat-label" data-en="Best visa" data-es="Mejor visa">Best visa</div><div class="plan-score-stat-val">Subclass 482</div></div>
+      <div class="plan-score-stat"><div class="plan-score-stat-label" data-en="City" data-es="Ciudad">City</div><div class="plan-score-stat-val">Sydney, NSW</div></div>
+      <div class="plan-score-stat"><div class="plan-score-stat-label" data-en="Est. cost" data-es="Costo est.">Est. cost</div><div class="plan-score-stat-val">AUD $8,200</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BODY -->
+<div class="page-body">
+<div>
+
+<!-- ══════════ PHASE 1 ══════════ -->
+<div class="section fade-up">
+  <div class="section-header">
+    <div class="section-icon">📋</div>
+    <div>
+      <div class="section-title" data-en="Phase 1 — Prepare" data-es="Fase 1 — Preparación">Phase 1 — Prepare</div>
+      <div class="section-sub" data-en="Months 1–2 · Documents & English test" data-es="Meses 1–2 · Documentos y test de inglés">Months 1–2 · Documents & English test</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="timeline-dot">📝</div></div>
+        <div class="timeline-content">
+          <div class="timeline-phase">STEP 1 · DOCUMENTS</div>
+          <div class="timeline-title" data-en="Gather your core documents" data-es="Reúne tus documentos principales">Gather your core documents</div>
+          <div class="timeline-desc" data-en="Start collecting all required documents now — many take weeks to process." data-es="Empieza a recopilar todos los documentos requeridos — muchos tardan semanas.">Start collecting all required documents now — many take weeks to process.</div>
+
+          <div class="task-list">
+
+            <!-- TASK 1 -->
+            <div class="task-item" onclick="toggleTask(this)">
+              <div class="task-header">
+                <div class="task-check" onclick="checkTask(event,this)"></div>
+                <div class="task-main">
+                  <div class="task-label" data-en="Valid passport (min. 2 years remaining)" data-es="Pasaporte vigente (mín. 2 años)">Valid passport (min. 2 years remaining)</div>
+                  <div class="task-badges"><span class="task-badge badge-urgent" data-en="Urgent" data-es="Urgente">Urgent</span></div>
+                </div>
+                <span class="task-chevron">▼</span>
+              </div>
+              <div class="task-body"><div class="task-body-inner">
+                <p class="task-body-desc" data-en="Your passport must be valid for the entire duration of your visa, plus at least 6 months after your intended travel date. If it expires within 2 years, renew immediately — this can take 4–8 weeks in Colombia." data-es="Tu pasaporte debe ser válido durante toda la duración de tu visa, más al menos 6 meses después de tu fecha de viaje prevista. Si vence en menos de 2 años, renuévalo de inmediato — puede tardar 4–8 semanas en Colombia.">Your passport must be valid for the entire duration of your visa, plus at least 6 months after your intended travel date. If it expires within 2 years, renew immediately — this can take 4–8 weeks in Colombia.</p>
+                <div class="task-docs-title" data-en="WHAT YOU NEED" data-es="LO QUE NECESITAS">WHAT YOU NEED</div>
+                <div class="task-docs">
+                  <div class="task-doc-item"><span class="task-doc-icon">🛂</span><span data-en="Current Colombian passport — all pages scanned in color" data-es="Pasaporte colombiano actual — todas las páginas escaneadas en color">Current Colombian passport — all pages scanned in color</span></div>
+                  <div class="task-doc-item"><span class="task-doc-icon">🛂</span><span data-en="Any expired passports held — include if you travelled internationally" data-es="Pasaportes expirados anteriores — incluir si viajaste internacionalmente">Any expired passports held — include if you travelled internationally</span></div>
+                </div>
+                <div class="task-info-grid">
+                  <div class="task-info-cell"><div class="task-info-label" data-en="TIME" data-es="TIEMPO">TIME</div><div class="task-info-val" data-en="Immediate" data-es="Inmediato">Immediate</div></div>
+                  <div class="task-info-cell"><div class="task-info-label" data-en="COST" data-es="COSTO">COST</div><div class="task-info-val" data-en="Free (if valid)" data-es="Gratis (si vigente)">Free (if valid)</div></div>
+                  <div class="task-info-cell"><div class="task-info-label" data-en="RENEWAL" data-es="RENOVACIÓN">RENEWAL</div><div class="task-info-val" data-en="4–8 weeks" data-es="4–8 semanas">4–8 weeks</div></div>
+                </div>
+                <div class="task-links">
+                  <a class="task-link" href="https://www.cancilleria.gov.co/tramites_servicios/pasaportes" target="_blank">🔗 Cancillería Colombia</a>
+                  <a class="task-link" href="https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-skill-shortage-482" target="_blank">🔗 Australia 482 requirements</a>
+                </div>
+                <div class="task-tip"><span class="task-tip-icon">💡</span><p class="task-tip-text" data-en="<strong>Tip:</strong> Scan every page of your passport in high resolution (300+ DPI) and save as PDF. You'll need this multiple times throughout the process." data-es="<strong>Tip:</strong> Escanea cada página de tu pasaporte en alta resolución (300+ DPI) y guarda como PDF. Lo necesitarás múltiples veces durante el proceso."><strong>Tip:</strong> Scan every page of your passport in high resolution (300+ DPI) and save as PDF. You'll need this multiple times.</p></div>
+              </div></div>
+            </div>
+
+            <!-- TASK 2 -->
+            <div class="task-item" onclick="toggleTask(this)">
+              <div class="task-header">
+                <div class="task-check" onclick="checkTask(event,this)"></div>
+                <div class="task-main">
+                  <div class="task-label" data-en="University degree + official transcripts" data-es="Diploma universitario + expediente académico oficial">University degree + official transcripts</div>
+                  <div class="task-badges"><span class="task-badge badge-key" data-en="Required" data-es="Requerido">Required</span></div>
+                </div>
+                <span class="task-chevron">▼</span>
+              </div>
+              <div class="task-body"><div class="task-body-inner">
+                <p class="task-body-desc" data-en="Your degree must be officially translated into English by a NAATI-certified translator if not already in English. The assessing body will verify it against the issuing institution." data-es="Tu título debe ser traducido oficialmente al inglés por un traductor certificado por NAATI si no está ya en inglés. El organismo evaluador lo verificará con la institución emisora.">Your degree must be officially translated into English by a NAATI-certified translator if not already in English.</p>
+                <div class="task-docs-title" data-en="DOCUMENTS NEEDED" data-es="DOCUMENTOS NECESARIOS">DOCUMENTS NEEDED</div>
+                <div class="task-docs">
+                  <div class="task-doc-item"><span class="task-doc-icon">📜</span><span data-en="Original degree certificate (Diploma / Acta de Grado)" data-es="Certificado de título original (Diploma / Acta de Grado)">Original degree certificate (Acta de Grado)</span></div>
+                  <div class="task-doc-item"><span class="task-doc-icon">📋</span><span data-en="Official transcripts with grades (Certificado de Calificaciones)" data-es="Expediente oficial de notas (Certificado de Calificaciones)">Official transcripts with grades</span></div>
+                  <div class="task-doc-item"><span class="task-doc-icon">🌐</span><span data-en="NAATI-certified English translation of both documents" data-es="Traducción al inglés certificada NAATI de ambos documentos">NAATI-certified English translation of both documents</span></div>
+                  <div class="task-doc-item"><span class="task-doc-icon">✅</span><span data-en="University verification letter (some assessing bodies require this)" data-es="Carta de verificación de la universidad (algunos organismos lo requieren)">University verification letter (some assessing bodies require this)</span></div>
+                </div>
+                <div class="task-info-grid">
+                  <div class="task-info-cell"><div class="task-info-label" data-en="TIME" data-es="TIEMPO">TIME</div><div class="task-info-val" data-en="2–4 weeks" data-es="2–4 semanas">2–4 weeks</div></div>
+                  <div class="task-info-cell"><div class="task-info-label" data-en="TRANSLATION" data-es="TRADUCCIÓN">TRANSLATION</div><div class="task-info-val">AUD ~$120</div></div>
+                  <div class="task-info-cell"><div class="task-info-label" data-en="APOSTILLE?" data-es="¿APOSTILLA?">APOSTILLE?</div><div class="task-info-val" data-en="Sometimes" data-es="A veces">Sometimes</div></div>
+                </div>
+                <div class="task-links">
+                  <a class="task-link" href="https://www.naati.com.au" target="_blank">🔗 Find NAATI translator</a>
+                  <a class="task-link" href="https://www.cancilleria.gov.co/tramites_servicios/apostilla" target="_blank">🔗 Apostilla Colombia</a>
+                </div>
+                <div class="task-tip"><span class="task-tip-icon">💡</span><p class="task-tip-text" data-en="<strong>Tip:</strong> Get at least 3 certified copies of your translated degree. You'll need originals for the skills assessment, visa application and employer." data-es="<strong>Tip:</strong> Saca al menos 3 copias certificadas de tu título traducido. Las necesitarás para la evaluación de habilidades, solicitud de visa y empleador."><strong>Tip:</strong> Get at least 3 certified copies of your translated degree.</p></div>
+              </div></div>
+            </div>
+
+            <!-- TASK 3 -->
+            <div class="task-item" onclick="toggleTask(this)">
+              <div class="task-header">
+                <div class="task-check" onclick="checkTask(event,this)"></div>
+                <div class="task-main">
+                  <div class="task-label" data-en="Work experience letters (5–7 years)" data-es="Cartas de experiencia laboral (5–7 años)">Work experience letters (5–7 years)</div>
+                  <div class="task-badges"><span class="task-badge badge-key" data-en="Required" data-es="Requerido">Required</span></div>
+                </div>
+                <span class="task-chevron">▼</span>
+              </div>
+              <div class="task-body"><div class="task-body-inner">
+                <p class="task-body-desc" data-en="You need an employment reference letter from each employer covering your last 5–7 years. Letters must be on official company letterhead, signed by a manager, and include specific details about your role." data-es="Necesitas una carta de referencia laboral de cada empleador que cubra tus últimos 5–7 años. Las cartas deben estar en papel membretado oficial de la empresa, firmadas por un gerente, e incluir detalles específicos sobre tu rol.">You need a reference letter from each employer covering your last 5–7 years of work.</p>
+                <div class="task-docs-title" data-en="EACH LETTER MUST INCLUDE" data-es="CADA CARTA DEBE INCLUIR">EACH LETTER MUST INCLUDE</div>
+                <div class="task-docs">
+                  <div class="task-doc-item"><span class="task-doc-icon">✅</span><span data-en="Company name, address, ABN/RUT and contact details" data-es="Nombre de la empresa, dirección, NIT y datos de contacto">Company name, address, NIT and contact details</span></div>
+                  <div class="task-doc-item"><span class="task-doc-icon">✅</span><span data-en="Your full name and exact job title" data-es="Tu nombre completo y cargo exacto">Your full name and exact job title</span></div>
+                  <div class="task-doc-item"><span class="task-doc-icon">✅</span><span data-en="Employment dates (start and end, or 'current')" data-es="Fechas de empleo (inicio y fin, o 'actual')">Employment dates (start and end, or 'current')</span></div>
+                  <div class="task-doc-item"><span class="task-doc-icon">✅</span><span data-en="Hours worked per week (must confirm full-time = 38+ hrs)" data-es="Horas trabajadas por semana (debe confirmar tiempo completo = 38+ hrs)">Hours worked per week (38+ hrs for full-time)</span></div>
+                  <div class="task-doc-item"><span class="task-doc-icon">✅</span><span data-en="Main duties and responsibilities (detailed)" data-es="Principales funciones y responsabilidades (detalladas)">Main duties and responsibilities (detailed)</span></div>
+                  <div class="task-doc-item"><span class="task-doc-icon">✅</span><span data-en="Signed by direct manager with their name and title" data-es="Firmada por gerente directo con nombre y cargo">Signed by direct manager with name and title</span></div>
+                </div>
+                <div class="task-info-grid">
+                  <div class="task-info-cell"><div class="task-info-label" data-en="TIME" data-es="TIEMPO">TIME</div><div class="task-info-val" data-en="1–3 weeks" data-es="1–3 semanas">1–3 weeks</div></div>
+                  <div class="task-info-cell"><div class="task-info-label" data-en="COST" data-es="COSTO">COST</div><div class="task-info-val">Free + translation</div></div>
+                  <div class="task-info-cell"><div class="task-info-label" data-en="LANGUAGE" data-es="IDIOMA">LANGUAGE</div><div class="task-info-val" data-en="English required" data-es="Inglés requerido">English required</div></div>
+                </div>
+                <div class="task-tip"><span class="task-tip-icon">💡</span><p class="task-tip-text" data-en="<strong>Tip:</strong> If a previous employer no longer exists, use a statutory declaration (sworn statement) from a colleague who can verify your employment. Ask your migration agent for a template." data-es="<strong>Tip:</strong> Si un empleador anterior ya no existe, usa una declaración jurada de un colega que pueda verificar tu empleo. Pide una plantilla a tu agente migratorio."><strong>Tip:</strong> If a previous employer no longer exists, use a statutory declaration from a colleague. Ask your migration agent for a template.</p></div>
+              </div></div>
+            </div>
+
+            <!-- TASK 4 -->
+            <div class="task-item" onclick="toggleTask(this)">
+              <div class="task-header">
+                <div class="task-check" onclick="checkTask(event,this)"></div>
+                <div class="task-main">
+                  <div class="task-label" data-en="Police clearance certificate" data-es="Certificado de antecedentes penales">Police clearance certificate</div>
+                  <div class="task-badges"><span class="task-badge badge-urgent" data-en="Urgent — takes time" data-es="Urgente — toma tiempo">Urgent — takes time</span></div>
+                </div>
+                <span class="task-chevron">▼</span>
+              </div>
+              <div class="task-body"><div class="task-body-inner">
+                <p class="task-body-desc" data-en="You need a police clearance from every country where you've lived for 12+ months in the past 10 years. The Colombian certificate from DIJIN typically takes 3–5 business days online." data-es="Necesitas un certificado de antecedentes de cada país donde hayas vivido 12+ meses en los últimos 10 años. El certificado colombiano de DIJIN suele tardar 3–5 días hábiles online.">You need a police clearance from every country where you've lived for 12+ months in the past 10 years.</p>
+                <div class="task-docs-title" data-en="WHERE TO GET IT" data-es="DÓNDE OBTENERLO">WHERE TO GET IT</div>
+                <div class="task-docs">
+                  <div class="task-doc-item"><span class="task-doc-icon">🇨🇴</span><span data-en="Colombia: DIJIN (Policía Nacional) — antecedentes.policia.gov.co" data-es="Colombia: DIJIN (Policía Nacional) — antecedentes.policia.gov.co">Colombia: DIJIN — antecedentes.policia.gov.co</span></div>
+                  <div class="task-doc-item"><span class="task-doc-icon">🌍</span><span data-en="Other countries: Contact each country's national police or embassy" data-es="Otros países: Contacta la policía nacional o embajada de cada país">Other countries: Contact each country's national police or embassy</span></div>
+                  <div class="task-doc-item"><span class="task-doc-icon">📬</span><span data-en="Must be apostilled + translated to English (NAATI certified)" data-es="Debe estar apostillado + traducido al inglés (certificado NAATI)">Must be apostilled + translated to English (NAATI certified)</span></div>
+                </div>
+                <div class="task-info-grid">
+                  <div class="task-info-cell"><div class="task-info-label" data-en="TIME" data-es="TIEMPO">TIME</div><div class="task-info-val" data-en="3–10 days" data-es="3–10 días">3–10 days</div></div>
+                  <div class="task-info-cell"><div class="task-info-label" data-en="VALID FOR" data-es="VÁLIDO POR">VALID FOR</div><div class="task-info-val" data-en="12 months" data-es="12 meses">12 months</div></div>
+                  <div class="task-info-cell"><div class="task-info-label">COST</div><div class="task-info-val">~AUD $50</div></div>
+                </div>
+                <div class="task-links">
+                  <a class="task-link" href="https://antecedentes.policia.gov.co" target="_blank">🔗 DIJIN Colombia</a>
+                  <a class="task-link" href="https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-skill-shortage-482/character" target="_blank">🔗 Character requirements</a>
+                </div>
+              </div></div>
+            </div>
+
+          </div><!-- /task-list -->
+
+          <div class="timeline-meta">
+            <div class="t-meta-item">⏱ <strong data-en="2–4 weeks" data-es="2–4 semanas">2–4 weeks</strong></div>
+            <div class="t-meta-item">💰 <strong>AUD ~$200</strong></div>
+          </div>
+        </div>
+      </div><!-- /timeline-item -->
+
+      <!-- IELTS -->
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="timeline-dot">🗣️</div></div>
+        <div class="timeline-content">
+          <div class="timeline-phase">STEP 2 · ENGLISH TEST</div>
+          <div class="timeline-title" data-en="Take your IELTS test" data-es="Toma tu examen IELTS">Take your IELTS test</div>
+          <div class="timeline-desc" data-en="You currently qualify as Proficient. Aim for 8+ to earn 10 extra points." data-es="Actualmente calificas como Avanzado. Apunta a 8+ para ganar 10 puntos extra.">You currently qualify as Proficient. Aim for 8+ for 10 extra points.</div>
+
+          <div class="task-list">
+            <div class="task-item" onclick="toggleTask(this)">
+              <div class="task-header">
+                <div class="task-check" onclick="checkTask(event,this)"></div>
+                <div class="task-main">
+                  <div class="task-label" data-en="Register & sit IELTS Academic exam" data-es="Registrarse y rendir el examen IELTS Academic">Register & sit IELTS Academic exam</div>
+                  <div class="task-badges"><span class="task-badge badge-urgent" data-en="Book now" data-es="Reservar ya">Book now</span><span class="task-badge badge-key">+10 pts if 8+</span></div>
+                </div>
+                <span class="task-chevron">▼</span>
+              </div>
+              <div class="task-body"><div class="task-body-inner">
+                <p class="task-body-desc" data-en="IELTS Academic is required for most Australian skilled visa points claims. You need a minimum score of 6.0 overall, but scoring 8+ gives you 20 points (vs 10 at 7.0). This is one of the highest-impact actions you can take to increase your score." data-es="IELTS Academic es requerido para la mayoría de las reclamaciones de puntos de visa calificada australiana. Necesitas un puntaje mínimo de 6.0 en general, pero obtener 8+ te da 20 puntos (vs 10 con 7.0). Esta es una de las acciones de mayor impacto para aumentar tu puntaje.">IELTS Academic is required for most Australian skilled visas. Scoring 8+ earns 20 points vs 10 at 7.0 — a game-changer.</p>
+                <div class="task-docs-title" data-en="SCORE TARGETS" data-es="OBJETIVOS DE PUNTAJE">SCORE TARGETS</div>
+                <div class="task-docs">
+                  <div class="task-doc-item"><span class="task-doc-icon">🎯</span><span data-en="Listening: 8.0 | Reading: 8.0 | Writing: 7.5 | Speaking: 7.5" data-es="Escucha: 8.0 | Lectura: 8.0 | Escritura: 7.5 | Habla: 7.5">Target: L:8.0 / R:8.0 / W:7.5 / S:7.5</span></div>
+                  <div class="task-doc-item"><span class="task-doc-icon">📍</span><span data-en="Test centres: Bogotá (British Council), Medellín, Cali, Barranquilla" data-es="Centros de examen: Bogotá (British Council), Medellín, Cali, Barranquilla">Test centres: Bogotá (British Council), Medellín, Cali, Barranquilla</span></div>
+                </div>
+                <div class="task-info-grid">
+                  <div class="task-info-cell"><div class="task-info-label" data-en="PREP TIME" data-es="TIEMPO PREP">PREP TIME</div><div class="task-info-val" data-en="6–8 weeks" data-es="6–8 semanas">6–8 weeks</div></div>
+                  <div class="task-info-cell"><div class="task-info-label">EXAM FEE</div><div class="task-info-val">AUD ~$385</div></div>
+                  <div class="task-info-cell"><div class="task-info-label" data-en="VALID FOR" data-es="VÁLIDO POR">VALID FOR</div><div class="task-info-val" data-en="2 years" data-es="2 años">2 years</div></div>
+                </div>
+                <div class="task-links">
+                  <a class="task-link" href="https://www.ielts.org/book-a-test" target="_blank">🔗 Book IELTS test</a>
+                  <a class="task-link" href="migro-ielts.html">📝 IELTS Simulator →</a>
+                </div>
+                <div class="task-tip"><span class="task-tip-icon">💡</span><p class="task-tip-text" data-en="<strong>Tip:</strong> Use our free IELTS Simulator to practice all 4 sections before your real test. Most candidates improve 0.5–1.0 bands with 4 weeks of targeted practice." data-es="<strong>Tip:</strong> Usa nuestro Simulador IELTS gratuito para practicar las 4 secciones antes de tu examen real. La mayoría mejora 0.5–1.0 bandas con 4 semanas de práctica dirigida."><strong>Tip:</strong> Use our free IELTS Simulator to practice all 4 sections. Most candidates improve 0.5–1.0 bands with 4 weeks of practice.</p></div>
+              </div></div>
+            </div>
+          </div>
+
+          <div class="timeline-meta">
+            <div class="t-meta-item">⏱ <strong data-en="6–8 weeks" data-es="6–8 semanas">6–8 weeks</strong></div>
+            <div class="t-meta-item">💰 <strong>AUD ~$385</strong></div>
+            <div class="t-meta-item">📈 <strong>+10 pts if 8+</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PHASE 2 ══════════ -->
+<div class="section fade-up">
+  <div class="section-header">
+    <div class="section-icon">🔍</div>
+    <div>
+      <div class="section-title" data-en="Phase 2 — Skills Assessment" data-es="Fase 2 — Evaluación de Habilidades">Phase 2 — Skills Assessment</div>
+      <div class="section-sub" data-en="Month 2–3 · Official recognition of your qualifications" data-es="Mes 2–3 · Reconocimiento oficial de tus calificaciones">Month 2–3 · Official recognition of your qualifications</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="timeline-dot pending">🏛️</div></div>
+        <div class="timeline-content">
+          <div class="timeline-phase">STEP 3 · SKILLS ASSESSMENT</div>
+          <div class="timeline-title" data-en="Apply through the relevant assessing body" data-es="Aplica al organismo evaluador correspondiente">Apply through the relevant assessing body</div>
+          <div class="timeline-desc" data-en="Mandatory for most skilled visas. Depends on your occupation — find your ANZSCO code first." data-es="Obligatorio para la mayoría de las visas calificadas. Depende de tu ocupación — primero encuentra tu código ANZSCO.">Mandatory for most skilled visas. Depends on your occupation.</div>
+          <div class="task-list">
+            <div class="task-item" onclick="toggleTask(this)">
+              <div class="task-header">
+                <div class="task-check" onclick="checkTask(event,this)"></div>
+                <div class="task-main">
+                  <div class="task-label" data-en="Find your ANZSCO occupation code" data-es="Encuentra tu código de ocupación ANZSCO">Find your ANZSCO occupation code</div>
+                  <div class="task-badges"><span class="task-badge badge-key" data-en="First step" data-es="Primer paso">First step</span><span class="task-badge badge-free">Free</span></div>
+                </div>
+                <span class="task-chevron">▼</span>
+              </div>
+              <div class="task-body"><div class="task-body-inner">
+                <p class="task-body-desc" data-en="The Australian and New Zealand Standard Classification of Occupations (ANZSCO) is used to determine which skills assessing body is relevant for your occupation, and whether your job is on the skilled occupation list (SOL) required for the 482 visa." data-es="La Clasificación Estándar Australiana y Neozelandesa de Ocupaciones (ANZSCO) determina qué organismo evaluador es relevante para tu ocupación, y si tu trabajo está en la lista de ocupaciones calificadas (SOL) requerida para la visa 482.">ANZSCO determines which assessing body to use and whether your occupation qualifies for the 482 visa.</p>
+                <div class="task-docs-title" data-en="COMMON ASSESSING BODIES" data-es="ORGANISMOS EVALUADORES COMUNES">COMMON ASSESSING BODIES</div>
+                <div class="task-docs">
+                  <div class="task-doc-item"><span class="task-doc-icon">💻</span><span>ACS (Australian Computer Society) — IT & Software</span></div>
+                  <div class="task-doc-item"><span class="task-doc-icon">⚙️</span><span>Engineers Australia — Engineering roles</span></div>
+                  <div class="task-doc-item"><span class="task-doc-icon">💼</span><span>VETASSESS — Business, management, science</span></div>
+                  <div class="task-doc-item"><span class="task-doc-icon">🏥</span><span>AHPRA — Healthcare professionals</span></div>
+                  <div class="task-doc-item"><span class="task-doc-icon">🏗️</span><span>AIQS / RAIA — Quantity surveyors, architects</span></div>
+                </div>
+                <div class="task-links">
+                  <a class="task-link" href="https://www.abs.gov.au/ausstats/abs@.nsf/mf/1220.0" target="_blank">🔗 ANZSCO search</a>
+                  <a class="task-link" href="https://immi.homeaffairs.gov.au/visas/working-in-australia/skillselect/eligible-skilled-occupations" target="_blank">🔗 Skilled occupations list</a>
+                </div>
+              </div></div>
+            </div>
+
+            <div class="task-item" onclick="toggleTask(this)">
+              <div class="task-header">
+                <div class="task-check" onclick="checkTask(event,this)"></div>
+                <div class="task-main">
+                  <div class="task-label" data-en="Submit skills assessment application" data-es="Enviar solicitud de evaluación de habilidades">Submit skills assessment application</div>
+                  <div class="task-badges"><span class="task-badge badge-key" data-en="Required" data-es="Requerido">Required</span></div>
+                </div>
+                <span class="task-chevron">▼</span>
+              </div>
+              <div class="task-body"><div class="task-body-inner">
+                <p class="task-body-desc" data-en="Once you know your assessing body, submit your application online with all required documents. Processing typically takes 8–12 weeks. Your result is valid for 3 years." data-es="Una vez que conozcas tu organismo evaluador, envía tu solicitud online con todos los documentos requeridos. El procesamiento generalmente tarda 8–12 semanas. Tu resultado es válido por 3 años.">Once you know your assessing body, submit your application online with all required documents.</p>
+                <div class="task-info-grid">
+                  <div class="task-info-cell"><div class="task-info-label">TIME</div><div class="task-info-val" data-en="8–12 weeks" data-es="8–12 semanas">8–12 weeks</div></div>
+                  <div class="task-info-cell"><div class="task-info-label">COST</div><div class="task-info-val">AUD $500–900</div></div>
+                  <div class="task-info-cell"><div class="task-info-label" data-en="VALID" data-es="VÁLIDO">VALID</div><div class="task-info-val" data-en="3 years" data-es="3 años">3 years</div></div>
+                </div>
+                <div class="task-tip"><span class="task-tip-icon">💡</span><p class="task-tip-text" data-en="<strong>Tip:</strong> Apply for your skills assessment at the SAME time as booking IELTS — both take similar time and you need both before submitting your EOI." data-es="<strong>Tip:</strong> Solicita tu evaluación de habilidades AL MISMO TIEMPO que reservas el IELTS — ambos toman tiempo similar y necesitas ambos antes de enviar tu EOI."><strong>Tip:</strong> Apply for your skills assessment at the SAME time as booking IELTS — you need both before submitting your EOI.</p></div>
+              </div></div>
+            </div>
+          </div>
+
+          <div class="timeline-meta">
+            <div class="t-meta-item">⏱ <strong data-en="8–12 weeks" data-es="8–12 semanas">8–12 weeks</strong></div>
+            <div class="t-meta-item">💰 <strong>AUD ~$700</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PHASE 3 ══════════ -->
+<div class="section fade-up">
+  <div class="section-header">
+    <div class="section-icon">💼</div>
+    <div>
+      <div class="section-title" data-en="Phase 3 — Find a Sponsor" data-es="Fase 3 — Encontrar Patrocinador">Phase 3 — Find a Sponsor</div>
+      <div class="section-sub" data-en="Month 3–5 · Secure a job offer with visa sponsorship" data-es="Mes 3–5 · Consigue oferta de trabajo con patrocinio">Month 3–5 · Secure a job offer with visa sponsorship</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="timeline-dot pending">💼</div></div>
+        <div class="timeline-content">
+          <div class="timeline-phase">STEP 4 · JOB SEARCH</div>
+          <div class="timeline-title" data-en="Apply to approved 482 sponsors in Sydney" data-es="Aplica a patrocinadores 482 aprobados en Sydney">Apply to approved 482 sponsors in Sydney</div>
+          <div class="timeline-desc" data-en="Target companies already approved as Standard Business Sponsors to speed up the process." data-es="Apunta a empresas ya aprobadas como Patrocinadores de Negocios Estándar para acelerar el proceso.">Target companies already approved as Standard Business Sponsors.</div>
+          <div class="task-list">
+            <div class="task-item" onclick="toggleTask(this)">
+              <div class="task-header">
+                <div class="task-check" onclick="checkTask(event,this)"></div>
+                <div class="task-main">
+                  <div class="task-label" data-en="Secure written job offer from a 482 sponsor" data-es="Obtener oferta de trabajo escrita de un patrocinador 482">Secure written job offer from a 482 sponsor</div>
+                  <div class="task-badges"><span class="task-badge badge-urgent" data-en="Key milestone" data-es="Hito clave">Key milestone</span></div>
+                </div>
+                <span class="task-chevron">▼</span>
+              </div>
+              <div class="task-body"><div class="task-body-inner">
+                <p class="task-body-desc" data-en="The job offer is the foundation of your 482 application. Your salary must be at least equal to the Annual Market Salary Rate (AMSR) for the occupation in your location — typically AUD $70,000+ for most skilled roles in Sydney." data-es="La oferta de trabajo es la base de tu solicitud 482. Tu salario debe ser al menos igual a la Tasa Salarial Anual del Mercado (AMSR) para la ocupación en tu ubicación — típicamente AUD $70,000+ para la mayoría de los roles calificados en Sydney.">The job offer is the foundation of your 482 application. Your salary must meet the Annual Market Salary Rate (AMSR).</p>
+                <div class="task-docs-title" data-en="YOUR OFFER LETTER MUST INCLUDE" data-es="TU CARTA DE OFERTA DEBE INCLUIR">YOUR OFFER LETTER MUST INCLUDE</div>
+                <div class="task-docs">
+                  <div class="task-doc-item"><span class="task-doc-icon">✅</span><span data-en="Employer's full legal name and ABN (Australian Business Number)" data-es="Nombre legal completo del empleador y ABN (Número de Empresa Australiana)">Employer's full legal name and ABN</span></div>
+                  <div class="task-doc-item"><span class="task-doc-icon">✅</span><span data-en="Your ANZSCO occupation title and code" data-es="Tu título y código de ocupación ANZSCO">Your ANZSCO occupation title and code</span></div>
+                  <div class="task-doc-item"><span class="task-doc-icon">✅</span><span data-en="Annual salary (must meet or exceed TSMIT: AUD $73,150 in 2025–26)" data-es="Salario anual (debe cumplir o superar TSMIT: AUD $73,150 en 2025–26)">Annual salary ≥ TSMIT (AUD $73,150 in 2025–26)</span></div>
+                  <div class="task-doc-item"><span class="task-doc-icon">✅</span><span data-en="Full-time hours (38+ hrs/week)" data-es="Horario completo (38+ hrs/semana)">Full-time hours (38+ hrs/week)</span></div>
+                </div>
+                <div class="task-links">
+                  <a class="task-link" href="migro-options.html">🏢 View sponsor employers →</a>
+                  <a class="task-link" href="https://www.seek.com.au" target="_blank">🔍 SEEK Australia</a>
+                  <a class="task-link" href="https://au.linkedin.com/jobs" target="_blank">🔍 LinkedIn Jobs</a>
+                </div>
+                <div class="task-tip"><span class="task-tip-icon">💡</span><p class="task-tip-text" data-en="<strong>Tip:</strong> Check the DOHA's register of approved sponsors before applying — it saves time to only target companies already approved. Search at: immi.homeaffairs.gov.au" data-es="<strong>Tip:</strong> Revisa el registro de patrocinadores aprobados de DOHA antes de aplicar — ahorra tiempo enfocarse solo en empresas ya aprobadas."><strong>Tip:</strong> Check DOHA's register of approved sponsors before applying — only target pre-approved companies.</p></div>
+              </div></div>
+            </div>
+          </div>
+          <div class="timeline-meta">
+            <div class="t-meta-item">⏱ <strong data-en="4–8 weeks" data-es="4–8 semanas">4–8 weeks</strong></div>
+            <div class="t-meta-item">💰 <strong>Free</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PHASE 4 ══════════ -->
+<div class="section fade-up">
+  <div class="section-header">
+    <div class="section-icon">📨</div>
+    <div>
+      <div class="section-title" data-en="Phase 4 — Visa Application" data-es="Fase 4 — Solicitud de Visa">Phase 4 — Visa Application</div>
+      <div class="section-sub" data-en="Month 5–8 · Lodge and wait for your grant" data-es="Mes 5–8 · Presenta y espera tu aprobación">Month 5–8 · Lodge and wait for your grant</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="timeline-dot pending">🌐</div></div>
+        <div class="timeline-content">
+          <div class="timeline-phase">STEP 5 · VISA LODGEMENT</div>
+          <div class="timeline-title" data-en="Lodge your Subclass 482 application" data-es="Presenta tu solicitud Subclase 482">Lodge your Subclass 482 application</div>
+          <div class="timeline-desc" data-en="Your migration agent will typically handle this with you. You need all documents and health checks." data-es="Tu agente migratorio normalmente manejará esto contigo. Necesitas todos los documentos y chequeos de salud.">Your migration agent handles this with you. You need all documents plus health checks.</div>
+          <div class="task-list">
+            <div class="task-item" onclick="toggleTask(this)">
+              <div class="task-header">
+                <div class="task-check" onclick="checkTask(event,this)"></div>
+                <div class="task-main">
+                  <div class="task-label" data-en="Complete immigration health examination" data-es="Completar examen médico migratorio">Complete immigration health examination</div>
+                  <div class="task-badges"><span class="task-badge badge-key" data-en="Required" data-es="Requerido">Required</span></div>
+                </div>
+                <span class="task-chevron">▼</span>
+              </div>
+              <div class="task-body"><div class="task-body-inner">
+                <p class="task-body-desc" data-en="You must complete a health examination with an DOHA-approved panel physician. The exam includes chest X-ray, blood tests (HIV, Hepatitis B/C), and a general medical assessment. Results are sent directly to DOHA — you don't receive them yourself." data-es="Debes completar un examen médico con un médico panelista aprobado por DOHA. El examen incluye radiografía de tórax, análisis de sangre (VIH, Hepatitis B/C) y una evaluación médica general. Los resultados se envían directamente a DOHA.">Health exam must be done by a DOHA-approved panel physician. Results go directly to DOHA.</p>
+                <div class="task-info-grid">
+                  <div class="task-info-cell"><div class="task-info-label">TIME</div><div class="task-info-val" data-en="Same day" data-es="El mismo día">Same day</div></div>
+                  <div class="task-info-cell"><div class="task-info-label">COST</div><div class="task-info-val">AUD ~$350</div></div>
+                  <div class="task-info-cell"><div class="task-info-label" data-en="VALID" data-es="VÁLIDO">VALID</div><div class="task-info-val" data-en="12 months" data-es="12 meses">12 months</div></div>
+                </div>
+                <div class="task-links">
+                  <a class="task-link" href="https://immi.homeaffairs.gov.au/help-support/medical-requirements/panel-doctors" target="_blank">🔗 Find panel doctor in Colombia</a>
+                </div>
+              </div></div>
+            </div>
+
+            <div class="task-item" onclick="toggleTask(this)">
+              <div class="task-header">
+                <div class="task-check" onclick="checkTask(event,this)"></div>
+                <div class="task-main">
+                  <div class="task-label" data-en="Submit visa application via ImmiAccount" data-es="Presentar solicitud de visa en ImmiAccount">Submit visa application via ImmiAccount</div>
+                  <div class="task-badges"><span class="task-badge badge-urgent" data-en="Key step" data-es="Paso clave">Key step</span></div>
+                </div>
+                <span class="task-chevron">▼</span>
+              </div>
+              <div class="task-body"><div class="task-body-inner">
+                <p class="task-body-desc" data-en="Both you (the applicant) and your employer (the sponsor) must lodge separate parts of the visa application through ImmiAccount. Your migration agent will guide you through both. Pay the visa fee online at time of lodgement." data-es="Tanto tú (el solicitante) como tu empleador (el patrocinador) deben presentar partes separadas de la solicitud de visa a través de ImmiAccount. Tu agente migratorio te guiará en ambas. Paga la tarifa de visa online al momento de la presentación.">Both you and your employer lodge through ImmiAccount. Your migration agent will guide you through both parts.</p>
+                <div class="task-info-grid">
+                  <div class="task-info-cell"><div class="task-info-label" data-en="VISA FEE" data-es="TARIFA">VISA FEE</div><div class="task-info-val">AUD $3,115</div></div>
+                  <div class="task-info-cell"><div class="task-info-label" data-en="PROCESSING" data-es="PROCESAMIENTO">PROCESSING</div><div class="task-info-val" data-en="3–6 months" data-es="3–6 meses">3–6 months</div></div>
+                  <div class="task-info-cell"><div class="task-info-label" data-en="SUCCESS RATE" data-es="TASA DE ÉXITO">SUCCESS RATE</div><div class="task-info-val">~85%</div></div>
+                </div>
+                <div class="task-links">
+                  <a class="task-link" href="https://online.immi.gov.au" target="_blank">🔗 ImmiAccount</a>
+                  <a class="task-link" href="migro-services.html">🧭 Find migration agent →</a>
+                </div>
+              </div></div>
+            </div>
+          </div>
+          <div class="timeline-meta">
+            <div class="t-meta-item">⏱ <strong data-en="3–6 months" data-es="3–6 meses">3–6 months</strong></div>
+            <div class="t-meta-item">💰 <strong>AUD $3,115</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PHASE 5 ══════════ -->
+<div class="section fade-up">
+  <div class="section-header">
+    <div class="section-icon">✈️</div>
+    <div>
+      <div class="section-title" data-en="Phase 5 — Arrive & Settle" data-es="Fase 5 — Llegada e Instalación">Phase 5 — Arrive & Settle</div>
+      <div class="section-sub" data-en="Month 8+ · Land in Sydney and set up your life" data-es="Mes 8+ · Llega a Sydney e instala tu vida">Month 8+ · Land in Sydney and set up your life</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="timeline-dot pending">🏙️</div></div>
+        <div class="timeline-content">
+          <div class="timeline-phase">STEP 6 · ARRIVAL</div>
+          <div class="timeline-title" data-en="First 30 days in Sydney checklist" data-es="Lista de primeros 30 días en Sydney">First 30 days in Sydney checklist</div>
+          <div class="timeline-desc" data-en="Once your visa is granted, plan your first month to get the essentials sorted quickly." data-es="Una vez aprobada tu visa, planifica tu primer mes para ordenar lo esencial rápidamente.">Once your visa is granted, plan your first month carefully.</div>
+          <div class="task-list">
+            <div class="task-item" onclick="toggleTask(this)">
+              <div class="task-header">
+                <div class="task-check" onclick="checkTask(event,this)"></div>
+                <div class="task-main">
+                  <div class="task-label" data-en="Book temporary accommodation before landing" data-es="Reservar alojamiento temporal antes de llegar">Book temporary accommodation before landing</div>
+                  <div class="task-badges"><span class="task-badge badge-urgent" data-en="Before arrival" data-es="Antes de llegar">Before arrival</span></div>
+                </div>
+                <span class="task-chevron">▼</span>
+              </div>
+              <div class="task-body"><div class="task-body-inner">
+                <p class="task-body-desc" data-en="Don't arrive without housing sorted. Sydney's rental market is extremely competitive — arriving without a local rental history makes it hard to get a long-term lease immediately. Book a migrant-friendly temporary stay first." data-es="No llegues sin alojamiento organizado. El mercado de alquiler de Sydney es extremadamente competitivo — llegar sin historial de alquiler local hace difícil conseguir un contrato a largo plazo de inmediato. Primero reserva una estadía temporal amigable para migrantes.">Don't arrive without housing sorted. Sydney's rental market is extremely competitive — book migrant-friendly temporary stay first.</p>
+                <div class="task-docs-title" data-en="RECOMMENDED OPTIONS" data-es="OPCIONES RECOMENDADAS">RECOMMENDED OPTIONS</div>
+                <div class="task-docs">
+                  <div class="task-doc-item"><span class="task-doc-icon">🏠</span><span data-en="MigrateStay Sydney — from AUD $320/week, no rental history needed" data-es="MigrateStay Sydney — desde AUD $320/semana, sin historial de alquiler">MigrateStay Sydney — from AUD $320/week, no rental history needed</span></div>
+                  <div class="task-doc-item"><span class="task-doc-icon">📦</span><span data-en="LandSafe Relocation — full package incl. airport pickup, AUD $990" data-es="LandSafe Relocation — paquete completo incl. traslado aeropuerto, AUD $990">LandSafe Relocation — full package incl. airport pickup, AUD $990</span></div>
+                </div>
+                <div class="task-links">
+                  <a class="task-link" href="migro-services.html">🏠 View housing services →</a>
+                </div>
+              </div></div>
+            </div>
+
+            <div class="task-item" onclick="toggleTask(this)">
+              <div class="task-header">
+                <div class="task-check" onclick="checkTask(event,this)"></div>
+                <div class="task-main">
+                  <div class="task-label" data-en="Apply for Tax File Number (TFN)" data-es="Solicitar Número de Archivo Fiscal (TFN)">Apply for Tax File Number (TFN)</div>
+                  <div class="task-badges"><span class="task-badge badge-key" data-en="Required to work" data-es="Requerido para trabajar">Required to work</span><span class="task-badge badge-free">Free</span></div>
+                </div>
+                <span class="task-chevron">▼</span>
+              </div>
+              <div class="task-body"><div class="task-body-inner">
+                <p class="task-body-desc" data-en="A Tax File Number (TFN) is your personal reference number in Australia's tax and superannuation systems. Without it, your employer is legally required to withhold 47% of your salary as tax. Apply as soon as you arrive." data-es="El Número de Archivo Fiscal (TFN) es tu número de referencia personal en los sistemas impositivo y de jubilación de Australia. Sin él, tu empleador está legalmente obligado a retener el 47% de tu salario como impuesto. Aplica tan pronto como llegues.">Without a TFN, your employer must withhold 47% of your salary as tax. Apply immediately on arrival.</p>
+                <div class="task-info-grid">
+                  <div class="task-info-cell"><div class="task-info-label">COST</div><div class="task-info-val">Free</div></div>
+                  <div class="task-info-cell"><div class="task-info-label">TIME</div><div class="task-info-val">28 days</div></div>
+                  <div class="task-info-cell"><div class="task-info-label">WHERE</div><div class="task-info-val">ato.gov.au</div></div>
+                </div>
+                <div class="task-links">
+                  <a class="task-link" href="https://www.ato.gov.au/Individuals/Tax-file-number/Apply-for-a-TFN/" target="_blank">🔗 Apply for TFN</a>
+                </div>
+              </div></div>
+            </div>
+
+            <div class="task-item" onclick="toggleTask(this)">
+              <div class="task-header">
+                <div class="task-check" onclick="checkTask(event,this)"></div>
+                <div class="task-main">
+                  <div class="task-label" data-en="Open an Australian bank account" data-es="Abrir una cuenta bancaria australiana">Open an Australian bank account</div>
+                  <div class="task-badges"><span class="task-badge badge-key" data-en="Required" data-es="Requerido">Required</span></div>
+                </div>
+                <span class="task-chevron">▼</span>
+              </div>
+              <div class="task-body"><div class="task-body-inner">
+                <p class="task-body-desc" data-en="You can open a bank account before arriving in Australia. CommBank, ANZ, Westpac, and NAB all allow overseas applications. You'll need it to receive your first paycheck and set up direct debits." data-es="Puedes abrir una cuenta bancaria antes de llegar a Australia. CommBank, ANZ, Westpac y NAB permiten solicitudes desde el extranjero. La necesitarás para recibir tu primer sueldo y configurar débitos automáticos.">You can open an account before arriving. CommBank, ANZ, Westpac and NAB allow overseas applications.</p>
+                <div class="task-docs">
+                  <div class="task-doc-item"><span class="task-doc-icon">🏦</span><span data-en="CommBank: netbank.commbank.com.au/apps/netbank (open online, no Australian address needed)" data-es="CommBank: permite apertura online sin dirección australiana">CommBank — open online, no Australian address needed</span></div>
+                  <div class="task-doc-item"><span class="task-doc-item"><span class="task-doc-icon">🏦</span><span>ANZ, Westpac, NAB — similar online pre-arrival process</span></div>
+                </div>
+                <div class="task-links">
+                  <a class="task-link" href="https://www.commbank.com.au/moving-to-australia.html" target="_blank">🔗 CommBank for new arrivals</a>
+                </div>
+                <div class="task-tip"><span class="task-tip-icon">💡</span><p class="task-tip-text" data-en="<strong>Tip:</strong> Also consider Wise or Revolut for transferring money from Colombia to Australia with low fees while you set up your main account." data-es="<strong>Tip:</strong> Considera también Wise o Revolut para transferir dinero de Colombia a Australia con bajas comisiones mientras configuras tu cuenta principal."><strong>Tip:</strong> Use Wise or Revolut to transfer money from Colombia to Australia with low fees.</p></div>
+              </div></div>
+            </div>
+          </div>
+
+          <div class="timeline-meta">
+            <div class="t-meta-item">📍 <strong>Sydney, NSW</strong></div>
+            <div class="t-meta-item">💰 <strong data-en="~AUD $1,500 first month" data-es="~AUD $1,500 primer mes">~AUD $1,500 first month</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /left col -->
+
+<!-- ── SIDEBAR ── -->
+<div>
+
+  <!-- PROFILE TYPES -->
+  <div class="profile-types-card fade-up">
+    <div class="summary-section-header" data-en="CHOOSE YOUR JOURNEY" data-es="ELIGE TU CAMINO">CHOOSE YOUR JOURNEY</div>
+    <a href="migro-plan.html" class="profile-type-item current">
+      <div class="profile-type-icon">🌍</div>
+      <div class="profile-type-text">
+        <div class="profile-type-name" data-en="New applicant abroad" data-es="Nuevo solicitante desde exterior">New applicant abroad</div>
+        <div class="profile-type-desc" data-en="Applying from your home country" data-es="Solicitando desde tu país de origen">Applying from your home country</div>
+      </div>
+      <span class="profile-type-arrow">→</span>
+    </a>
+    <a href="migro-plan-existing.html" class="profile-type-item">
+      <div class="profile-type-icon">🛬</div>
+      <div class="profile-type-text">
+        <div class="profile-type-name" data-en="Already in Australia" data-es="Ya estoy en Australia">Already in Australia</div>
+        <div class="profile-type-desc" data-en="Change or upgrade your current visa" data-es="Cambia o mejora tu visa actual">Change or upgrade your current visa</div>
+      </div>
+      <span class="profile-type-arrow">→</span>
+    </a>
+    <a href="migro-plan-extension.html" class="profile-type-item">
+      <div class="profile-type-icon">🔄</div>
+      <div class="profile-type-text">
+        <div class="profile-type-name" data-en="Extend / renew visa" data-es="Extender / renovar visa">Extend / renew visa</div>
+        <div class="profile-type-desc" data-en="Your visa is expiring soon" data-es="Tu visa está por vencer">Your visa is expiring soon</div>
+      </div>
+      <span class="profile-type-arrow">→</span>
+    </a>
+    <a href="migro-plan-citizenship.html" class="profile-type-item">
+      <div class="profile-type-icon">🟢</div>
+      <div class="profile-type-text">
+        <div class="profile-type-name" data-en="PR → Citizenship" data-es="RP → Ciudadanía">PR → Citizenship</div>
+        <div class="profile-type-desc" data-en="You have PR and want to naturalise" data-es="Tienes RP y quieres naturalizarte">You have PR and want to naturalise</div>
+      </div>
+      <span class="profile-type-arrow">→</span>
+    </a>
+  </div>
+
+  <!-- PROGRESS TRACKER -->
+  <div class="checklist-widget fade-up">
+    <div class="widget-header">
+      <span class="widget-title" data-en="YOUR PROGRESS" data-es="TU PROGRESO">YOUR PROGRESS</span>
+      <span class="widget-progress" id="progressText">0 / 10</span>
+    </div>
+    <div class="widget-bar"><div class="widget-bar-fill" id="progressBarFill" style="width:0%"></div></div>
+    <div class="widget-body">
+      <div class="mini-task" onclick="toggleMini(this)"><div class="mini-check">✓</div><span class="mini-label" data-en="Complete profile" data-es="Completar perfil">Complete profile</span></div>
+      <div class="mini-task" onclick="toggleMini(this)"><div class="mini-check">✓</div><span class="mini-label" data-en="Review visa routes" data-es="Revisar rutas de visa">Review visa routes</span></div>
+      <div class="mini-task" onclick="toggleMini(this)"><div class="mini-check">✓</div><span class="mini-label" data-en="Choose city" data-es="Elegir ciudad">Choose city</span></div>
+      <div class="mini-task" onclick="toggleMini(this)"><div class="mini-check"></div><span class="mini-label" data-en="Book IELTS exam" data-es="Reservar IELTS">Book IELTS exam</span></div>
+      <div class="mini-task" onclick="toggleMini(this)"><div class="mini-check"></div><span class="mini-label" data-en="Gather documents" data-es="Reunir documentos">Gather documents</span></div>
+      <div class="mini-task" onclick="toggleMini(this)"><div class="mini-check"></div><span class="mini-label" data-en="Submit skills assessment" data-es="Enviar evaluación">Submit skills assessment</span></div>
+      <div class="mini-task" onclick="toggleMini(this)"><div class="mini-check"></div><span class="mini-label" data-en="Find sponsor employer" data-es="Encontrar patrocinador">Find sponsor employer</span></div>
+      <div class="mini-task" onclick="toggleMini(this)"><div class="mini-check"></div><span class="mini-label" data-en="Lodge visa application" data-es="Presentar solicitud">Lodge visa application</span></div>
+      <div class="mini-task" onclick="toggleMini(this)"><div class="mini-check"></div><span class="mini-label" data-en="Visa granted ✓" data-es="Visa aprobada ✓">Visa granted ✓</span></div>
+      <div class="mini-task" onclick="toggleMini(this)"><div class="mini-check"></div><span class="mini-label" data-en="Arrive in Sydney 🎉" data-es="¡Llegada a Sydney 🎉!">Arrive in Sydney 🎉</span></div>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="summary-card fade-up">
+    <div class="summary-section-header" data-en="PLAN SUMMARY" data-es="RESUMEN DEL PLAN">PLAN SUMMARY</div>
+    <div class="summary-row"><span class="summary-label" data-en="Nationality" data-es="Nacionalidad">Nationality</span><span class="summary-val">🇨🇴 Colombia</span></div>
+    <div class="summary-row"><span class="summary-label" data-en="Visa" data-es="Visa">Visa</span><span class="summary-val">Subclass 482</span></div>
+    <div class="summary-row"><span class="summary-label" data-en="City" data-es="Ciudad">City</span><span class="summary-val">Sydney 🇦🇺</span></div>
+    <div class="summary-row"><span class="summary-label" data-en="Points" data-es="Puntos">Points</span><span class="summary-val">75 pts</span></div>
+    <div class="summary-row"><span class="summary-label" data-en="Agent" data-es="Agente">Agent</span><span class="summary-val">Sarah Chen</span></div>
+    <div class="summary-row"><span class="summary-label" data-en="Timeline" data-es="Tiempo">Timeline</span><span class="summary-val" data-en="4–8 months" data-es="4–8 meses">4–8 months</span></div>
+  </div>
+
+  <!-- COSTS -->
+  <div class="cost-card fade-up">
+    <div class="summary-section-header" data-en="TOTAL ESTIMATED COST" data-es="COSTO TOTAL ESTIMADO">TOTAL ESTIMATED COST</div>
+    <div class="cost-row"><span class="cost-label">IELTS exam</span><span class="cost-amount">AUD $385</span></div>
+    <div class="cost-row"><span class="cost-label" data-en="Skills assessment" data-es="Evaluación">Skills assessment</span><span class="cost-amount">AUD $700</span></div>
+    <div class="cost-row"><span class="cost-label" data-en="Agent fees" data-es="Honorarios agente">Agent fees</span><span class="cost-amount">AUD $3,000</span></div>
+    <div class="cost-row"><span class="cost-label" data-en="Visa fee" data-es="Tarifa visa">Visa fee</span><span class="cost-amount">AUD $3,115</span></div>
+    <div class="cost-row"><span class="cost-label" data-en="Documents + health" data-es="Documentos + salud">Documents + health</span><span class="cost-amount">AUD $550</span></div>
+    <div class="cost-row"><span class="cost-label" data-en="Flights (approx.)" data-es="Vuelos (aprox.)">Flights (approx.)</span><span class="cost-amount">AUD ~$800</span></div>
+    <div class="cost-total">
+      <div><div class="cost-total-label" data-en="TOTAL" data-es="TOTAL">TOTAL</div><div style="font-size:11px;color:#555;margin-top:2px;" data-en="Excl. living costs" data-es="Excl. costos de vida">Excl. living costs</div></div>
+      <div class="cost-total-amount">AUD $8,550</div>
+    </div>
+  </div>
+
+  <!-- DOWNLOAD -->
+  <div class="download-card fade-up">
+    <div style="font-size:36px;margin-bottom:12px;">📄</div>
+    <div class="download-title" data-en="Save your plan" data-es="Guarda tu plan">Save your plan</div>
+    <div class="download-sub" data-en="Download your complete migration roadmap." data-es="Descarga tu hoja de ruta migratoria completa.">Download your complete migration roadmap.</div>
+    <button class="btn-dl btn-dl-primary" onclick="window.print()" data-en="🖨 Print / Save as PDF" data-es="🖨 Imprimir / Guardar PDF">🖨 Print / Save as PDF</button>
+    <button class="btn-dl btn-dl-outline" style="background:transparent;color:#777;border:1px solid #222;cursor:pointer;" data-en="🔗 Share plan link" data-es="🔗 Compartir enlace">🔗 Share plan link</button>
+  </div>
+
+  <div class="start-over">
+    <a href="migro-onboarding.html" data-en="← Start a new profile" data-es="← Iniciar nuevo perfil">← Start a new profile</a>
+  </div>
+
+</div><!-- /sidebar -->
+
+</div><!-- /page-body -->
+
+<script>
+  let currentLang = 'en';
+
+  function setLang(lang) {
+    currentLang = lang;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent === lang.toUpperCase()));
+    document.querySelectorAll('[data-en]').forEach(el => {
+      const t = el.getAttribute('data-' + lang);
+      if (t) el.innerHTML = t;
+    });
+  }
+
+  // ── ACCORDION ──
+  function toggleTask(el) {
+    // Don't toggle if clicking the checkbox
+    const isOpen = el.classList.contains('open');
+    el.classList.toggle('open', !isOpen);
+  }
+
+  function checkTask(e, checkbox) {
+    e.stopPropagation();
+    checkbox.classList.toggle('checked');
+    checkbox.textContent = checkbox.classList.contains('checked') ? '✓' : '';
+  }
+
+  // ── MINI PROGRESS ──
+  function toggleMini(row) {
+    const check = row.querySelector('.mini-check');
+    const label = row.querySelector('.mini-label');
+    check.classList.toggle('done');
+    check.textContent = check.classList.contains('done') ? '✓' : '';
+    label.classList.toggle('done', check.classList.contains('done'));
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const done = document.querySelectorAll('.mini-check.done').length;
+    const total = document.querySelectorAll('.mini-check').length;
+    document.getElementById('progressText').textContent = done + ' / ' + total;
+    document.getElementById('progressBarFill').style.width = ((done / total) * 100) + '%';
+  }
+
+  // ── SCROLL ANIM ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.05 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // ── INIT: first 3 mini tasks done ──
+  window.addEventListener('load', () => {
+    document.querySelectorAll('.mini-task').forEach((row, i) => {
+      if (i < 3) {
+        const check = row.querySelector('.mini-check');
+        const label = row.querySelector('.mini-label');
+        check.classList.add('done');
+        check.textContent = '✓';
+        label.classList.add('done');
+      }
+    });
+    updateProgress();
+  });
+</script>
+</body>
+</html>
