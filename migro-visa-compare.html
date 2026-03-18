@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Migro — Visa Comparator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --black: #0a0a0a; --white: #ffffff;
+      --gray-100: #f5f5f5; --gray-200: #e8e8e8;
+      --gray-300: #d0d0d0; --gray-400: #999;
+      --gray-600: #555; --gray-800: #222;
+      --c482: #2563eb; --c482-bg: #eff6ff; --c482-border: #bfdbfe;
+      --c485: #059669; --c485-bg: #ecfdf5; --c485-border: #a7f3d0;
+      --c189: #7c3aed; --c189-bg: #f5f3ff; --c189-border: #ddd6fe;
+      --c190: #0891b2; --c190-bg: #ecfeff; --c190-border: #a5f3fc;
+      --c186: #b45309; --c186-bg: #fffbeb; --c186-border: #fde68a;
+      --c491: #be185d; --c491-bg: #fdf2f8; --c491-border: #fbcfe8;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--gray-100); color: var(--black); }
+
+    /* NAV */
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 48px; background: var(--white); border-bottom: 1px solid var(--gray-200); position: sticky; top: 0; z-index: 100; }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--black); text-decoration: none; }
+    .nav-logo span { display: inline-block; width: 6px; height: 6px; background: var(--black); border-radius: 50%; margin-left: 2px; vertical-align: super; }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .lang-toggle { display: flex; background: var(--gray-100); border-radius: 6px; padding: 3px; gap: 2px; }
+    .lang-btn { padding: 4px 10px; font-size: 11px; font-weight: 700; border: none; background: transparent; border-radius: 4px; cursor: pointer; color: var(--gray-400); transition: all .2s; }
+    .lang-btn.active { background: var(--black); color: var(--white); }
+    .nav-back { font-size: 13px; font-weight: 500; color: var(--gray-600); text-decoration: none; padding: 7px 14px; border-radius: 6px; border: 1px solid var(--gray-200); transition: all .2s; }
+    .nav-back:hover { border-color: var(--black); color: var(--black); }
+
+    /* HERO */
+    .hero { background: var(--black); padding: 52px 48px 40px; }
+    .hero-inner { max-width: 1200px; margin: 0 auto; }
+    .hero-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #555; margin-bottom: 12px; }
+    .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(28px, 3.5vw, 46px); font-weight: 700; color: var(--white); line-height: 1.1; letter-spacing: -1px; margin-bottom: 14px; }
+    .hero-sub { font-size: 15px; color: #777; max-width: 560px; line-height: 1.6; margin-bottom: 28px; }
+    .hero-chips { display: flex; gap: 10px; flex-wrap: wrap; }
+    .hero-chip { display: flex; align-items: center; gap: 8px; background: #111; border: 1px solid #222; border-radius: 100px; padding: 7px 14px; font-size: 13px; font-weight: 600; color: #aaa; }
+    .chip-dot { width: 6px; height: 6px; background: #4ade80; border-radius: 50%; }
+
+    /* FILTER ROW */
+    .filter-bar { background: var(--white); border-bottom: 1px solid var(--gray-200); padding: 16px 48px; }
+    .filter-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .filter-label { font-size: 12px; font-weight: 700; color: var(--gray-400); }
+    .filter-chip { padding: 7px 16px; border: 1.5px solid var(--gray-200); border-radius: 100px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all .2s; color: var(--gray-600); background: var(--white); }
+    .filter-chip:hover { border-color: var(--gray-400); }
+    .filter-chip.active { background: var(--black); border-color: var(--black); color: var(--white); }
+    .filter-sep { color: var(--gray-200); }
+    .compare-cta { margin-left: auto; font-size: 12px; font-weight: 700; color: var(--gray-400); cursor: pointer; padding: 7px 14px; border: 1.5px solid var(--gray-200); border-radius: 100px; transition: all .2s; background: none; }
+    .compare-cta:hover { border-color: var(--black); color: var(--black); }
+    .compare-cta.has-selection { background: var(--black); border-color: var(--black); color: var(--white); }
+
+    /* PAGE BODY */
+    .page-body { max-width: 1200px; margin: 0 auto; padding: 36px 48px; }
+
+    /* RECOMMENDED BANNER */
+    .rec-banner { background: var(--black); border-radius: 14px; padding: 22px 28px; margin-bottom: 32px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+    .rec-icon { font-size: 32px; flex-shrink: 0; }
+    .rec-text { flex: 1; }
+    .rec-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #555; margin-bottom: 4px; }
+    .rec-title { font-size: 18px; font-weight: 700; color: var(--white); }
+    .rec-sub { font-size: 13px; color: #666; margin-top: 4px; line-height: 1.5; }
+    .rec-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn-rec { padding: 10px 20px; background: var(--white); color: var(--black); border: none; border-radius: 7px; font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: all .2s; }
+    .btn-rec:hover { transform: translateY(-1px); }
+    .btn-rec-ghost { padding: 10px 20px; background: transparent; color: #888; border: 1.5px solid #333; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: all .2s; }
+    .btn-rec-ghost:hover { border-color: #666; color: var(--white); }
+
+    /* SECTION HEADER */
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .section-title { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; }
+    .section-sub { font-size: 13px; color: var(--gray-400); margin-top: 3px; }
+    .selection-info { font-size: 12px; color: var(--gray-400); font-weight: 500; }
+    .selection-info strong { color: var(--black); }
+
+    /* VISA CARDS GRID */
+    .visa-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; margin-bottom: 40px; }
+
+    /* VISA CARD */
+    .visa-card { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 16px; overflow: hidden; transition: all .25s; cursor: pointer; position: relative; }
+    .visa-card:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,0,0,.09); }
+    .visa-card.selected { border-color: var(--black); box-shadow: 0 0 0 2px var(--black); }
+    .visa-card.recommended { border-color: var(--black); }
+    .visa-card.dimmed { opacity: .45; }
+
+    .vc-top { padding: 20px 22px 0; display: flex; align-items: flex-start; gap: 14px; }
+    .vc-code { font-size: 28px; font-weight: 800; font-family: 'Playfair Display', serif; flex-shrink: 0; }
+    .vc-meta { flex: 1; }
+    .vc-name { font-size: 14px; font-weight: 700; color: var(--black); line-height: 1.3; }
+    .vc-type { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--gray-400); margin-top: 2px; }
+    .vc-badges { display: flex; gap: 6px; flex-wrap: wrap; flex-shrink: 0; }
+    .vc-badge { font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 100px; }
+
+    .vc-bar { height: 4px; margin: 16px 22px 0; border-radius: 100px; }
+
+    .vc-body { padding: 16px 22px 18px; }
+    .vc-desc { font-size: 13px; color: var(--gray-600); line-height: 1.6; margin-bottom: 14px; }
+
+    .vc-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+    .vc-stat { background: var(--gray-100); border-radius: 8px; padding: 10px 12px; }
+    .vc-stat-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--gray-400); margin-bottom: 3px; }
+    .vc-stat-val { font-size: 14px; font-weight: 700; color: var(--black); line-height: 1.2; }
+    .vc-stat-sub { font-size: 10px; color: var(--gray-400); margin-top: 2px; }
+
+    .vc-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+    .vc-tag { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 100px; background: var(--gray-100); color: var(--gray-600); }
+
+    /* PROS/CONS */
+    .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+    .pros-box, .cons-box { border-radius: 8px; padding: 10px 12px; }
+    .pros-box { background: #f0fdf4; }
+    .cons-box { background: #fff5f5; }
+    .pc-title { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+    .pros-box .pc-title { color: #15803d; }
+    .cons-box .pc-title { color: #b91c1c; }
+    .pc-item { font-size: 11px; color: var(--gray-600); line-height: 1.5; margin-bottom: 3px; display: flex; gap: 4px; }
+    .pc-item::before { flex-shrink: 0; margin-top: 1px; }
+    .pros-box .pc-item::before { content: '✓'; color: #15803d; font-weight: 700; }
+    .cons-box .pc-item::before { content: '✗'; color: #b91c1c; font-weight: 700; }
+
+    .vc-footer { padding: 12px 22px; border-top: 1px solid var(--gray-200); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .vc-fit { font-size: 11px; color: var(--gray-400); }
+    .vc-fit strong { color: var(--black); }
+    .vc-select-btn { font-size: 12px; font-weight: 700; padding: 7px 14px; border-radius: 6px; border: 1.5px solid var(--gray-200); background: transparent; cursor: pointer; transition: all .2s; color: var(--black); }
+    .vc-select-btn:hover { border-color: var(--black); }
+    .visa-card.selected .vc-select-btn { background: var(--black); border-color: var(--black); color: var(--white); }
+    .rec-star { position: absolute; top: 14px; right: 14px; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 100px; background: var(--black); color: var(--white); }
+
+    /* SUITABILITY BAR */
+    .suitability { margin-bottom: 14px; }
+    .suit-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+    .suit-text { font-size: 11px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: .5px; }
+    .suit-pct { font-size: 11px; font-weight: 800; }
+    .suit-track { height: 6px; background: var(--gray-100); border-radius: 100px; overflow: hidden; }
+    .suit-fill { height: 100%; border-radius: 100px; transition: width 1s ease; }
+
+    /* SIDE-BY-SIDE COMPARISON TABLE */
+    .compare-section { margin-bottom: 40px; display: none; }
+    .compare-section.visible { display: block; }
+    .compare-table-wrap { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 16px; overflow: hidden; }
+    .compare-table { width: 100%; border-collapse: collapse; }
+    .ct-header { background: var(--black); }
+    .ct-header th { padding: 18px 20px; text-align: left; font-size: 13px; font-weight: 700; color: var(--white); border-right: 1px solid #1e1e1e; }
+    .ct-header th:first-child { color: #555; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; width: 180px; }
+    .ct-header th:last-child { border-right: none; }
+    .ct-row { border-bottom: 1px solid var(--gray-100); }
+    .ct-row:last-child { border-bottom: none; }
+    .ct-row:nth-child(even) { background: var(--gray-100); }
+    .ct-row td { padding: 13px 20px; font-size: 13px; border-right: 1px solid var(--gray-200); vertical-align: top; }
+    .ct-row td:last-child { border-right: none; }
+    .ct-row td:first-child { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; color: var(--gray-400); }
+    .ct-yes { color: #15803d; font-weight: 700; }
+    .ct-no { color: #b91c1c; font-weight: 700; }
+    .ct-maybe { color: #92400e; font-weight: 700; }
+    .ct-highlight { font-weight: 700; color: var(--black); }
+    .compare-close { display: flex; justify-content: center; padding: 16px; }
+    .btn-close-compare { font-size: 13px; font-weight: 600; color: var(--gray-400); background: none; border: 1.5px solid var(--gray-200); border-radius: 7px; padding: 8px 18px; cursor: pointer; transition: all .2s; }
+    .btn-close-compare:hover { border-color: var(--black); color: var(--black); }
+
+    /* PATHWAY SECTION */
+    .pathway-section { margin-bottom: 40px; }
+    .pathway-card { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 16px; padding: 28px 32px; }
+    .pathway-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    .pathway-sub { font-size: 13px; color: var(--gray-400); margin-bottom: 28px; line-height: 1.5; }
+    .pathway-flow { display: flex; align-items: center; gap: 0; flex-wrap: wrap; }
+    .path-step { display: flex; flex-direction: column; align-items: center; text-align: center; flex: 1; min-width: 100px; }
+    .path-node { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: var(--white); margin-bottom: 8px; flex-shrink: 0; }
+    .path-label { font-size: 12px; font-weight: 700; color: var(--black); }
+    .path-sub { font-size: 10px; color: var(--gray-400); margin-top: 2px; line-height: 1.4; }
+    .path-arrow { font-size: 20px; color: var(--gray-300); flex-shrink: 0; padding: 0 4px; margin-bottom: 20px; }
+    .path-years { font-size: 10px; font-weight: 700; color: var(--gray-400); text-align: center; padding: 3px 8px; background: var(--gray-100); border-radius: 100px; margin: 0 4px 20px; }
+
+    /* COST TABLE */
+    .cost-section { margin-bottom: 40px; }
+    .cost-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+    .cost-card { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 12px; padding: 16px 18px; }
+    .cost-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 8px; }
+    .cost-amount { font-size: 22px; font-weight: 800; color: var(--black); line-height: 1; }
+    .cost-sub { font-size: 11px; color: var(--gray-400); margin-top: 4px; line-height: 1.4; }
+    .cost-note { font-size: 10px; color: var(--gray-400); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--gray-100); }
+
+    /* FADE */
+    .fade-up { opacity: 0; transform: translateY(20px); transition: all .5s ease; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    @media(max-width: 768px) {
+      nav, .hero, .filter-bar, .page-body { padding-left: 20px; padding-right: 20px; }
+      .visa-grid { grid-template-columns: 1fr; }
+      .pros-cons { grid-template-columns: 1fr; }
+      .pathway-flow { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .path-arrow { transform: rotate(90deg); margin: 0 0 0 22px; }
+      .path-step { flex-direction: row; gap: 12px; text-align: left; flex: none; width: 100%; }
+      .path-node { flex-shrink: 0; margin-bottom: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="migro-landing.html" class="nav-logo">Migro<span></span></a>
+  <div class="nav-right">
+    <a href="migro-dashboard.html" class="nav-back" data-en="⊞ Dashboard" data-es="⊞ Dashboard">⊞ Dashboard</a>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('es')">ES</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <p class="hero-tag" data-en="VISA COMPARATOR · AUSTRALIA" data-es="COMPARADOR DE VISAS · AUSTRALIA">VISA COMPARATOR · AUSTRALIA</p>
+    <h1 class="hero-title" data-en="Find the right visa<br/>for your situation." data-es="Encuentra la visa correcta<br/>para tu situación.">Find the right visa<br/>for your situation.</h1>
+    <p class="hero-sub" data-en="Compare the 6 most relevant Australian skilled visas side by side — processing times, costs, requirements and PR pathways, all in one place." data-es="Compara las 6 visas de habilidades australianas más relevantes — tiempos de procesamiento, costos, requisitos y caminos hacia la RP, todo en un solo lugar.">Compare the 6 most relevant Australian skilled visas side by side — processing times, costs, requirements and PR pathways, all in one place.</p>
+    <div class="hero-chips">
+      <div class="hero-chip"><span class="chip-dot"></span> 🎯 <span data-en="Matched to your profile" data-es="Adaptado a tu perfil">Matched to your profile</span></div>
+      <div class="hero-chip">🇨🇴 <span data-en="Colombia" data-es="Colombia">Colombia</span></div>
+      <div class="hero-chip">🎓 <span data-en="Bachelor's · 5–7 yrs" data-es="Licenciatura · 5–7 años">Bachelor's · 5–7 yrs</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <div class="filter-inner">
+    <span class="filter-label" data-en="SHOW:" data-es="MOSTRAR:">SHOW:</span>
+    <div class="filter-chip active" onclick="filterCards('all', this)" data-en="All visas" data-es="Todas">All visas</div>
+    <div class="filter-chip" onclick="filterCards('temporary', this)" data-en="Temporary" data-es="Temporales">Temporary</div>
+    <div class="filter-chip" onclick="filterCards('permanent', this)" data-en="Permanent" data-es="Permanentes">Permanent</div>
+    <div class="filter-chip" onclick="filterCards('employer', this)" data-en="Employer-sponsored" data-es="Con empleador">Employer-sponsored</div>
+    <div class="filter-chip" onclick="filterCards('independent', this)" data-en="Independent" data-es="Independientes">Independent</div>
+    <span class="filter-sep">|</span>
+    <button class="compare-cta" id="compare-btn" onclick="showComparison()" data-en="Compare selected (0)" data-es="Comparar seleccionadas (0)">Compare selected (0)</button>
+  </div>
+</div>
+
+<!-- PAGE BODY -->
+<div class="page-body">
+
+  <!-- RECOMMENDATION BANNER -->
+  <div class="rec-banner fade-up">
+    <div class="rec-icon">🎯</div>
+    <div class="rec-text">
+      <div class="rec-label" data-en="RECOMMENDED FOR YOU" data-es="RECOMENDADA PARA TI">RECOMMENDED FOR YOU</div>
+      <div class="rec-title" data-en="Subclass 482 — Temporary Skill Shortage (TSS)" data-es="Subclase 482 — Escasez Temporal de Habilidades">Subclass 482 — Temporary Skill Shortage (TSS)</div>
+      <div class="rec-sub" data-en="Based on your profile: Colombian professional, bachelor's degree, 5–7 years experience, work goal, Sydney. The 482 is your clearest path in — and leads directly to PR via the 186 ENS after 2–3 years." data-es="Basado en tu perfil: profesional colombiano, licenciatura, 5–7 años de experiencia, objetivo laboral, Sydney. La 482 es tu camino más claro para entrar — y lleva directamente a la RP a través de la 186 ENS después de 2–3 años.">Based on your profile: Colombian professional, bachelor's degree, 5–7 years experience, work goal, Sydney. The 482 is your clearest path in — and leads directly to PR via the 186 ENS after 2–3 years.</div>
+    </div>
+    <div class="rec-actions">
+      <a href="migro-plan.html" class="btn-rec" data-en="→ My 482 plan" data-es="→ Mi plan 482">→ My 482 plan</a>
+      <a href="migro-services.html" class="btn-rec-ghost" data-en="Find an agent" data-es="Buscar agente">Find an agent</a>
+    </div>
+  </div>
+
+  <!-- VISA CARDS -->
+  <div class="section-header fade-up">
+    <div>
+      <h2 class="section-title" data-en="6 Visas Compared" data-es="6 Visas Comparadas">6 Visas Compared</h2>
+      <p class="section-sub" data-en="Select up to 3 visas to compare side by side" data-es="Selecciona hasta 3 visas para comparar">Select up to 3 visas to compare side by side</p>
+    </div>
+    <span class="selection-info" id="sel-info" data-en="<strong>0</strong> selected" data-es="<strong>0</strong> seleccionadas"><strong>0</strong> selected</span>
+  </div>
+
+  <div class="visa-grid" id="visa-grid">
+
+    <!-- 482 -->
+    <div class="visa-card recommended fade-up" data-category="temporary employer" data-code="482" onclick="toggleSelect(this)">
+      <span class="rec-star" data-en="⭐ Best match" data-es="⭐ Mejor opción">⭐ Best match</span>
+      <div class="vc-top">
+        <div class="vc-code" style="color:var(--c482)">482</div>
+        <div class="vc-meta">
+          <div class="vc-name" data-en="Temporary Skill Shortage" data-es="Escasez Temporal de Habilidades">Temporary Skill Shortage</div>
+          <div class="vc-type" data-en="TEMPORARY · EMPLOYER-SPONSORED" data-es="TEMPORAL · PATROCINADA POR EMPLEADOR">TEMPORARY · EMPLOYER-SPONSORED</div>
+        </div>
+        <div class="vc-badges">
+          <span class="vc-badge" style="background:var(--c482-bg);color:var(--c482)" data-en="4 yrs" data-es="4 años">4 yrs</span>
+        </div>
+      </div>
+      <div class="vc-bar" style="background:var(--c482)"></div>
+      <div class="vc-body">
+        <p class="vc-desc" data-en="Employer-sponsored work visa for skilled occupations on the MLTSSL or STSOL list. Requires a sponsoring employer, skills assessment (some occupations), and English proficiency." data-es="Visa de trabajo patrocinada por empleador para ocupaciones calificadas en la lista MLTSSL o STSOL. Requiere un empleador patrocinador, evaluación de habilidades (algunas ocupaciones) e inglés.">Employer-sponsored work visa for skilled occupations on the MLTSSL or STSOL list. Requires a sponsoring employer, skills assessment (some occupations), and English proficiency.</p>
+        <div class="suitability">
+          <div class="suit-label">
+            <span class="suit-text" data-en="MATCH FOR YOUR PROFILE" data-es="COMPATIBILIDAD CON TU PERFIL">MATCH FOR YOUR PROFILE</span>
+            <span class="suit-pct" style="color:var(--c482)">97%</span>
+          </div>
+          <div class="suit-track"><div class="suit-fill" style="background:var(--c482);width:0%" data-width="97%"></div></div>
+        </div>
+        <div class="vc-stats">
+          <div class="vc-stat">
+            <div class="vc-stat-label" data-en="PROCESSING" data-es="PROCESAMIENTO">PROCESSING</div>
+            <div class="vc-stat-val">4–9 mo</div>
+            <div class="vc-stat-sub" data-en="Standard stream" data-es="Corriente estándar">Standard stream</div>
+          </div>
+          <div class="vc-stat">
+            <div class="vc-stat-label" data-en="VISA FEE" data-es="COSTO">VISA FEE</div>
+            <div class="vc-stat-val">AUD $3,115</div>
+            <div class="vc-stat-sub" data-en="Primary applicant" data-es="Solicitante principal">Primary applicant</div>
+          </div>
+          <div class="vc-stat">
+            <div class="vc-stat-label" data-en="DURATION" data-es="DURACIÓN">DURATION</div>
+            <div class="vc-stat-val" data-en="Up to 4 yrs" data-es="Hasta 4 años">Up to 4 yrs</div>
+            <div class="vc-stat-sub" data-en="Renewable" data-es="Renovable">Renewable</div>
+          </div>
+          <div class="vc-stat">
+            <div class="vc-stat-label" data-en="IELTS MIN." data-es="IELTS MÍN.">IELTS MIN.</div>
+            <div class="vc-stat-val">5.0</div>
+            <div class="vc-stat-sub" data-en="Each component" data-es="Cada componente">Each component</div>
+          </div>
+        </div>
+        <div class="vc-tags">
+          <span class="vc-tag" data-en="✓ Work full-time" data-es="✓ Trabajar tiempo completo">✓ Work full-time</span>
+          <span class="vc-tag" data-en="✓ Bring family" data-es="✓ Traer familia">✓ Bring family</span>
+          <span class="vc-tag" data-en="✓ Path to PR (186)" data-es="✓ Camino a RP (186)">✓ Path to PR (186)</span>
+          <span class="vc-tag" data-en="✓ No points test" data-es="✓ Sin test de puntos">✓ No points test</span>
+        </div>
+        <div class="pros-cons">
+          <div class="pros-box">
+            <div class="pc-title" data-en="PROS" data-es="VENTAJAS">PROS</div>
+            <div class="pc-item" data-en="No points test needed" data-es="Sin prueba de puntos">No points test needed</div>
+            <div class="pc-item" data-en="Fastest route if you have a sponsor" data-es="Ruta más rápida con patrocinador">Fastest route if you have a sponsor</div>
+            <div class="pc-item" data-en="Direct PR path via 186" data-es="Ruta directa a RP vía 186">Direct PR path via 186</div>
+          </div>
+          <div class="cons-box">
+            <div class="pc-title" data-en="CONS" data-es="DESVENTAJAS">CONS</div>
+            <div class="pc-item" data-en="Tied to employer" data-es="Atado al empleador">Tied to employer</div>
+            <div class="pc-item" data-en="Must find sponsoring employer" data-es="Debes encontrar empleador patrocinador">Must find sponsoring employer</div>
+            <div class="pc-item" data-en="Employer can withdraw sponsorship" data-es="Empleador puede retirar patrocinio">Sponsor can withdraw</div>
+          </div>
+        </div>
+      </div>
+      <div class="vc-footer">
+        <div class="vc-fit" data-en="<strong>97%</strong> match for your profile" data-es="<strong>97%</strong> de compatibilidad"><strong>97%</strong> match for your profile</div>
+        <button class="vc-select-btn" data-en="Select to compare" data-es="Seleccionar">Select to compare</button>
+      </div>
+    </div>
+
+    <!-- 485 -->
+    <div class="visa-card fade-up" data-category="temporary independent" data-code="485" onclick="toggleSelect(this)">
+      <div class="vc-top">
+        <div class="vc-code" style="color:var(--c485)">485</div>
+        <div class="vc-meta">
+          <div class="vc-name" data-en="Temporary Graduate" data-es="Graduado Temporal">Temporary Graduate</div>
+          <div class="vc-type" data-en="TEMPORARY · POST-STUDY" data-es="TEMPORAL · POST-ESTUDIO">TEMPORARY · POST-STUDY</div>
+        </div>
+        <div class="vc-badges">
+          <span class="vc-badge" style="background:var(--c485-bg);color:var(--c485)" data-en="2–3 yrs" data-es="2–3 años">2–3 yrs</span>
+        </div>
+      </div>
+      <div class="vc-bar" style="background:var(--c485)"></div>
+      <div class="vc-body">
+        <p class="vc-desc" data-en="Post-study work visa for recent Australian graduates. Lets you stay and work without a sponsor after finishing an eligible degree, giving you time to find a permanent pathway." data-es="Visa de trabajo post-estudio para graduados australianos recientes. Te permite quedarte y trabajar sin patrocinador tras finalizar un título habilitante, dándote tiempo para encontrar un camino permanente.">Post-study work visa for recent Australian graduates. Lets you stay and work without a sponsor after finishing an eligible degree, giving you time to find a permanent pathway.</p>
+        <div class="suitability">
+          <div class="suit-label">
+            <span class="suit-text" data-en="MATCH FOR YOUR PROFILE" data-es="COMPATIBILIDAD">MATCH FOR YOUR PROFILE</span>
+            <span class="suit-pct" style="color:var(--c485)">62%</span>
+          </div>
+          <div class="suit-track"><div class="suit-fill" style="background:var(--c485);width:0%" data-width="62%"></div></div>
+        </div>
+        <div class="vc-stats">
+          <div class="vc-stat">
+            <div class="vc-stat-label" data-en="PROCESSING" data-es="PROCESAMIENTO">PROCESSING</div>
+            <div class="vc-stat-val">1–4 mo</div>
+            <div class="vc-stat-sub" data-en="After graduation" data-es="Tras graduación">After graduation</div>
+          </div>
+          <div class="vc-stat">
+            <div class="vc-stat-label" data-en="VISA FEE" data-es="COSTO">VISA FEE</div>
+            <div class="vc-stat-val">AUD $1,895</div>
+            <div class="vc-stat-sub" data-en="Primary applicant" data-es="Solicitante principal">Primary applicant</div>
+          </div>
+          <div class="vc-stat">
+            <div class="vc-stat-label" data-en="DURATION" data-es="DURACIÓN">DURATION</div>
+            <div class="vc-stat-val" data-en="2–3 years" data-es="2–3 años">2–3 years</div>
+            <div class="vc-stat-sub" data-en="Depends on degree" data-es="Depende del título">Depends on degree</div>
+          </div>
+          <div class="vc-stat">
+            <div class="vc-stat-label" data-en="IELTS MIN." data-es="IELTS MÍN.">IELTS MIN.</div>
+            <div class="vc-stat-val">6.0</div>
+            <div class="vc-stat-sub" data-en="Each component" data-es="Cada componente">Each component</div>
+          </div>
+        </div>
+        <div class="vc-tags">
+          <span class="vc-tag" data-en="✓ No employer needed" data-es="✓ Sin empleador">✓ No employer needed</span>
+          <span class="vc-tag" data-en="✓ Any job" data-es="✓ Cualquier trabajo">✓ Any job</span>
+          <span class="vc-tag" data-en="⚠ Requires AU degree" data-es="⚠ Requiere título AU">⚠ Requires AU degree</span>
+        </div>
+        <div class="pros-cons">
+          <div class="pros-box">
+            <div class="pc-title" data-en="PROS" data-es="VENTAJAS">PROS</div>
+            <div class="pc-item" data-en="No sponsor required" data-es="Sin patrocinador requerido">No sponsor required</div>
+            <div class="pc-item" data-en="Work in any sector" data-es="Trabajar en cualquier sector">Work in any sector</div>
+            <div class="pc-item" data-en="Lower fee than 482" data-es="Costo menor que la 482">Lower fee than 482</div>
+          </div>
+          <div class="cons-box">
+            <div class="pc-title" data-en="CONS" data-es="DESVENTAJAS">CONS</div>
+            <div class="pc-item" data-en="Must study in AU first (~2 yrs)" data-es="Debes estudiar en AU (~2 años)">Must study in AU first (~2 yrs)</div>
+            <div class="pc-item" data-en="Not a PR visa" data-es="No es visa permanente">Not a PR visa</div>
+            <div class="pc-item" data-en="High upfront education cost" data-es="Alto costo de educación previo">High upfront education cost</div>
+          </div>
+        </div>
+      </div>
+      <div class="vc-footer">
+        <div class="vc-fit" data-en="<strong>62%</strong> match — requires AU study first" data-es="<strong>62%</strong> compatibilidad — requiere estudio en AU"><strong>62%</strong> match — requires AU study first</div>
+        <button class="vc-select-btn" data-en="Select to compare" data-es="Seleccionar">Select to compare</button>
+      </div>
+    </div>
+
+    <!-- 189 -->
+    <div class="visa-card fade-up" data-category="permanent independent" data-code="189" onclick="toggleSelect(this)">
+      <div class="vc-top">
+        <div class="vc-code" style="color:var(--c189)">189</div>
+        <div class="vc-meta">
+          <div class="vc-name" data-en="Skilled Independent" data-es="Independiente Calificado">Skilled Independent</div>
+          <div class="vc-type" data-en="PERMANENT · POINTS-BASED" data-es="PERMANENTE · BASADA EN PUNTOS">PERMANENT · POINTS-BASED</div>
+        </div>
+        <div class="vc-badges">
+          <span class="vc-badge" style="background:var(--c189-bg);color:var(--c189)" data-en="PR direct" data-es="RP directa">PR direct</span>
+        </div>
+      </div>
+      <div class="vc-bar" style="background:var(--c189)"></div>
+      <div class="vc-body">
+        <p class="vc-desc" data-en="Points-based permanent visa. No employer or state needed — you're invited through SkillSelect EOI when your points score is competitive. Typically requires 85–90+ points." data-es="Visa permanente basada en puntos. Sin empleador ni estado necesario — eres invitado a través de SkillSelect EOI cuando tu puntaje es competitivo. Típicamente requiere 85–90+ puntos.">Points-based permanent visa. No employer or state needed — you're invited through SkillSelect EOI when your points score is competitive. Typically requires 85–90+ points.</p>
+        <div class="suitability">
+          <div class="suit-label">
+            <span class="suit-text" data-en="MATCH FOR YOUR PROFILE" data-es="COMPATIBILIDAD">MATCH FOR YOUR PROFILE</span>
+            <span class="suit-pct" style="color:var(--c189)">54%</span>
+          </div>
+          <div class="suit-track"><div class="suit-fill" style="background:var(--c189);width:0%" data-width="54%"></div></div>
+        </div>
+        <div class="vc-stats">
+          <div class="vc-stat">
+            <div class="vc-stat-label" data-en="PROCESSING" data-es="PROCESAMIENTO">PROCESSING</div>
+            <div class="vc-stat-val">12–36 mo</div>
+            <div class="vc-stat-sub" data-en="After invitation" data-es="Tras invitación">After invitation</div>
+          </div>
+          <div class="vc-stat">
+            <div class="vc-stat-label" data-en="VISA FEE" data-es="COSTO">VISA FEE</div>
+            <div class="vc-stat-val">AUD $4,640</div>
+            <div class="vc-stat-sub" data-en="Primary applicant" data-es="Solicitante principal">Primary applicant</div>
+          </div>
+          <div class="vc-stat">
+            <div class="vc-stat-label" data-en="MIN. POINTS" data-es="PUNTOS MÍN.">MIN. POINTS</div>
+            <div class="vc-stat-val">65 pts</div>
+            <div class="vc-stat-sub" data-en="Invitation ~85+" data-es="Invitación ~85+">Invitation ~85+</div>
+          </div>
+          <div class="vc-stat">
+            <div class="vc-stat-label" data-en="IELTS MIN." data-es="IELTS MÍN.">IELTS MIN.</div>
+            <div class="vc-stat-val">6.0</div>
+            <div class="vc-stat-sub" data-en="Each component" data-es="Cada componente">Each component</div>
+          </div>
+        </div>
+        <div class="vc-tags">
+          <span class="vc-tag" data-en="✓ Permanent residency" data-es="✓ Residencia permanente">✓ Permanent residency</span>
+          <span class="vc-tag" data-en="✓ No employer needed" data-es="✓ Sin empleador">✓ No employer needed</span>
+          <span class="vc-tag" data-en="⚠ Very competitive" data-es="⚠ Muy competitivo">⚠ Very competitive</span>
+        </div>
+        <div class="pros-cons">
+          <div class="pros-box">
+            <div class="pc-title" data-en="PROS" data-es="VENTAJAS">PROS</div>
+            <div class="pc-item" data-en="Permanent from day one" data-es="Permanente desde el día uno">Permanent from day one</div>
+            <div class="pc-item" data-en="No employer dependency" data-es="Sin dependencia de empleador">No employer dependency</div>
+            <div class="pc-item" data-en="Full work flexibility" data-es="Total flexibilidad laboral">Full work flexibility</div>
+          </div>
+          <div class="cons-box">
+            <div class="pc-title" data-en="CONS" data-es="DESVENTAJAS">CONS</div>
+            <div class="pc-item" data-en="Very long wait / highly competitive" data-es="Espera muy larga / muy competitivo">Very long wait, highly competitive</div>
+            <div class="pc-item" data-en="Most occupations need 85–90 pts" data-es="La mayoría requieren 85–90 pts">Most occupations need 85–90 pts</div>
+            <div class="pc-item" data-en="No guarantee of invitation" data-es="Sin garantía de invitación">No guarantee of invitation</div>
+          </div>
+        </div>
+      </div>
+      <div class="vc-footer">
+        <div class="vc-fit" data-en="<strong>54%</strong> match — points score may be limiting" data-es="<strong>54%</strong> compatibilidad — puntaje puede ser limitante"><strong>54%</strong> match — points may be limiting</div>
+        <button class="vc-select-btn" data-en="Select to compare" data-es="Seleccionar">Select to compare</button>
+      </div>
+    </div>
+
+    <!-- 190 -->
+    <div class="visa-card fade-up" data-category="permanent independent" data-code="190" onclick="toggleSelect(this)">
+      <div class="vc-top">
+        <div class="vc-code" style="color:var(--c190)">190</div>
+        <div class="vc-meta">
+          <div class="vc-name" data-en="Skilled Nominated" data-es="Nominado Calificado">Skilled Nominated</div>
+          <div class="vc-type" data-en="PERMANENT · STATE NOMINATION" data-es="PERMANENTE · NOMINACIÓN ESTATAL">PERMANENT · STATE NOMINATION</div>
+        </div>
+        <div class="vc-badges">
+          <span class="vc-badge" style="background:var(--c190-bg);color:var(--c190)" data-en="PR direct" data-es="RP directa">PR direct</span>
+        </div>
+      </div>
+      <div class="vc-bar" style="background:var(--c190)"></div>
+      <div class="vc-body">
+        <p class="vc-desc" data-en="Points-based permanent visa with state/territory nomination. Being nominated by a state adds 5 bonus points, making invitation more achievable. Each state has different occupation needs." data-es="Visa permanente basada en puntos con nominación estatal. Ser nominado por un estado agrega 5 puntos bonus, haciendo la invitación más alcanzable. Cada estado tiene diferentes necesidades ocupacionales.">Points-based permanent visa with state/territory nomination. Being nominated by a state adds 5 bonus points, making invitation more achievable.</p>
+        <div class="suitability">
+          <div class="suit-label">
+            <span class="suit-text" data-en="MATCH FOR YOUR PROFILE" data-es="COMPATIBILIDAD">MATCH FOR YOUR PROFILE</span>
+            <span class="suit-pct" style="color:var(--c190)">61%</span>
+          </div>
+          <div class="suit-track"><div class="suit-fill" style="background:var(--c190);width:0%" data-width="61%"></div></div>
+        </div>
+        <div class="vc-stats">
+          <div class="vc-stat">
+            <div class="vc-stat-label" data-en="PROCESSING" data-es="PROCESAMIENTO">PROCESSING</div>
+            <div class="vc-stat-val">12–24 mo</div>
+            <div class="vc-stat-sub" data-en="After nomination" data-es="Tras nominación">After nomination</div>
+          </div>
+          <div class="vc-stat">
+            <div class="vc-stat-label" data-en="VISA FEE" data-es="COSTO">VISA FEE</div>
+            <div class="vc-stat-val">AUD $4,640</div>
+            <div class="vc-stat-sub" data-en="Primary applicant" data-es="Solicitante principal">Primary applicant</div>
+          </div>
+          <div class="vc-stat">
+            <div class="vc-stat-label" data-en="BONUS POINTS" data-es="PUNTOS BONUS">BONUS POINTS</div>
+            <div class="vc-stat-val">+5 pts</div>
+            <div class="vc-stat-sub" data-en="For state nomination" data-es="Por nominación estatal">For state nomination</div>
+          </div>
+          <div class="vc-stat">
+            <div class="vc-stat-label" data-en="OBLIGATION" data-es="OBLIGACIÓN">OBLIGATION</div>
+            <div class="vc-stat-val" data-en="2 yrs state" data-es="2 años estado">2 yrs state</div>
+            <div class="vc-stat-sub" data-en="Live/work in nominating state" data-es="Vivir en el estado nominador">Live in nominating state</div>
+          </div>
+        </div>
+        <div class="vc-tags">
+          <span class="vc-tag" data-en="✓ Permanent from grant" data-es="✓ Permanente al otorgarse">✓ Permanent from grant</span>
+          <span class="vc-tag" data-en="✓ +5 bonus points" data-es="✓ +5 puntos bonus">✓ +5 bonus points</span>
+          <span class="vc-tag" data-en="⚠ Must live in state 2 yrs" data-es="⚠ Vivir en estado 2 años">⚠ Must live in state 2 yrs</span>
+        </div>
+        <div class="pros-cons">
+          <div class="pros-box">
+            <div class="pc-title" data-en="PROS" data-es="VENTAJAS">PROS</div>
+            <div class="pc-item" data-en="Easier than 189 (5 extra pts)" data-es="Más fácil que 189 (5 pts extra)">Easier than 189 (5 extra pts)</div>
+            <div class="pc-item" data-en="Permanent from day one" data-es="Permanente desde el primer día">Permanent from day one</div>
+            <div class="pc-item" data-en="Strong demand in regional states" data-es="Alta demanda en estados regionales">Strong demand in regional states</div>
+          </div>
+          <div class="cons-box">
+            <div class="pc-title" data-en="CONS" data-es="DESVENTAJAS">CONS</div>
+            <div class="pc-item" data-en="Tied to one state for 2 years" data-es="Atado a un estado por 2 años">Tied to one state for 2 years</div>
+            <div class="pc-item" data-en="Occupation must be on state list" data-es="Ocupación debe estar en lista estatal">Must be on state list</div>
+            <div class="pc-item" data-en="Still competitive wait time" data-es="Tiempo de espera aún competitivo">Still competitive wait time</div>
+          </div>
+        </div>
+      </div>
+      <div class="vc-footer">
+        <div class="vc-fit" data-en="<strong>61%</strong> match — viable if in high-demand occupation" data-es="<strong>61%</strong> compatibilidad — viable en ocupación de alta demanda"><strong>61%</strong> match — viable if high-demand occupation</div>
+        <button class="vc-select-btn" data-en="Select to compare" data-es="Seleccionar">Select to compare</button>
+      </div>
+    </div>
+
+    <!-- 186 -->
+    <div class="visa-card fade-up" data-category="permanent employer" data-code="186" onclick="toggleSelect(this)">
+      <div class="vc-top">
+        <div class="vc-code" style="color:var(--c186)">186</div>
+        <div class="vc-meta">
+          <div class="vc-name" data-en="Employer Nomination Scheme" data-es="Plan de Nominación de Empleador">Employer Nomination Scheme</div>
+          <div class="vc-type" data-en="PERMANENT · EMPLOYER-SPONSORED" data-es="PERMANENTE · PATROCINADA POR EMPLEADOR">PERMANENT · EMPLOYER-SPONSORED</div>
+        </div>
+        <div class="vc-badges">
+          <span class="vc-badge" style="background:var(--c186-bg);color:var(--c186)" data-en="PR" data-es="RP">PR</span>
+        </div>
+      </div>
+      <div class="vc-bar" style="background:var(--c186)"></div>
+      <div class="vc-body">
+        <p class="vc-desc" data-en="Permanent visa for employer-nominated skilled workers. Most commonly used via the Transition stream after 2–3 years on a 482 visa with the same employer. The most common PR path for skilled workers." data-es="Visa permanente para trabajadores calificados nominados por empleadores. Más comúnmente usada vía el flujo de Transición después de 2–3 años en una visa 482 con el mismo empleador.">Permanent visa for employer-nominated skilled workers. Most commonly used via the Transition stream after 2–3 years on a 482 visa with the same employer.</p>
+        <div class="suitability">
+          <div class="suit-label">
+            <span class="suit-text" data-en="MATCH FOR YOUR PROFILE" data-es="COMPATIBILIDAD">MATCH FOR YOUR PROFILE</span>
+            <span class="suit-pct" style="color:var(--c186)">89%</span>
+          </div>
+          <div class="suit-track"><div class="suit-fill" style="background:var(--c186);width:0%" data-width="89%"></div></div>
+        </div>
+        <div class="vc-stats">
+          <div class="vc-stat">
+            <div class="vc-stat-label" data-en="PROCESSING" data-es="PROCESAMIENTO">PROCESSING</div>
+            <div class="vc-stat-val">6–18 mo</div>
+            <div class="vc-stat-sub" data-en="Transition stream" data-es="Flujo de transición">Transition stream</div>
+          </div>
+          <div class="vc-stat">
+            <div class="vc-stat-label" data-en="VISA FEE" data-es="COSTO">VISA FEE</div>
+            <div class="vc-stat-val">AUD $4,770</div>
+            <div class="vc-stat-sub" data-en="Primary applicant" data-es="Solicitante principal">Primary applicant</div>
+          </div>
+          <div class="vc-stat">
+            <div class="vc-stat-label" data-en="DURATION" data-es="DURACIÓN">DURATION</div>
+            <div class="vc-stat-val" data-en="Permanent" data-es="Permanente">Permanent</div>
+            <div class="vc-stat-sub" data-en="No expiry" data-es="Sin vencimiento">No expiry</div>
+          </div>
+          <div class="vc-stat">
+            <div class="vc-stat-label" data-en="PRE-REQUISITE" data-es="PREREQUISITO">PRE-REQUISITE</div>
+            <div class="vc-stat-val" data-en="2–3 yrs 482" data-es="2–3 años 482">2–3 yrs 482</div>
+            <div class="vc-stat-sub" data-en="Same employer (transition)" data-es="Mismo empleador">Same employer</div>
+          </div>
+        </div>
+        <div class="vc-tags">
+          <span class="vc-tag" data-en="✓ Permanent residency" data-es="✓ Residencia permanente">✓ Permanent residency</span>
+          <span class="vc-tag" data-en="✓ Next step after 482" data-es="✓ Siguiente paso tras 482">✓ Next step after 482</span>
+          <span class="vc-tag" data-en="✓ No points test" data-es="✓ Sin test de puntos">✓ No points test</span>
+        </div>
+        <div class="pros-cons">
+          <div class="pros-box">
+            <div class="pc-title" data-en="PROS" data-es="VENTAJAS">PROS</div>
+            <div class="pc-item" data-en="Permanent from grant" data-es="Permanente al otorgarse">Permanent from grant</div>
+            <div class="pc-item" data-en="Natural progression from 482" data-es="Progresión natural desde 482">Natural progression from 482</div>
+            <div class="pc-item" data-en="No points test required" data-es="Sin test de puntos requerido">No points test required</div>
+          </div>
+          <div class="cons-box">
+            <div class="pc-title" data-en="CONS" data-es="DESVENTAJAS">CONS</div>
+            <div class="pc-item" data-en="Need employer to nominate you" data-es="Necesitas que el empleador te nomine">Employer must nominate you</div>
+            <div class="pc-item" data-en="Must stay 2–3 yrs same employer" data-es="Debes quedarte 2–3 años con mismo empleador">Stay 2–3 yrs same employer</div>
+            <div class="pc-item" data-en="Cannot self-nominate" data-es="No puedes auto-nominarte">Cannot self-nominate</div>
+          </div>
+        </div>
+      </div>
+      <div class="vc-footer">
+        <div class="vc-fit" data-en="<strong>89%</strong> match — your PR goal after the 482" data-es="<strong>89%</strong> compatibilidad — tu objetivo de RP tras la 482"><strong>89%</strong> match — your PR goal after 482</div>
+        <button class="vc-select-btn" data-en="Select to compare" data-es="Seleccionar">Select to compare</button>
+      </div>
+    </div>
+
+    <!-- 491 -->
+    <div class="visa-card fade-up" data-category="temporary independent" data-code="491" onclick="toggleSelect(this)">
+      <div class="vc-top">
+        <div class="vc-code" style="color:var(--c491)">491</div>
+        <div class="vc-meta">
+          <div class="vc-name" data-en="Skilled Work Regional" data-es="Trabajo Calificado Regional">Skilled Work Regional</div>
+          <div class="vc-type" data-en="TEMPORARY · REGIONAL PATHWAY" data-es="TEMPORAL · VÍA REGIONAL">TEMPORARY · REGIONAL PATHWAY</div>
+        </div>
+        <div class="vc-badges">
+          <span class="vc-badge" style="background:var(--c491-bg);color:var(--c491)" data-en="5 yrs" data-es="5 años">5 yrs</span>
+        </div>
+      </div>
+      <div class="vc-bar" style="background:var(--c491)"></div>
+      <div class="vc-body">
+        <p class="vc-desc" data-en="Points-based temporary visa for skilled workers willing to live and work in a regional area of Australia. Leads to permanent residency via the 191 visa after 3 years." data-es="Visa temporal basada en puntos para trabajadores calificados dispuestos a vivir y trabajar en una zona regional de Australia. Conduce a la residencia permanente a través de la visa 191 después de 3 años.">Points-based temporary visa for skilled workers willing to live and work in a regional area of Australia. Leads to PR via the 191 visa after 3 years.</p>
+        <div class="suitability">
+          <div class="suit-label">
+            <span class="suit-text" data-en="MATCH FOR YOUR PROFILE" data-es="COMPATIBILIDAD">MATCH FOR YOUR PROFILE</span>
+            <span class="suit-pct" style="color:var(--c491)">38%</span>
+          </div>
+          <div class="suit-track"><div class="suit-fill" style="background:var(--c491);width:0%" data-width="38%"></div></div>
+        </div>
+        <div class="vc-stats">
+          <div class="vc-stat">
+            <div class="vc-stat-label" data-en="PROCESSING" data-es="PROCESAMIENTO">PROCESSING</div>
+            <div class="vc-stat-val">6–18 mo</div>
+            <div class="vc-stat-sub" data-en="After invitation" data-es="Tras invitación">After invitation</div>
+          </div>
+          <div class="vc-stat">
+            <div class="vc-stat-label" data-en="VISA FEE" data-es="COSTO">VISA FEE</div>
+            <div class="vc-stat-val">AUD $4,640</div>
+            <div class="vc-stat-sub" data-en="Primary applicant" data-es="Solicitante principal">Primary applicant</div>
+          </div>
+          <div class="vc-stat">
+            <div class="vc-stat-label" data-en="BONUS POINTS" data-es="PUNTOS BONUS">BONUS POINTS</div>
+            <div class="vc-stat-val">+15 pts</div>
+            <div class="vc-stat-sub" data-en="For regional living" data-es="Por zona regional">For regional living</div>
+          </div>
+          <div class="vc-stat">
+            <div class="vc-stat-label" data-en="PR PATH" data-es="VÍA A RP">PR PATH</div>
+            <div class="vc-stat-val">491 → 191</div>
+            <div class="vc-stat-sub" data-en="After 3 yrs regional" data-es="Tras 3 años regional">After 3 yrs regional</div>
+          </div>
+        </div>
+        <div class="vc-tags">
+          <span class="vc-tag" data-en="✓ +15 bonus points" data-es="✓ +15 puntos bonus">✓ +15 bonus points</span>
+          <span class="vc-tag" data-en="✓ Path to 191 (PR)" data-es="✓ Camino a 191 (RP)">✓ Path to 191 (PR)</span>
+          <span class="vc-tag" data-en="⚠ Must live regionally" data-es="⚠ Debes vivir en zona regional">⚠ Must live regionally</span>
+        </div>
+        <div class="pros-cons">
+          <div class="pros-box">
+            <div class="pc-title" data-en="PROS" data-es="VENTAJAS">PROS</div>
+            <div class="pc-item" data-en="+15 pts makes invitation easier" data-es="+15 pts facilita la invitación">+15 pts makes invitation easier</div>
+            <div class="pc-item" data-en="Lower competition than 189" data-es="Menor competencia que 189">Lower competition than 189</div>
+            <div class="pc-item" data-en="Leads to permanent 191" data-es="Conduce a la permanente 191">Leads to permanent 191</div>
+          </div>
+          <div class="cons-box">
+            <div class="pc-title" data-en="CONS" data-es="DESVENTAJAS">CONS</div>
+            <div class="pc-item" data-en="Must live outside major cities" data-es="Debes vivir fuera de grandes ciudades">Must live outside major cities</div>
+            <div class="pc-item" data-en="Low match — you chose Sydney" data-es="Baja compatibilidad — elegiste Sydney">Low match — you chose Sydney</div>
+            <div class="pc-item" data-en="3 yrs before PR eligibility" data-es="3 años antes de elegibilidad para RP">3 yrs before PR eligibility</div>
+          </div>
+        </div>
+      </div>
+      <div class="vc-footer">
+        <div class="vc-fit" data-en="<strong>38%</strong> match — you chose Sydney, not regional" data-es="<strong>38%</strong> compatibilidad — elegiste Sydney, no regional"><strong>38%</strong> match — you chose Sydney, not regional</div>
+        <button class="vc-select-btn" data-en="Select to compare" data-es="Seleccionar">Select to compare</button>
+      </div>
+    </div>
+
+  </div><!-- /visa-grid -->
+
+  <!-- COMPARISON TABLE -->
+  <div class="compare-section" id="compare-section">
+    <div class="section-header fade-up">
+      <div>
+        <h2 class="section-title" data-en="Side-by-Side Comparison" data-es="Comparación Cara a Cara">Side-by-Side Comparison</h2>
+        <p class="section-sub" data-en="Selected visas across all key criteria" data-es="Visas seleccionadas en todos los criterios clave">Selected visas across all key criteria</p>
+      </div>
+    </div>
+    <div class="compare-table-wrap fade-up">
+      <table class="compare-table" id="compare-table">
+        <!-- Filled by JS -->
+      </table>
+    </div>
+    <div class="compare-close">
+      <button class="btn-close-compare" onclick="clearComparison()" data-en="✕ Clear comparison" data-es="✕ Limpiar comparación">✕ Clear comparison</button>
+    </div>
+  </div>
+
+  <!-- PR PATHWAYS -->
+  <div class="pathway-section fade-up">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title" data-en="PR Pathways for Your Profile" data-es="Caminos hacia la RP para tu Perfil">PR Pathways for Your Profile</h2>
+        <p class="section-sub" data-en="How each route gets you to permanent residency" data-es="Cómo cada ruta te lleva a la residencia permanente">How each route gets you to permanent residency</p>
+      </div>
+    </div>
+    <div class="pathway-card">
+      <div class="pathway-title" data-en="Recommended: Employer-sponsored pathway" data-es="Recomendado: Camino patrocinado por empleador">Recommended: Employer-sponsored pathway</div>
+      <div class="pathway-sub" data-en="Most common and reliable pathway for skilled professionals in Sydney. Average time to PR: 4–5 years." data-es="El camino más común y confiable para profesionales calificados en Sydney. Tiempo promedio hasta la RP: 4–5 años.">Most common and reliable pathway for skilled professionals in Sydney. Average time to PR: 4–5 years.</div>
+      <div class="pathway-flow">
+        <div class="path-step">
+          <div class="path-node" style="background:#111;border:2px solid #333">🇨🇴</div>
+          <div class="path-label" data-en="You now" data-es="Tú hoy">You now</div>
+          <div class="path-sub" data-en="In Colombia" data-es="En Colombia">In Colombia</div>
+        </div>
+        <div class="path-arrow">→</div>
+        <div class="path-step">
+          <div class="path-node" style="background:var(--c482)">482</div>
+          <div class="path-label" data-en="Get sponsored" data-es="Consigue patrocinio">Get sponsored</div>
+          <div class="path-sub" data-en="TSS visa · 4 yrs" data-es="Visa TSS · 4 años">TSS visa · 4 yrs</div>
+        </div>
+        <div class="path-years" data-en="2–3 yrs" data-es="2–3 años">2–3 yrs</div>
+        <div class="path-step">
+          <div class="path-node" style="background:var(--c186)">186</div>
+          <div class="path-label" data-en="PR via ENS" data-es="RP vía ENS">PR via ENS</div>
+          <div class="path-sub" data-en="Employer nominates" data-es="Empleador nomina">Employer nominates</div>
+        </div>
+        <div class="path-arrow">→</div>
+        <div class="path-step">
+          <div class="path-node" style="background:#1a6a1a">🏆</div>
+          <div class="path-label" data-en="Permanent Resident" data-es="Residente Permanente">Permanent Resident</div>
+          <div class="path-sub" data-en="Full rights · ~4 yrs total" data-es="Plenos derechos · ~4 años total">Full rights · ~4 yrs total</div>
+        </div>
+        <div class="path-years" data-en="4 yrs" data-es="4 años">4 yrs</div>
+        <div class="path-step">
+          <div class="path-node" style="background:#d4af37">🌟</div>
+          <div class="path-label" data-en="Citizenship" data-es="Ciudadanía">Citizenship</div>
+          <div class="path-sub" data-en="Apply after 4 yrs PR" data-es="Aplica tras 4 años RP">Apply after 4 yrs PR</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GOVERNMENT FEES -->
+  <div class="cost-section fade-up">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title" data-en="Government Visa Fees (2025–26)" data-es="Tasas Gubernamentales (2025–26)">Government Visa Fees (2025–26)</h2>
+        <p class="section-sub" data-en="Primary applicant only · Does not include agent fees, health exams, or skills assessments" data-es="Solo solicitante principal · No incluye honorarios de agente, exámenes médicos o evaluaciones de habilidades">Primary applicant only · Does not include agent fees or other costs</p>
+      </div>
+    </div>
+    <div class="cost-grid">
+      <div class="cost-card" style="border-color:var(--c482-border)">
+        <div class="cost-label" style="color:var(--c482)">SUBCLASS 482</div>
+        <div class="cost-amount">AUD $3,115</div>
+        <div class="cost-sub" data-en="Temporary Skill Shortage" data-es="Escasez Temporal de Habilidades">Temporary Skill Shortage</div>
+        <div class="cost-note" data-en="+ SAF levy (employer pays) + agent fees ~$3–6k" data-es="+ arancel SAF (paga empleador) + honorarios ~$3–6k">+ SAF levy (employer pays) + agent ~$3–6k</div>
+      </div>
+      <div class="cost-card" style="border-color:var(--c485-border)">
+        <div class="cost-label" style="color:var(--c485)">SUBCLASS 485</div>
+        <div class="cost-amount">AUD $1,895</div>
+        <div class="cost-sub" data-en="Temporary Graduate" data-es="Graduado Temporal">Temporary Graduate</div>
+        <div class="cost-note" data-en="+ AU study cost $30–100k total" data-es="+ costo estudio AU $30–100k total">+ AU study cost $30–100k total</div>
+      </div>
+      <div class="cost-card" style="border-color:var(--c189-border)">
+        <div class="cost-label" style="color:var(--c189)">SUBCLASS 189</div>
+        <div class="cost-amount">AUD $4,640</div>
+        <div class="cost-sub" data-en="Skilled Independent" data-es="Independiente Calificado">Skilled Independent</div>
+        <div class="cost-note" data-en="+ skills assessment ~$500–1,500" data-es="+ evaluación de habilidades ~$500–1,500">+ skills assessment ~$500–1,500</div>
+      </div>
+      <div class="cost-card" style="border-color:var(--c190-border)">
+        <div class="cost-label" style="color:var(--c190)">SUBCLASS 190</div>
+        <div class="cost-amount">AUD $4,640</div>
+        <div class="cost-sub" data-en="Skilled Nominated" data-es="Nominado Calificado">Skilled Nominated</div>
+        <div class="cost-note" data-en="+ state nomination fee varies" data-es="+ tarifa de nominación estatal varía">+ state nomination fee varies</div>
+      </div>
+      <div class="cost-card" style="border-color:var(--c186-border)">
+        <div class="cost-label" style="color:var(--c186)">SUBCLASS 186</div>
+        <div class="cost-amount">AUD $4,770</div>
+        <div class="cost-sub" data-en="Employer Nomination Scheme" data-es="Plan de Nominación de Empleador">Employer Nomination Scheme</div>
+        <div class="cost-note" data-en="+ nomination fee $540 (employer)" data-es="+ tarifa nominación $540 (empleador)">+ nomination fee $540 (employer)</div>
+      </div>
+      <div class="cost-card" style="border-color:var(--c491-border)">
+        <div class="cost-label" style="color:var(--c491)">SUBCLASS 491</div>
+        <div class="cost-amount">AUD $4,640</div>
+        <div class="cost-sub" data-en="Skilled Work Regional" data-es="Trabajo Calificado Regional">Skilled Work Regional</div>
+        <div class="cost-note" data-en="+ skills assessment + regional obligations" data-es="+ evaluación de habilidades + obligaciones regionales">+ skills assessment + regional obligations</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page-body -->
+
+<script>
+  let currentLang = 'en';
+  let selectedCodes = [];
+
+  const VISA_DATA = {
+    '482': {
+      name: { en: 'Temporary Skill Shortage', es: 'Escasez Temporal de Habilidades' },
+      type: { en: 'Temporary', es: 'Temporal' },
+      color: '#2563eb',
+      processing: '4–9 months',
+      fee: 'AUD $3,115',
+      duration: { en: 'Up to 4 yrs', es: 'Hasta 4 años' },
+      pr: { en: '✓ Via 186 (2–3 yrs)', es: '✓ Vía 186 (2–3 años)' },
+      points: { en: '✗ Not applicable', es: '✗ No aplica' },
+      employer: { en: '✓ Required', es: '✓ Requerido' },
+      english: 'IELTS 5.0+ each',
+      family: { en: '✓ Included', es: '✓ Incluida' },
+      study: { en: '✗ Not required', es: '✗ No requerido' },
+      match: '97%'
+    },
+    '485': {
+      name: { en: 'Temporary Graduate', es: 'Graduado Temporal' },
+      type: { en: 'Temporary', es: 'Temporal' },
+      color: '#059669',
+      processing: '1–4 months',
+      fee: 'AUD $1,895',
+      duration: { en: '2–3 years', es: '2–3 años' },
+      pr: { en: '✗ Not directly', es: '✗ No directamente' },
+      points: { en: '✗ Not applicable', es: '✗ No aplica' },
+      employer: { en: '✗ Not required', es: '✗ No requerido' },
+      english: 'IELTS 6.0+ each',
+      family: { en: '✓ Included', es: '✓ Incluida' },
+      study: { en: '✓ Must graduate AU', es: '✓ Debe graduarse en AU' },
+      match: '62%'
+    },
+    '189': {
+      name: { en: 'Skilled Independent', es: 'Independiente Calificado' },
+      type: { en: 'Permanent', es: 'Permanente' },
+      color: '#7c3aed',
+      processing: '12–36 months',
+      fee: 'AUD $4,640',
+      duration: { en: 'Permanent', es: 'Permanente' },
+      pr: { en: '✓ From day one', es: '✓ Desde el primer día' },
+      points: { en: '65 min (invite ~85+)', es: '65 mín (invitación ~85+)' },
+      employer: { en: '✗ Not required', es: '✗ No requerido' },
+      english: 'IELTS 6.0+ each',
+      family: { en: '✓ Included', es: '✓ Incluida' },
+      study: { en: '✗ Not required', es: '✗ No requerido' },
+      match: '54%'
+    },
+    '190': {
+      name: { en: 'Skilled Nominated', es: 'Nominado Calificado' },
+      type: { en: 'Permanent', es: 'Permanente' },
+      color: '#0891b2',
+      processing: '12–24 months',
+      fee: 'AUD $4,640',
+      duration: { en: 'Permanent', es: 'Permanente' },
+      pr: { en: '✓ From day one', es: '✓ Desde el primer día' },
+      points: { en: '65 min + 5 bonus', es: '65 mín + 5 bonus' },
+      employer: { en: '✗ Not required', es: '✗ No requerido' },
+      english: 'IELTS 6.0+ each',
+      family: { en: '✓ Included', es: '✓ Incluida' },
+      study: { en: '✗ Not required', es: '✗ No requerido' },
+      match: '61%'
+    },
+    '186': {
+      name: { en: 'Employer Nomination Scheme', es: 'Plan de Nominación de Empleador' },
+      type: { en: 'Permanent', es: 'Permanente' },
+      color: '#b45309',
+      processing: '6–18 months',
+      fee: 'AUD $4,770',
+      duration: { en: 'Permanent', es: 'Permanente' },
+      pr: { en: '✓ From day one', es: '✓ Desde el primer día' },
+      points: { en: '✗ Not applicable', es: '✗ No aplica' },
+      employer: { en: '✓ Required', es: '✓ Requerido' },
+      english: 'IELTS 6.0+ each',
+      family: { en: '✓ Included', es: '✓ Incluida' },
+      study: { en: '✗ Not required', es: '✗ No requerido' },
+      match: '89%'
+    },
+    '491': {
+      name: { en: 'Skilled Work Regional', es: 'Trabajo Calificado Regional' },
+      type: { en: 'Temporary', es: 'Temporal' },
+      color: '#be185d',
+      processing: '6–18 months',
+      fee: 'AUD $4,640',
+      duration: { en: '5 years', es: '5 años' },
+      pr: { en: '⚠ Via 191 (3 yrs regional)', es: '⚠ Vía 191 (3 años regional)' },
+      points: { en: '65 min + 15 bonus', es: '65 mín + 15 bonus' },
+      employer: { en: '✗ Not required', es: '✗ No requerido' },
+      english: 'IELTS 6.0+ each',
+      family: { en: '✓ Included', es: '✓ Incluida' },
+      study: { en: '✗ Not required', es: '✗ No requerido' },
+      match: '38%'
+    }
+  };
+
+  function toggleSelect(card) {
+    const code = card.dataset.code;
+    if (card.classList.contains('selected')) {
+      card.classList.remove('selected');
+      selectedCodes = selectedCodes.filter(c => c !== code);
+    } else {
+      if (selectedCodes.length >= 3) {
+        alert(currentLang === 'es' ? 'Máximo 3 visas para comparar.' : 'Maximum 3 visas to compare at once.');
+        return;
+      }
+      card.classList.add('selected');
+      selectedCodes.push(code);
+    }
+    updateSelectionUI();
+  }
+
+  function updateSelectionUI() {
+    const n = selectedCodes.length;
+    const btn = document.getElementById('compare-btn');
+    const info = document.getElementById('sel-info');
+    btn.textContent = currentLang === 'es' ? `Comparar seleccionadas (${n})` : `Compare selected (${n})`;
+    btn.classList.toggle('has-selection', n >= 2);
+    info.innerHTML = currentLang === 'es' ? `<strong>${n}</strong> seleccionadas` : `<strong>${n}</strong> selected`;
+  }
+
+  function showComparison() {
+    if (selectedCodes.length < 2) {
+      alert(currentLang === 'es' ? 'Selecciona al menos 2 visas para comparar.' : 'Select at least 2 visas to compare.');
+      return;
+    }
+    buildCompareTable();
+    const sec = document.getElementById('compare-section');
+    sec.classList.add('visible');
+    sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function buildCompareTable() {
+    const table = document.getElementById('compare-table');
+    const lang = currentLang;
+    const codes = selectedCodes;
+    const rows = [
+      { key: lang === 'es' ? 'TIPO' : 'TYPE',        field: 'type',       fn: d => d[lang] },
+      { key: lang === 'es' ? 'PROCESAMIENTO' : 'PROCESSING', field: 'processing', fn: d => d },
+      { key: lang === 'es' ? 'COSTO GOBIERNO' : 'GOVT FEE', field: 'fee',        fn: d => d },
+      { key: lang === 'es' ? 'DURACIÓN' : 'DURATION',  field: 'duration',   fn: d => d[lang] },
+      { key: lang === 'es' ? 'RESIDENCIA PERMANENTE' : 'PERMANENT RESIDENCY', field: 'pr', fn: d => d[lang] },
+      { key: lang === 'es' ? 'TEST DE PUNTOS' : 'POINTS TEST', field: 'points', fn: d => d[lang] || d },
+      { key: lang === 'es' ? 'EMPLEADOR REQ.' : 'EMPLOYER REQ.', field: 'employer', fn: d => d[lang] },
+      { key: 'IELTS MIN.',    field: 'english',    fn: d => d },
+      { key: lang === 'es' ? 'FAMILIA' : 'FAMILY',    field: 'family',     fn: d => d[lang] },
+      { key: lang === 'es' ? 'ESTUDIO AU' : 'AU STUDY REQ.', field: 'study', fn: d => d[lang] },
+      { key: lang === 'es' ? 'COMPATIBILIDAD' : 'YOUR MATCH', field: 'match', fn: d => d }
+    ];
+    let html = `<thead class="ct-header"><tr><th>${lang === 'es' ? 'CRITERIO' : 'CRITERIA'}</th>`;
+    codes.forEach(code => {
+      const d = VISA_DATA[code];
+      html += `<th><span style="color:${d.color}">SC ${code}</span><br/><span style="font-size:11px;color:#777;font-weight:500">${d.name[lang]}</span></th>`;
+    });
+    html += '</tr></thead><tbody>';
+    rows.forEach(row => {
+      html += `<tr class="ct-row"><td>${row.key}</td>`;
+      codes.forEach(code => {
+        const val = row.fn(VISA_DATA[code][row.field]);
+        let cls = '';
+        if (val && (val.startsWith('✓') || val === '97%' || val === '89%')) cls = 'ct-yes ct-highlight';
+        else if (val && val.startsWith('✗')) cls = 'ct-no';
+        else if (val && val.startsWith('⚠')) cls = 'ct-maybe';
+        else cls = 'ct-highlight';
+        html += `<td class="${cls}">${val || '—'}</td>`;
+      });
+      html += '</tr>';
+    });
+    html += '</tbody>';
+    table.innerHTML = html;
+  }
+
+  function clearComparison() {
+    selectedCodes = [];
+    document.querySelectorAll('.visa-card.selected').forEach(c => c.classList.remove('selected'));
+    document.getElementById('compare-section').classList.remove('visible');
+    document.querySelectorAll('.visa-card').forEach(c => c.classList.remove('dimmed'));
+    updateSelectionUI();
+  }
+
+  function filterCards(category, btn) {
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.visa-card').forEach(card => {
+      if (category === 'all') {
+        card.style.display = '';
+      } else {
+        const cats = card.dataset.category || '';
+        card.style.display = cats.includes(category) ? '' : 'none';
+      }
+    });
+  }
+
+  function setLang(lang) {
+    currentLang = lang;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent === lang.toUpperCase()));
+    document.querySelectorAll('[data-en]').forEach(el => {
+      const t = el.getAttribute('data-' + lang);
+      if (t) el.innerHTML = t;
+    });
+    updateSelectionUI();
+  }
+
+  // Animate suitability bars on scroll
+  const suitObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.querySelectorAll('.suit-fill').forEach(bar => {
+          setTimeout(() => { bar.style.width = bar.dataset.width; }, 200);
+        });
+        suitObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('.visa-card').forEach(c => suitObserver.observe(c));
+
+  const fadeObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        fadeObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.06 });
+  document.querySelectorAll('.fade-up').forEach(el => fadeObserver.observe(el));
+</script>
+
+</body>
+</html>
