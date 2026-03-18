@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Migro — My Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --black: #0a0a0a; --white: #ffffff;
+      --gray-100: #f5f5f5; --gray-200: #e8e8e8;
+      --gray-300: #d0d0d0; --gray-400: #999;
+      --gray-600: #555; --gray-800: #222;
+      --green: #22c55e; --green-bg: #e8f5e8; --green-text: #1a6a1a;
+      --amber: #f0b429; --amber-bg: #fff8e0;
+      --blue-bg: #e8f0ff; --blue-text: #1a3a8a;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--gray-100); color: var(--black); min-height: 100vh; }
+
+    /* NAV */
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 48px; background: var(--white); border-bottom: 1px solid var(--gray-200); position: sticky; top: 0; z-index: 100; }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--black); text-decoration: none; }
+    .nav-logo span { display: inline-block; width: 6px; height: 6px; background: var(--black); border-radius: 50%; margin-left: 2px; vertical-align: super; }
+    .nav-right { display: flex; align-items: center; gap: 14px; }
+    .lang-toggle { display: flex; background: var(--gray-100); border-radius: 6px; padding: 3px; gap: 2px; }
+    .lang-btn { padding: 4px 10px; font-size: 11px; font-weight: 700; border: none; background: transparent; border-radius: 4px; cursor: pointer; color: var(--gray-400); transition: all .2s; }
+    .lang-btn.active { background: var(--black); color: var(--white); }
+    .nav-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--black); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: var(--white); }
+    .nav-links { display: flex; gap: 4px; }
+    .nav-link { font-size: 13px; font-weight: 500; color: var(--gray-600); text-decoration: none; padding: 7px 12px; border-radius: 6px; transition: all .2s; }
+    .nav-link:hover { background: var(--gray-100); color: var(--black); }
+    .nav-link.active { background: var(--black); color: var(--white); }
+
+    /* HERO STRIP */
+    .hero-strip { background: var(--black); padding: 36px 48px 0; }
+    .hero-inner { max-width: 1100px; margin: 0 auto; }
+    .hero-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; margin-bottom: 32px; flex-wrap: wrap; }
+    .hero-greeting { }
+    .hero-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #555; margin-bottom: 8px; }
+    .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(24px, 3vw, 38px); font-weight: 700; color: var(--white); line-height: 1.1; letter-spacing: -0.5px; }
+    .hero-title span { color: #777; }
+    .hero-sub { font-size: 14px; color: #666; margin-top: 8px; line-height: 1.5; }
+    .hero-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+    .btn-hero-primary { display: inline-flex; align-items: center; gap: 8px; background: var(--white); color: var(--black); padding: 11px 22px; border-radius: 7px; font-size: 13px; font-weight: 700; text-decoration: none; transition: all .2s; border: none; cursor: pointer; }
+    .btn-hero-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(255,255,255,.15); }
+    .btn-hero-ghost { display: inline-flex; align-items: center; gap: 8px; background: transparent; color: #888; padding: 11px 22px; border-radius: 7px; font-size: 13px; font-weight: 600; text-decoration: none; border: 1.5px solid #333; transition: all .2s; }
+    .btn-hero-ghost:hover { border-color: #666; color: var(--white); }
+
+    /* OVERALL PROGRESS BAR */
+    .overall-progress { background: #111; border: 1px solid #1e1e1e; border-radius: 12px; padding: 18px 22px; min-width: 240px; }
+    .op-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #555; margin-bottom: 10px; }
+    .op-pct { font-size: 32px; font-weight: 800; color: var(--white); line-height: 1; }
+    .op-sub { font-size: 12px; color: #555; margin-top: 4px; margin-bottom: 12px; }
+    .op-bar-track { height: 6px; background: #222; border-radius: 100px; overflow: hidden; }
+    .op-bar-fill { height: 100%; background: linear-gradient(90deg, #4ade80, #22c55e); border-radius: 100px; transition: width 1s ease; }
+
+    /* JOURNEY TABS (step pills below hero) */
+    .journey-strip { background: var(--black); border-bottom: 1px solid #1e1e1e; padding: 0 48px; overflow-x: auto; }
+    .journey-inner { max-width: 1100px; margin: 0 auto; display: flex; gap: 0; }
+    .step-pill { display: flex; align-items: center; gap: 8px; padding: 16px 20px; font-size: 12px; font-weight: 600; color: #444; border-bottom: 2px solid transparent; white-space: nowrap; text-decoration: none; transition: all .2s; }
+    .step-pill:hover { color: #888; }
+    .step-pill.done { color: #555; }
+    .step-pill.done:hover { color: #888; }
+    .step-pill.active { color: var(--white); border-bottom-color: var(--white); }
+    .step-dot { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; flex-shrink: 0; }
+    .step-dot.done { background: var(--green); color: var(--white); }
+    .step-dot.active { background: var(--white); color: var(--black); font-weight: 800; }
+    .step-dot.pending { background: #222; color: #555; border: 1px solid #333; }
+
+    /* MAIN LAYOUT */
+    .page-body { max-width: 1100px; margin: 0 auto; padding: 32px 48px; display: grid; grid-template-columns: 1fr 320px; gap: 24px; }
+
+    /* LEFT COLUMN */
+    .left-col { min-width: 0; }
+
+    /* SECTION LABEL */
+    .section-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gray-400); margin-bottom: 14px; }
+
+    /* STEP CARDS */
+    .steps-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+    .step-card { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 14px; overflow: hidden; transition: all .2s; }
+    .step-card:hover { border-color: var(--gray-300); }
+    .step-card.done { border-color: var(--gray-200); }
+    .step-card.active { border-color: var(--black); box-shadow: 0 4px 16px rgba(0,0,0,.08); }
+    .step-card.locked { opacity: .6; }
+    .step-card-inner { display: flex; align-items: center; gap: 16px; padding: 18px 20px; }
+    .step-num { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; flex-shrink: 0; }
+    .step-num.done { background: var(--black); color: var(--white); }
+    .step-num.active { background: var(--black); color: var(--white); box-shadow: 0 0 0 3px rgba(0,0,0,.12); }
+    .step-num.pending { background: var(--gray-100); color: var(--gray-400); border: 1.5px solid var(--gray-200); }
+    .step-info { flex: 1; min-width: 0; }
+    .step-name { font-size: 14px; font-weight: 700; color: var(--black); }
+    .step-desc { font-size: 12px; color: var(--gray-400); margin-top: 2px; line-height: 1.4; }
+    .step-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .step-status { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 100px; }
+    .status-done { background: var(--green-bg); color: var(--green-text); }
+    .status-active { background: var(--black); color: var(--white); }
+    .status-pending { background: var(--gray-100); color: var(--gray-400); }
+    .step-link { font-size: 13px; font-weight: 700; color: var(--black); text-decoration: none; padding: 7px 14px; border-radius: 6px; border: 1.5px solid var(--gray-200); transition: all .2s; white-space: nowrap; }
+    .step-link:hover { border-color: var(--black); background: var(--black); color: var(--white); }
+    .step-link.primary { background: var(--black); color: var(--white); border-color: var(--black); }
+    .step-link.primary:hover { background: var(--gray-800); }
+
+    /* DECISIONS MADE */
+    .decisions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 32px; }
+    .decision-card { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 12px; padding: 16px 18px; }
+    .decision-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 6px; }
+    .decision-value { font-size: 15px; font-weight: 700; color: var(--black); line-height: 1.3; }
+    .decision-sub { font-size: 11px; color: var(--gray-400); margin-top: 3px; }
+    .decision-icon { font-size: 22px; margin-bottom: 8px; }
+
+    /* PLAN MINI-PREVIEW */
+    .plan-preview { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 14px; overflow: hidden; margin-bottom: 32px; }
+    .plan-preview-header { background: var(--black); padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; }
+    .plan-preview-title { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: var(--white); }
+    .plan-preview-link { font-size: 12px; font-weight: 700; color: #888; text-decoration: none; transition: color .2s; }
+    .plan-preview-link:hover { color: var(--white); }
+    .mini-phases { padding: 16px 20px; display: flex; flex-direction: column; gap: 8px; }
+    .mini-phase { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; background: var(--gray-100); }
+    .mini-phase-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .mini-phase-dot.done { background: var(--green); }
+    .mini-phase-dot.active { background: var(--amber); }
+    .mini-phase-dot.pending { background: var(--gray-300); }
+    .mini-phase-name { font-size: 13px; font-weight: 600; flex: 1; }
+    .mini-phase-count { font-size: 11px; color: var(--gray-400); }
+    .mini-phase-tag { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 100px; }
+    .mini-tag-done { background: var(--green-bg); color: var(--green-text); }
+    .mini-tag-active { background: #fff8e0; color: #8a6000; }
+    .mini-tag-pending { background: var(--gray-100); color: var(--gray-400); border: 1px solid var(--gray-200); }
+
+    /* RIGHT COLUMN */
+    .right-col { display: flex; flex-direction: column; gap: 18px; }
+
+    /* PROFILE CARD */
+    .profile-card { background: var(--black); border-radius: 16px; padding: 24px; }
+    .profile-avatar-row { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+    .profile-avatar-lg { width: 52px; height: 52px; border-radius: 50%; background: #222; border: 2px solid #333; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+    .profile-name { font-size: 16px; font-weight: 700; color: var(--white); }
+    .profile-sub { font-size: 12px; color: #666; margin-top: 2px; }
+    .profile-rows { display: flex; flex-direction: column; gap: 10px; }
+    .profile-row { display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 1px solid #1e1e1e; }
+    .profile-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .pr-key { font-size: 11px; color: #555; font-weight: 600; }
+    .pr-val { font-size: 12px; font-weight: 700; color: var(--white); }
+    .pr-badge { font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 100px; }
+    .pr-badge.green { background: rgba(34,197,94,.15); color: #4ade80; }
+    .pr-badge.amber { background: rgba(240,180,41,.15); color: var(--amber); }
+    .pr-badge.gray { background: #1a1a1a; color: #555; }
+
+    /* QUICK LINKS */
+    .quick-card { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 14px; overflow: hidden; }
+    .quick-card-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); padding: 14px 18px 8px; }
+    .quick-link { display: flex; align-items: center; gap: 10px; padding: 11px 18px; text-decoration: none; color: var(--black); font-size: 13px; font-weight: 600; border-top: 1px solid var(--gray-100); transition: background .15s; }
+    .quick-link:first-of-type { border-top: none; }
+    .quick-link:hover { background: var(--gray-100); }
+    .quick-link-icon { width: 28px; height: 28px; border-radius: 7px; background: var(--gray-100); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+    .quick-link-arrow { margin-left: auto; color: var(--gray-300); font-size: 12px; }
+
+    /* DEADLINE CARD */
+    .deadline-card { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 14px; padding: 18px; }
+    .deadline-header { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 14px; }
+    .deadline-item { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
+    .deadline-item:last-child { margin-bottom: 0; }
+    .deadline-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+    .d-red { background: #ef4444; }
+    .d-amber { background: var(--amber); }
+    .d-green { background: var(--green); }
+    .deadline-text { flex: 1; }
+    .d-title { font-size: 13px; font-weight: 700; color: var(--black); }
+    .d-date { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+    .d-days { font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 100px; margin-top: 4px; display: inline-block; }
+    .d-days.urgent { background: #fee2e2; color: #dc2626; }
+    .d-days.soon { background: #fff8e0; color: #8a6000; }
+    .d-days.ok { background: var(--green-bg); color: var(--green-text); }
+
+    /* IELTS CARD */
+    .ielts-card { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 14px; padding: 18px; }
+    .ielts-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .ielts-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); }
+    .ielts-link { font-size: 12px; font-weight: 700; color: var(--black); text-decoration: none; }
+    .ielts-bands { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .band-item { background: var(--gray-100); border-radius: 8px; padding: 10px 12px; }
+    .band-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--gray-400); margin-bottom: 4px; }
+    .band-val { font-size: 18px; font-weight: 800; color: var(--black); }
+    .band-req { font-size: 10px; color: var(--gray-400); margin-top: 2px; }
+    .band-val.pass { color: var(--green-text); }
+    .band-val.fail { color: #dc2626; }
+    .band-val.pending { color: var(--gray-400); }
+    .ielts-cta { margin-top: 12px; display: block; text-align: center; font-size: 12px; font-weight: 700; color: var(--black); text-decoration: none; padding: 9px; border: 1.5px solid var(--gray-200); border-radius: 8px; transition: all .2s; }
+    .ielts-cta:hover { border-color: var(--black); background: var(--black); color: var(--white); }
+
+    /* FADE */
+    .fade-up { opacity: 0; transform: translateY(20px); transition: all .5s ease; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    @media(max-width: 900px) {
+      .page-body { grid-template-columns: 1fr; padding: 24px; }
+      nav, .hero-strip, .journey-strip { padding-left: 24px; padding-right: 24px; }
+      .decisions-grid { grid-template-columns: 1fr 1fr; }
+      .right-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    }
+    @media(max-width: 600px) {
+      .decisions-grid { grid-template-columns: 1fr; }
+      .right-col { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="migro-landing.html" class="nav-logo">Migro<span></span></a>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="migro-dashboard.html" class="nav-link active" data-en="Dashboard" data-es="Dashboard">Dashboard</a>
+      <a href="migro-plan.html" class="nav-link" data-en="My Plan" data-es="Mi Plan">My Plan</a>
+      <a href="migro-ielts.html" class="nav-link" data-en="IELTS" data-es="IELTS">IELTS</a>
+    </div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('es')">ES</button>
+    </div>
+    <div class="nav-avatar">D</div>
+  </div>
+</nav>
+
+<!-- HERO STRIP -->
+<div class="hero-strip">
+  <div class="hero-inner">
+    <div class="hero-top">
+      <div class="hero-greeting fade-up">
+        <p class="hero-tag" data-en="YOUR MIGRATION JOURNEY" data-es="TU PROCESO MIGRATORIO">YOUR MIGRATION JOURNEY</p>
+        <h1 class="hero-title">
+          <span data-en="Welcome back," data-es="Bienvenido de nuevo,">Welcome back,</span>
+          <br/>Dave<span>.</span>
+        </h1>
+        <p class="hero-sub" data-en="You've completed 5 of 6 steps. Your plan is ready — keep moving." data-es="Completaste 5 de 6 pasos. Tu plan está listo — sigue adelante.">You've completed 5 of 6 steps. Your plan is ready — keep moving.</p>
+        <div class="hero-actions" style="margin-top:20px;">
+          <a href="migro-plan.html" class="btn-hero-primary" data-en="→ View my plan" data-es="→ Ver mi plan">→ View my plan</a>
+          <a href="migro-services.html" class="btn-hero-ghost" data-en="Find an agent" data-es="Buscar agente">Find an agent</a>
+        </div>
+      </div>
+      <div class="overall-progress fade-up">
+        <div class="op-label" data-en="OVERALL PROGRESS" data-es="PROGRESO TOTAL">OVERALL PROGRESS</div>
+        <div class="op-pct" id="op-pct">83%</div>
+        <div class="op-sub" data-en="5 of 6 steps complete" data-es="5 de 6 pasos completados">5 of 6 steps complete</div>
+        <div class="op-bar-track">
+          <div class="op-bar-fill" id="op-bar" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JOURNEY STRIP -->
+<div class="journey-strip">
+  <div class="journey-inner">
+    <a href="migro-onboarding.html" class="step-pill done">
+      <div class="step-dot done">✓</div>
+      <span data-en="1 · Profile" data-es="1 · Perfil">1 · Profile</span>
+    </a>
+    <a href="migro-profile.html" class="step-pill done">
+      <div class="step-dot done">✓</div>
+      <span data-en="2 · Visa Routes" data-es="2 · Rutas">2 · Visa Routes</span>
+    </a>
+    <a href="migro-cities.html" class="step-pill done">
+      <div class="step-dot done">✓</div>
+      <span data-en="3 · City" data-es="3 · Ciudad">3 · City</span>
+    </a>
+    <a href="migro-options.html" class="step-pill done">
+      <div class="step-dot done">✓</div>
+      <span data-en="4 · Options" data-es="4 · Opciones">4 · Options</span>
+    </a>
+    <a href="migro-services.html" class="step-pill done">
+      <div class="step-dot done">✓</div>
+      <span data-en="5 · Services" data-es="5 · Servicios">5 · Servicios</span>
+    </a>
+    <a href="migro-plan.html" class="step-pill active">
+      <div class="step-dot active">6</div>
+      <span data-en="6 · My Plan" data-es="6 · Mi Plan">6 · My Plan</span>
+    </a>
+  </div>
+</div>
+
+<!-- PAGE BODY -->
+<div class="page-body">
+
+  <!-- LEFT COLUMN -->
+  <div class="left-col">
+
+    <!-- STEP STATUS -->
+    <p class="section-label fade-up" data-en="YOUR JOURNEY" data-es="TU RECORRIDO">YOUR JOURNEY</p>
+    <div class="steps-list">
+
+      <div class="step-card done fade-up">
+        <div class="step-card-inner">
+          <div class="step-num done">✓</div>
+          <div class="step-info">
+            <div class="step-name" data-en="Profile & Goals" data-es="Perfil y Objetivos">Profile & Goals</div>
+            <div class="step-desc" data-en="Colombia · Bachelor's · 5–7 yrs experience · Work goal" data-es="Colombia · Licenciatura · 5–7 años experiencia · Objetivo: trabajar">Colombia · Bachelor's · 5–7 yrs experience · Work goal</div>
+          </div>
+          <div class="step-right">
+            <span class="step-status status-done" data-en="Complete" data-es="Completo">Complete</span>
+            <a href="migro-profile.html" class="step-link" data-en="Edit" data-es="Editar">Edit</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card done fade-up">
+        <div class="step-card-inner">
+          <div class="step-num done">✓</div>
+          <div class="step-info">
+            <div class="step-name" data-en="Visa Route" data-es="Ruta de Visa">Visa Route</div>
+            <div class="step-desc" data-en="Subclass 482 TSS — Employer-sponsored skilled worker" data-es="Subclase 482 TSS — Trabajador calificado patrocinado por empleador">Subclass 482 TSS — Employer-sponsored skilled worker</div>
+          </div>
+          <div class="step-right">
+            <span class="step-status status-done" data-en="Complete" data-es="Completo">Complete</span>
+            <a href="migro-profile.html" class="step-link" data-en="Review" data-es="Revisar">Review</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card done fade-up">
+        <div class="step-card-inner">
+          <div class="step-num done">✓</div>
+          <div class="step-info">
+            <div class="step-name" data-en="City Selected" data-es="Ciudad Seleccionada">City Selected</div>
+            <div class="step-desc" data-en="Sydney, NSW — 12,000+ open tech & healthcare roles, strong LATAM community" data-es="Sydney, NSW — +12,000 puestos abiertos en tech y salud, fuerte comunidad LATAM">Sydney, NSW — 12,000+ open tech & healthcare roles, strong LATAM community</div>
+          </div>
+          <div class="step-right">
+            <span class="step-status status-done" data-en="Complete" data-es="Completo">Complete</span>
+            <a href="migro-cities.html" class="step-link" data-en="Change" data-es="Cambiar">Change</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card done fade-up">
+        <div class="step-card-inner">
+          <div class="step-num done">✓</div>
+          <div class="step-info">
+            <div class="step-name" data-en="Options Explored" data-es="Opciones Exploradas">Options Explored</div>
+            <div class="step-desc" data-en="Employers, universities, courses and job listings reviewed in Sydney" data-es="Empleadores, universidades, cursos y empleos revisados en Sydney">Employers, universities, courses and job listings reviewed in Sydney</div>
+          </div>
+          <div class="step-right">
+            <span class="step-status status-done" data-en="Complete" data-es="Completo">Complete</span>
+            <a href="migro-options.html" class="step-link" data-en="Browse" data-es="Explorar">Browse</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card done fade-up">
+        <div class="step-card-inner">
+          <div class="step-num done">✓</div>
+          <div class="step-info">
+            <div class="step-name" data-en="Professional Services" data-es="Servicios Profesionales">Professional Services</div>
+            <div class="step-desc" data-en="Migration agents, lawyers & housing options reviewed and saved" data-es="Agentes migratorios, abogados y opciones de alojamiento revisados y guardados">Migration agents, lawyers & housing options reviewed and saved</div>
+          </div>
+          <div class="step-right">
+            <span class="step-status status-done" data-en="Complete" data-es="Completo">Complete</span>
+            <a href="migro-services.html" class="step-link" data-en="View" data-es="Ver">View</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card active fade-up">
+        <div class="step-card-inner">
+          <div class="step-num active">6</div>
+          <div class="step-info">
+            <div class="step-name" data-en="My Migration Plan" data-es="Mi Plan Migratorio">My Migration Plan</div>
+            <div class="step-desc" data-en="Your step-by-step roadmap is ready. Lodge target: April 2026." data-es="Tu hoja de ruta paso a paso está lista. Fecha objetivo de solicitud: Abril 2026.">Your step-by-step roadmap is ready. Lodge target: April 2026.</div>
+          </div>
+          <div class="step-right">
+            <span class="step-status status-active" data-en="In progress" data-es="En curso">In progress</span>
+            <a href="migro-plan.html" class="step-link primary" data-en="Open →" data-es="Abrir →">Open →</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- KEY DECISIONS -->
+    <p class="section-label fade-up" data-en="YOUR KEY DECISIONS" data-es="TUS DECISIONES CLAVE">YOUR KEY DECISIONS</p>
+    <div class="decisions-grid">
+
+      <div class="decision-card fade-up">
+        <div class="decision-icon">🎯</div>
+        <div class="decision-label" data-en="TARGET VISA" data-es="VISA OBJETIVO">TARGET VISA</div>
+        <div class="decision-value">Subclass 482</div>
+        <div class="decision-sub" data-en="Temporary Skill Shortage (TSS)" data-es="Escasez Temporal de Habilidades">Temporary Skill Shortage (TSS)</div>
+      </div>
+
+      <div class="decision-card fade-up">
+        <div class="decision-icon">🗺️</div>
+        <div class="decision-label" data-en="CITY" data-es="CIUDAD">CITY</div>
+        <div class="decision-value">Sydney</div>
+        <div class="decision-sub">New South Wales · Australia</div>
+      </div>
+
+      <div class="decision-card fade-up">
+        <div class="decision-icon">📍</div>
+        <div class="decision-label" data-en="PATHWAY GOAL" data-es="OBJETIVO FINAL">PATHWAY GOAL</div>
+        <div class="decision-value" data-en="482 → 186 → PR" data-es="482 → 186 → RP">482 → 186 → PR</div>
+        <div class="decision-sub" data-en="Employer nomination permanent residency" data-es="Residencia permanente por nominación">Employer nomination PR</div>
+      </div>
+
+      <div class="decision-card fade-up">
+        <div class="decision-icon">📅</div>
+        <div class="decision-label" data-en="LODGE TARGET" data-es="FECHA OBJETIVO">LODGE TARGET</div>
+        <div class="decision-value" data-en="April 2026" data-es="Abril 2026">April 2026</div>
+        <div class="decision-sub" data-en="~30 days from now" data-es="~30 días desde hoy">~30 days from now</div>
+      </div>
+
+      <div class="decision-card fade-up">
+        <div class="decision-icon">🧭</div>
+        <div class="decision-label" data-en="MIGRATION AGENT" data-es="AGENTE MIGRATORIO">MIGRATION AGENT</div>
+        <div class="decision-value">Sarah Chen</div>
+        <div class="decision-sub">MARN 1912847 · 4.9 ★</div>
+      </div>
+
+      <div class="decision-card fade-up">
+        <div class="decision-icon">🏠</div>
+        <div class="decision-label" data-en="HOUSING" data-es="ALOJAMIENTO">HOUSING</div>
+        <div class="decision-value">LandSafe Relocation</div>
+        <div class="decision-sub" data-en="Full package · AUD $990" data-es="Paquete completo · AUD $990">Full package · AUD $990</div>
+      </div>
+
+    </div>
+
+    <!-- PLAN MINI PREVIEW -->
+    <p class="section-label fade-up" data-en="YOUR PLAN AT A GLANCE" data-es="TU PLAN DE UN VISTAZO">YOUR PLAN AT A GLANCE</p>
+    <div class="plan-preview fade-up">
+      <div class="plan-preview-header">
+        <div class="plan-preview-title" data-en="482 Migration Plan · Sydney" data-es="Plan de Migración 482 · Sydney">482 Migration Plan · Sydney</div>
+        <a href="migro-plan.html" class="plan-preview-link" data-en="Open full plan →" data-es="Ver plan completo →">Open full plan →</a>
+      </div>
+      <div class="mini-phases">
+        <div class="mini-phase">
+          <div class="mini-phase-dot done"></div>
+          <span class="mini-phase-name" data-en="Phase 1 — Verify Eligibility" data-es="Fase 1 — Verificar Elegibilidad">Phase 1 — Verify Eligibility</span>
+          <span class="mini-phase-count">3 tasks</span>
+          <span class="mini-phase-tag mini-tag-done" data-en="Done" data-es="Listo">Done</span>
+        </div>
+        <div class="mini-phase">
+          <div class="mini-phase-dot done"></div>
+          <span class="mini-phase-name" data-en="Phase 2 — Gather Documents" data-es="Fase 2 — Reunir Documentos">Phase 2 — Gather Documents</span>
+          <span class="mini-phase-count">5 tasks</span>
+          <span class="mini-phase-tag mini-tag-done" data-en="Done" data-es="Listo">Done</span>
+        </div>
+        <div class="mini-phase">
+          <div class="mini-phase-dot active"></div>
+          <span class="mini-phase-name" data-en="Phase 3 — Skills Assessment" data-es="Fase 3 — Evaluación de Habilidades">Phase 3 — Skills Assessment</span>
+          <span class="mini-phase-count">2 tasks</span>
+          <span class="mini-phase-tag mini-tag-active" data-en="In progress" data-es="En curso">In progress</span>
+        </div>
+        <div class="mini-phase">
+          <div class="mini-phase-dot pending"></div>
+          <span class="mini-phase-name" data-en="Phase 4 — Health & Police" data-es="Fase 4 — Salud y Policía">Phase 4 — Health & Police</span>
+          <span class="mini-phase-count">3 tasks</span>
+          <span class="mini-phase-tag mini-tag-pending" data-en="Upcoming" data-es="Próximo">Upcoming</span>
+        </div>
+        <div class="mini-phase">
+          <div class="mini-phase-dot pending"></div>
+          <span class="mini-phase-name" data-en="Phase 5 — Lodge Application" data-es="Fase 5 — Presentar Solicitud">Phase 5 — Lodge Application</span>
+          <span class="mini-phase-count">4 tasks</span>
+          <span class="mini-phase-tag mini-tag-pending" data-en="Upcoming" data-es="Próximo">Upcoming</span>
+        </div>
+        <div class="mini-phase">
+          <div class="mini-phase-dot pending"></div>
+          <span class="mini-phase-name" data-en="Phase 6 — After Decision" data-es="Fase 6 — Tras la Decisión">Phase 6 — After Decision</span>
+          <span class="mini-phase-count">3 tasks</span>
+          <span class="mini-phase-tag mini-tag-pending" data-en="Upcoming" data-es="Próximo">Upcoming</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- OTHER PLANS -->
+    <p class="section-label fade-up" data-en="OTHER PLANS AVAILABLE" data-es="OTROS PLANES DISPONIBLES">OTHER PLANS AVAILABLE</p>
+    <div class="steps-list fade-up">
+      <div class="step-card">
+        <div class="step-card-inner">
+          <div style="font-size:22px;flex-shrink:0;">🇦🇺</div>
+          <div class="step-info">
+            <div class="step-name" data-en="Already in Australia" data-es="Ya estás en Australia">Already in Australia</div>
+            <div class="step-desc" data-en="Currently on a student, work, or bridging visa" data-es="Actualmente en visa de estudiante, trabajo o transitoria">Currently on a student, work, or bridging visa</div>
+          </div>
+          <a href="migro-plan-existing.html" class="step-link" data-en="View →" data-es="Ver →">View →</a>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-card-inner">
+          <div style="font-size:22px;flex-shrink:0;">⏰</div>
+          <div class="step-info">
+            <div class="step-name" data-en="Visa Expiring Soon" data-es="Visa Por Vencer">Visa Expiring Soon</div>
+            <div class="step-desc" data-en="Renew or transition before your current visa expires" data-es="Renueva o transiciona antes de que venza tu visa actual">Renew or transition before your current visa expires</div>
+          </div>
+          <a href="migro-plan-extension.html" class="step-link" data-en="View →" data-es="Ver →">View →</a>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-card-inner">
+          <div style="font-size:22px;flex-shrink:0;">🏆</div>
+          <div class="step-info">
+            <div class="step-name" data-en="PR → Citizenship" data-es="RP → Ciudadanía">PR → Citizenship</div>
+            <div class="step-desc" data-en="Apply for Australian citizenship after 4 years as PR" data-es="Solicita la ciudadanía australiana después de 4 años como RP">Apply for Australian citizenship after 4 years as PR</div>
+          </div>
+          <a href="migro-plan-citizenship.html" class="step-link" data-en="View →" data-es="Ver →">View →</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div class="right-col">
+
+    <!-- PROFILE CARD -->
+    <div class="profile-card fade-up">
+      <div class="profile-avatar-row">
+        <div class="profile-avatar-lg">🇨🇴</div>
+        <div>
+          <div class="profile-name">Dave</div>
+          <div class="profile-sub" data-en="Active since March 2026" data-es="Activo desde marzo 2026">Active since March 2026</div>
+        </div>
+      </div>
+      <div class="profile-rows">
+        <div class="profile-row">
+          <span class="pr-key" data-en="Nationality" data-es="Nacionalidad">Nationality</span>
+          <span class="pr-val">🇨🇴 Colombia</span>
+        </div>
+        <div class="profile-row">
+          <span class="pr-key" data-en="Education" data-es="Educación">Education</span>
+          <span class="pr-val" data-en="Bachelor's degree" data-es="Licenciatura">Bachelor's degree</span>
+        </div>
+        <div class="profile-row">
+          <span class="pr-key" data-en="Experience" data-es="Experiencia">Experience</span>
+          <span class="pr-val">5–7 years</span>
+        </div>
+        <div class="profile-row">
+          <span class="pr-key" data-en="Target visa" data-es="Visa objetivo">Target visa</span>
+          <span class="pr-badge green">482 TSS</span>
+        </div>
+        <div class="profile-row">
+          <span class="pr-key">IELTS</span>
+          <span class="pr-badge amber" data-en="Pending" data-es="Pendiente">Pending</span>
+        </div>
+        <div class="profile-row">
+          <span class="pr-key" data-en="City" data-es="Ciudad">City</span>
+          <span class="pr-val">🗺️ Sydney, NSW</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DEADLINES -->
+    <div class="deadline-card fade-up">
+      <div class="deadline-header" data-en="KEY DEADLINES" data-es="FECHAS CLAVE">KEY DEADLINES</div>
+      <div class="deadline-item">
+        <div class="deadline-dot d-amber"></div>
+        <div class="deadline-text">
+          <div class="d-title" data-en="Book IELTS exam" data-es="Reservar examen IELTS">Book IELTS exam</div>
+          <div class="d-date" data-en="Required for 482 lodge" data-es="Requerido para solicitud 482">Required for 482 lodge</div>
+          <span class="d-days soon" data-en="Do this week" data-es="Esta semana">Do this week</span>
+        </div>
+      </div>
+      <div class="deadline-item">
+        <div class="deadline-dot d-amber"></div>
+        <div class="deadline-text">
+          <div class="d-title" data-en="Skills assessment (if req'd)" data-es="Evaluación de habilidades">Skills assessment (if req'd)</div>
+          <div class="d-date" data-en="Can take 8–12 weeks to process" data-es="Puede tomar 8–12 semanas">Can take 8–12 weeks to process</div>
+          <span class="d-days soon" data-en="Start ASAP" data-es="Comenzar ya">Start ASAP</span>
+        </div>
+      </div>
+      <div class="deadline-item">
+        <div class="deadline-dot d-green"></div>
+        <div class="deadline-text">
+          <div class="d-title" data-en="Lodge 482 application" data-es="Presentar solicitud 482">Lodge 482 application</div>
+          <div class="d-date" data-en="Target: April 2026" data-es="Objetivo: Abril 2026">Target: April 2026</div>
+          <span class="d-days ok" data-en="~30 days away" data-es="~30 días restantes">~30 days away</span>
+        </div>
+      </div>
+      <div class="deadline-item">
+        <div class="deadline-dot d-green"></div>
+        <div class="deadline-text">
+          <div class="d-title" data-en="Police clearance (Colombia)" data-es="Antecedentes penales (Colombia)">Police clearance (Colombia)</div>
+          <div class="d-date" data-en="Must be issued within 12 months" data-es="Debe emitirse en los últimos 12 meses">Must be issued within 12 months</div>
+          <span class="d-days ok" data-en="Plan ahead" data-es="Planificar con anticipación">Plan ahead</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- IELTS CARD -->
+    <div class="ielts-card fade-up">
+      <div class="ielts-header">
+        <span class="ielts-title">IELTS SIMULATOR</span>
+        <a href="migro-ielts.html" class="ielts-link" data-en="Practice →" data-es="Practicar →">Practice →</a>
+      </div>
+      <div class="ielts-bands">
+        <div class="band-item">
+          <div class="band-label">OVERALL</div>
+          <div class="band-val pending">—</div>
+          <div class="band-req" data-en="Need: 6.0+" data-es="Necesitas: 6.0+">Need: 6.0+</div>
+        </div>
+        <div class="band-item">
+          <div class="band-label">READING</div>
+          <div class="band-val pending">—</div>
+          <div class="band-req" data-en="Need: 6.0" data-es="Necesitas: 6.0">Need: 6.0</div>
+        </div>
+        <div class="band-item">
+          <div class="band-label">LISTENING</div>
+          <div class="band-val pending">—</div>
+          <div class="band-req" data-en="Need: 6.0" data-es="Necesitas: 6.0">Need: 6.0</div>
+        </div>
+        <div class="band-item">
+          <div class="band-label">WRITING</div>
+          <div class="band-val pending">—</div>
+          <div class="band-req" data-en="Need: 6.0" data-es="Necesitas: 6.0">Need: 6.0</div>
+        </div>
+      </div>
+      <a href="migro-ielts.html" class="ielts-cta" data-en="Start practice test →" data-es="Iniciar prueba práctica →">Start practice test →</a>
+    </div>
+
+    <!-- QUICK LINKS -->
+    <div class="quick-card fade-up">
+      <div class="quick-card-title" data-en="QUICK LINKS" data-es="ACCESOS RÁPIDOS">QUICK LINKS</div>
+      <a href="migro-plan.html" class="quick-link">
+        <div class="quick-link-icon">📋</div>
+        <span data-en="My 482 migration plan" data-es="Mi plan migratorio 482">My 482 migration plan</span>
+        <span class="quick-link-arrow">›</span>
+      </a>
+      <a href="migro-services.html" class="quick-link">
+        <div class="quick-link-icon">🧭</div>
+        <span data-en="Find a migration agent" data-es="Encontrar agente migratorio">Find a migration agent</span>
+        <span class="quick-link-arrow">›</span>
+      </a>
+      <a href="migro-ielts.html" class="quick-link">
+        <div class="quick-link-icon">📝</div>
+        <span data-en="IELTS practice simulator" data-es="Simulador de IELTS">IELTS practice simulator</span>
+        <span class="quick-link-arrow">›</span>
+      </a>
+      <a href="migro-options.html" class="quick-link">
+        <div class="quick-link-icon">💼</div>
+        <span data-en="Employers & universities" data-es="Empleadores y universidades">Employers & universities</span>
+        <span class="quick-link-arrow">›</span>
+      </a>
+      <a href="migro-plan-existing.html" class="quick-link">
+        <div class="quick-link-icon">🇦🇺</div>
+        <span data-en="Already in Australia plan" data-es="Plan para los que ya están">Already in Australia plan</span>
+        <span class="quick-link-arrow">›</span>
+      </a>
+      <a href="migro-plan-citizenship.html" class="quick-link">
+        <div class="quick-link-icon">🏆</div>
+        <span data-en="Citizenship pathway" data-es="Camino a la ciudadanía">Citizenship pathway</span>
+        <span class="quick-link-arrow">›</span>
+      </a>
+      <a href="migro-visa-compare.html" class="quick-link">
+        <div class="quick-link-icon">⚖️</div>
+        <span data-en="Visa comparator" data-es="Comparador de visas">Visa comparator</span>
+        <span class="quick-link-arrow">›</span>
+      </a>
+      <a href="migro-points-calc.html" class="quick-link">
+        <div class="quick-link-icon">🧮</div>
+        <span data-en="Points calculator" data-es="Calculadora de puntos">Points calculator</span>
+        <span class="quick-link-arrow">›</span>
+      </a>
+      <a href="migro-ielts.html" class="quick-link">
+        <div class="quick-link-icon">🎧</div>
+        <span data-en="IELTS tracker" data-es="Seguimiento IELTS">IELTS tracker</span>
+        <span class="quick-link-arrow">›</span>
+      </a>
+      <a href="migro-docs.html" class="quick-link">
+        <div class="quick-link-icon">📂</div>
+        <span data-en="Document checklist" data-es="Lista de documentos">Document checklist</span>
+        <span class="quick-link-arrow">›</span>
+      </a>
+      <a href="migro-eoi.html" class="quick-link">
+        <div class="quick-link-icon">✉️</div>
+        <span data-en="EOI & SkillSelect" data-es="EOI y SkillSelect">EOI & SkillSelect</span>
+        <span class="quick-link-arrow">›</span>
+      </a>
+      <a href="migro-state-nomination.html" class="quick-link">
+        <div class="quick-link-icon">🗺️</div>
+        <span data-en="State nomination" data-es="Nominación estatal">State nomination</span>
+        <span class="quick-link-arrow">›</span>
+      </a>
+      <a href="migro-skills-assessment.html" class="quick-link">
+        <div class="quick-link-icon">🎓</div>
+        <span data-en="Skills assessment" data-es="Evaluación de habilidades">Skills assessment</span>
+        <span class="quick-link-arrow">›</span>
+      </a>
+      <a href="migro-costs.html" class="quick-link">
+        <div class="quick-link-icon">💰</div>
+        <span data-en="Costs & fees" data-es="Costos y tarifas">Costs & fees</span>
+        <span class="quick-link-arrow">›</span>
+      </a>
+      <a href="migro-roadmap.html" class="quick-link">
+        <div class="quick-link-icon">🗺️</div>
+        <span data-en="Migration roadmap" data-es="Hoja de ruta migratoria">Migration roadmap</span>
+        <span class="quick-link-arrow">›</span>
+      </a>
+      <a href="migro-482.html" class="quick-link">
+        <div class="quick-link-icon">🏢</div>
+        <span data-en="482 TSS visa" data-es="Visa 482 TSS">482 TSS visa</span>
+        <span class="quick-link-arrow">›</span>
+      </a>
+      <a href="migro-186.html" class="quick-link">
+        <div class="quick-link-icon">🏛️</div>
+        <span data-en="186 ENS visa" data-es="Visa 186 ENS">186 ENS visa</span>
+        <span class="quick-link-arrow">›</span>
+      </a>
+      <a href="migro-485.html" class="quick-link">
+        <div class="quick-link-icon">🎓</div>
+        <span data-en="485 Graduate visa" data-es="Visa 485 Graduado">485 Graduate visa</span>
+        <span class="quick-link-arrow">›</span>
+      </a>
+      <a href="migro-500.html" class="quick-link">
+        <div class="quick-link-icon">📚</div>
+        <span data-en="500 Student visa" data-es="Visa 500 Estudiante">500 Student visa</span>
+        <span class="quick-link-arrow">›</span>
+      </a>
+      <a href="migro-partner.html" class="quick-link">
+        <div class="quick-link-icon">💍</div>
+        <span data-en="Partner visa" data-es="Visa de pareja">Partner visa</span>
+        <span class="quick-link-arrow">›</span>
+      </a>
+      <a href="migro-491-191.html" class="quick-link">
+        <div class="quick-link-icon">🌿</div>
+        <span data-en="491 → 191 Regional" data-es="491 → 191 Regional">491 → 191 Regional</span>
+        <span class="quick-link-arrow">›</span>
+      </a>
+      <a href="migro-agents.html" class="quick-link">
+        <div class="quick-link-icon">⚖️</div>
+        <span data-en="Migration agents" data-es="Agentes de migración">Migration agents</span>
+        <span class="quick-link-arrow">›</span>
+      </a>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  let currentLang = 'en';
+
+  function setLang(lang) {
+    currentLang = lang;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent === lang.toUpperCase()));
+    document.querySelectorAll('[data-en]').forEach(el => {
+      const t = el.getAttribute('data-' + lang);
+      if (t) el.innerHTML = t;
+    });
+  }
+
+  // Animate progress bar on load
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('op-bar').style.width = '83%';
+    }, 400);
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 70);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.06 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
