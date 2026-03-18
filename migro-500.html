@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Migro — Visa 500 Student</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --black:#0f0f0f;--white:#ffffff;
+  --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-300:#d1d5db;
+  --gray-500:#6b7280;--gray-600:#4b5563;--gray-700:#374151;--gray-800:#1f2937;
+  --green:#16a34a;--green-bg:#f0fdf4;--green-border:#bbf7d0;
+  --amber:#d97706;--amber-bg:#fffbeb;--amber-border:#fde68a;
+  --red:#dc2626;--red-bg:#fef2f2;--red-border:#fecaca;
+  --blue:#2563eb;--blue-bg:#eff6ff;--blue-border:#bfdbfe;
+  --purple:#7c3aed;--purple-bg:#f5f3ff;--purple-border:#ddd6fe;
+  --teal:#0d9488;--teal-bg:#f0fdfa;--teal-border:#99f6e4;
+  --orange:#ea580c;--orange-bg:#fff7ed;--orange-border:#fed7aa;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:var(--gray-800);background:var(--gray-50);line-height:1.6}
+a{color:inherit;text-decoration:none}
+.nav{background:var(--white);border-bottom:1px solid var(--gray-200);position:sticky;top:0;z-index:100;padding:0 1.5rem}
+.nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+.nav-brand{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--black)}
+.nav-links{display:flex;align-items:center;gap:1.25rem}
+.nav-links a{font-size:.85rem;font-weight:500;color:var(--gray-600)}
+.nav-links a:hover{color:var(--black)}
+.lang-btn{background:var(--gray-100);border:none;border-radius:6px;padding:.3rem .75rem;font-size:.8rem;font-weight:600;cursor:pointer;color:var(--gray-700)}
+.hero{background:linear-gradient(135deg,#f5f3ff 0%,#ddd6fe 100%);padding:3rem 1.5rem 2.5rem}
+.hero-inner{max-width:1100px;margin:0 auto}
+.hero-tag{display:inline-block;background:var(--purple);color:#fff;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .75rem;border-radius:999px;margin-bottom:1rem}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;color:var(--black);max-width:700px;line-height:1.2;margin-bottom:.75rem}
+.hero p{color:var(--gray-600);font-size:1rem;max-width:600px}
+.breadcrumb{display:flex;align-items:center;gap:.5rem;margin-bottom:1.5rem;font-size:.8rem;color:var(--gray-500)}
+.breadcrumb a{color:var(--purple);font-weight:500}
+.container{max-width:1100px;margin:0 auto;padding:3rem 1.5rem}
+.section-title{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--black);margin-bottom:1.5rem}
+.section{margin-bottom:3rem}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
+.card{background:var(--white);border:1px solid var(--gray-200);border-radius:12px;padding:1.25rem}
+.card-icon{font-size:1.6rem;margin-bottom:.6rem}
+.card-label{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gray-500);margin-bottom:.3rem}
+.card-value{font-size:1rem;font-weight:600;color:var(--black)}
+.card-sub{font-size:.8rem;color:var(--gray-500);margin-top:.25rem}
+.steps{display:flex;flex-direction:column;gap:0}
+.step{display:grid;grid-template-columns:48px 1fr;gap:1rem;position:relative}
+.step:not(:last-child)::after{content:'';position:absolute;left:23px;top:48px;width:2px;height:calc(100% - 24px);background:var(--gray-200)}
+.step-num{width:48px;height:48px;border-radius:50%;background:var(--purple-bg);border:2px solid var(--purple);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.95rem;color:var(--purple);flex-shrink:0;z-index:1}
+.step-body{padding-bottom:1.75rem}
+.step-title{font-weight:700;font-size:.95rem;color:var(--black);margin-bottom:.3rem}
+.step-desc{font-size:.85rem;color:var(--gray-600);line-height:1.6}
+.callout{border-radius:12px;padding:1.25rem 1.5rem;display:flex;gap:1rem;align-items:flex-start;margin-bottom:1.5rem}
+.callout-green{background:var(--green-bg);border:1px solid var(--green-border)}
+.callout-amber{background:var(--amber-bg);border:1px solid var(--amber-border)}
+.callout-blue{background:var(--blue-bg);border:1px solid var(--blue-border)}
+.callout-purple{background:var(--purple-bg);border:1px solid var(--purple-border)}
+.callout-red{background:var(--red-bg);border:1px solid var(--red-border)}
+.callout-icon{font-size:1.25rem;flex-shrink:0;margin-top:.05rem}
+.callout-body h4{font-size:.9rem;font-weight:700;color:var(--black);margin-bottom:.3rem}
+.callout-body p{font-size:.82rem;color:var(--gray-700);line-height:1.5}
+.compare-table{width:100%;border-collapse:collapse;background:var(--white);border-radius:12px;overflow:hidden;border:1px solid var(--gray-200)}
+.compare-table th{background:var(--gray-100);padding:.75rem 1rem;text-align:left;font-size:.78rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--gray-600);border-bottom:1px solid var(--gray-200)}
+.compare-table td{padding:.75rem 1rem;font-size:.85rem;color:var(--gray-700);border-bottom:1px solid var(--gray-100)}
+.compare-table tr:last-child td{border-bottom:none}
+.compare-table tr:hover td{background:var(--gray-50)}
+.tick{color:var(--green);font-weight:700}
+.cross{color:var(--red)}
+.badge{display:inline-block;font-size:.68rem;font-weight:700;padding:.2rem .55rem;border-radius:999px}
+.badge-green{background:var(--green-bg);color:var(--green)}
+.badge-amber{background:var(--amber-bg);color:var(--amber)}
+.badge-blue{background:var(--blue-bg);color:var(--blue)}
+.badge-purple{background:var(--purple-bg);color:var(--purple)}
+/* SECTOR CARDS */
+.sector-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem}
+.sector-card{background:var(--white);border:1px solid var(--gray-200);border-radius:12px;padding:1.25rem}
+.sector-icon{font-size:1.4rem;margin-bottom:.5rem}
+.sector-title{font-weight:700;font-size:.9rem;color:var(--black);margin-bottom:.35rem}
+.sector-desc{font-size:.8rem;color:var(--gray-600);line-height:1.5}
+.sector-link{font-size:.75rem;color:var(--purple);font-weight:500;margin-top:.4rem;display:block}
+/* CHECKLIST */
+.checklist{display:flex;flex-direction:column;gap:.5rem}
+.check-item{background:var(--white);border:1px solid var(--gray-200);border-radius:8px;padding:.75rem 1rem;display:flex;gap:.75rem;align-items:flex-start;font-size:.85rem;color:var(--gray-700)}
+.check-item .ci-icon{font-size:1rem;flex-shrink:0;margin-top:.05rem}
+.check-item strong{color:var(--black);display:block;margin-bottom:.15rem}
+/* TIPS */
+.tips-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.9rem}
+.tip{background:var(--white);border:1px solid var(--gray-200);border-radius:10px;padding:1rem 1.1rem;display:flex;gap:.75rem}
+.tip-icon{font-size:1.1rem;flex-shrink:0}
+.tip-text{font-size:.83rem;color:var(--gray-700);line-height:1.5}
+.tip-text strong{color:var(--black);display:block;margin-bottom:.15rem}
+/* ACCORDION */
+.accordion{display:flex;flex-direction:column;gap:.5rem}
+.acc-item{background:var(--white);border:1px solid var(--gray-200);border-radius:10px;overflow:hidden}
+.acc-trigger{width:100%;display:flex;justify-content:space-between;align-items:center;padding:1rem 1.25rem;background:none;border:none;cursor:pointer;font-size:.9rem;font-weight:600;color:var(--black);text-align:left;gap:1rem}
+.acc-trigger:hover{background:var(--gray-50)}
+.acc-chevron{font-size:1rem;transition:transform .3s;flex-shrink:0}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1)}
+.acc-body.open{max-height:800px}
+.acc-content{padding:0 1.25rem 1rem;font-size:.85rem;color:var(--gray-600);line-height:1.7}
+.resources-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.9rem}
+.resource-card{background:var(--white);border:1px solid var(--gray-200);border-radius:10px;padding:1rem;display:flex;flex-direction:column;gap:.35rem;transition:border-color .2s}
+.resource-card:hover{border-color:var(--purple)}
+.resource-card .res-title{font-size:.85rem;font-weight:600;color:var(--black)}
+.resource-card .res-sub{font-size:.75rem;color:var(--gray-500)}
+.resource-card .res-link{font-size:.75rem;color:var(--purple);font-weight:500;margin-top:auto}
+.fade-up{opacity:0;transform:translateY(24px);transition:opacity .55s ease,transform .55s ease}
+.fade-up.visible{opacity:1;transform:none}
+@media(max-width:640px){.card-grid,.sector-grid,.tips-grid,.resources-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="migro-dashboard.html" class="nav-brand">Migro</a>
+    <div class="nav-links">
+      <a href="migro-dashboard.html" data-en="Dashboard" data-es="Inicio">Dashboard</a>
+      <a href="migro-485.html" data-en="Visa 485" data-es="Visa 485">Visa 485</a>
+      <button class="lang-btn" onclick="toggleLang()">ES</button>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb">
+      <a href="migro-dashboard.html">Migro</a>
+      <span>›</span>
+      <span>Visa 500</span>
+    </div>
+    <div class="hero-tag" data-en="Student Visa" data-es="Visa de Estudiante">Student Visa</div>
+    <h1 data-en="Subclass 500 — Student Visa" data-es="Subclase 500 — Visa de Estudiante">Subclass 500 — Student Visa</h1>
+    <p data-en="Study at a CRICOS-registered institution in Australia. The first step for many migrants on the study-to-PR pathway." data-es="Estudia en una institución registrada en CRICOS en Australia. El primer paso para muchos migrantes en la vía estudio-RP.">Study at a CRICOS-registered institution in Australia. The first step for many migrants on the study-to-PR pathway.</p>
+  </div>
+</section>
+
+<div class="container">
+
+  <!-- KEY FACTS -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Key facts at a glance" data-es="Datos clave de un vistazo">Key facts at a glance</h2>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">📚</div>
+        <div class="card-label" data-en="Visa type" data-es="Tipo de visa">Visa type</div>
+        <div class="card-value" data-en="Temporary — study" data-es="Temporal — estudio">Temporary — study</div>
+        <div class="card-sub" data-en="Tied to course duration" data-es="Vinculada a la duración del curso">Tied to course duration</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">💼</div>
+        <div class="card-label" data-en="Work rights" data-es="Derechos laborales">Work rights</div>
+        <div class="card-value" data-en="48 hrs / fortnight" data-es="48 horas / quincena">48 hrs / fortnight</div>
+        <div class="card-sub" data-en="Unlimited during official breaks" data-es="Ilimitado durante vacaciones oficiales">Unlimited during official breaks</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">💰</div>
+        <div class="card-label" data-en="VAC (primary)" data-es="Cargo visa (principal)">VAC (primary)</div>
+        <div class="card-value">$710</div>
+        <div class="card-sub" data-en="2025–26 financial year" data-es="Año financiero 2025–26">2025–26 financial year</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🌏</div>
+        <div class="card-label" data-en="Where to apply" data-es="Dónde aplicar">Where to apply</div>
+        <div class="card-value" data-en="Onshore or offshore" data-es="Dentro o fuera de Australia">Onshore or offshore</div>
+        <div class="card-sub" data-en="Most apply from home country" data-es="La mayoría aplica desde su país">Most apply from home country</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">💊</div>
+        <div class="card-label">OSHC</div>
+        <div class="card-value" data-en="Required" data-es="Requerido">Required</div>
+        <div class="card-sub" data-en="Overseas Student Health Cover for duration" data-es="Seguro de salud para estudiantes extranjeros">Overseas Student Health Cover for duration</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎓</div>
+        <div class="card-label" data-en="Eligible institutions" data-es="Instituciones elegibles">Eligible institutions</div>
+        <div class="card-value">CRICOS</div>
+        <div class="card-sub" data-en="Commonwealth Register of Institutions" data-es="Registro de Instituciones del Commonwealth">Commonwealth Register of Institutions</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT CAN YOU STUDY -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="What can you study on the 500?" data-es="¿Qué puedes estudiar con la visa 500?">What can you study on the 500?</h2>
+    <div class="sector-grid">
+      <div class="sector-card">
+        <div class="sector-icon">🏫</div>
+        <div class="sector-title" data-en="School sector" data-es="Sector escolar">School sector</div>
+        <div class="sector-desc" data-en="Primary and secondary school programs at CRICOS-registered schools. Family members of skilled migrants often use this for children." data-es="Programas de primaria y secundaria en escuelas registradas en CRICOS. Familiares de migrantes calificados a menudo la usan para sus hijos.">Primary and secondary school programs at CRICOS-registered schools. Family members of skilled migrants often use this for children.</div>
+      </div>
+      <div class="sector-card">
+        <div class="sector-icon">📜</div>
+        <div class="sector-title">English Language (ELICOS)</div>
+        <div class="sector-desc" data-en="English language intensive courses for overseas students. Often taken before a degree program to meet admission English requirements." data-es="Cursos intensivos de inglés para estudiantes extranjeros. A menudo se realizan antes de un programa de grado para cumplir los requisitos de inglés.">English language intensive courses for overseas students. Often taken before a degree program to meet admission English requirements.</div>
+      </div>
+      <div class="sector-card">
+        <div class="sector-icon">🔧</div>
+        <div class="sector-title" data-en="VET / TAFE" data-es="VET / TAFE">VET / TAFE</div>
+        <div class="sector-desc" data-en="Vocational Education and Training — certificates, diplomas, and advanced diplomas in trades, hospitality, IT, business, and more. Can lead to Graduate Work 485." data-es="Educación y Formación Vocacional — certificados, diplomas y diplomas avanzados en oficios, gastronomía, IT, negocios y más. Puede llevar a la corriente Graduate Work 485.">Vocational Education and Training — certificates, diplomas, and advanced diplomas in trades, hospitality, IT, business, and more. Can lead to Graduate Work 485.</div>
+      </div>
+      <div class="sector-card">
+        <div class="sector-icon">🎓</div>
+        <div class="sector-title" data-en="Higher Education" data-es="Educación Superior">Higher Education</div>
+        <div class="sector-desc" data-en="Bachelor, Honours, Masters (coursework or research), and Doctoral degrees at Australian universities. Best pathway to the 485 Post-Study Work stream." data-es="Licenciatura, Honores, Maestría (por cursos o investigación) y Doctorado en universidades australianas. Mejor camino a la corriente Post-Study Work de la visa 485.">Bachelor, Honours, Masters (coursework or research), and Doctoral degrees at Australian universities. Best pathway to the 485 Post-Study Work stream.</div>
+        <a href="migro-485.html" class="sector-link" data-en="See 485 guide →" data-es="Ver guía 485 →">See 485 guide →</a>
+      </div>
+      <div class="sector-card">
+        <div class="sector-icon">🔬</div>
+        <div class="sector-title" data-en="Postgraduate Research" data-es="Investigación de Posgrado">Postgraduate Research</div>
+        <div class="sector-desc" data-en="Masters by research and PhDs. Often come with scholarships (APA, university scholarships). PhD graduates get 4 years on the 485." data-es="Maestrías por investigación y Doctorados. A menudo incluyen becas (APA, becas universitarias). Los graduados de Doctorado obtienen 4 años en la visa 485.">Masters by research and PhDs. Often come with scholarships (APA, university scholarships). PhD graduates get 4 years on the 485.</div>
+        <a href="migro-485.html" class="sector-link" data-en="See 485 guide →" data-es="Ver guía 485 →">See 485 guide →</a>
+      </div>
+      <div class="sector-card">
+        <div class="sector-icon">🌐</div>
+        <div class="sector-title" data-en="Foundation programs" data-es="Programas de preparación">Foundation programs</div>
+        <div class="sector-desc" data-en="Bridging programs that prepare students for university entry. Often used by students whose secondary qualifications are not recognized for direct university entry." data-es="Programas puente que preparan a los estudiantes para la entrada a la universidad. A menudo los usan estudiantes cuyas calificaciones secundarias no son reconocidas para entrada directa.">Bridging programs that prepare students for university entry. Often used by students whose secondary qualifications are not recognized for direct university entry.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ELIGIBILITY REQUIREMENTS -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Eligibility requirements" data-es="Requisitos de elegibilidad">Eligibility requirements</h2>
+    <div class="checklist">
+      <div class="check-item">
+        <div class="ci-icon">📝</div>
+        <div><strong data-en="Genuine Temporary Entrant (GTE)" data-es="Entrante Temporal Genuino (GTE)">Genuine Temporary Entrant (GTE)</strong><span data-en="You must demonstrate genuine intent to temporarily enter Australia for study and plan to return home afterward. This is assessed by a case officer based on your personal statement, financial situation, and immigration history." data-es="Debes demostrar intención genuina de entrar temporalmente a Australia para estudiar y planear regresar a tu país. Lo evalúa un oficial según tu declaración personal, situación financiera e historial migratorio.">You must demonstrate genuine intent to temporarily enter Australia for study and plan to return home afterward. This is assessed by a case officer based on your personal statement, financial situation, and immigration history.</span></div>
+      </div>
+      <div class="check-item">
+        <div class="ci-icon">🎓</div>
+        <div><strong data-en="Confirmation of Enrolment (CoE)" data-es="Confirmación de Inscripción (CoE)">Confirmation of Enrolment (CoE)</strong><span data-en="You must have a valid CoE from a CRICOS-registered provider before lodging your visa application. Your institution issues this after you accept their offer and pay the initial tuition fee." data-es="Debes tener un CoE válido de un proveedor registrado en CRICOS antes de presentar la solicitud. Tu institución lo emite después de que aceptas su oferta y pagas la matrícula inicial.">You must have a valid CoE from a CRICOS-registered provider before lodging your visa application. Your institution issues this after you accept their offer and pay the initial tuition fee.</span></div>
+      </div>
+      <div class="check-item">
+        <div class="ci-icon">🌐</div>
+        <div><strong data-en="English language proficiency" data-es="Competencia en inglés">English language proficiency</strong><span data-en="Requirements vary by institution and course level. Typically: IELTS Academic 5.5–7.0 depending on course. Some universities accept TOEFL, PTE, or Cambridge. English test must usually be taken within 2 years of application." data-es="Los requisitos varían según la institución y el nivel del curso. Típicamente: IELTS Académico 5.5–7.0 según el curso. Algunas universidades aceptan TOEFL, PTE o Cambridge. La prueba de inglés debe tomarse generalmente dentro de los 2 años de la solicitud.">Requirements vary by institution and course level. Typically: IELTS Academic 5.5–7.0 depending on course. Some universities accept TOEFL, PTE, or Cambridge. English test must usually be taken within 2 years of application.</span></div>
+      </div>
+      <div class="check-item">
+        <div class="ci-icon">💰</div>
+        <div><strong data-en="Financial capacity" data-es="Capacidad financiera">Financial capacity</strong><span data-en="You must show you have enough money to cover: 1st year tuition fees + $21,041 living costs + travel costs. For a partner add $7,362, for each child add $3,152. Evidence can include bank statements, scholarship letters, or sponsor letters." data-es="Debes demostrar que tienes suficiente dinero para: matrícula del 1er año + $21,041 costos de vida + costos de viaje. Para pareja agrega $7,362, por cada hijo $3,152. La evidencia puede incluir extractos bancarios, cartas de becas o cartas de patrocinio.">You must show you have enough money to cover: 1st year tuition fees + $21,041 living costs + travel costs. For a partner add $7,362, for each child add $3,152. Evidence can include bank statements, scholarship letters, or sponsor letters.</span></div>
+      </div>
+      <div class="check-item">
+        <div class="ci-icon">💊</div>
+        <div><strong data-en="Overseas Student Health Cover (OSHC)" data-es="Seguro OSHC">Overseas Student Health Cover (OSHC)</strong><span data-en="You must maintain OSHC for the entire duration of your student visa. Your institution may arrange this for you as part of your enrolment, or you can purchase it independently from approved providers like Allianz, Medibank, or BUPA." data-es="Debes mantener OSHC durante toda la duración de tu visa de estudiante. Tu institución puede gestionarlo como parte de tu inscripción, o puedes comprarlo de proveedores aprobados como Allianz, Medibank o BUPA.">You must maintain OSHC for the entire duration of your student visa. Your institution may arrange this for you as part of your enrolment, or you can purchase it independently from approved providers like Allianz, Medibank, or BUPA.</span></div>
+      </div>
+      <div class="check-item">
+        <div class="ci-icon">🏥</div>
+        <div><strong data-en="Health and character" data-es="Salud y carácter">Health and character</strong><span data-en="You must meet health requirements (chest X-ray may be required depending on country of origin) and character requirements (police clearance from any country you've lived in for 12+ months)." data-es="Debes cumplir los requisitos de salud (puede requerirse radiografía de tórax según tu país de origen) y requisitos de carácter (antecedentes penales de cualquier país donde hayas vivido 12+ meses).">You must meet health requirements (chest X-ray may be required depending on country of origin) and character requirements (police clearance from any country you've lived in for 12+ months).</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORK RIGHTS -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Work rights on the 500" data-es="Derechos laborales con la visa 500">Work rights on the 500</h2>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th data-en="Period" data-es="Período">Period</th>
+          <th data-en="Work limit" data-es="Límite de trabajo">Work limit</th>
+          <th data-en="Notes" data-es="Notas">Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-en="During semester / term" data-es="Durante el semestre / período">During semester / term</td>
+          <td><strong data-en="48 hrs per fortnight" data-es="48 horas por quincena">48 hrs per fortnight</strong></td>
+          <td data-en="A fortnight is a 14-day period" data-es="Una quincena es un período de 14 días">A fortnight is a 14-day period</td>
+        </tr>
+        <tr>
+          <td data-en="During official course breaks / holidays" data-es="Durante vacaciones y recesos del curso">During official course breaks / holidays</td>
+          <td><strong data-en="Unlimited" data-es="Ilimitado">Unlimited</strong></td>
+          <td data-en="Must be enrolled in next semester" data-es="Debes estar inscrito en el siguiente semestre">Must be enrolled in next semester</td>
+        </tr>
+        <tr>
+          <td data-en="Partner / spouse" data-es="Pareja / cónyuge">Partner / spouse</td>
+          <td><strong data-en="48 hrs / fortnight OR unlimited" data-es="48 hrs / quincena O ilimitado">48 hrs / fortnight OR unlimited</strong></td>
+          <td data-en="Unlimited if primary holder in Masters/PhD" data-es="Ilimitado si el titular principal está en Maestría/PhD">Unlimited if primary holder in Masters/PhD</td>
+        </tr>
+        <tr>
+          <td data-en="For healthcare / aged care workers" data-es="Para trabajadores de salud / cuidado de mayores">For healthcare / aged care workers</td>
+          <td><span class="badge badge-green" data-en="Unlimited (temporary measure)" data-es="Ilimitado (medida temporal)">Unlimited (temporary measure)</span></td>
+          <td data-en="Check current government advice" data-es="Verifica el aviso gubernamental actual">Check current government advice</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="callout callout-amber" style="margin-top:1rem">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body">
+        <h4 data-en="Don't exceed the work limit" data-es="No superes el límite de trabajo">Don't exceed the work limit</h4>
+        <p data-en="Exceeding the work hour limit is a visa condition breach. Your employer cannot authorize extra hours — it is your responsibility to track and enforce the limit. Multiple breaches can result in visa cancellation." data-es="Exceder el límite de horas de trabajo es una violación de la condición de visa. Tu empleador no puede autorizar horas extra — es tu responsabilidad rastrear y cumplir el límite. Múltiples infracciones pueden resultar en cancelación de visa.">Exceeding the work hour limit is a visa condition breach. Your employer cannot authorize extra hours — it is your responsibility to track and enforce the limit. Multiple breaches can result in visa cancellation.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW TO APPLY -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="How to apply" data-es="Cómo aplicar">How to apply</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title" data-en="Choose your course and institution" data-es="Elige tu curso e institución">Choose your course and institution</div>
+          <div class="step-desc" data-en="Select a CRICOS-registered institution. Consider: course quality, institution ranking, location (metro vs regional), pathway to PR, and graduate employment rates. Regional institutions often offer lower tuition fees and better 485 bonus years." data-es="Selecciona una institución registrada en CRICOS. Considera: calidad del curso, ranking de la institución, ubicación (metro vs regional), camino a la RP y tasas de empleo de graduados. Las instituciones regionales a menudo ofrecen matrículas más bajas y mejores años de bonificación en la visa 485.">Select a CRICOS-registered institution. Consider: course quality, institution ranking, location (metro vs regional), pathway to PR, and graduate employment rates. Regional institutions often offer lower tuition fees and better 485 bonus years.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title" data-en="Apply to the institution and get your CoE" data-es="Aplica a la institución y obtén tu CoE">Apply to the institution and get your CoE</div>
+          <div class="step-desc" data-en="Apply directly to the institution (or via an education agent). Once accepted, pay the required fees and receive your Confirmation of Enrolment (CoE). This is required for your visa application." data-es="Aplica directamente a la institución (o mediante un agente educativo). Una vez aceptado, paga las tarifas requeridas y recibe tu Confirmación de Inscripción (CoE). Esto es necesario para la solicitud de visa.">Apply directly to the institution (or via an education agent). Once accepted, pay the required fees and receive your Confirmation of Enrolment (CoE). This is required for your visa application.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title" data-en="Arrange OSHC" data-es="Contratar OSHC">Arrange OSHC</div>
+          <div class="step-desc" data-en="Purchase Overseas Student Health Cover for the full duration of your visa. Providers include Allianz Care Australia, Medibank, NIB, AHM, and BUPA. Typical cost: $600–$900 per year for a single student." data-es="Contrata el Seguro de Salud para Estudiantes Extranjeros por la duración completa de tu visa. Los proveedores incluyen Allianz Care Australia, Medibank, NIB, AHM y BUPA. Costo típico: $600–$900 por año para un estudiante individual.">Purchase Overseas Student Health Cover for the full duration of your visa. Providers include Allianz Care Australia, Medibank, NIB, AHM, and BUPA. Typical cost: $600–$900 per year for a single student.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title" data-en="Lodge your visa application on ImmiAccount" data-es="Presentar solicitud en ImmiAccount">Lodge your visa application on ImmiAccount</div>
+          <div class="step-desc" data-en="Create an ImmiAccount and apply for visa 500. Attach your CoE, passport, financial evidence, OSHC, English test results, and GTE statement. Pay the application charge ($710). Most applications are lodged offshore (from home country) but onshore applications are accepted." data-es="Crea una cuenta en ImmiAccount y aplica para la visa 500. Adjunta tu CoE, pasaporte, evidencia financiera, OSHC, resultados de inglés y declaración GTE. Paga el cargo de solicitud ($710). La mayoría de las solicitudes se presentan en el exterior (desde el país de origen), pero se aceptan solicitudes dentro de Australia.">Create an ImmiAccount and apply for visa 500. Attach your CoE, passport, financial evidence, OSHC, English test results, and GTE statement. Pay the application charge ($710). Most applications are lodged offshore (from home country) but onshore applications are accepted.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title" data-en="Complete health and character checks" data-es="Completar controles de salud y carácter">Complete health and character checks</div>
+          <div class="step-desc" data-en="You may be asked to complete a health examination and provide police clearances. Book through an approved panel physician for the health exam. Depending on your nationality and time spent in other countries, you may need clearances from multiple countries." data-es="Puede que te pidan completar un examen médico y proporcionar antecedentes penales. Reserva con un médico panel aprobado para el examen de salud. Según tu nacionalidad y tiempo en otros países, puede que necesites antecedentes de múltiples países.">You may be asked to complete a health examination and provide police clearances. Book through an approved panel physician for the health exam. Depending on your nationality and time spent in other countries, you may need clearances from multiple countries.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <div class="step-title" data-en="Receive grant and travel" data-es="Recibir la aprobación y viajar">Receive grant and travel</div>
+          <div class="step-desc" data-en="Processing typically takes 1–4 weeks for straightforward applications. Once granted, you can travel to Australia and begin your studies. Your visa will usually be granted for the duration of your course plus extra time (typically 2 months after course end)." data-es="El procesamiento tarda típicamente 1–4 semanas para solicitudes directas. Una vez aprobada, puedes viajar a Australia y comenzar tus estudios. Tu visa generalmente se otorga por la duración del curso más tiempo adicional (generalmente 2 meses después del fin del curso).">Processing typically takes 1–4 weeks for straightforward applications. Once granted, you can travel to Australia and begin your studies. Your visa will usually be granted for the duration of your course plus extra time (typically 2 months after course end).</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GTE STATEMENT -->
+  <section class="section fade-up">
+    <div class="callout callout-purple">
+      <div class="callout-icon">📝</div>
+      <div class="callout-body">
+        <h4 data-en="The GTE requirement" data-es="El requisito GTE">The GTE requirement</h4>
+        <p data-en="The Genuine Temporary Entrant (GTE) requirement is the most commonly misunderstood part of the student visa. A case officer assesses whether you genuinely intend to study and return home. Strong GTE statements address: why you chose Australia, why this specific course and institution, your ties to your home country (family, job, property), and your study and career goals. Having PR as a long-term goal is not disqualifying — many students are transparent about it. What matters is that your study intentions are genuine." data-es="El requisito de Entrante Temporal Genuino (GTE) es la parte más malentendida de la visa de estudiante. Un oficial evalúa si genuinamente tienes la intención de estudiar y regresar a casa. Las declaraciones GTE sólidas abordan: por qué elegiste Australia, por qué este curso e institución específicos, tus vínculos con tu país (familia, trabajo, propiedad) y tus objetivos de estudio y carrera. Tener la RP como objetivo a largo plazo no es descalificante — muchos estudiantes son transparentes al respecto. Lo que importa es que tus intenciones de estudio sean genuinas.">The Genuine Temporary Entrant (GTE) requirement is the most commonly misunderstood part of the student visa. A case officer assesses whether you genuinely intend to study and return home. Strong GTE statements address: why you chose Australia, why this specific course and institution, your ties to your home country (family, job, property), and your study and career goals. Having PR as a long-term goal is not disqualifying — many students are transparent about it. What matters is that your study intentions are genuine.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STUDY-TO-PR STRATEGY -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Study-to-PR strategy" data-es="Estrategia de estudio a RP">Study-to-PR strategy</h2>
+    <div class="tips-grid">
+      <div class="tip">
+        <div class="tip-icon">🎯</div>
+        <div class="tip-text"><strong data-en="Choose your occupation first" data-es="Elige tu ocupación primero">Choose your occupation first</strong><span data-en="Research which occupations are on the MLTSSL and STSOL before choosing your course. Your qualification must match the ANZSCO code of the occupation for skills assessment and points." data-es="Investiga qué ocupaciones están en el MLTSSL y STSOL antes de elegir tu curso. Tu calificación debe coincidir con el código ANZSCO de la ocupación para la evaluación de habilidades y puntos.">Research which occupations are on the MLTSSL and STSOL before choosing your course. Your qualification must match the ANZSCO code of the occupation for skills assessment and points.</span></div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">📍</div>
+        <div class="tip-text"><strong data-en="Consider regional study" data-es="Considera estudiar en regional">Consider regional study</strong><span data-en="Studying in a regional area gives you a 485 bonus year, up to 10 regional points, and access to 491 state nomination. This can be a significant advantage for PR." data-es="Estudiar en área regional te da un año extra en la visa 485, hasta 10 puntos regionales y acceso a la nominación estatal 491. Esto puede ser una ventaja significativa para la RP.">Studying in a regional area gives you a 485 bonus year, up to 10 regional points, and access to 491 state nomination. This can be a significant advantage for PR.</span></div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">⬆️</div>
+        <div class="tip-text"><strong data-en="Go for a higher degree" data-es="Apunta a un título superior">Go for a higher degree</strong><span data-en="A Masters degree gives you 2–3 years on the 485 (vs 2 years for a Bachelor) and more points for the degree level itself. A PhD gives 4 years and the highest qualification points." data-es="Una Maestría te da 2–3 años en la visa 485 (vs 2 años para una Licenciatura) y más puntos por el nivel de calificación. Un Doctorado da 4 años y los mayores puntos de calificación.">A Masters degree gives you 2–3 years on the 485 (vs 2 years for a Bachelor) and more points for the degree level itself. A PhD gives 4 years and the highest qualification points.</span></div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">💼</div>
+        <div class="tip-text"><strong data-en="Work in your field during studies" data-es="Trabaja en tu área durante los estudios">Work in your field during studies</strong><span data-en="Internships and part-time work in your field during your studies count as skilled work experience for the points test — and help with your skills assessment reference letters." data-es="Las pasantías y el trabajo a tiempo parcial en tu área durante los estudios cuentan como experiencia laboral calificada para la prueba de puntos, y ayudan con las cartas de referencia para la evaluación de habilidades.">Internships and part-time work in your field during your studies count as skilled work experience for the points test — and help with your skills assessment reference letters.</span></div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">📋</div>
+        <div class="tip-text"><strong data-en="Plan your skills assessment early" data-es="Planea tu evaluación de habilidades temprano">Plan your skills assessment early</strong><span data-en="Start your skills assessment application close to graduation — they take 8–16 weeks. Having it ready when you apply for the 485 saves months of waiting." data-es="Inicia tu solicitud de evaluación de habilidades cerca de la graduación — tarda 8–16 semanas. Tenerla lista cuando aplicas a la visa 485 ahorra meses de espera.">Start your skills assessment application close to graduation — they take 8–16 weeks. Having it ready when you apply for the 485 saves months of waiting.</span></div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">🤑</div>
+        <div class="tip-text"><strong data-en="Look for scholarships" data-es="Busca becas">Look for scholarships</strong><span data-en="Australia Awards, Destination Australia (regional study), university merit scholarships, and research scholarships can significantly reduce the cost of study and improve your financial visa requirements." data-es="Las becas Australia Awards, Destination Australia (estudio regional), becas universitarias por méritos y becas de investigación pueden reducir significativamente el costo de los estudios y mejorar tus requisitos financieros de visa.">Australia Awards, Destination Australia (regional study), university merit scholarships, and research scholarships can significantly reduce the cost of study and improve your financial visa requirements.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Frequently asked questions" data-es="Preguntas frecuentes">Frequently asked questions</h2>
+    <div class="accordion">
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span data-en="Can I change courses while on a student visa?" data-es="¿Puedo cambiar de curso con visa de estudiante?">Can I change courses while on a student visa?</span>
+          <span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content" data-en="Yes, you can transfer courses. However, if you want to transfer within 6 months of commencing your first course at an institution, you generally need a release letter from your current institution. If you change to a shorter course, your visa validity may be affected. Always notify Home Affairs of any changes via ImmiAccount." data-es="Sí, puedes cambiar de curso. Sin embargo, si quieres transferirte dentro de los 6 meses de comenzar tu primer curso en una institución, generalmente necesitas una carta de liberación de tu institución actual. Si cambias a un curso más corto, la validez de tu visa puede verse afectada. Siempre notifica a Home Affairs de cualquier cambio a través de ImmiAccount.">Yes, you can transfer courses. However, if you want to transfer within 6 months of commencing your first course at an institution, you generally need a release letter from your current institution. If you change to a shorter course, your visa validity may be affected. Always notify Home Affairs of any changes via ImmiAccount.</div>
+        </div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span data-en="What is the cost of studying in Australia?" data-es="¿Cuánto cuesta estudiar en Australia?">What is the cost of studying in Australia?</span>
+          <span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content" data-en="Costs vary widely. Bachelor degree: $20,000–$45,000 per year. Masters: $22,000–$50,000 per year. PhD: often partially or fully funded. VET diploma: $8,000–$20,000 per year. Living costs are approximately $21,000–$28,000 per year depending on the city (Sydney and Melbourne being most expensive)." data-es="Los costos varían ampliamente. Licenciatura: $20,000–$45,000 por año. Maestría: $22,000–$50,000 por año. Doctorado: a menudo parcial o totalmente financiado. Diploma VET: $8,000–$20,000 por año. Los costos de vida son aproximadamente $21,000–$28,000 por año según la ciudad (Sídney y Melbourne siendo las más caras).">Costs vary widely. Bachelor degree: $20,000–$45,000 per year. Masters: $22,000–$50,000 per year. PhD: often partially or fully funded. VET diploma: $8,000–$20,000 per year. Living costs are approximately $21,000–$28,000 per year depending on the city (Sydney and Melbourne being most expensive).</div>
+        </div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span data-en="Can my children study for free on my student visa?" data-es="¿Pueden mis hijos estudiar gratis con mi visa de estudiante?">Can my children study for free on my student visa?</span>
+          <span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content" data-en="Dependent children included in your student visa can attend school in Australia. However, they are NOT entitled to free government schooling unless you are covered by a bilateral agreement or scholarship scheme. Most international students' children must pay school fees. Government school fees for international students vary by state: typically $4,000–$6,000 per year." data-es="Los hijos dependientes incluidos en tu visa de estudiante pueden asistir a la escuela en Australia. Sin embargo, NO tienen derecho a educación pública gratuita a menos que estés cubierto por un acuerdo bilateral o un esquema de becas. La mayoría de los hijos de estudiantes internacionales deben pagar tarifas escolares. Las tarifas de escuelas gubernamentales para estudiantes internacionales varían según el estado: típicamente $4,000–$6,000 por año.">Dependent children included in your student visa can attend school in Australia. However, they are NOT entitled to free government schooling unless you are covered by a bilateral agreement or scholarship scheme. Most international students' children must pay school fees. Government school fees for international students vary by state: typically $4,000–$6,000 per year.</div>
+        </div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span data-en="Can I do online study and still qualify for the 485?" data-es="¿Puedo estudiar en línea y aún calificar para la visa 485?">Can I do online study and still qualify for the 485?</span>
+          <span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content" data-en="For the 485 Post-Study Work stream, you need to have studied in Australia for at least 2 years. Online study from outside Australia does not count towards this requirement (with limited COVID-period exceptions). You must physically be in Australia for your studies to count." data-es="Para la corriente Post-Study Work de la visa 485, debes haber estudiado en Australia durante al menos 2 años. El estudio en línea desde fuera de Australia no cuenta para este requisito (con limitadas excepciones del período COVID). Debes estar físicamente en Australia para que tus estudios cuenten.">For the 485 Post-Study Work stream, you need to have studied in Australia for at least 2 years. Online study from outside Australia does not count towards this requirement (with limited COVID-period exceptions). You must physically be in Australia for your studies to count.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESOURCES -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Official resources" data-es="Recursos oficiales">Official resources</h2>
+    <div class="resources-grid">
+      <a href="https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500" target="_blank" class="resource-card">
+        <div class="res-title" data-en="Visa 500 — Home Affairs" data-es="Visa 500 — Home Affairs">Visa 500 — Home Affairs</div>
+        <div class="res-sub" data-en="Official eligibility and requirements" data-es="Elegibilidad y requisitos oficiales">Official eligibility and requirements</div>
+        <div class="res-link">immi.homeaffairs.gov.au ↗</div>
+      </a>
+      <a href="https://cricos.education.gov.au" target="_blank" class="resource-card">
+        <div class="res-title" data-en="CRICOS provider search" data-es="Búsqueda de proveedores CRICOS">CRICOS provider search</div>
+        <div class="res-sub" data-en="Find registered institutions and courses" data-es="Encuentra instituciones y cursos registrados">Find registered institutions and courses</div>
+        <div class="res-link">cricos.education.gov.au ↗</div>
+      </a>
+      <a href="https://www.studyinaustralia.gov.au" target="_blank" class="resource-card">
+        <div class="res-title" data-en="Study in Australia" data-es="Estudia en Australia">Study in Australia</div>
+        <div class="res-sub" data-en="Government guide for international students" data-es="Guía gubernamental para estudiantes internacionales">Government guide for international students</div>
+        <div class="res-link">studyinaustralia.gov.au ↗</div>
+      </a>
+      <a href="migro-485.html" class="resource-card">
+        <div class="res-title" data-en="Visa 485 — Graduate Temporary" data-es="Visa 485 — Graduado Temporal">Visa 485 — Graduate Temporary</div>
+        <div class="res-sub" data-en="Next step after your student visa" data-es="Próximo paso después de la visa de estudiante">Next step after your student visa</div>
+        <div class="res-link" data-en="Within Migro →" data-es="Dentro de Migro →">Within Migro →</div>
+      </a>
+    </div>
+  </section>
+
+</div>
+
+<script>
+let lang = 'en';
+function setLang(l){
+  lang = l;
+  document.querySelectorAll('[data-en]').forEach(el=>{
+    el.innerHTML = el.getAttribute('data-' + l);
+  });
+  document.querySelector('.lang-btn').textContent = l === 'en' ? 'ES' : 'EN';
+}
+function toggleLang(){ setLang(lang === 'en' ? 'es' : 'en'); }
+
+function toggleAcc(btn){
+  const body = btn.nextElementSibling;
+  const chevron = btn.querySelector('.acc-chevron');
+  const isOpen = body.classList.contains('open');
+  document.querySelectorAll('.acc-body.open').forEach(b=>{ b.classList.remove('open'); b.previousElementSibling.querySelector('.acc-chevron').style.transform=''; });
+  if(!isOpen){ body.classList.add('open'); chevron.style.transform='rotate(180deg)'; }
+}
+
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.08});
+document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>
