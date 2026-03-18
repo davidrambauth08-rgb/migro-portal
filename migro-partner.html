@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Migro — Partner Visas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --black:#0f0f0f;--white:#ffffff;
+  --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-300:#d1d5db;
+  --gray-500:#6b7280;--gray-600:#4b5563;--gray-700:#374151;--gray-800:#1f2937;
+  --green:#16a34a;--green-bg:#f0fdf4;--green-border:#bbf7d0;
+  --amber:#d97706;--amber-bg:#fffbeb;--amber-border:#fde68a;
+  --red:#dc2626;--red-bg:#fef2f2;--red-border:#fecaca;
+  --blue:#2563eb;--blue-bg:#eff6ff;--blue-border:#bfdbfe;
+  --purple:#7c3aed;--purple-bg:#f5f3ff;--purple-border:#ddd6fe;
+  --teal:#0d9488;--teal-bg:#f0fdfa;--teal-border:#99f6e4;
+  --orange:#ea580c;--orange-bg:#fff7ed;--orange-border:#fed7aa;
+  --pink:#db2777;--pink-bg:#fdf2f8;--pink-border:#fbcfe8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:var(--gray-800);background:var(--gray-50);line-height:1.6}
+a{color:inherit;text-decoration:none}
+.nav{background:var(--white);border-bottom:1px solid var(--gray-200);position:sticky;top:0;z-index:100;padding:0 1.5rem}
+.nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+.nav-brand{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--black)}
+.nav-links{display:flex;align-items:center;gap:1.25rem}
+.nav-links a{font-size:.85rem;font-weight:500;color:var(--gray-600)}
+.nav-links a:hover{color:var(--black)}
+.lang-btn{background:var(--gray-100);border:none;border-radius:6px;padding:.3rem .75rem;font-size:.8rem;font-weight:600;cursor:pointer;color:var(--gray-700)}
+.hero{background:linear-gradient(135deg,#fdf2f8 0%,#fbcfe8 100%);padding:3rem 1.5rem 2.5rem}
+.hero-inner{max-width:1100px;margin:0 auto}
+.hero-tag{display:inline-block;background:var(--pink);color:#fff;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .75rem;border-radius:999px;margin-bottom:1rem}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;color:var(--black);max-width:700px;line-height:1.2;margin-bottom:.75rem}
+.hero p{color:var(--gray-600);font-size:1rem;max-width:600px}
+.breadcrumb{display:flex;align-items:center;gap:.5rem;margin-bottom:1.5rem;font-size:.8rem;color:var(--gray-500)}
+.breadcrumb a{color:var(--pink);font-weight:500}
+.container{max-width:1100px;margin:0 auto;padding:3rem 1.5rem}
+.section-title{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--black);margin-bottom:1.5rem}
+.section{margin-bottom:3rem}
+/* PATHWAY SELECTOR */
+.pathway-tabs{display:flex;gap:.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.ptab{background:var(--white);border:2px solid var(--gray-200);border-radius:10px;padding:.6rem 1.25rem;font-size:.85rem;font-weight:600;cursor:pointer;color:var(--gray-600);transition:all .2s}
+.ptab.active-onshore{border-color:var(--pink);color:var(--pink);background:var(--pink-bg)}
+.ptab.active-offshore{border-color:var(--blue);color:var(--blue);background:var(--blue-bg)}
+/* COMPARISON */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.compare-card{border-radius:14px;padding:1.5rem}
+.compare-card.onshore{background:var(--pink-bg);border:2px solid var(--pink-border)}
+.compare-card.offshore{background:var(--blue-bg);border:2px solid var(--blue-border)}
+.compare-card h3{font-size:1rem;font-weight:700;color:var(--black);margin-bottom:.25rem}
+.compare-card .sub{font-size:.8rem;color:var(--gray-500);margin-bottom:1rem}
+.compare-row{display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid rgba(0,0,0,.06);font-size:.83rem}
+.compare-row:last-child{border-bottom:none}
+.compare-row .label{color:var(--gray-600)}
+.compare-row .val{font-weight:600;color:var(--black);text-align:right}
+/* KEY FACTS */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
+.card{background:var(--white);border:1px solid var(--gray-200);border-radius:12px;padding:1.25rem}
+.card-icon{font-size:1.6rem;margin-bottom:.6rem}
+.card-label{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gray-500);margin-bottom:.3rem}
+.card-value{font-size:1rem;font-weight:600;color:var(--black)}
+.card-sub{font-size:.8rem;color:var(--gray-500);margin-top:.25rem}
+/* RELATIONSHIP EVIDENCE */
+.evidence-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem}
+.evidence-card{background:var(--white);border:1px solid var(--gray-200);border-radius:12px;padding:1.25rem}
+.evidence-title{font-weight:700;font-size:.88rem;color:var(--black);margin-bottom:.6rem;display:flex;gap:.5rem;align-items:center}
+.evidence-list{list-style:none;display:flex;flex-direction:column;gap:.3rem}
+.evidence-list li{font-size:.8rem;color:var(--gray-600);padding-left:1.1rem;position:relative}
+.evidence-list li::before{content:'•';position:absolute;left:0;color:var(--pink)}
+/* TIMELINE */
+.timeline-visual{background:var(--white);border:1px solid var(--gray-200);border-radius:14px;padding:1.5rem}
+.tl-phase{display:flex;gap:1rem;margin-bottom:1.25rem;align-items:flex-start}
+.tl-phase:last-child{margin-bottom:0}
+.tl-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;flex-shrink:0}
+.tl-dot-pink{background:var(--pink-bg);border:2px solid var(--pink);color:var(--pink)}
+.tl-dot-blue{background:var(--blue-bg);border:2px solid var(--blue);color:var(--blue)}
+.tl-dot-green{background:var(--green-bg);border:2px solid var(--green);color:var(--green)}
+.tl-content h4{font-size:.88rem;font-weight:700;color:var(--black);margin-bottom:.2rem}
+.tl-content p{font-size:.8rem;color:var(--gray-600);line-height:1.5}
+/* COSTS */
+.costs-table{width:100%;border-collapse:collapse;background:var(--white);border-radius:12px;overflow:hidden;border:1px solid var(--gray-200)}
+.costs-table th{background:var(--gray-100);padding:.65rem 1rem;text-align:left;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--gray-600);border-bottom:1px solid var(--gray-200)}
+.costs-table td{padding:.65rem 1rem;font-size:.84rem;color:var(--gray-700);border-bottom:1px solid var(--gray-100)}
+.costs-table tr:last-child td{border-bottom:none}
+.costs-table .total-row td{font-weight:700;background:var(--pink-bg)}
+/* CALLOUT */
+.callout{border-radius:12px;padding:1.25rem 1.5rem;display:flex;gap:1rem;align-items:flex-start;margin-bottom:1.5rem}
+.callout-pink{background:var(--pink-bg);border:1px solid var(--pink-border)}
+.callout-amber{background:var(--amber-bg);border:1px solid var(--amber-border)}
+.callout-blue{background:var(--blue-bg);border:1px solid var(--blue-border)}
+.callout-green{background:var(--green-bg);border:1px solid var(--green-border)}
+.callout-icon{font-size:1.25rem;flex-shrink:0;margin-top:.05rem}
+.callout-body h4{font-size:.9rem;font-weight:700;color:var(--black);margin-bottom:.3rem}
+.callout-body p{font-size:.82rem;color:var(--gray-700);line-height:1.5}
+/* DE FACTO */
+.defacto-box{background:var(--white);border:1px solid var(--gray-200);border-radius:12px;padding:1.25rem}
+.defacto-box h4{font-weight:700;font-size:.9rem;color:var(--black);margin-bottom:.6rem}
+.defacto-box p{font-size:.82rem;color:var(--gray-700);line-height:1.5;margin-bottom:.75rem}
+/* TIPS */
+.tips-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.9rem}
+.tip{background:var(--white);border:1px solid var(--gray-200);border-radius:10px;padding:1rem 1.1rem;display:flex;gap:.75rem}
+.tip-icon{font-size:1.1rem;flex-shrink:0}
+.tip-text{font-size:.83rem;color:var(--gray-700);line-height:1.5}
+.tip-text strong{color:var(--black);display:block;margin-bottom:.15rem}
+/* ACCORDION */
+.accordion{display:flex;flex-direction:column;gap:.5rem}
+.acc-item{background:var(--white);border:1px solid var(--gray-200);border-radius:10px;overflow:hidden}
+.acc-trigger{width:100%;display:flex;justify-content:space-between;align-items:center;padding:1rem 1.25rem;background:none;border:none;cursor:pointer;font-size:.9rem;font-weight:600;color:var(--black);text-align:left;gap:1rem}
+.acc-trigger:hover{background:var(--gray-50)}
+.acc-chevron{font-size:1rem;transition:transform .3s;flex-shrink:0}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1)}
+.acc-body.open{max-height:800px}
+.acc-content{padding:0 1.25rem 1rem;font-size:.85rem;color:var(--gray-600);line-height:1.7}
+.resources-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.9rem}
+.resource-card{background:var(--white);border:1px solid var(--gray-200);border-radius:10px;padding:1rem;display:flex;flex-direction:column;gap:.35rem;transition:border-color .2s}
+.resource-card:hover{border-color:var(--pink)}
+.resource-card .res-title{font-size:.85rem;font-weight:600;color:var(--black)}
+.resource-card .res-sub{font-size:.75rem;color:var(--gray-500)}
+.resource-card .res-link{font-size:.75rem;color:var(--pink);font-weight:500;margin-top:auto}
+.fade-up{opacity:0;transform:translateY(24px);transition:opacity .55s ease,transform .55s ease}
+.fade-up.visible{opacity:1;transform:none}
+.badge{display:inline-block;font-size:.68rem;font-weight:700;padding:.2rem .55rem;border-radius:999px}
+.badge-green{background:var(--green-bg);color:var(--green)}
+.badge-amber{background:var(--amber-bg);color:var(--amber)}
+.badge-red{background:var(--red-bg);color:var(--red)}
+@media(max-width:640px){.compare-grid{grid-template-columns:1fr}.card-grid,.evidence-grid,.tips-grid,.resources-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="migro-dashboard.html" class="nav-brand">Migro</a>
+    <div class="nav-links">
+      <a href="migro-dashboard.html" data-en="Dashboard" data-es="Inicio">Dashboard</a>
+      <a href="migro-costs.html" data-en="Costs" data-es="Costos">Costs</a>
+      <button class="lang-btn" onclick="toggleLang()">ES</button>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb">
+      <a href="migro-dashboard.html">Migro</a>
+      <span>›</span>
+      <span data-en="Partner Visas" data-es="Visas de Pareja">Partner Visas</span>
+    </div>
+    <div class="hero-tag" data-en="Family Reunion" data-es="Reunificación Familiar">Family Reunion</div>
+    <h1 data-en="Partner Visas — 820/801 &amp; 309/100" data-es="Visas de Pareja — 820/801 y 309/100">Partner Visas — 820/801 &amp; 309/100</h1>
+    <p data-en="Bring your partner to Australia as a permanent resident. The partner visa pathway is a two-stage process — a temporary visa first, then permanent residence." data-es="Trae a tu pareja a Australia como residente permanente. La vía de visa de pareja es un proceso de dos etapas: primero una visa temporal, luego la residencia permanente.">Bring your partner to Australia as a permanent resident. The partner visa pathway is a two-stage process — a temporary visa first, then permanent residence.</p>
+  </div>
+</section>
+
+<div class="container">
+
+  <!-- ONSHORE VS OFFSHORE -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Onshore (820/801) vs Offshore (309/100)" data-es="Dentro (820/801) vs Fuera (309/100)">Onshore (820/801) vs Offshore (309/100)</h2>
+    <div class="compare-grid">
+      <div class="compare-card onshore">
+        <h3 data-en="Onshore — 820 → 801" data-es="Dentro de Australia — 820 → 801">Onshore — 820 → 801</h3>
+        <div class="sub" data-en="Partner is already in Australia" data-es="La pareja ya está en Australia">Partner is already in Australia</div>
+        <div class="compare-row"><span class="label" data-en="Stage 1" data-es="Etapa 1">Stage 1</span><span class="val" data-en="Subclass 820 (temp)" data-es="Subclase 820 (temp)">Subclass 820 (temp)</span></div>
+        <div class="compare-row"><span class="label" data-en="Stage 2" data-es="Etapa 2">Stage 2</span><span class="val" data-en="Subclass 801 (PR)" data-es="Subclase 801 (RP)">Subclass 801 (PR)</span></div>
+        <div class="compare-row"><span class="label" data-en="Wait for PR" data-es="Espera para RP">Wait for PR</span><span class="val" data-en="2 years from application" data-es="2 años desde la solicitud">2 years from application</span></div>
+        <div class="compare-row"><span class="label" data-en="Work rights (820)" data-es="Derechos laborales (820)">Work rights (820)</span><span class="val" data-en="Full (no restriction)" data-es="Completos (sin restricción)">Full (no restriction)</span></div>
+        <div class="compare-row"><span class="label" data-en="Stay in Australia" data-es="Permanecer en Australia">Stay in Australia</span><span class="val" data-en="Yes, while processing" data-es="Sí, mientras se procesa">Yes, while processing</span></div>
+      </div>
+      <div class="compare-card offshore">
+        <h3 data-en="Offshore — 309 → 100" data-es="Fuera de Australia — 309 → 100">Offshore — 309 → 100</h3>
+        <div class="sub" data-en="Partner is outside Australia" data-es="La pareja está fuera de Australia">Partner is outside Australia</div>
+        <div class="compare-row"><span class="label" data-en="Stage 1" data-es="Etapa 1">Stage 1</span><span class="val" data-en="Subclass 309 (temp)" data-es="Subclase 309 (temp)">Subclass 309 (temp)</span></div>
+        <div class="compare-row"><span class="label" data-en="Stage 2" data-es="Etapa 2">Stage 2</span><span class="val" data-en="Subclass 100 (PR)" data-es="Subclase 100 (RP)">Subclass 100 (PR)</span></div>
+        <div class="compare-row"><span class="label" data-en="Wait for PR" data-es="Espera para RP">Wait for PR</span><span class="val" data-en="2 years from application" data-es="2 años desde la solicitud">2 years from application</span></div>
+        <div class="compare-row"><span class="label" data-en="Enter Australia" data-es="Ingresar a Australia">Enter Australia</span><span class="val" data-en="After 309 granted" data-es="Tras otorgarse la 309">After 309 granted</span></div>
+        <div class="compare-row"><span class="label" data-en="Applied from" data-es="Aplicado desde">Applied from</span><span class="val" data-en="Outside Australia" data-es="Fuera de Australia">Outside Australia</span></div>
+      </div>
+    </div>
+    <div class="callout callout-amber" style="margin-top:1rem">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body">
+        <h4 data-en="One lodgement, two visas" data-es="Una solicitud, dos visas">One lodgement, two visas</h4>
+        <p data-en="You only lodge once and pay once. When you lodge the 820/309 application, you are simultaneously applying for the permanent stage (801/100) too. You don't need to re-apply — the department automatically assesses Stage 2 eligibility after 2 years." data-es="Solo presentas la solicitud una vez y pagas una vez. Cuando presentas la solicitud 820/309, también estás solicitando la etapa permanente (801/100). No necesitas volver a solicitar — el departamento evalúa automáticamente la elegibilidad para la Etapa 2 después de 2 años.">You only lodge once and pay once. When you lodge the 820/309 application, you are simultaneously applying for the permanent stage (801/100) too. You don't need to re-apply — the department automatically assesses Stage 2 eligibility after 2 years.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- KEY FACTS -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Key facts" data-es="Datos clave">Key facts</h2>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">👤</div>
+        <div class="card-label" data-en="Sponsor" data-es="Patrocinador">Sponsor</div>
+        <div class="card-value" data-en="Australian citizen or PR" data-es="Ciudadano australiano o RP">Australian citizen or PR</div>
+        <div class="card-sub" data-en="Must be eligible to sponsor" data-es="Debe ser elegible para patrocinar">Must be eligible to sponsor</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">💍</div>
+        <div class="card-label" data-en="Relationship" data-es="Relación">Relationship</div>
+        <div class="card-value" data-en="Married or de facto" data-es="Casados o de facto">Married or de facto</div>
+        <div class="card-sub" data-en="Same-sex relationships included" data-es="Se incluyen relaciones del mismo sexo">Same-sex relationships included</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">⏱️</div>
+        <div class="card-label" data-en="Time to PR" data-es="Tiempo hasta RP">Time to PR</div>
+        <div class="card-value" data-en="2+ years" data-es="2+ años">2+ years</div>
+        <div class="card-sub" data-en="From application to permanent visa" data-es="Desde la solicitud hasta la visa permanente">From application to permanent visa</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">💰</div>
+        <div class="card-label" data-en="VAC (primary)" data-es="Cargo visa (principal)">VAC (primary)</div>
+        <div class="card-value">$9,095</div>
+        <div class="card-sub" data-en="One of the most expensive visa classes" data-es="Una de las clases de visa más caras">One of the most expensive visa classes</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">⌛</div>
+        <div class="card-label" data-en="Stage 1 processing" data-es="Procesamiento etapa 1">Stage 1 processing</div>
+        <div class="card-value" data-en="12–36 months" data-es="12–36 meses">12–36 months</div>
+        <div class="card-sub" data-en="Currently high queue — check DOHA times" data-es="Alta cola actualmente — verifica tiempos en DOHA">Currently high queue — check DOHA times</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🏥</div>
+        <div class="card-label">Medicare</div>
+        <div class="card-value" data-en="820 holders eligible" data-es="Titulares 820 elegibles">820 holders eligible</div>
+        <div class="card-sub" data-en="Full Medicare access on temporary partner visa" data-es="Acceso completo a Medicare con visa temporal">Full Medicare access on temporary partner visa</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO CAN SPONSOR -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Sponsor eligibility" data-es="Elegibilidad del patrocinador">Sponsor eligibility</h2>
+    <div class="callout callout-pink">
+      <div class="callout-icon">👤</div>
+      <div class="callout-body">
+        <h4 data-en="Who can be a sponsor?" data-es="¿Quién puede ser patrocinador?">Who can be a sponsor?</h4>
+        <p data-en="To sponsor a partner, you must be: an Australian citizen, Australian permanent resident, or eligible New Zealand citizen. You must be at least 18 years old. You must not have previously been refused as a sponsor or had a sponsorship cancelled. There are restrictions if you have prior sponsorship history — in general, you can only sponsor 2 partners in a lifetime, and must wait 5 years between sponsorships (unless the previous relationship ended due to family violence or death)." data-es="Para patrocinar a una pareja, debes ser: ciudadano australiano, residente permanente australiano o ciudadano neozelandés elegible. Debes tener al menos 18 años. No debes haber sido rechazado como patrocinador ni haber tenido un patrocinio cancelado anteriormente. Hay restricciones si tienes historial de patrocinios previos — en general, solo puedes patrocinar a 2 parejas en toda la vida, y debes esperar 5 años entre patrocinios (a menos que la relación anterior terminara por violencia familiar o fallecimiento).">To sponsor a partner, you must be: an Australian citizen, Australian permanent resident, or eligible New Zealand citizen. You must be at least 18 years old. You must not have previously been refused as a sponsor or had a sponsorship cancelled. There are restrictions if you have prior sponsorship history — in general, you can only sponsor 2 partners in a lifetime, and must wait 5 years between sponsorships (unless the previous relationship ended due to family violence or death).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DE FACTO REQUIREMENTS -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="De facto relationship requirements" data-es="Requisitos de relación de facto">De facto relationship requirements</h2>
+    <div class="defacto-box">
+      <h4 data-en="What counts as a de facto relationship?" data-es="¿Qué cuenta como una relación de facto?">What counts as a de facto relationship?</h4>
+      <p data-en="A de facto relationship is a genuine relationship between two adults living together on a genuine domestic basis. For a partner visa, you need to demonstrate you have been in a de facto relationship for at least 12 months before applying. This 12-month rule can be waived if:" data-es="Una relación de facto es una relación genuina entre dos adultos que viven juntos en base doméstica genuina. Para una visa de pareja, debes demostrar que has estado en una relación de facto durante al menos 12 meses antes de aplicar. Esta regla de 12 meses puede eximirse si:">A de facto relationship is a genuine relationship between two adults living together on a genuine domestic basis. For a partner visa, you need to demonstrate you have been in a de facto relationship for at least 12 months before applying. This 12-month rule can be waived if:</p>
+      <ul style="font-size:.82rem;color:var(--gray-700);line-height:1.8;padding-left:1.2rem;margin:.75rem 0">
+        <li data-en="You are registered as de facto in an Australian state/territory" data-es="Estás registrado como pareja de facto en un estado/territorio australiano">You are registered as de facto in an Australian state/territory</li>
+        <li data-en="You have a child together" data-es="Tienen un hijo en común">You have a child together</li>
+        <li data-en="There are compelling and compassionate circumstances" data-es="Hay circunstancias convincentes y compasivas">There are compelling and compassionate circumstances</li>
+      </ul>
+      <p data-en="Note: Marriage does not require a 12-month waiting period — you can apply immediately after marrying." data-es="Nota: El matrimonio no requiere un período de espera de 12 meses — puedes aplicar inmediatamente después de casarte.">Note: Marriage does not require a 12-month waiting period — you can apply immediately after marrying.</p>
+    </div>
+  </section>
+
+  <!-- RELATIONSHIP EVIDENCE -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Relationship evidence" data-es="Evidencia de la relación">Relationship evidence</h2>
+    <p style="font-size:.88rem;color:var(--gray-600);margin-bottom:1.25rem" data-en="You must provide evidence across 4 categories. Strong applications include multiple pieces of evidence in each category." data-es="Debes proporcionar evidencia en 4 categorías. Las solicitudes sólidas incluyen múltiples elementos de evidencia en cada categoría.">You must provide evidence across 4 categories. Strong applications include multiple pieces of evidence in each category.</p>
+    <div class="evidence-grid">
+      <div class="evidence-card">
+        <div class="evidence-title">🏠 <span data-en="Financial aspects" data-es="Aspectos financieros">Financial aspects</span></div>
+        <ul class="evidence-list">
+          <li data-en="Joint bank account statements" data-es="Estados de cuenta bancaria conjuntos">Joint bank account statements</li>
+          <li data-en="Joint mortgage / lease agreements" data-es="Hipoteca / arrendamiento conjunto">Joint mortgage / lease agreements</li>
+          <li data-en="Joint utility bills" data-es="Facturas de servicios conjuntas">Joint utility bills</li>
+          <li data-en="Insurance naming partner as beneficiary" data-es="Seguro con pareja como beneficiario">Insurance naming partner as beneficiary</li>
+          <li data-en="Joint assets (car registration, property)" data-es="Activos conjuntos (auto, propiedad)">Joint assets (car registration, property)</li>
+        </ul>
+      </div>
+      <div class="evidence-card">
+        <div class="evidence-title">🏡 <span data-en="Nature of household" data-es="Naturaleza del hogar">Nature of household</span></div>
+        <ul class="evidence-list">
+          <li data-en="Lease/mortgage in both names" data-es="Arrendamiento/hipoteca a nombre de ambos">Lease/mortgage in both names</li>
+          <li data-en="Proof of shared address (same mail)" data-es="Prueba de dirección compartida">Proof of shared address (same mail)</li>
+          <li data-en="Statutory declaration on living together" data-es="Declaración jurada de convivencia">Statutory declaration on living together</li>
+          <li data-en="Domestic responsibilities arrangement" data-es="Acuerdo de responsabilidades domésticas">Domestic responsibilities arrangement</li>
+        </ul>
+      </div>
+      <div class="evidence-card">
+        <div class="evidence-title">👨‍👩‍👧 <span data-en="Social aspects" data-es="Aspectos sociales">Social aspects</span></div>
+        <ul class="evidence-list">
+          <li data-en="Photos together over time" data-es="Fotos juntos a lo largo del tiempo">Photos together over time</li>
+          <li data-en="Joint travel — passport stamps / bookings" data-es="Viajes juntos — sellos / reservas">Joint travel — passport stamps / bookings</li>
+          <li data-en="Letters from family / friends" data-es="Cartas de familiares / amigos">Letters from family / friends</li>
+          <li data-en="Invitations addressed to both" data-es="Invitaciones dirigidas a ambos">Invitations addressed to both</li>
+          <li data-en="Social media presence together" data-es="Presencia en redes sociales juntos">Social media presence together</li>
+        </ul>
+      </div>
+      <div class="evidence-card">
+        <div class="evidence-title">💞 <span data-en="Commitment" data-es="Compromiso">Commitment</span></div>
+        <ul class="evidence-list">
+          <li data-en="Marriage certificate (if married)" data-es="Acta de matrimonio (si están casados)">Marriage certificate (if married)</li>
+          <li data-en="Knowledge of each other's family / background" data-es="Conocimiento de la familia / historial del otro">Knowledge of each other's family / background</li>
+          <li data-en="Future plans (statutory declarations)" data-es="Planes futuros (declaraciones juradas)">Future plans (statutory declarations)</li>
+          <li data-en="Nomination as next of kin / emergency contact" data-es="Designación como contacto de emergencia">Nomination as next of kin / emergency contact</li>
+          <li data-en="Wills naming each other" data-es="Testamentos que se nombran mutuamente">Wills naming each other</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESSING TIMELINE -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Two-stage timeline" data-es="Línea de tiempo de dos etapas">Two-stage timeline</h2>
+    <div class="timeline-visual">
+      <div class="tl-phase">
+        <div class="tl-dot tl-dot-pink">1</div>
+        <div class="tl-content">
+          <h4 data-en="Lodge application (820 or 309)" data-es="Presentar solicitud (820 o 309)">Lodge application (820 or 309)</h4>
+          <p data-en="Pay the VAC ($9,095 primary), submit all evidence, and lodge on ImmiAccount. From this date, the 2-year clock begins. Stage 1 grant is usually 12–36 months. You receive a bridging visa while waiting." data-es="Paga el cargo de visa ($9,095 principal), envía toda la evidencia y presenta en ImmiAccount. Desde esta fecha, comienza el contador de 2 años. La aprobación de la Etapa 1 tarda normalmente 12–36 meses. Recibes una visa puente mientras esperas.">Pay the VAC ($9,095 primary), submit all evidence, and lodge on ImmiAccount. From this date, the 2-year clock begins. Stage 1 grant is usually 12–36 months. You receive a bridging visa while waiting.</p>
+        </div>
+      </div>
+      <div class="tl-phase">
+        <div class="tl-dot tl-dot-blue">2</div>
+        <div class="tl-content">
+          <h4 data-en="Stage 1 granted (820 or 309)" data-es="Etapa 1 aprobada (820 o 309)">Stage 1 granted (820 or 309)</h4>
+          <p data-en="Full work rights, Medicare access (820), travel in/out of Australia. You can live and work as normal. If you haven't been together 2 years from the application date, you simply wait on this temporary visa." data-es="Derechos laborales completos, acceso a Medicare (820), viaje dentro y fuera de Australia. Puedes vivir y trabajar con normalidad. Si no han estado juntos 2 años desde la fecha de solicitud, simplemente esperas con esta visa temporal.">Full work rights, Medicare access (820), travel in/out of Australia. You can live and work as normal. If you haven't been together 2 years from the application date, you simply wait on this temporary visa.</p>
+        </div>
+      </div>
+      <div class="tl-phase">
+        <div class="tl-dot tl-dot-green">3</div>
+        <div class="tl-content">
+          <h4 data-en="Stage 2 — Permanent visa (801 or 100)" data-es="Etapa 2 — Visa permanente (801 o 100)">Stage 2 — Permanent visa (801 or 100)</h4>
+          <p data-en="After 2 years together from the original application date, the department assesses Stage 2. You must prove the relationship is still genuine and ongoing. If all is in order, the permanent visa (801 or 100) is granted — usually 24–36 months from original application." data-es="Después de 2 años juntos desde la fecha de solicitud original, el departamento evalúa la Etapa 2. Debes probar que la relación sigue siendo genuina. Si todo está en orden, se otorga la visa permanente (801 o 100) — normalmente 24–36 meses desde la solicitud original.">After 2 years together from the original application date, the department assesses Stage 2. You must prove the relationship is still genuine and ongoing. If all is in order, the permanent visa (801 or 100) is granted — usually 24–36 months from original application.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COSTS -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Costs 2025–26" data-es="Costos 2025–26">Costs 2025–26</h2>
+    <table class="costs-table">
+      <thead>
+        <tr>
+          <th data-en="Item" data-es="Ítem">Item</th>
+          <th data-en="Amount" data-es="Monto">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td data-en="Visa application charge — primary applicant" data-es="Cargo visa — solicitante principal">Visa application charge — primary applicant</td><td>$9,095</td></tr>
+        <tr><td data-en="Additional applicant 18+ years" data-es="Solicitante adicional 18+ años">Additional applicant 18+ years</td><td>$4,550</td></tr>
+        <tr><td data-en="Additional applicant under 18" data-es="Solicitante adicional menores de 18">Additional applicant under 18</td><td>$2,275</td></tr>
+        <tr><td data-en="Health examinations (per person)" data-es="Exámenes médicos (por persona)">Health examinations (per person)</td><td>$300–$500</td></tr>
+        <tr><td data-en="Police clearances" data-es="Antecedentes penales">Police clearances</td><td>$50–$200</td></tr>
+        <tr><td data-en="Migration agent fees (optional but recommended)" data-es="Honorarios agente de migración (opcional pero recomendado)">Migration agent fees (optional but recommended)</td><td>$2,000–$5,000</td></tr>
+        <tr><td data-en="Document translations (NAATI)" data-es="Traducciones de documentos (NAATI)">Document translations (NAATI)</td><td>$100–$500</td></tr>
+        <tr class="total-row"><td><strong data-en="Typical total (primary applicant)" data-es="Total típico (solicitante principal)">Typical total (primary applicant)</strong></td><td><strong>$10,000–$15,000</strong></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- TIPS -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Strategy tips" data-es="Consejos estratégicos">Strategy tips</h2>
+    <div class="tips-grid">
+      <div class="tip">
+        <div class="tip-icon">📁</div>
+        <div class="tip-text"><strong data-en="Document everything from the start" data-es="Documenta todo desde el principio">Document everything from the start</strong><span data-en="Start building your relationship evidence from day one. Keep joint bank statements, photos with dates, travel records. The more evidence the better — case officers look for depth and consistency." data-es="Empieza a construir evidencia de tu relación desde el primer día. Guarda extractos bancarios conjuntos, fotos con fecha, registros de viajes. Mientras más evidencia, mejor — los oficiales buscan profundidad y consistencia.">Start building your relationship evidence from day one. Keep joint bank statements, photos with dates, travel records. The more evidence the better — case officers look for depth and consistency.</span></div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">💌</div>
+        <div class="tip-text"><strong data-en="Get strong statutory declarations" data-es="Consigue declaraciones juradas sólidas">Get strong statutory declarations</strong><span data-en="Third-party statutory declarations from people who know you as a couple are very powerful evidence. Get declarations from family and friends who can describe the relationship in detail." data-es="Las declaraciones juradas de terceros que los conocen como pareja son evidencia muy poderosa. Obtén declaraciones de familiares y amigos que puedan describir la relación en detalle.">Third-party statutory declarations from people who know you as a couple are very powerful evidence. Get declarations from family and friends who can describe the relationship in detail.</span></div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">⏰</div>
+        <div class="tip-text"><strong data-en="Apply as soon as eligible" data-es="Aplica tan pronto como seas elegible">Apply as soon as eligible</strong><span data-en="The 2-year clock for Stage 2 starts from your application date, not when Stage 1 is granted. Applying earlier means the permanent visa comes sooner — even if Stage 1 is still processing." data-es="El contador de 2 años para la Etapa 2 comienza desde la fecha de tu solicitud, no cuando se otorga la Etapa 1. Aplicar antes significa que la visa permanente llega antes, incluso si la Etapa 1 todavía está en proceso.">The 2-year clock for Stage 2 starts from your application date, not when Stage 1 is granted. Applying earlier means the permanent visa comes sooner — even if Stage 1 is still processing.</span></div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">🛡️</div>
+        <div class="tip-text"><strong data-en="Know your rights if the relationship ends" data-es="Conoce tus derechos si la relación termina">Know your rights if the relationship ends</strong><span data-en="If family violence occurs, the applicant may still be eligible for the permanent visa even if the relationship ends. Australia takes family violence in partner visa situations very seriously." data-es="Si ocurre violencia familiar, el solicitante puede seguir siendo elegible para la visa permanente aunque la relación termine. Australia toma muy en serio la violencia familiar en situaciones de visa de pareja.">If family violence occurs, the applicant may still be eligible for the permanent visa even if the relationship ends. Australia takes family violence in partner visa situations very seriously.</span></div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">🤝</div>
+        <div class="tip-text"><strong data-en="Consider a migration agent" data-es="Considera un agente de migración">Consider a migration agent</strong><span data-en="Partner visas are complex and expensive. A small mistake can cause delays or refusals. A registered migration agent can review your evidence, identify gaps, and ensure your application is as strong as possible." data-es="Las visas de pareja son complejas y caras. Un pequeño error puede causar demoras o rechazos. Un agente de migración registrado puede revisar tu evidencia, identificar vacíos y asegurarse de que tu solicitud sea lo más sólida posible.">Partner visas are complex and expensive. A small mistake can cause delays or refusals. A registered migration agent can review your evidence, identify gaps, and ensure your application is as strong as possible.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Frequently asked questions" data-es="Preguntas frecuentes">Frequently asked questions</h2>
+    <div class="accordion">
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span data-en="Can I work while waiting for my partner visa?" data-es="¿Puedo trabajar mientras espero la visa de pareja?">Can I work while waiting for my partner visa?</span>
+          <span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content" data-en="If you are onshore and have lodged a valid 820 application, you receive a Bridging Visa A (BVA) which allows you to work without restriction. Once your 820 is granted, you have full work rights. For the offshore 309 pathway, you must wait until the 309 is granted before entering Australia and working." data-es="Si estás en Australia y has presentado una solicitud 820 válida, recibes una Visa Puente A (BVA) que te permite trabajar sin restricciones. Una vez otorgada la visa 820, tienes derechos laborales completos. Para la vía offshore 309, debes esperar hasta que se otorgue la 309 antes de ingresar a Australia y trabajar.">If you are onshore and have lodged a valid 820 application, you receive a Bridging Visa A (BVA) which allows you to work without restriction. Once your 820 is granted, you have full work rights. For the offshore 309 pathway, you must wait until the 309 is granted before entering Australia and working.</div>
+        </div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span data-en="Can I include children in my partner visa?" data-es="¿Puedo incluir hijos en la visa de pareja?">Can I include children in my partner visa?</span>
+          <span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content" data-en="Yes. Dependent children can be included in your partner visa application. Each additional applicant over 18 pays an additional $4,550 and those under 18 pay $2,275. Children included in the application will also receive permanent residence when you do (Stage 2)." data-es="Sí. Los hijos dependientes pueden ser incluidos en tu solicitud de visa de pareja. Cada solicitante adicional mayor de 18 años paga $4,550 adicionales y los menores de 18 pagan $2,275. Los hijos incluidos en la solicitud también recibirán residencia permanente cuando la obtengas (Etapa 2).">Yes. Dependent children can be included in your partner visa application. Each additional applicant over 18 pays an additional $4,550 and those under 18 pay $2,275. Children included in the application will also receive permanent residence when you do (Stage 2).</div>
+        </div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span data-en="What if we met online and haven't met in person?" data-es="¿Qué pasa si nos conocimos en línea y no nos hemos conocido en persona?">What if we met online and haven't met in person?</span>
+          <span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content" data-en="For a standard partner visa, you need to have met your partner in person at least once (the 'met in person' requirement). If you haven't met, you may need to consider a Prospective Marriage (Fiancé) Visa (subclass 300) instead, which allows you to come to Australia to marry. After marrying, you can then apply for the partner visa." data-es="Para una visa de pareja estándar, necesitas haber conocido a tu pareja en persona al menos una vez (el requisito de 'conocidos en persona'). Si no se han conocido, puede que necesites considerar una Visa de Matrimonio Prospectivo (Subclase 300), que te permite venir a Australia para casarte. Después de casarte, puedes solicitar la visa de pareja.">For a standard partner visa, you need to have met your partner in person at least once (the 'met in person' requirement). If you haven't met, you may need to consider a Prospective Marriage (Fiancé) Visa (subclass 300) instead, which allows you to come to Australia to marry. After marrying, you can then apply for the partner visa.</div>
+        </div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span data-en="What happens if the relationship breaks down before PR is granted?" data-es="¿Qué pasa si la relación termina antes de que se otorgue la RP?">What happens if the relationship breaks down before PR is granted?</span>
+          <span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content" data-en="If the relationship ends before the Stage 2 permanent visa is assessed, the application is generally refused. However, there are exceptions: if the relationship ended due to the death of the sponsor, or if family violence was involved (the applicant may still be granted PR under the domestic violence provisions). If you have dependent children of the relationship, there may also be pathways." data-es="Si la relación termina antes de que se evalúe la visa permanente de Etapa 2, la solicitud generalmente se rechaza. Sin embargo, hay excepciones: si la relación terminó por fallecimiento del patrocinador, o si hubo violencia familiar (el solicitante puede aún obtener la RP bajo las disposiciones de violencia doméstica). Si tienes hijos dependientes de la relación, también puede haber vías.">If the relationship ends before the Stage 2 permanent visa is assessed, the application is generally refused. However, there are exceptions: if the relationship ended due to the death of the sponsor, or if family violence was involved (the applicant may still be granted PR under the domestic violence provisions). If you have dependent children of the relationship, there may also be pathways.</div>
+        </div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span data-en="Can a 482 visa holder sponsor their partner?" data-es="¿Puede un titular de visa 482 patrocinar a su pareja?">Can a 482 visa holder sponsor their partner?</span>
+          <span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content" data-en="Only Australian citizens and permanent residents can sponsor a partner for a partner visa. A 482 temporary visa holder cannot directly sponsor a partner for the partner visa. The partner would need to apply for a different visa (e.g. a secondary 482 attached to the primary 482 holder, or the partner could be included in the primary 482 application as a secondary applicant from the beginning)." data-es="Solo los ciudadanos australianos y residentes permanentes pueden patrocinar a una pareja para una visa de pareja. Un titular de visa temporal 482 no puede patrocinar directamente a su pareja. La pareja necesitaría solicitar un tipo de visa diferente (ej. una visa 482 secundaria vinculada al titular principal de la 482, o la pareja podría ser incluida en la solicitud 482 principal como solicitante secundario desde el inicio).">Only Australian citizens and permanent residents can sponsor a partner for a partner visa. A 482 temporary visa holder cannot directly sponsor a partner for the partner visa. The partner would need to apply for a different visa (e.g. a secondary 482 attached to the primary 482 holder, or the partner could be included in the primary 482 application as a secondary applicant from the beginning).</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESOURCES -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Official resources" data-es="Recursos oficiales">Official resources</h2>
+    <div class="resources-grid">
+      <a href="https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-onshore-820-801" target="_blank" class="resource-card">
+        <div class="res-title" data-en="Visa 820/801 — Home Affairs" data-es="Visa 820/801 — Home Affairs">Visa 820/801 — Home Affairs</div>
+        <div class="res-sub" data-en="Onshore partner visa guide" data-es="Guía visa de pareja en Australia">Onshore partner visa guide</div>
+        <div class="res-link">immi.homeaffairs.gov.au ↗</div>
+      </a>
+      <a href="https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-offshore-309-100" target="_blank" class="resource-card">
+        <div class="res-title" data-en="Visa 309/100 — Home Affairs" data-es="Visa 309/100 — Home Affairs">Visa 309/100 — Home Affairs</div>
+        <div class="res-sub" data-en="Offshore partner visa guide" data-es="Guía visa de pareja en exterior">Offshore partner visa guide</div>
+        <div class="res-link">immi.homeaffairs.gov.au ↗</div>
+      </a>
+      <a href="https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/prospective-marriage-300" target="_blank" class="resource-card">
+        <div class="res-title" data-en="Visa 300 — Fiancé" data-es="Visa 300 — Prometido/a">Visa 300 — Fiancé</div>
+        <div class="res-sub" data-en="If not yet married" data-es="Si aún no están casados">If not yet married</div>
+        <div class="res-link">immi.homeaffairs.gov.au ↗</div>
+      </a>
+      <a href="migro-agents.html" class="resource-card">
+        <div class="res-title" data-en="Migration agents guide" data-es="Guía de agentes de migración">Migration agents guide</div>
+        <div class="res-sub" data-en="Highly recommended for partner visas" data-es="Muy recomendado para visas de pareja">Highly recommended for partner visas</div>
+        <div class="res-link" data-en="Within Migro →" data-es="Dentro de Migro →">Within Migro →</div>
+      </a>
+    </div>
+  </section>
+
+</div>
+
+<script>
+let lang = 'en';
+function setLang(l){
+  lang = l;
+  document.querySelectorAll('[data-en]').forEach(el=>{
+    el.innerHTML = el.getAttribute('data-' + l);
+  });
+  document.querySelector('.lang-btn').textContent = l === 'en' ? 'ES' : 'EN';
+}
+function toggleLang(){ setLang(lang === 'en' ? 'es' : 'en'); }
+
+function toggleAcc(btn){
+  const body = btn.nextElementSibling;
+  const chevron = btn.querySelector('.acc-chevron');
+  const isOpen = body.classList.contains('open');
+  document.querySelectorAll('.acc-body.open').forEach(b=>{ b.classList.remove('open'); b.previousElementSibling.querySelector('.acc-chevron').style.transform=''; });
+  if(!isOpen){ body.classList.add('open'); chevron.style.transform='rotate(180deg)'; }
+}
+
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.08});
+document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>
