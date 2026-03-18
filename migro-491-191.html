@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Migro — Regional Pathway 491→191</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --black:#0f0f0f;--white:#ffffff;
+  --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-300:#d1d5db;
+  --gray-500:#6b7280;--gray-600:#4b5563;--gray-700:#374151;--gray-800:#1f2937;
+  --green:#16a34a;--green-bg:#f0fdf4;--green-border:#bbf7d0;
+  --amber:#d97706;--amber-bg:#fffbeb;--amber-border:#fde68a;
+  --red:#dc2626;--red-bg:#fef2f2;--red-border:#fecaca;
+  --blue:#2563eb;--blue-bg:#eff6ff;--blue-border:#bfdbfe;
+  --purple:#7c3aed;--purple-bg:#f5f3ff;--purple-border:#ddd6fe;
+  --teal:#0d9488;--teal-bg:#f0fdfa;--teal-border:#99f6e4;
+  --orange:#ea580c;--orange-bg:#fff7ed;--orange-border:#fed7aa;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:var(--gray-800);background:var(--gray-50);line-height:1.6}
+a{color:inherit;text-decoration:none}
+.nav{background:var(--white);border-bottom:1px solid var(--gray-200);position:sticky;top:0;z-index:100;padding:0 1.5rem}
+.nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+.nav-brand{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--black)}
+.nav-links{display:flex;align-items:center;gap:1.25rem}
+.nav-links a{font-size:.85rem;font-weight:500;color:var(--gray-600)}
+.nav-links a:hover{color:var(--black)}
+.lang-btn{background:var(--gray-100);border:none;border-radius:6px;padding:.3rem .75rem;font-size:.8rem;font-weight:600;cursor:pointer;color:var(--gray-700)}
+.hero{background:linear-gradient(135deg,#f0fdfa 0%,#99f6e4 100%);padding:3rem 1.5rem 2.5rem}
+.hero-inner{max-width:1100px;margin:0 auto}
+.hero-tag{display:inline-block;background:var(--teal);color:#fff;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .75rem;border-radius:999px;margin-bottom:1rem}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;color:var(--black);max-width:700px;line-height:1.2;margin-bottom:.75rem}
+.hero p{color:var(--gray-600);font-size:1rem;max-width:600px}
+.breadcrumb{display:flex;align-items:center;gap:.5rem;margin-bottom:1.5rem;font-size:.8rem;color:var(--gray-500)}
+.breadcrumb a{color:var(--teal);font-weight:500}
+.container{max-width:1100px;margin:0 auto;padding:3rem 1.5rem}
+.section-title{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--black);margin-bottom:1.5rem}
+.section{margin-bottom:3rem}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
+.card{background:var(--white);border:1px solid var(--gray-200);border-radius:12px;padding:1.25rem}
+.card-icon{font-size:1.6rem;margin-bottom:.6rem}
+.card-label{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gray-500);margin-bottom:.3rem}
+.card-value{font-size:1rem;font-weight:600;color:var(--black)}
+.card-sub{font-size:.8rem;color:var(--gray-500);margin-top:.25rem}
+/* PATHWAY FLOW */
+.pathway-flow{display:flex;align-items:stretch;gap:0;overflow-x:auto;padding:.5rem 0}
+.pf-step{background:var(--white);border:2px solid var(--gray-200);border-radius:12px;padding:1.25rem;min-width:180px;flex:1}
+.pf-step.step-491{border-color:var(--teal)}
+.pf-step.step-arrow{background:none;border:none;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--gray-400);min-width:40px;flex:0 0 40px}
+.pf-step.step-191{border-color:var(--green)}
+.pf-step.step-189{border-color:var(--blue)}
+.pf-step-label{font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.3rem}
+.pf-step-label-teal{color:var(--teal)}
+.pf-step-label-green{color:var(--green)}
+.pf-step-label-blue{color:var(--blue)}
+.pf-step-title{font-weight:700;font-size:.9rem;color:var(--black);margin-bottom:.3rem}
+.pf-step-detail{font-size:.75rem;color:var(--gray-600);line-height:1.5}
+/* REQUIREMENTS CARDS */
+.req-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1rem}
+.req-card{background:var(--white);border:1px solid var(--gray-200);border-radius:12px;padding:1.25rem}
+.req-title{font-weight:700;font-size:.9rem;color:var(--black);margin-bottom:.75rem}
+.req-list{list-style:none;display:flex;flex-direction:column;gap:.45rem}
+.req-list li{font-size:.82rem;color:var(--gray-600);padding-left:1.2rem;position:relative;line-height:1.5}
+.req-list li::before{content:'✓';position:absolute;left:0;color:var(--teal);font-weight:700}
+/* REGIONAL AREAS */
+.regions-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.9rem}
+.region-card{background:var(--white);border:1px solid var(--gray-200);border-radius:10px;padding:1rem}
+.region-state{font-weight:700;font-size:.85rem;color:var(--black);margin-bottom:.35rem}
+.region-cities{font-size:.75rem;color:var(--gray-500);margin-bottom:.35rem}
+.region-metro{font-size:.72rem;color:var(--red);margin-top:.3rem}
+/* POINTS CALCULATOR */
+.pts-card{background:var(--white);border:1px solid var(--gray-200);border-radius:14px;padding:1.75rem}
+.pts-table{width:100%;border-collapse:collapse}
+.pts-table th{text-align:left;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--gray-500);padding:.4rem .5rem;border-bottom:1px solid var(--gray-200)}
+.pts-table td{padding:.55rem .5rem;font-size:.83rem;color:var(--gray-700);border-bottom:1px solid var(--gray-100)}
+.pts-table tr:last-child td{border-bottom:none}
+.pts-table .pts-val{font-weight:700;color:var(--teal);text-align:right}
+.pts-total{margin-top:1rem;background:var(--teal-bg);border:1px solid var(--teal-border);border-radius:10px;padding:.85rem 1rem;display:flex;justify-content:space-between;align-items:center}
+.pts-total-label{font-size:.85rem;font-weight:700;color:var(--black)}
+.pts-total-val{font-size:1.3rem;font-weight:700;color:var(--teal)}
+/* CHECKLIST 191 */
+.checklist{display:flex;flex-direction:column;gap:.5rem}
+.check-item{background:var(--white);border:1px solid var(--gray-200);border-radius:8px;padding:.75rem 1rem;display:flex;gap:.75rem;align-items:flex-start;font-size:.85rem;color:var(--gray-700)}
+.check-item .ci-icon{font-size:1rem;flex-shrink:0}
+.check-item strong{color:var(--black);display:block;margin-bottom:.1rem;font-size:.85rem}
+/* CALLOUT */
+.callout{border-radius:12px;padding:1.25rem 1.5rem;display:flex;gap:1rem;align-items:flex-start;margin-bottom:1.5rem}
+.callout-green{background:var(--green-bg);border:1px solid var(--green-border)}
+.callout-amber{background:var(--amber-bg);border:1px solid var(--amber-border)}
+.callout-teal{background:var(--teal-bg);border:1px solid var(--teal-border)}
+.callout-blue{background:var(--blue-bg);border:1px solid var(--blue-border)}
+.callout-icon{font-size:1.25rem;flex-shrink:0;margin-top:.05rem}
+.callout-body h4{font-size:.9rem;font-weight:700;color:var(--black);margin-bottom:.3rem}
+.callout-body p{font-size:.82rem;color:var(--gray-700);line-height:1.5}
+/* COMPARE TABLE */
+.compare-table{width:100%;border-collapse:collapse;background:var(--white);border-radius:12px;overflow:hidden;border:1px solid var(--gray-200)}
+.compare-table th{background:var(--gray-100);padding:.7rem 1rem;text-align:left;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--gray-600);border-bottom:1px solid var(--gray-200)}
+.compare-table td{padding:.7rem 1rem;font-size:.84rem;color:var(--gray-700);border-bottom:1px solid var(--gray-100)}
+.compare-table tr:last-child td{border-bottom:none}
+.compare-table tr:hover td{background:var(--gray-50)}
+.tick{color:var(--green);font-weight:700}
+.cross{color:var(--red)}
+/* TIPS */
+.tips-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.9rem}
+.tip{background:var(--white);border:1px solid var(--gray-200);border-radius:10px;padding:1rem 1.1rem;display:flex;gap:.75rem}
+.tip-icon{font-size:1.1rem;flex-shrink:0}
+.tip-text{font-size:.83rem;color:var(--gray-700);line-height:1.5}
+.tip-text strong{color:var(--black);display:block;margin-bottom:.15rem}
+/* ACCORDION */
+.accordion{display:flex;flex-direction:column;gap:.5rem}
+.acc-item{background:var(--white);border:1px solid var(--gray-200);border-radius:10px;overflow:hidden}
+.acc-trigger{width:100%;display:flex;justify-content:space-between;align-items:center;padding:1rem 1.25rem;background:none;border:none;cursor:pointer;font-size:.9rem;font-weight:600;color:var(--black);text-align:left;gap:1rem}
+.acc-trigger:hover{background:var(--gray-50)}
+.acc-chevron{font-size:1rem;transition:transform .3s;flex-shrink:0}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1)}
+.acc-body.open{max-height:800px}
+.acc-content{padding:0 1.25rem 1rem;font-size:.85rem;color:var(--gray-600);line-height:1.7}
+.resources-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.9rem}
+.resource-card{background:var(--white);border:1px solid var(--gray-200);border-radius:10px;padding:1rem;display:flex;flex-direction:column;gap:.35rem;transition:border-color .2s}
+.resource-card:hover{border-color:var(--teal)}
+.resource-card .res-title{font-size:.85rem;font-weight:600;color:var(--black)}
+.resource-card .res-sub{font-size:.75rem;color:var(--gray-500)}
+.resource-card .res-link{font-size:.75rem;color:var(--teal);font-weight:500;margin-top:auto}
+.fade-up{opacity:0;transform:translateY(24px);transition:opacity .55s ease,transform .55s ease}
+.fade-up.visible{opacity:1;transform:none}
+.badge{display:inline-block;font-size:.68rem;font-weight:700;padding:.2rem .55rem;border-radius:999px}
+.badge-green{background:var(--green-bg);color:var(--green)}
+.badge-teal{background:var(--teal-bg);color:var(--teal)}
+.badge-amber{background:var(--amber-bg);color:var(--amber)}
+@media(max-width:640px){.card-grid,.req-grid,.regions-grid,.tips-grid,.resources-grid{grid-template-columns:1fr}.pathway-flow{flex-direction:column}.pf-step.step-arrow{transform:rotate(90deg)}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="migro-dashboard.html" class="nav-brand">Migro</a>
+    <div class="nav-links">
+      <a href="migro-dashboard.html" data-en="Dashboard" data-es="Inicio">Dashboard</a>
+      <a href="migro-state-nomination.html" data-en="State Nomination" data-es="Nominación Estatal">State Nomination</a>
+      <button class="lang-btn" onclick="toggleLang()">ES</button>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb">
+      <a href="migro-dashboard.html">Migro</a>
+      <span>›</span>
+      <span data-en="Regional Pathway" data-es="Vía Regional">Regional Pathway</span>
+    </div>
+    <div class="hero-tag" data-en="Regional Pathway" data-es="Vía Regional">Regional Pathway</div>
+    <h1 data-en="491 &amp; 191 — The Regional Pathway to PR" data-es="491 y 191 — La Vía Regional a la RP">491 &amp; 191 — The Regional Pathway to PR</h1>
+    <p data-en="Live and work in regional Australia on a 491, then convert to permanent residence via the 191 after 3 years. Faster than the points test for many applicants." data-es="Vive y trabaja en Australia regional con la 491, luego conviértela en residencia permanente mediante la 191 después de 3 años. Más rápido que la prueba de puntos para muchos solicitantes.">Live and work in regional Australia on a 491, then convert to permanent residence via the 191 after 3 years. Faster than the points test for many applicants.</p>
+  </div>
+</section>
+
+<div class="container">
+
+  <!-- PATHWAY OVERVIEW -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="The full regional pathway" data-es="La vía regional completa">The full regional pathway</h2>
+    <div class="pathway-flow">
+      <div class="pf-step step-491">
+        <div class="pf-step-label pf-step-label-teal" data-en="STEP 1" data-es="PASO 1">STEP 1</div>
+        <div class="pf-step-title" data-en="Get state/territory nomination" data-es="Obtener nominación estatal">Get state/territory nomination</div>
+        <div class="pf-step-detail" data-en="Apply to a state/territory for 491 nomination. Requires points test score and occupation on relevant list." data-es="Aplica a un estado/territorio para nominación 491. Requiere puntaje de prueba de puntos y ocupación en la lista relevante.">Apply to a state/territory for 491 nomination. Requires points test score and occupation on relevant list.</div>
+      </div>
+      <div class="pf-step step-arrow">→</div>
+      <div class="pf-step step-491">
+        <div class="pf-step-label pf-step-label-teal" data-en="STEP 2" data-es="PASO 2">STEP 2</div>
+        <div class="pf-step-title" data-en="491 visa granted" data-es="Visa 491 aprobada">491 visa granted</div>
+        <div class="pf-step-detail" data-en="5-year provisional visa. Live, work, study in a designated regional area. +15 points bonus included." data-es="Visa provisional de 5 años. Vive, trabaja, estudia en área regional designada. +15 puntos de bonificación incluidos.">5-year provisional visa. Live, work, study in a designated regional area. +15 points bonus included.</div>
+      </div>
+      <div class="pf-step step-arrow">→</div>
+      <div class="pf-step step-191">
+        <div class="pf-step-label pf-step-label-green" data-en="STEP 3 (3 years later)" data-es="PASO 3 (3 años después)">STEP 3 (3 years later)</div>
+        <div class="pf-step-title" data-en="Apply for 191 PR" data-es="Aplicar a la 191 RP">Apply for 191 PR</div>
+        <div class="pf-step-detail" data-en="After 3 years residing in regional Australia + meeting income threshold, apply for permanent 191 visa." data-es="Después de 3 años residiendo en Australia regional + cumplir umbral de ingresos, aplica a la visa permanente 191.">After 3 years residing in regional Australia + meeting income threshold, apply for permanent 191 visa.</div>
+      </div>
+      <div class="pf-step step-arrow">→</div>
+      <div class="pf-step step-189">
+        <div class="pf-step-label pf-step-label-blue" data-en="RESULT" data-es="RESULTADO">RESULT</div>
+        <div class="pf-step-title" data-en="Permanent Resident" data-es="Residente Permanente">Permanent Resident</div>
+        <div class="pf-step-detail" data-en="Full PR, can live anywhere in Australia. Pathway to citizenship after 4 years of residence." data-es="RP completa, puede vivir en cualquier lugar de Australia. Camino a la ciudadanía después de 4 años de residencia.">Full PR, can live anywhere in Australia. Pathway to citizenship after 4 years of residence.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KEY FACTS -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Key facts" data-es="Datos clave">Key facts</h2>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">⏱️</div>
+        <div class="card-label" data-en="491 duration" data-es="Duración 491">491 duration</div>
+        <div class="card-value" data-en="5 years" data-es="5 años">5 years</div>
+        <div class="card-sub" data-en="Provisional, not permanent" data-es="Provisional, no permanente">Provisional, not permanent</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">⭐</div>
+        <div class="card-label" data-en="Points bonus" data-es="Bonificación de puntos">Points bonus</div>
+        <div class="card-value" data-en="+15 points" data-es="+15 puntos">+15 points</div>
+        <div class="card-sub" data-en="Highest points bonus of any visa" data-es="La bonificación de puntos más alta de cualquier visa">Highest points bonus of any visa</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📍</div>
+        <div class="card-label" data-en="Must live in regional area" data-es="Debes vivir en área regional">Must live in regional area</div>
+        <div class="card-value" data-en="Mandatory" data-es="Obligatorio">Mandatory</div>
+        <div class="card-sub" data-en="Cannot move to metro cities" data-es="No puedes mudarte a ciudades metro">Cannot move to metro cities</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📅</div>
+        <div class="card-label" data-en="Time to PR via 191" data-es="Tiempo hasta RP vía 191">Time to PR via 191</div>
+        <div class="card-value" data-en="3+ years" data-es="3+ años">3+ years</div>
+        <div class="card-sub" data-en="From 491 grant to 191 eligibility" data-es="Desde aprobación 491 hasta elegibilidad 191">From 491 grant to 191 eligibility</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">💰</div>
+        <div class="card-label" data-en="Income threshold (191)" data-es="Umbral de ingresos (191)">Income threshold (191)</div>
+        <div class="card-value">$53,900/yr</div>
+        <div class="card-sub" data-en="Taxable income each of 3 years" data-es="Ingresos imponibles cada uno de los 3 años">Taxable income each of 3 years</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">💰</div>
+        <div class="card-label" data-en="VAC — 491 (primary)" data-es="Cargo visa — 491 (principal)">VAC — 491 (primary)</div>
+        <div class="card-value">$4,770</div>
+        <div class="card-sub" data-en="Plus 191 when eligible (~$4,770)" data-es="Más 191 cuando seas elegible (~$4,770)">Plus 191 when eligible (~$4,770)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 491 REQUIREMENTS -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Visa 491 requirements" data-es="Requisitos visa 491">Visa 491 requirements</h2>
+    <div class="req-grid">
+      <div class="req-card">
+        <div class="req-title">📋 <span data-en="Invitation to apply" data-es="Invitación a aplicar">Invitation to apply</span></div>
+        <ul class="req-list">
+          <li data-en="Submit Expression of Interest (EOI) in SkillSelect" data-es="Presentar Expresión de Interés (EOI) en SkillSelect">Submit Expression of Interest (EOI) in SkillSelect</li>
+          <li data-en="Receive state/territory nomination" data-es="Recibir nominación estatal/territorial">Receive state/territory nomination</li>
+          <li data-en="Receive Invitation to Apply (ITA) from Home Affairs" data-es="Recibir Invitación a Aplicar (ITA) de Home Affairs">Receive Invitation to Apply (ITA) from Home Affairs</li>
+          <li data-en="Minimum 65 points (actual invitations much higher)" data-es="Mínimo 65 puntos (las invitaciones reales son mucho mayores)">Minimum 65 points (actual invitations much higher)</li>
+        </ul>
+      </div>
+      <div class="req-card">
+        <div class="req-title">🧑‍💼 <span data-en="Personal requirements" data-es="Requisitos personales">Personal requirements</span></div>
+        <ul class="req-list">
+          <li data-en="Under 45 years at time of invitation" data-es="Menores de 45 años al momento de la invitación">Under 45 years at time of invitation</li>
+          <li data-en="Competent English (IELTS 6.0 each band)" data-es="Inglés competente (IELTS 6.0 cada banda)">Competent English (IELTS 6.0 each band)</li>
+          <li data-en="Occupation on relevant occupation list" data-es="Ocupación en la lista de ocupaciones relevante">Occupation on relevant occupation list</li>
+          <li data-en="Positive skills assessment" data-es="Evaluación de habilidades positiva">Positive skills assessment</li>
+          <li data-en="Health and character requirements" data-es="Requisitos de salud y carácter">Health and character requirements</li>
+        </ul>
+      </div>
+      <div class="req-card">
+        <div class="req-title">📍 <span data-en="Regional obligation" data-es="Obligación regional">Regional obligation</span></div>
+        <ul class="req-list">
+          <li data-en="Must live in a designated regional area" data-es="Debes vivir en un área regional designada">Must live in a designated regional area</li>
+          <li data-en="Must work/study in the regional area" data-es="Debes trabajar/estudiar en el área regional">Must work/study in the regional area</li>
+          <li data-en="Cannot move to metro Sydney, Melbourne, Brisbane, Perth, Gold Coast" data-es="No puedes mudarte a Sídney, Melbourne, Brisbane, Perth, Gold Coast">Cannot move to metro Sydney, Melbourne, Brisbane, Perth, Gold Coast</li>
+          <li data-en="Obligation applies for the 5-year visa duration" data-es="La obligación aplica durante los 5 años de visa">Obligation applies for the 5-year visa duration</li>
+        </ul>
+      </div>
+      <div class="req-card">
+        <div class="req-title">🏛️ <span data-en="State nomination" data-es="Nominación estatal">State nomination</span></div>
+        <ul class="req-list">
+          <li data-en="Each state/territory has own criteria" data-es="Cada estado/territorio tiene sus propios criterios">Each state/territory has own criteria</li>
+          <li data-en="Some require you to already be in the region" data-es="Algunos requieren que ya estés en la región">Some require you to already be in the region</li>
+          <li data-en="Some require a job offer" data-es="Algunos requieren oferta de trabajo">Some require a job offer</li>
+          <li data-en="Additional skills assessment may be required" data-es="Puede requerirse evaluación de habilidades adicional">Additional skills assessment may be required</li>
+          <li data-en="Check each state's current criteria" data-es="Verifica los criterios actuales de cada estado">Check each state's current criteria</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- POINTS ADVANTAGE -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Points advantage on the 491" data-es="Ventaja de puntos en la 491">Points advantage on the 491</h2>
+    <div class="pts-card">
+      <p style="font-size:.85rem;color:var(--gray-600);margin-bottom:1rem" data-en="The 491 adds +15 points to your total score compared to the 189 pathway. Here's how the comparison looks for a typical applicant:" data-es="La visa 491 agrega +15 puntos a tu puntaje total en comparación con la vía 189. Así es como se ve la comparación para un solicitante típico:">The 491 adds +15 points to your total score compared to the 189 pathway. Here's how the comparison looks for a typical applicant:</p>
+      <table class="pts-table">
+        <thead>
+          <tr>
+            <th data-en="Points component" data-es="Componente de puntos">Points component</th>
+            <th style="text-align:right" data-en="Points" data-es="Puntos">Points</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td data-en="Age (25–32 optimal)" data-es="Edad (25–32 óptima)">Age (25–32 optimal)</td><td class="pts-val">30</td></tr>
+          <tr><td data-en="English (Superior — IELTS 8.0 each)" data-es="Inglés (Superior — IELTS 8.0 cada)">English (Superior — IELTS 8.0 each)</td><td class="pts-val">20</td></tr>
+          <tr><td data-en="Overseas skilled work (8–10 years)" data-es="Trabajo calificado en el exterior (8–10 años)">Overseas skilled work (8–10 years)</td><td class="pts-val">15</td></tr>
+          <tr><td data-en="Australian skilled work (3–5 years)" data-es="Trabajo calificado en Australia (3–5 años)">Australian skilled work (3–5 years)</td><td class="pts-val">10</td></tr>
+          <tr><td data-en="Bachelor degree" data-es="Licenciatura">Bachelor degree</td><td class="pts-val">15</td></tr>
+          <tr><td data-en="Australian study requirement" data-es="Requisito de estudio australiano">Australian study requirement</td><td class="pts-val">5</td></tr>
+          <tr style="background:var(--teal-bg)"><td><strong data-en="+ 491 state nomination bonus" data-es="+ Bonificación nominación estatal 491">+ 491 state nomination bonus</strong></td><td class="pts-val" style="color:var(--teal)"><strong>+15</strong></td></tr>
+        </tbody>
+      </table>
+      <div class="pts-total">
+        <span class="pts-total-label" data-en="Total with 491 nomination" data-es="Total con nominación 491">Total with 491 nomination</span>
+        <span class="pts-total-val">110 pts</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 191 REQUIREMENTS -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Visa 191 requirements — the PR stage" data-es="Requisitos visa 191 — la etapa de RP">Visa 191 requirements — the PR stage</h2>
+    <div class="callout callout-green">
+      <div class="callout-icon">✅</div>
+      <div class="callout-body">
+        <h4 data-en="3 conditions for the 191" data-es="3 condiciones para la 191">3 conditions for the 191</h4>
+        <p data-en="To apply for the Subclass 191 (Permanent Residence — Regional) you must meet all three conditions: (1) Have held a 491, 494, or 887 visa for at least 3 years; (2) Have lived in a designated regional area for at least 3 years; (3) Have earned at least $53,900 per year in taxable income for each of those 3 years." data-es="Para solicitar la Subclase 191 (Residencia Permanente — Regional) debes cumplir las tres condiciones: (1) Haber tenido una visa 491, 494 u 887 durante al menos 3 años; (2) Haber vivido en un área regional designada durante al menos 3 años; (3) Haber ganado al menos $53,900 por año en ingresos imponibles en cada uno de esos 3 años.">To apply for the Subclass 191 (Permanent Residence — Regional) you must meet all three conditions: (1) Have held a 491, 494, or 887 visa for at least 3 years; (2) Have lived in a designated regional area for at least 3 years; (3) Have earned at least $53,900 per year in taxable income for each of those 3 years.</p>
+      </div>
+    </div>
+    <div class="checklist">
+      <div class="check-item">
+        <div class="ci-icon">📅</div>
+        <div><strong data-en="3 years holding a qualifying visa" data-es="3 años con una visa calificante">3 years holding a qualifying visa</strong><span data-en="You must have held the 491, 494 (Skilled Employer Sponsored Regional), or an old 887 visa for at least 3 years. Time on a Bridging Visa does not count." data-es="Debes haber tenido la visa 491, 494 (Empleador Patrocinador Regional Calificado) o una antigua visa 887 durante al menos 3 años. El tiempo con una Visa Puente no cuenta.">You must have held the 491, 494 (Skilled Employer Sponsored Regional), or an old 887 visa for at least 3 years. Time on a Bridging Visa does not count.</span></div>
+      </div>
+      <div class="check-item">
+        <div class="ci-icon">📍</div>
+        <div><strong data-en="3 years residing in regional Australia" data-es="3 años residiendo en Australia regional">3 years residing in regional Australia</strong><span data-en="You must have been physically present in a designated regional area for at least 3 years. Brief absences for holidays or work travel are generally acceptable, but you must genuinely be living in the region." data-es="Debes haber estado físicamente presente en un área regional designada durante al menos 3 años. Las ausencias breves por vacaciones o viajes de trabajo son generalmente aceptables, pero debes vivir genuinamente en la región.">You must have been physically present in a designated regional area for at least 3 years. Brief absences for holidays or work travel are generally acceptable, but you must genuinely be living in the region.</span></div>
+      </div>
+      <div class="check-item">
+        <div class="ci-icon">💰</div>
+        <div><strong data-en="$53,900 income requirement — each year" data-es="Requisito de ingresos $53,900 — cada año">$53,900 income requirement — each year</strong><span data-en="You must have earned at least $53,900 per year in taxable income in each of the 3 qualifying years. This is based on your Australian Tax Office (ATO) tax returns. Only taxable income from regional work qualifies — income from overseas or metro areas does not count." data-es="Debes haber ganado al menos $53,900 por año en ingresos imponibles en cada uno de los 3 años calificantes. Esto se basa en tus declaraciones de impuestos de la Oficina Tributaria Australiana (ATO). Solo los ingresos imponibles del trabajo regional califican: los ingresos del extranjero o de áreas metropolitanas no cuentan.">You must have earned at least $53,900 per year in taxable income in each of the 3 qualifying years. This is based on your Australian Tax Office (ATO) tax returns. Only taxable income from regional work qualifies — income from overseas or metro areas does not count.</span></div>
+      </div>
+      <div class="check-item">
+        <div class="ci-icon">📋</div>
+        <div><strong data-en="Health, character, and English" data-es="Salud, carácter e inglés">Health, character, and English</strong><span data-en="You must still meet health, character, and English requirements at the time of the 191 application. English requirements remain the same (Competent English). You'll need updated health examinations and police clearances." data-es="Debes seguir cumpliendo los requisitos de salud, carácter e inglés en el momento de la solicitud de la visa 191. Los requisitos de inglés siguen siendo los mismos (Inglés Competente). Necesitarás exámenes médicos actualizados y antecedentes penales.">You must still meet health, character, and English requirements at the time of the 191 application. English requirements remain the same (Competent English). You'll need updated health examinations and police clearances.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT COUNTS AS REGIONAL -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="What counts as 'regional Australia'?" data-es="¿Qué cuenta como 'Australia regional'?">What counts as 'regional Australia'?</h2>
+    <div class="callout callout-teal">
+      <div class="callout-icon">📍</div>
+      <div class="callout-body">
+        <h4 data-en="Regional = everything except 5 metro areas" data-es="Regional = todo excepto 5 áreas metro">Regional = everything except 5 metro areas</h4>
+        <p data-en="For the 491/191, 'regional Australia' means anywhere in Australia except the metropolitan areas of Sydney, Melbourne, Brisbane, Perth, and the Gold Coast. This includes regional cities like Adelaide, Canberra, Hobart, Darwin, Wollongong, Newcastle, Cairns, Townsville, Geelong, and hundreds of smaller towns." data-es="Para la visa 491/191, 'Australia regional' significa cualquier lugar de Australia excepto las áreas metropolitanas de Sídney, Melbourne, Brisbane, Perth y la Costa de Oro. Esto incluye ciudades regionales como Adelaida, Canberra, Hobart, Darwin, Wollongong, Newcastle, Cairns, Townsville, Geelong y cientos de ciudades más pequeñas.">For the 491/191, 'regional Australia' means anywhere in Australia except the metropolitan areas of Sydney, Melbourne, Brisbane, Perth, and the Gold Coast. This includes regional cities like Adelaide, Canberra, Hobart, Darwin, Wollongong, Newcastle, Cairns, Townsville, Geelong, and hundreds of smaller towns.</p>
+      </div>
+    </div>
+    <div class="regions-grid">
+      <div class="region-card">
+        <div class="region-state">NSW &amp; ACT</div>
+        <div class="region-cities">✅ Canberra, Newcastle, Wollongong, Central Coast, all rural NSW</div>
+        <div class="region-metro">❌ Metro Sydney</div>
+      </div>
+      <div class="region-card">
+        <div class="region-state">Victoria</div>
+        <div class="region-cities">✅ Geelong, Ballarat, Bendigo, all regional VIC</div>
+        <div class="region-metro">❌ Metro Melbourne</div>
+      </div>
+      <div class="region-card">
+        <div class="region-state">Queensland</div>
+        <div class="region-cities">✅ Cairns, Townsville, Toowoomba, Sunshine Coast*, all regional QLD</div>
+        <div class="region-metro">❌ Metro Brisbane + Gold Coast</div>
+      </div>
+      <div class="region-card">
+        <div class="region-state">South Australia</div>
+        <div class="region-cities">✅ Adelaide* + all of SA</div>
+        <div class="region-metro" data-en="✅ Adelaide is regional!" data-es="✅ ¡Adelaida es regional!">✅ Adelaide is regional!</div>
+      </div>
+      <div class="region-card">
+        <div class="region-state">Western Australia</div>
+        <div class="region-cities">✅ All regional WA, Bunbury, Geraldton</div>
+        <div class="region-metro">❌ Metro Perth</div>
+      </div>
+      <div class="region-card">
+        <div class="region-state">TAS / NT</div>
+        <div class="region-cities">✅ All of Tasmania &amp; Northern Territory</div>
+        <div class="region-metro" data-en="✅ Hobart + Darwin are regional!" data-es="✅ ¡Hobart + Darwin son regionales!">✅ Hobart + Darwin are regional!</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 491 VS 189/190 COMPARISON -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="491 vs 189/190 comparison" data-es="Comparación 491 vs 189/190">491 vs 189/190 comparison</h2>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th data-en="Factor" data-es="Factor">Factor</th>
+          <th>491</th>
+          <th>189</th>
+          <th>190</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td data-en="Visa type" data-es="Tipo de visa">Visa type</td><td data-en="Provisional 5yr" data-es="Provisional 5 años">Provisional 5yr</td><td data-en="Permanent" data-es="Permanente">Permanent</td><td data-en="Permanent" data-es="Permanente">Permanent</td></tr>
+        <tr><td data-en="Points bonus" data-es="Bonificación puntos">Points bonus</td><td><strong>+15</strong></td><td>—</td><td>+5</td></tr>
+        <tr><td data-en="Points required (typical)" data-es="Puntos requeridos (típico)">Points required (typical)</td><td data-en="~80 (before +15)" data-es="~80 (antes del +15)">~80 (before +15)</td><td data-en="~90–100+" data-es="~90–100+">~90–100+</td><td data-en="~85–90+" data-es="~85–90+">~85–90+</td></tr>
+        <tr><td data-en="PR from day 1" data-es="RP desde el día 1">PR from day 1</td><td class="cross">✗</td><td class="tick">✓</td><td class="tick">✓</td></tr>
+        <tr><td data-en="Can live anywhere in AUS" data-es="Puede vivir en cualquier lugar">Can live anywhere in AUS</td><td class="cross">✗ Regional only</td><td class="tick">✓</td><td class="tick">✓</td></tr>
+        <tr><td data-en="State nomination needed" data-es="Nominación estatal necesaria">State nomination needed</td><td class="tick">✓ Required</td><td class="cross">✗</td><td class="tick">✓ Required</td></tr>
+        <tr><td data-en="Income requirement for PR" data-es="Requisito de ingresos para RP">Income requirement for PR</td><td data-en="$53,900/yr × 3yrs" data-es="$53,900/año × 3 años">$53,900/yr × 3yrs</td><td>—</td><td>—</td></tr>
+        <tr><td data-en="Best for" data-es="Mejor para">Best for</td><td data-en="Lower points / regional workers" data-es="Menos puntos / trabajadores regionales">Lower points / regional workers</td><td data-en="High points / no regional" data-es="Muchos puntos / sin regional">High points / no regional</td><td data-en="Medium points / state link" data-es="Puntos medios / vínculo estatal">Medium points / state link</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- TIPS -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Strategy tips" data-es="Consejos estratégicos">Strategy tips</h2>
+    <div class="tips-grid">
+      <div class="tip">
+        <div class="tip-icon">💡</div>
+        <div class="tip-text"><strong data-en="Adelaide is a great option" data-es="Adelaida es una gran opción">Adelaide is a great option</strong><span data-en="Adelaide counts as regional for the 491/191 and offers a city lifestyle, good job market, and strong state nomination program (SA). Many skilled migrants have found a great balance in Adelaide." data-es="Adelaida cuenta como regional para la 491/191 y ofrece un estilo de vida de ciudad, buen mercado laboral y un sólido programa de nominación estatal (SA). Muchos migrantes calificados han encontrado un gran equilibrio en Adelaida.">Adelaide counts as regional for the 491/191 and offers a city lifestyle, good job market, and strong state nomination program (SA). Many skilled migrants have found a great balance in Adelaide.</span></div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">📊</div>
+        <div class="tip-text"><strong data-en="Track your income carefully" data-es="Rastrea tus ingresos cuidadosamente">Track your income carefully</strong><span data-en="The $53,900 income threshold is assessed per tax year. Keep all payslips and tax returns. Make sure your employment contracts reflect your regional work." data-es="El umbral de ingresos de $53,900 se evalúa por año fiscal. Guarda todos los recibos de sueldo y declaraciones de impuestos. Asegúrate de que tus contratos de empleo reflejen tu trabajo regional.">The $53,900 income threshold is assessed per tax year. Keep all payslips and tax returns. Make sure your employment contracts reflect your regional work.</span></div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">📍</div>
+        <div class="tip-text"><strong data-en="Document your regional living" data-es="Documenta tu vida regional">Document your regional living</strong><span data-en="Keep evidence of your regional residence: lease agreements, utility bills, vehicle registration, local bank statements, school enrolment (for children). This is critical for the 191 application." data-es="Guarda evidencia de tu residencia regional: contratos de arrendamiento, facturas de servicios, registro vehicular, extractos bancarios locales, inscripción escolar (para los hijos). Esto es fundamental para la solicitud de la visa 191.">Keep evidence of your regional residence: lease agreements, utility bills, vehicle registration, local bank statements, school enrolment (for children). This is critical for the 191 application.</span></div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">🎓</div>
+        <div class="tip-text"><strong data-en="Consider regional study first" data-es="Considera estudiar en regional primero">Consider regional study first</strong><span data-en="Completing a degree in a regional area gives you 10 bonus regional points, a 485 bonus year, and makes you more competitive for regional state nomination (491). The study-to-491-to-191 pipeline is very popular." data-es="Completar un título en un área regional te da 10 puntos regionales de bonificación, un año extra en la visa 485 y te hace más competitivo para la nominación estatal regional (491). El camino estudio-491-191 es muy popular.">Completing a degree in a regional area gives you 10 bonus regional points, a 485 bonus year, and makes you more competitive for regional state nomination (491). The study-to-491-to-191 pipeline is very popular.</span></div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">⚡</div>
+        <div class="tip-text"><strong data-en="491 can be faster than 189 for lower-points applicants" data-es="La 491 puede ser más rápida que la 189 para solicitantes de menos puntos">491 can be faster than 189 for lower-points applicants</strong><span data-en="If your points score is, say, 75–85, you may wait years in the 189 pool. The 491 with +15 bonus could see you invited much sooner — and the 191 PR comes 3 years after the 491 grant." data-es="Si tu puntaje es, por ejemplo, 75–85, puedes esperar años en el pool de la 189. La 491 con +15 de bonificación podría llevarte a ser invitado mucho antes — y la RP 191 llega 3 años después de la aprobación de la 491.">If your points score is, say, 75–85, you may wait years in the 189 pool. The 491 with +15 bonus could see you invited much sooner — and the 191 PR comes 3 years after the 491 grant.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Frequently asked questions" data-es="Preguntas frecuentes">Frequently asked questions</h2>
+    <div class="accordion">
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span data-en="Can I visit metro cities while on the 491?" data-es="¿Puedo visitar ciudades metro con la visa 491?">Can I visit metro cities while on the 491?</span>
+          <span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content" data-en="Yes, you can visit metro cities for holidays, personal travel, and short business trips. The obligation is to live and work in a regional area — not to never leave it. However, if you move your primary residence to a metro area, that would breach your visa conditions." data-es="Sí, puedes visitar ciudades metro de vacaciones, para viajes personales y viajes cortos de negocios. La obligación es vivir y trabajar en un área regional, no nunca salir de ella. Sin embargo, si trasladas tu residencia principal a un área metro, eso incumpliría las condiciones de tu visa.">Yes, you can visit metro cities for holidays, personal travel, and short business trips. The obligation is to live and work in a regional area — not to never leave it. However, if you move your primary residence to a metro area, that would breach your visa conditions.</div>
+        </div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span data-en="Can my family move to a metro city while I work regionally?" data-es="¿Puede mi familia mudarse a una ciudad metro mientras yo trabajo en regional?">Can my family move to a metro city while I work regionally?</span>
+          <span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content" data-en="Secondary applicants (partner, children) on a 491 visa also have regional conditions. They should also be living in the regional area. Regularly commuting between regional and metro areas for work may be acceptable, but a permanent separation where family lives metro and primary holder lives regional can be complex. Seek migration advice for your specific situation." data-es="Los solicitantes secundarios (pareja, hijos) con visa 491 también tienen condiciones regionales. También deberían vivir en el área regional. Desplazarse regularmente entre áreas regionales y metro para trabajar puede ser aceptable, pero una separación permanente donde la familia vive en metro y el titular principal en regional puede ser compleja. Busca asesoramiento de migración para tu situación específica.">Secondary applicants (partner, children) on a 491 visa also have regional conditions. They should also be living in the regional area. Regularly commuting between regional and metro areas for work may be acceptable, but a permanent separation where family lives metro and primary holder lives regional can be complex. Seek migration advice for your specific situation.</div>
+        </div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span data-en="Can I renew the 491 if I haven't qualified for the 191 yet?" data-es="¿Puedo renovar la 491 si aún no califico para la 191?">Can I renew the 491 if I haven't qualified for the 191 yet?</span>
+          <span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content" data-en="The 491 is a 5-year visa and cannot currently be renewed or extended. If you haven't met the 191 requirements within 5 years, you would need to apply for another visa. Planning to meet the 191 criteria (income threshold, regional residence) well within the 5-year window is essential." data-es="La visa 491 es de 5 años y actualmente no puede renovarse ni extenderse. Si no has cumplido los requisitos de la 191 dentro de 5 años, necesitarás solicitar otra visa. Es esencial planificar cumplir los criterios de la 191 (umbral de ingresos, residencia regional) bien dentro del período de 5 años.">The 491 is a 5-year visa and cannot currently be renewed or extended. If you haven't met the 191 requirements within 5 years, you would need to apply for another visa. Planning to meet the 191 criteria (income threshold, regional residence) well within the 5-year window is essential.</div>
+        </div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span data-en="What if my income drops below $53,900 in one year?" data-es="¿Qué pasa si mis ingresos bajan de $53,900 en un año?">What if my income drops below $53,900 in one year?</span>
+          <span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content" data-en="The income requirement must be met in each of the 3 qualifying years. If your income drops below the threshold in one year (e.g. due to illness, parental leave, or part-time work), that year may not count, and you'll need additional time to accumulate 3 qualifying years. Plan your finances carefully." data-es="El requisito de ingresos debe cumplirse en cada uno de los 3 años calificantes. Si tus ingresos bajan del umbral en un año (ej. por enfermedad, licencia parental o trabajo a tiempo parcial), ese año puede no contar y necesitarás tiempo adicional para acumular 3 años calificantes. Planifica tus finanzas cuidadosamente.">The income requirement must be met in each of the 3 qualifying years. If your income drops below the threshold in one year (e.g. due to illness, parental leave, or part-time work), that year may not count, and you'll need additional time to accumulate 3 qualifying years. Plan your finances carefully.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESOURCES -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Official resources" data-es="Recursos oficiales">Official resources</h2>
+    <div class="resources-grid">
+      <a href="https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-work-regional-provisional-491" target="_blank" class="resource-card">
+        <div class="res-title" data-en="Visa 491 — Home Affairs" data-es="Visa 491 — Home Affairs">Visa 491 — Home Affairs</div>
+        <div class="res-sub" data-en="Official 491 requirements" data-es="Requisitos oficiales 491">Official 491 requirements</div>
+        <div class="res-link">immi.homeaffairs.gov.au ↗</div>
+      </a>
+      <a href="https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/permanent-residence-191" target="_blank" class="resource-card">
+        <div class="res-title" data-en="Visa 191 — Home Affairs" data-es="Visa 191 — Home Affairs">Visa 191 — Home Affairs</div>
+        <div class="res-sub" data-en="Official 191 PR requirements" data-es="Requisitos oficiales 191 RP">Official 191 PR requirements</div>
+        <div class="res-link">immi.homeaffairs.gov.au ↗</div>
+      </a>
+      <a href="migro-state-nomination.html" class="resource-card">
+        <div class="res-title" data-en="State nomination guide" data-es="Guía nominación estatal">State nomination guide</div>
+        <div class="res-sub" data-en="Which states offer 491" data-es="Qué estados ofrecen 491">Which states offer 491</div>
+        <div class="res-link" data-en="Within Migro →" data-es="Dentro de Migro →">Within Migro →</div>
+      </a>
+      <a href="migro-eoi.html" class="resource-card">
+        <div class="res-title" data-en="EOI &amp; SkillSelect guide" data-es="Guía EOI y SkillSelect">EOI &amp; SkillSelect guide</div>
+        <div class="res-sub" data-en="How to set up your EOI for 491" data-es="Cómo configurar tu EOI para 491">How to set up your EOI for 491</div>
+        <div class="res-link" data-en="Within Migro →" data-es="Dentro de Migro →">Within Migro →</div>
+      </a>
+    </div>
+  </section>
+
+</div>
+
+<script>
+let lang = 'en';
+function setLang(l){
+  lang = l;
+  document.querySelectorAll('[data-en]').forEach(el=>{
+    el.innerHTML = el.getAttribute('data-' + l);
+  });
+  document.querySelector('.lang-btn').textContent = l === 'en' ? 'ES' : 'EN';
+}
+function toggleLang(){ setLang(lang === 'en' ? 'es' : 'en'); }
+
+function toggleAcc(btn){
+  const body = btn.nextElementSibling;
+  const chevron = btn.querySelector('.acc-chevron');
+  const isOpen = body.classList.contains('open');
+  document.querySelectorAll('.acc-body.open').forEach(b=>{ b.classList.remove('open'); b.previousElementSibling.querySelector('.acc-chevron').style.transform=''; });
+  if(!isOpen){ body.classList.add('open'); chevron.style.transform='rotate(180deg)'; }
+}
+
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.08});
+document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>
