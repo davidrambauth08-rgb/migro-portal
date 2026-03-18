@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Migro — Plan: Extend / Renew Visa</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --black: #0a0a0a; --white: #ffffff;
+      --gray-100: #f5f5f5; --gray-200: #e8e8e8;
+      --gray-300: #d0d0d0; --gray-400: #999; --gray-600: #555;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--gray-100); color: var(--black); }
+
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; background: var(--white); border-bottom: 1px solid var(--gray-200); position: sticky; top: 0; z-index: 100; }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--black); text-decoration: none; }
+    .nav-logo span { display: inline-block; width: 6px; height: 6px; background: var(--black); border-radius: 50%; margin-left: 2px; vertical-align: super; }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .lang-toggle { display: flex; background: var(--gray-100); border-radius: 6px; padding: 3px; gap: 2px; }
+    .lang-btn { padding: 4px 10px; font-size: 11px; font-weight: 700; border: none; background: transparent; border-radius: 4px; cursor: pointer; color: var(--gray-400); transition: all .2s; }
+    .lang-btn.active { background: var(--black); color: var(--white); }
+    .btn-print { padding: 8px 16px; font-size: 13px; font-weight: 600; border: 1px solid var(--gray-200); border-radius: 6px; background: var(--white); cursor: pointer; color: var(--gray-600); transition: all .2s; }
+    .btn-print:hover { border-color: var(--black); color: var(--black); }
+    .btn-save { padding: 8px 20px; font-size: 13px; font-weight: 700; border: none; border-radius: 6px; background: var(--black); color: var(--white); cursor: pointer; }
+
+    .progress-strip { background: var(--white); border-bottom: 1px solid var(--gray-200); padding: 0 48px; display: flex; overflow-x: auto; }
+    .progress-step { padding: 14px 0; margin-right: 32px; font-size: 12px; font-weight: 600; color: var(--gray-300); border-bottom: 2px solid transparent; white-space: nowrap; }
+    .progress-step.done { color: var(--gray-400); }
+    .progress-step.active { color: var(--black); border-bottom-color: var(--black); }
+
+    /* URGENCY BANNER */
+    .urgency-banner { background: #1a0500; padding: 14px 48px; display: flex; align-items: center; justify-content: center; gap: 16px; }
+    .urgency-icon { font-size: 18px; }
+    .urgency-text { font-size: 13px; font-weight: 600; color: #ff9966; }
+    .urgency-text strong { color: #ffcc99; }
+    .urgency-badge { background: #3a0a00; border: 1px solid #6a1a00; border-radius: 100px; padding: 4px 12px; font-size: 11px; font-weight: 700; color: #ff7744; }
+
+    /* URGENCY METER */
+    .urgency-meter { background: var(--white); border-bottom: 1px solid var(--gray-200); padding: 16px 48px; }
+    .urgency-meter-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 20px; }
+    .urgency-meter-label { font-size: 12px; font-weight: 700; color: var(--gray-400); white-space: nowrap; }
+    .urgency-bar-wrap { flex: 1; height: 8px; background: var(--gray-200); border-radius: 100px; overflow: hidden; }
+    .urgency-bar-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, #22c55e 0%, #facc15 50%, #ef4444 100%); width: 72%; }
+    .urgency-remaining { font-size: 13px; font-weight: 700; color: #ef4444; white-space: nowrap; }
+
+    /* HERO */
+    .hero { background: var(--black); padding: 56px 48px 48px; }
+    .hero-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 48px; }
+    .hero-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #555; margin-bottom: 12px; }
+    .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(28px, 4vw, 50px); font-weight: 700; color: var(--white); line-height: 1.1; letter-spacing: -1px; margin-bottom: 16px; }
+    .hero-sub { font-size: 15px; color: #777; line-height: 1.6; max-width: 520px; margin-bottom: 28px; }
+    .hero-chips { display: flex; gap: 10px; flex-wrap: wrap; }
+    .hero-chip { display: flex; align-items: center; gap: 7px; background: #111; border: 1px solid #222; border-radius: 100px; padding: 7px 14px; font-size: 13px; font-weight: 600; color: #aaa; }
+    .chip-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .chip-red { background: #ef4444; }
+    .chip-yellow { background: #facc15; }
+    .chip-green { background: #4ade80; }
+
+    /* COUNTDOWN CARD */
+    .countdown-card { background: #110500; border: 1px solid #2a0a00; border-radius: 16px; padding: 28px 24px; text-align: center; min-width: 200px; }
+    .countdown-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #444; margin-bottom: 10px; }
+    .countdown-num { font-family: 'Playfair Display', serif; font-size: 52px; font-weight: 700; color: #ff7744; line-height: 1; margin-bottom: 4px; }
+    .countdown-unit { font-size: 13px; color: #664433; margin-bottom: 16px; }
+    .countdown-divider { border: none; border-top: 1px solid #1a0500; margin: 0 0 16px; }
+    .countdown-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .countdown-key { font-size: 11px; color: #443322; font-weight: 600; }
+    .countdown-val { font-size: 11px; font-weight: 700; color: #ff9966; }
+    .countdown-val.ok { color: #4ade80; }
+
+    /* BODY */
+    .page-body { max-width: 1100px; margin: 0 auto; padding: 40px 48px; display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start; }
+
+    /* ALERT CARDS */
+    .alert-card { border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; display: flex; gap: 14px; align-items: flex-start; }
+    .alert-card.danger { background: #fff5f5; border: 1.5px solid #fecaca; }
+    .alert-card.warn { background: #fffbeb; border: 1.5px solid #fde68a; }
+    .alert-card.info { background: #eff6ff; border: 1.5px solid #bfdbfe; }
+    .alert-card.green { background: #f0fdf4; border: 1.5px solid #bbf7d0; }
+    .alert-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .alert-title { font-size: 13px; font-weight: 700; color: var(--black); margin-bottom: 4px; }
+    .alert-desc { font-size: 12px; color: var(--gray-600); line-height: 1.6; }
+    .alert-desc a { color: var(--black); font-weight: 600; }
+
+    /* VISA TYPE SELECTOR */
+    .visa-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+    .visa-option { border: 1.5px solid var(--gray-200); border-radius: 12px; padding: 14px; cursor: pointer; transition: all .2s; background: var(--white); text-align: center; }
+    .visa-option:hover { border-color: var(--gray-400); }
+    .visa-option.active { border-color: var(--black); background: var(--black); }
+    .visa-option-code { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--black); }
+    .visa-option.active .visa-option-code { color: var(--white); }
+    .visa-option-name { font-size: 11px; color: var(--gray-400); margin-top: 3px; line-height: 1.4; }
+    .visa-option.active .visa-option-name { color: #777; }
+
+    /* PHASE BLOCKS */
+    .phase-block { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 12px; overflow: hidden; margin-bottom: 16px; }
+    .phase-header { display: flex; align-items: center; gap: 12px; padding: 16px 20px; background: var(--black); }
+    .phase-num { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: #333; line-height: 1; }
+    .phase-info { flex: 1; }
+    .phase-title { font-size: 15px; font-weight: 700; color: var(--white); }
+    .phase-sub { font-size: 12px; color: #555; margin-top: 2px; }
+    .phase-badge { font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 100px; background: #111; color: #666; border: 1px solid #222; }
+    .phase-badge.urgent { background: #2a0a00; color: #ff9966; border-color: #4a1a00; }
+    .phase-tasks { padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+
+    /* ACCORDION */
+    .task-item { border: 1.5px solid var(--gray-200); border-radius: 10px; overflow: hidden; transition: border-color .2s; }
+    .task-item:hover { border-color: var(--gray-300); }
+    .task-item.open { border-color: var(--black); }
+    .task-header { display: flex; align-items: center; gap: 12px; padding: 12px 14px; cursor: pointer; background: var(--white); transition: background .15s; user-select: none; }
+    .task-header:hover { background: var(--gray-100); }
+    .task-item.open .task-header { background: var(--black); }
+    .task-check { width: 20px; height: 20px; border-radius: 5px; border: 2px solid var(--gray-300); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: transparent; transition: all .2s; cursor: pointer; }
+    .task-check.checked { background: #4ade80; border-color: #4ade80; color: var(--black); }
+    .task-item.open .task-check { border-color: #555; }
+    .task-item.open .task-check.checked { background: #4ade80; border-color: #4ade80; color: var(--black); }
+    .task-main { flex: 1; }
+    .task-label { font-size: 13px; font-weight: 600; color: var(--black); }
+    .task-item.open .task-label { color: var(--white); }
+    .task-badges { display: flex; gap: 6px; margin-top: 3px; flex-wrap: wrap; }
+    .task-badge { font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 2px 8px; border-radius: 100px; letter-spacing: .3px; }
+    .badge-urgent { background: #fff0e0; color: #a05000; }
+    .badge-key { background: #e6f0ff; color: #1a4a8a; }
+    .badge-optional { background: var(--gray-100); color: var(--gray-400); border: 1px solid var(--gray-200); }
+    .badge-free { background: #e6f9e6; color: #1a6a1a; }
+    .badge-critical { background: #ffe6e6; color: #8a1a1a; }
+    .task-item.open .badge-urgent { background: #3a1a00; color: #ffb066; }
+    .task-item.open .badge-key { background: #0a1a3a; color: #66aaff; }
+    .task-item.open .badge-optional { background: #1a1a1a; color: #777; border-color: #333; }
+    .task-item.open .badge-free { background: #0a2a0a; color: #66dd66; }
+    .task-item.open .badge-critical { background: #2a0a0a; color: #ff8888; }
+    .task-chevron { font-size: 12px; color: var(--gray-400); transition: transform .3s ease; flex-shrink: 0; }
+    .task-item.open .task-chevron { transform: rotate(180deg); color: #666; }
+    .task-body { max-height: 0; overflow: hidden; transition: max-height .4s cubic-bezier(0.4,0,0.2,1); background: #fafafa; }
+    .task-item.open .task-body { max-height: 620px; border-top: 1px solid var(--gray-200); }
+    .task-body-inner { padding: 16px 14px 16px 46px; }
+    .task-body-desc { font-size: 13px; color: var(--gray-600); line-height: 1.7; margin-bottom: 14px; }
+    .task-docs-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 8px; }
+    .task-docs { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .task-doc-item { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: var(--gray-600); }
+    .task-doc-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+    .task-info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+    .task-info-cell { background: var(--white); border: 1px solid var(--gray-200); border-radius: 8px; padding: 10px 12px; }
+    .task-info-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--gray-400); margin-bottom: 3px; }
+    .task-info-val { font-size: 13px; font-weight: 700; color: var(--black); }
+    .task-links { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+    .task-link { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 6px; border: 1.5px solid var(--gray-200); font-size: 12px; font-weight: 600; color: var(--black); text-decoration: none; transition: all .2s; background: var(--white); }
+    .task-link:hover { border-color: var(--black); background: var(--black); color: var(--white); }
+    .task-tip { background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 10px 12px; font-size: 12px; color: #92400e; line-height: 1.6; margin-top: 6px; }
+    .task-tip strong { color: #78350f; }
+    .task-warn { background: #fff5f5; border: 1px solid #fecaca; border-radius: 8px; padding: 10px 12px; font-size: 12px; color: #991b1b; line-height: 1.6; margin-top: 6px; }
+
+    /* IMPORTANT NOTE */
+    .important-note { background: var(--black); border-radius: 12px; padding: 20px; margin-bottom: 24px; }
+    .important-note-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #555; margin-bottom: 10px; }
+    .important-note-text { font-size: 13px; color: #888; line-height: 1.7; }
+    .important-note-text strong { color: var(--white); }
+
+    /* SECTION */
+    .section-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+    .section-icon { width: 40px; height: 40px; background: var(--black); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .section-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; }
+    .section-sub { font-size: 13px; color: var(--gray-400); margin-top: 2px; }
+
+    /* SIDEBAR */
+    .sidebar { display: flex; flex-direction: column; gap: 20px; }
+    .sidebar-card { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 16px; padding: 22px; }
+    .sidebar-card-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 16px; }
+
+    .journey-list { display: flex; flex-direction: column; gap: 8px; }
+    .journey-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; border: 1.5px solid var(--gray-200); text-decoration: none; transition: all .2s; }
+    .journey-item:hover { border-color: var(--gray-400); }
+    .journey-item.current { background: var(--black); border-color: var(--black); }
+    .journey-icon { font-size: 18px; flex-shrink: 0; }
+    .journey-label { font-size: 12px; font-weight: 700; color: var(--black); }
+    .journey-item.current .journey-label { color: var(--white); }
+    .journey-sub { font-size: 11px; color: var(--gray-400); margin-top: 1px; }
+    .journey-item.current .journey-sub { color: #666; }
+
+    .mini-progress { }
+    .mini-phase { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--gray-100); }
+    .mini-phase:last-child { border-bottom: none; }
+    .mini-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--gray-200); flex-shrink: 0; }
+    .mini-dot.done { background: #4ade80; }
+    .mini-dot.active { background: var(--black); }
+    .mini-label { font-size: 12px; font-weight: 600; color: var(--gray-400); flex: 1; }
+    .mini-label.active { color: var(--black); }
+    .mini-count { font-size: 11px; color: var(--gray-300); }
+
+    .compact-timeline { padding: 4px 0; }
+    .ct-item { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid var(--gray-100); }
+    .ct-item:last-child { border-bottom: none; }
+    .ct-bullet { width: 6px; height: 6px; border-radius: 50%; background: var(--black); flex-shrink: 0; margin-top: 5px; }
+    .ct-text { font-size: 12px; color: var(--gray-600); line-height: 1.5; }
+    .ct-text strong { color: var(--black); display: block; font-size: 12px; margin-bottom: 1px; }
+
+    .cta-card { background: var(--black); border-radius: 16px; padding: 24px; }
+    .cta-card-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--white); margin-bottom: 8px; }
+    .cta-card-desc { font-size: 13px; color: #666; line-height: 1.6; margin-bottom: 16px; }
+    .cta-card-btn { display: block; text-align: center; padding: 12px; background: var(--white); color: var(--black); font-size: 13px; font-weight: 700; border-radius: 8px; text-decoration: none; transition: all .2s; }
+    .cta-card-btn:hover { background: var(--gray-100); }
+
+    /* DEADLINE CARD */
+    .deadline-card { border-radius: 12px; padding: 16px; background: #1a0500; border: 1.5px solid #3a0a00; }
+    .deadline-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #554433; margin-bottom: 12px; }
+    .deadline-items { display: flex; flex-direction: column; gap: 10px; }
+    .deadline-item { display: flex; justify-content: space-between; align-items: center; }
+    .deadline-key { font-size: 11px; color: #776655; }
+    .deadline-val { font-size: 12px; font-weight: 700; color: #ff9966; }
+    .deadline-val.ok { color: #4ade80; }
+    .deadline-btn { display: block; margin-top: 14px; text-align: center; padding: 8px; background: #3a0a00; color: #ff9966; font-size: 12px; font-weight: 700; border-radius: 8px; text-decoration: none; transition: all .2s; border: 1px solid #5a1a00; }
+
+    @media print {
+      nav, .progress-strip, .urgency-banner, .urgency-meter { display: none; }
+      body { background: white; }
+      .page-body { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="migro-landing.html" class="nav-logo">Migro<span></span></a>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en',this)">EN</button>
+      <button class="lang-btn" onclick="setLang('es',this)">ES</button>
+    </div>
+    <button class="btn-print" onclick="window.print()" data-en="Print Plan" data-es="Imprimir Plan">Print Plan</button>
+    <button class="btn-save" data-en="Save Progress" data-es="Guardar Progreso">Save Progress</button>
+  </div>
+</nav>
+
+<!-- PROGRESS STRIP -->
+<div class="progress-strip">
+  <div class="progress-step done" data-en="✓ Profile" data-es="✓ Perfil">✓ Profile</div>
+  <div class="progress-step done" data-en="✓ Score" data-es="✓ Puntaje">✓ Score</div>
+  <div class="progress-step done" data-en="✓ City" data-es="✓ Ciudad">✓ City</div>
+  <div class="progress-step done" data-en="✓ Options" data-es="✓ Opciones">✓ Options</div>
+  <div class="progress-step done" data-en="✓ Services" data-es="✓ Servicios">✓ Services</div>
+  <div class="progress-step active" data-en="→ Migration Plan" data-es="→ Plan Migratorio">→ Migration Plan</div>
+</div>
+
+<!-- URGENCY BANNER -->
+<div class="urgency-banner">
+  <div class="urgency-icon">⏰</div>
+  <div class="urgency-text" data-en="Your visa expires in <strong>4 months</strong> — you must lodge your extension application before this date" data-es="Tu visa vence en <strong>4 meses</strong> — debes presentar tu solicitud de extensión antes de esta fecha">
+    Your visa expires in <strong>4 months</strong> — you must lodge your extension application before this date
+  </div>
+  <div class="urgency-badge" data-en="Act Now" data-es="Actúa Ya">Act Now</div>
+</div>
+
+<!-- URGENCY METER -->
+<div class="urgency-meter">
+  <div class="urgency-meter-inner">
+    <div class="urgency-meter-label" data-en="Time remaining on visa:" data-es="Tiempo restante en visa:">Time remaining on visa:</div>
+    <div class="urgency-bar-wrap">
+      <div class="urgency-bar-fill" style="width: 28%"></div>
+    </div>
+    <div class="urgency-remaining" data-en="~4 months left" data-es="~4 meses restantes">~4 months left</div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag" data-en="Migration Plan · Visa Extension / Renewal" data-es="Plan Migratorio · Extensión / Renovación de Visa">Migration Plan · Visa Extension / Renewal</div>
+      <h1 class="hero-title" data-en="Renew Before<br>Time Runs Out." data-es="Renueva Antes de<br>que se Acabe el Tiempo.">Renew Before<br>Time Runs Out.</h1>
+      <p class="hero-sub" data-en="Your current visa is approaching expiry. This plan walks you through every step to extend or renew your visa — including which visa to apply for next, what documents to gather, and how Bridging Visa protections keep you safe during the gap." data-es="Tu visa actual está próxima a vencer. Este plan te guía por cada paso para extender o renovar tu visa — incluyendo qué visa solicitar a continuación, qué documentos reunir y cómo las protecciones de la Visa Puente te mantienen seguro durante el período intermedio.">
+        Your current visa is approaching expiry. This plan walks you through every step to extend or renew your visa — including which visa to apply for next, what documents to gather, and how Bridging Visa protections keep you safe during the gap.
+      </p>
+      <div class="hero-chips">
+        <div class="hero-chip"><div class="chip-dot chip-red"></div><span data-en="4 months to expiry" data-es="4 meses para vencer">4 months to expiry</span></div>
+        <div class="hero-chip"><div class="chip-dot chip-yellow"></div><span data-en="Lodge ASAP" data-es="Presenta ASAP">Lodge ASAP</span></div>
+        <div class="hero-chip"><div class="chip-dot chip-green"></div><span data-en="BVA protects you after lodgement" data-es="BVA te protege después de presentar">BVA protects you after lodgement</span></div>
+      </div>
+    </div>
+    <div class="countdown-card">
+      <div class="countdown-label" data-en="Visa Expires In" data-es="Visa Vence En">Visa Expires In</div>
+      <div class="countdown-num">~120</div>
+      <div class="countdown-unit" data-en="days remaining" data-es="días restantes">days remaining</div>
+      <hr class="countdown-divider">
+      <div class="countdown-row">
+        <span class="countdown-key" data-en="Current visa">Current visa</span>
+        <span class="countdown-val">482 TSS</span>
+      </div>
+      <div class="countdown-row">
+        <span class="countdown-key" data-en="Expires">Expires</span>
+        <span class="countdown-val">Jul 2026</span>
+      </div>
+      <div class="countdown-row">
+        <span class="countdown-key" data-en="Target pathway">Target pathway</span>
+        <span class="countdown-val ok" data-en="186 ENS (PR)" data-es="186 ENS (RP)">186 ENS (PR)</span>
+      </div>
+      <div class="countdown-row">
+        <span class="countdown-key" data-en="Ideal lodge date">Ideal lodge date</span>
+        <span class="countdown-val">Apr 2026</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="page-body">
+  <div>
+
+    <!-- IMPORTANT NOTE -->
+    <div class="important-note">
+      <div class="important-note-title" data-en="🔐 The Bridging Visa Safety Net" data-es="🔐 La Red de Seguridad de la Visa Puente">🔐 The Bridging Visa Safety Net</div>
+      <p class="important-note-text" data-en="If you lodge a new visa application BEFORE your current visa expires, a <strong>Bridging Visa A (BVA)</strong> is automatically issued. This lets you stay lawfully in Australia while your application is processed. The BVA carries the same work and study rights as your current visa. <strong>The key rule: lodge before your visa expires — even 1 day matters.</strong>" data-es="Si presentas una nueva solicitud de visa ANTES de que venza tu visa actual, se emite automáticamente una <strong>Visa Puente A (BVA)</strong>. Esto te permite permanecer legalmente en Australia mientras se procesa tu solicitud. La BVA tiene los mismos derechos laborales y de estudio que tu visa actual. <strong>La regla clave: presenta antes de que venza tu visa — incluso 1 día importa.</strong>">
+        If you lodge a new visa application BEFORE your current visa expires, a <strong>Bridging Visa A (BVA)</strong> is automatically issued. This lets you stay lawfully in Australia while your application is processed. The BVA carries the same work and study rights as your current visa. <strong>The key rule: lodge before your visa expires — even 1 day matters.</strong>
+      </p>
+    </div>
+
+    <div class="alert-card danger">
+      <div class="alert-icon">🚨</div>
+      <div>
+        <div class="alert-title" data-en="Do NOT overstay your visa" data-es="NO te quedes más tiempo del permitido">Do NOT overstay your visa</div>
+        <div class="alert-desc" data-en="If your visa expires before you lodge a new application, you become unlawfully present in Australia. This triggers automatic exclusion periods (3 years for overstaying under 28 days, up to lifetime ban for longer periods) and will likely invalidate any future visa applications." data-es="Si tu visa vence antes de que presentes una nueva solicitud, te conviertes en presencia ilegal en Australia. Esto activa períodos de exclusión automáticos (3 años por permanencia excesiva menor a 28 días, hasta prohibición de por vida para períodos más largos) e invalidará probablemente cualquier solicitud de visa futura.">
+          If your visa expires before you lodge a new application, you become unlawfully present in Australia. This triggers automatic exclusion periods (3 years for overstaying under 28 days, potentially a lifetime ban for longer) and will likely invalidate future applications.
+        </div>
+      </div>
+    </div>
+
+    <!-- VISA SELECTOR -->
+    <div class="section-header" style="margin-top:8px">
+      <div class="section-icon">🗺️</div>
+      <div>
+        <div class="section-title" data-en="What are you extending to?" data-es="¿A qué estás extendiendo?">What are you extending to?</div>
+        <div class="section-sub" data-en="Select the visa you plan to apply for next" data-es="Selecciona la visa a la que planeas solicitar a continuación">Select the visa you plan to apply for next</div>
+      </div>
+    </div>
+
+    <div class="visa-selector">
+      <div class="visa-option active" onclick="selectVisa(this)">
+        <div class="visa-option-code">186</div>
+        <div class="visa-option-name" data-en="Employer Nomination<br>(Permanent)" data-es="Nominación del Empleador<br>(Permanente)">Employer Nomination<br>(Permanent)</div>
+      </div>
+      <div class="visa-option" onclick="selectVisa(this)">
+        <div class="visa-option-code">482</div>
+        <div class="visa-option-name" data-en="Temp. Skill Shortage<br>(New sponsor)" data-es="Escasez Temp. de Habilidades<br>(Nuevo patrocinador)">Temp. Skill Shortage<br>(New sponsor)</div>
+      </div>
+      <div class="visa-option" onclick="selectVisa(this)">
+        <div class="visa-option-code">189</div>
+        <div class="visa-option-name" data-en="Skilled Independent<br>(Points tested)" data-es="Calificado Independiente<br>(Basado en puntos)">Skilled Independent<br>(Points tested)</div>
+      </div>
+    </div>
+
+    <!-- PHASE 1 -->
+    <div class="phase-block">
+      <div class="phase-header">
+        <div class="phase-num">01</div>
+        <div class="phase-info">
+          <div class="phase-title" data-en="Assess Your Situation Immediately" data-es="Evalúa Tu Situación Inmediatamente">Assess Your Situation Immediately</div>
+          <div class="phase-sub" data-en="Understand exactly where you stand before making any moves" data-es="Entiende exactamente dónde te encuentras antes de hacer cualquier movimiento">Understand exactly where you stand before making any moves</div>
+        </div>
+        <div class="phase-badge urgent" data-en="This week" data-es="Esta semana">This week</div>
+      </div>
+      <div class="phase-tasks">
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Confirm exact visa expiry date via VEVO" data-es="Confirma la fecha exacta de vencimiento de la visa en VEVO">Confirm exact visa expiry date via VEVO</div>
+              <div class="task-badges"><span class="task-badge badge-critical" data-en="Do today" data-es="Haz hoy">Do today</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="Log into VEVO right now and confirm the exact expiry date of your current visa — not the date in your head, the official date in the system. Also note your current visa conditions and work rights. Keep a screenshot. You need this information before anything else." data-es="Inicia sesión en VEVO ahora mismo y confirma la fecha exacta de vencimiento de tu visa actual — no la fecha que tienes en mente, la fecha oficial en el sistema. También anota tus condiciones de visa actuales y derechos laborales. Guarda una captura de pantalla. Necesitas esta información antes que cualquier otra cosa.">
+              Log into VEVO right now and confirm the exact expiry date of your current visa — not the date in your head, the official date in the system. Also note your current visa conditions and work rights. Keep a screenshot.
+            </p>
+            <div class="task-info-grid">
+              <div class="task-info-cell"><div class="task-info-label" data-en="Time" data-es="Tiempo">Time</div><div class="task-info-val" data-en="5 minutes" data-es="5 minutos">5 minutes</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Cost" data-es="Costo">Cost</div><div class="task-info-val" data-en="Free" data-es="Gratis">Free</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Platform" data-es="Plataforma">Platform</div><div class="task-info-val">VEVO online</div></div>
+            </div>
+            <div class="task-links">
+              <a class="task-link" href="https://immi.homeaffairs.gov.au/visas/already-have-a-visa/check-visa-details-and-conditions/check-conditions-online" target="_blank">🌐 Check VEVO now</a>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Calculate how much time you have to lodge" data-es="Calcula cuánto tiempo tienes para presentar">Calculate how much time you have to lodge</div>
+              <div class="task-badges"><span class="task-badge badge-key" data-en="Critical math" data-es="Cálculo crítico">Critical math</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="From your visa expiry date, work backwards to calculate your ideal lodgement window. The general rule is: lodge at least 28 days before expiry to allow processing time, health exam booking, and document collection. If your target visa is the 186 ENS Transition, you also need to confirm you have completed 3 years of employment with your nominating employer." data-es="Desde la fecha de vencimiento de tu visa, trabaja hacia atrás para calcular tu ventana de presentación ideal. La regla general es: presenta al menos 28 días antes del vencimiento para permitir tiempo de procesamiento, reserva de examen médico y recopilación de documentos. Si tu visa objetivo es la 186 ENS Transición, también debes confirmar que completaste 3 años de empleo con tu empleador nominador.">
+              From your visa expiry date, work backwards to calculate your ideal lodgement window. The general rule: lodge at least 28 days before expiry to allow time for health exams and document collection. For 186 ENS Transition, confirm you've completed 3 years with your nominating employer.
+            </p>
+            <div class="task-docs-title" data-en="Key dates to calculate" data-es="Fechas clave a calcular">Key dates to calculate</div>
+            <div class="task-docs">
+              <div class="task-doc-item"><span class="task-doc-icon">📅</span><span data-en="Visa expiry date (from VEVO)" data-es="Fecha de vencimiento de la visa (de VEVO)">Visa expiry date (from VEVO)</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📅</span><span data-en="Latest safe lodgement date (expiry minus 14 days minimum)" data-es="Última fecha segura de presentación (vencimiento menos 14 días mínimo)">Latest safe lodgement date (expiry minus 14 days minimum)</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📅</span><span data-en="For 186 ENS: 3-year anniversary with nominating employer" data-es="Para 186 ENS: aniversario de 3 años con el empleador nominador">For 186 ENS: 3-year anniversary with nominating employer</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📅</span><span data-en="Health exam booking (allow 2–4 weeks)" data-es="Reserva de examen médico (permitir 2–4 semanas)">Health exam booking (allow 2–4 weeks)</span></div>
+            </div>
+            <div class="task-tip"><strong data-en="Rule of thumb:" data-es="Regla general:">Rule of thumb:</strong> <span data-en="Start the lodgement process no later than 8 weeks before your visa expires. Earlier is always better — processing times can be unpredictable." data-es="Inicia el proceso de presentación no más tarde de 8 semanas antes de que venza tu visa. Antes es siempre mejor — los tiempos de procesamiento pueden ser impredecibles.">Start the lodgement process no later than 8 weeks before your visa expires. Earlier is always better.</span></div>
+          </div></div>
+        </div>
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Confirm employer nomination (186 ENS Transition)" data-es="Confirma la nominación del empleador (186 ENS Transición)">Confirm employer nomination (186 ENS Transition)</div>
+              <div class="task-badges"><span class="task-badge badge-key" data-en="186 only" data-es="Solo 186">186 only</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="For the 186 ENS Transition Stream, your employer must have been sponsoring you on a 482 visa for at least 3 years and must be willing to nominate you for permanent residence. Have a direct conversation with your HR department or manager to confirm this commitment before you start spending money on applications." data-es="Para el Flujo de Transición 186 ENS, tu empleador debe haberte patrocinado en una visa 482 durante al menos 3 años y debe estar dispuesto a nominarte para residencia permanente. Mantén una conversación directa con tu departamento de RRHH o gerente para confirmar este compromiso antes de comenzar a gastar dinero en solicitudes.">
+              For the 186 ENS Transition Stream, your employer must have been sponsoring you on a 482 visa for at least 3 years and must nominate you for permanent residence. Confirm this commitment with HR before spending money on the application.
+            </p>
+            <div class="task-docs-title" data-en="What your employer will need to do" data-es="Lo que tu empleador deberá hacer">What your employer will need to do</div>
+            <div class="task-docs">
+              <div class="task-doc-item"><span class="task-doc-icon">📋</span><span data-en="Be an approved standard business sponsor (SBS) — or become one" data-es="Ser un patrocinador comercial estándar aprobado (SBS) — o convertirse en uno">Be an approved standard business sponsor (SBS) — or become one</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📋</span><span data-en="Lodge an ENS nomination (employer cost ~AUD $540 + SAF levy)" data-es="Presentar una nominación ENS (costo del empleador ~AUD $540 + tasa SAF)">Lodge an ENS nomination (employer cost ~AUD $540 + SAF levy)</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📋</span><span data-en="Confirm ongoing role exists and market salary will be met" data-es="Confirmar que el puesto continúa y que se cumplirá el salario de mercado">Confirm ongoing role exists and market salary will be met</span></div>
+            </div>
+            <div class="task-info-grid">
+              <div class="task-info-cell"><div class="task-info-label" data-en="Employer cost" data-es="Costo empleador">Employer cost</div><div class="task-info-val">~AUD $7,200</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Your cost" data-es="Tu costo">Your cost</div><div class="task-info-val">AUD $4,770</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Processing" data-es="Procesamiento">Processing</div><div class="task-info-val" data-en="6–18 months" data-es="6–18 meses">6–18 months</div></div>
+            </div>
+            <div class="task-links">
+              <a class="task-link" href="https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/employer-nomination-scheme-186" target="_blank">🌐 186 ENS Visa info</a>
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PHASE 2 -->
+    <div class="phase-block">
+      <div class="phase-header">
+        <div class="phase-num">02</div>
+        <div class="phase-info">
+          <div class="phase-title" data-en="Gather & Update Documents" data-es="Reúne y Actualiza Documentos">Gather & Update Documents</div>
+          <div class="phase-sub" data-en="Ensure all documents are current and within validity" data-es="Asegúrate de que todos los documentos estén actualizados y dentro de validez">Ensure all documents are current and within validity</div>
+        </div>
+        <div class="phase-badge" data-en="Weeks 1–4" data-es="Semanas 1–4">Weeks 1–4</div>
+      </div>
+      <div class="phase-tasks">
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Check passport validity — renew if less than 12 months remaining" data-es="Verifica la validez del pasaporte — renueva si tiene menos de 12 meses">Check passport validity — renew if less than 12 months remaining</div>
+              <div class="task-badges"><span class="task-badge badge-urgent" data-en="Check now" data-es="Verifica ahora">Check now</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="Your visa application requires a valid passport. For 186 ENS (permanent visa), your passport should ideally be valid for at least 12 months at the time of lodgement. If your passport is expiring, renew it BEFORE lodging your visa application — a mid-application passport renewal creates complications and delays." data-es="Tu solicitud de visa requiere un pasaporte válido. Para 186 ENS (visa permanente), tu pasaporte idealmente debe ser válido por al menos 12 meses al momento de presentar. Si tu pasaporte está por vencer, renuévalo ANTES de presentar tu solicitud de visa — una renovación de pasaporte en medio de la solicitud crea complicaciones y demoras.">
+              Your visa application requires a valid passport. For 186 ENS (permanent visa), your passport should ideally be valid for at least 12 months at lodgement. If expiring, renew BEFORE lodging your visa application.
+            </p>
+            <div class="task-docs-title" data-en="Passport renewal process (from Australia)" data-es="Proceso de renovación de pasaporte (desde Australia)">Passport renewal process (from Australia)</div>
+            <div class="task-docs">
+              <div class="task-doc-item"><span class="task-doc-icon">🛂</span><span data-en="Contact your country's consulate or embassy in Australia" data-es="Contacta el consulado o embajada de tu país en Australia">Contact your country's consulate or embassy in Australia</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📸</span><span data-en="Gather passport photos and existing passport" data-es="Reúne fotos de pasaporte y el pasaporte existente">Gather passport photos and existing passport</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">💰</span><span data-en="Pay renewal fee (varies by country)" data-es="Paga la tarifa de renovación (varía según el país)">Pay renewal fee (varies by country)</span></div>
+            </div>
+            <div class="task-info-grid">
+              <div class="task-info-cell"><div class="task-info-label" data-en="Allow time" data-es="Tiempo necesario">Allow time</div><div class="task-info-val" data-en="4–12 weeks" data-es="4–12 semanas">4–12 weeks</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Where" data-es="Dónde">Where</div><div class="task-info-val" data-en="Your consulate" data-es="Tu consulado">Your consulate</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Impact" data-es="Impacto">Impact</div><div class="task-info-val" data-en="High — critical" data-es="Alto — crítico">High — critical</div></div>
+            </div>
+            <div class="task-warn"><strong data-en="⚠️ Warning:" data-es="⚠️ Advertencia:">⚠️ Warning:</strong> <span data-en="If you renew your passport after lodging your visa application, you MUST update ImmiAccount with your new passport details. Failing to do so may delay your visa grant or cause a refusal." data-es="Si renuevas tu pasaporte después de presentar tu solicitud de visa, DEBES actualizar ImmiAccount con los detalles de tu nuevo pasaporte. No hacerlo puede demorar el otorgamiento de tu visa o causar un rechazo.">If you renew your passport after lodging, you MUST update ImmiAccount with your new passport details. Failing to do so may delay or invalidate your application.</span></div>
+          </div></div>
+        </div>
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Obtain updated employment evidence" data-es="Obtén evidencia de empleo actualizada">Obtain updated employment evidence</div>
+              <div class="task-badges"><span class="task-badge badge-key" data-en="Required" data-es="Requerido">Required</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="You need to prove continuous employment with your nominating employer for the required period. This means collecting payslips, employment contracts, tax records, and a letter from your employer confirming your role, start date, salary, and the full-time nature of the position." data-es="Necesitas demostrar empleo continuo con tu empleador nominador durante el período requerido. Esto significa recopilar recibos de sueldo, contratos de empleo, registros fiscales y una carta de tu empleador confirmando tu puesto, fecha de inicio, salario y la naturaleza de tiempo completo del puesto.">
+              You need to prove continuous employment with your nominating employer for the required period — typically collecting payslips, employment contracts, tax records, and a confirmation letter from your employer.
+            </p>
+            <div class="task-docs-title" data-en="Employment evidence package" data-es="Paquete de evidencia de empleo">Employment evidence package</div>
+            <div class="task-docs">
+              <div class="task-doc-item"><span class="task-doc-icon">📄</span><span data-en="Payslips — last 12 months minimum, ideally full 3 years" data-es="Recibos de sueldo — últimos 12 meses mínimo, idealmente 3 años completos">Payslips — last 12 months minimum, ideally full 3 years</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📝</span><span data-en="Employment contract (original + any amendments)" data-es="Contrato de empleo (original + cualquier modificación)">Employment contract (original + any amendments)</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📋</span><span data-en="Letter from employer confirming: role, start date, FT status, salary" data-es="Carta del empleador confirmando: puesto, fecha de inicio, estado TC, salario">Letter from employer confirming: role, start date, FT status, salary</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">💰</span><span data-en="ATO income statements or group certificates" data-es="Estados de ingresos de la ATO o certificados de grupo">ATO income statements or group certificates</span></div>
+            </div>
+            <div class="task-info-grid">
+              <div class="task-info-cell"><div class="task-info-label" data-en="Time to collect" data-es="Tiempo para reunir">Time to collect</div><div class="task-info-val" data-en="1–2 weeks" data-es="1–2 semanas">1–2 weeks</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Cost" data-es="Costo">Cost</div><div class="task-info-val" data-en="Free" data-es="Gratis">Free</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="From ATO" data-es="De la ATO">From ATO</div><div class="task-info-val" data-en="myGov account" data-es="Cuenta myGov">myGov account</div></div>
+            </div>
+            <div class="task-links">
+              <a class="task-link" href="https://my.gov.au" target="_blank">🌐 ATO via myGov</a>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Obtain new police clearance certificate" data-es="Obtén nuevo certificado de antecedentes policiales">Obtain new police clearance certificate</div>
+              <div class="task-badges"><span class="task-badge badge-key" data-en="Required" data-es="Requerido">Required</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="Your previous police clearance from your initial 482 visa application is likely expired (they're only valid for 12 months). You'll need a fresh Australian Federal Police (AFP) National Police Check, plus updated clearances from any country where you've lived for 12+ months since your last application." data-es="Tu certificado de antecedentes anterior de tu solicitud de visa 482 inicial probablemente haya vencido (solo son válidos por 12 meses). Necesitarás una nueva Verificación Nacional de Antecedentes de la Policía Federal Australiana (AFP), más certificados actualizados de cualquier país donde hayas vivido durante 12+ meses desde tu última solicitud.">
+              Your previous police clearance from the initial 482 application is likely expired (12-month validity). You need a fresh AFP National Police Check plus updated clearances from any country you've lived in for 12+ months since then.
+            </p>
+            <div class="task-info-grid">
+              <div class="task-info-cell"><div class="task-info-label" data-en="AFP cost" data-es="Costo AFP">AFP cost</div><div class="task-info-val">AUD $56</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="AFP time" data-es="Tiempo AFP">AFP time</div><div class="task-info-val" data-en="~15 days" data-es="~15 días">~15 days</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Validity" data-es="Validez">Validity</div><div class="task-info-val" data-en="12 months" data-es="12 meses">12 months</div></div>
+            </div>
+            <div class="task-links">
+              <a class="task-link" href="https://www.afp.gov.au/what-we-do/services/criminal-records/national-police-checks" target="_blank">🌐 AFP National Police Check</a>
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PHASE 3 -->
+    <div class="phase-block">
+      <div class="phase-header">
+        <div class="phase-num">03</div>
+        <div class="phase-info">
+          <div class="phase-title" data-en="Health Examination" data-es="Examen Médico">Health Examination</div>
+          <div class="phase-sub" data-en="Required for all 186, 189, 190, and 482 applications" data-es="Requerido para todas las solicitudes 186, 189, 190 y 482">Required for all 186, 189, 190, and 482 applications</div>
+        </div>
+        <div class="phase-badge" data-en="Weeks 2–4" data-es="Semanas 2–4">Weeks 2–4</div>
+      </div>
+      <div class="phase-tasks">
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Book health examination with approved panel physician" data-es="Reserva examen médico con médico de panel aprobado">Book health examination with approved panel physician</div>
+              <div class="task-badges"><span class="task-badge badge-key" data-en="Mandatory" data-es="Obligatorio">Mandatory</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="Get your HAP ID from ImmiAccount first, then book your health examination with an approved panel physician. Depending on your age, the exam may include a chest X-ray, blood tests, HIV test, and urinalysis. The physician uploads results directly to the Department. Allow 2–4 weeks from today to book and complete the exam." data-es="Obtén primero tu HAP ID de ImmiAccount, luego reserva tu examen médico con un médico de panel aprobado. Dependiendo de tu edad, el examen puede incluir una radiografía de tórax, análisis de sangre, prueba de VIH y análisis de orina. El médico sube los resultados directamente al Departamento. Permite 2–4 semanas desde hoy para reservar y completar el examen.">
+              Get your HAP ID from ImmiAccount first, then book your health examination with an approved panel physician. The physician uploads results directly to the Department. Allow 2–4 weeks to book and complete the exam.
+            </p>
+            <div class="task-docs-title" data-en="What to bring" data-es="Qué llevar">What to bring</div>
+            <div class="task-docs">
+              <div class="task-doc-item"><span class="task-doc-icon">🛂</span><span data-en="Valid passport (original)" data-es="Pasaporte válido (original)">Valid passport (original)</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">🔢</span><span data-en="HAP ID from ImmiAccount" data-es="HAP ID de ImmiAccount">HAP ID from ImmiAccount</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📸</span><span data-en="2 passport-size photos" data-es="2 fotos tamaño pasaporte">2 passport-size photos</span></div>
+            </div>
+            <div class="task-info-grid">
+              <div class="task-info-cell"><div class="task-info-label" data-en="Cost" data-es="Costo">Cost</div><div class="task-info-val">AUD $350–600</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Results" data-es="Resultados">Results</div><div class="task-info-val" data-en="2–5 days" data-es="2–5 días">2–5 days</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Validity" data-es="Validez">Validity</div><div class="task-info-val" data-en="12 months" data-es="12 meses">12 months</div></div>
+            </div>
+            <div class="task-links">
+              <a class="task-link" href="https://immi.homeaffairs.gov.au/help-support/meeting-our-requirements/health/arrange-your-health-examination/in-australia" target="_blank">🌐 Find Panel Physician</a>
+            </div>
+            <div class="task-tip"><strong data-en="Don't wait:" data-es="No esperes:">Don't wait:</strong> <span data-en="Health exams are in high demand and appointments can book out 2–3 weeks in advance. Book your appointment TODAY, even before you have all your other documents ready." data-es="Los exámenes médicos tienen alta demanda y las citas pueden reservarse con 2–3 semanas de anticipación. Reserva tu cita HOY, incluso antes de tener todos tus otros documentos listos.">Health exams book out 2–3 weeks in advance. Book your appointment TODAY, even before you have all other documents ready.</span></div>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PHASE 4 -->
+    <div class="phase-block">
+      <div class="phase-header">
+        <div class="phase-num">04</div>
+        <div class="phase-info">
+          <div class="phase-title" data-en="Lodge Application — Before Expiry" data-es="Presenta la Solicitud — Antes del Vencimiento">Lodge Application — Before Expiry</div>
+          <div class="phase-sub" data-en="Submit online via ImmiAccount — BVA activates immediately" data-es="Envía en línea via ImmiAccount — BVA se activa inmediatamente">Submit online via ImmiAccount — BVA activates immediately</div>
+        </div>
+        <div class="phase-badge urgent" data-en="Before visa expires!" data-es="¡Antes del vencimiento!">Before visa expires!</div>
+      </div>
+      <div class="phase-tasks">
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Lodge your visa application via ImmiAccount" data-es="Presenta tu solicitud de visa a través de ImmiAccount">Lodge your visa application via ImmiAccount</div>
+              <div class="task-badges"><span class="task-badge badge-critical" data-en="Must do before expiry" data-es="Debe hacerse antes del vencimiento">Must do before expiry</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="Lodge your 186, 189, or 482 application via ImmiAccount before your current visa expires. Pay the application charge online (credit card or BPAY). As soon as your application is lodged, a Bridging Visa A is automatically granted — you will receive a TRN (Transaction Reference Number) confirming this. Keep this number safe." data-es="Presenta tu solicitud 186, 189 o 482 a través de ImmiAccount antes de que venza tu visa actual. Paga el cargo de la solicitud en línea (tarjeta de crédito o BPAY). Tan pronto como se presente tu solicitud, se otorga automáticamente una Visa Puente A — recibirás un TRN (Número de Referencia de Transacción) confirmando esto. Guarda este número de forma segura.">
+              Lodge your 186, 189, or 482 application via ImmiAccount before your current visa expires. Pay online. Immediately after lodging, a Bridging Visa A (BVA) is automatically granted — you'll receive a TRN confirming this. Keep it safe.
+            </p>
+            <div class="task-docs-title" data-en="Final pre-lodgement checklist" data-es="Lista de verificación final antes de presentar">Final pre-lodgement checklist</div>
+            <div class="task-docs">
+              <div class="task-doc-item"><span class="task-doc-icon">✅</span><span data-en="All documents scanned in PDF format, file size under 5MB each" data-es="Todos los documentos escaneados en formato PDF, tamaño de archivo menor a 5MB cada uno">All documents scanned in PDF format, file size under 5MB each</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">✅</span><span data-en="Health exam completed and results with 'Health finalised' status" data-es="Examen médico completado y resultados con estado 'Salud finalizada'">Health exam completed and results with 'Health finalised' status</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">✅</span><span data-en="Employer nomination lodged (186 ENS) — you can lodge together" data-es="Nominación del empleador presentada (186 ENS) — pueden presentar juntos">Employer nomination lodged (186 ENS) — you can lodge together</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">✅</span><span data-en="Payment method ready" data-es="Método de pago listo">Payment method ready</span></div>
+            </div>
+            <div class="task-info-grid">
+              <div class="task-info-cell"><div class="task-info-label" data-en="186 fee" data-es="Tarifa 186">186 fee</div><div class="task-info-val">AUD $4,770</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="189 fee" data-es="Tarifa 189">189 fee</div><div class="task-info-val">AUD $4,770</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="BVA" data-es="BVA">BVA</div><div class="task-info-val" data-en="Auto-granted" data-es="Otorgada automátic.">Auto-granted</div></div>
+            </div>
+            <div class="task-links">
+              <a class="task-link" href="https://immi.homeaffairs.gov.au/help-support/applying-online-or-on-paper/online/immiaccount" target="_blank">🌐 ImmiAccount</a>
+              <a class="task-link" href="migro-services.html">👤 Find Migration Agent</a>
+            </div>
+            <div class="task-warn"><strong data-en="⚠️ Travel warning:" data-es="⚠️ Advertencia de viaje:">⚠️ Travel warning:</strong> <span data-en="Once you're on a BVA, DO NOT leave Australia unless you have also been granted a Bridging Visa B (BVB). You must apply for a BVB before travelling or your BVA will be cancelled and you will not be permitted to return." data-es="Una vez que estés en una BVA, NO salgas de Australia a menos que también tengas una Visa Puente B (BVB). Debes solicitar una BVB antes de viajar o tu BVA será cancelada y no se te permitirá regresar.">Once on a BVA, DO NOT leave Australia without a Bridging Visa B (BVB). Apply for BVB before any travel or your BVA will be cancelled and you cannot return.</span></div>
+          </div></div>
+        </div>
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="If travelling: apply for Bridging Visa B (BVB)" data-es="Si viajas: solicita Visa Puente B (BVB)">If travelling: apply for Bridging Visa B (BVB)</div>
+              <div class="task-badges"><span class="task-badge badge-optional" data-en="If needed" data-es="Si es necesario">If needed</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="If you need to travel internationally while your application is being processed, apply for a Bridging Visa B before leaving. The BVB is a separate application (fee: AUD $175) and is specific to the travel dates you provide. You must lodge the BVB application before departing Australia — you cannot get it once you've left." data-es="Si necesitas viajar internacionalmente mientras se procesa tu solicitud, solicita una Visa Puente B antes de salir. La BVB es una solicitud separada (tarifa: AUD $175) y es específica para las fechas de viaje que proporciones. Debes presentar la solicitud de BVB antes de salir de Australia — no puedes obtenerla una vez que te hayas ido.">
+              If you need to travel internationally while your application is processing, apply for a Bridging Visa B before departing. The BVB is a separate application (AUD $175) and is specific to the travel dates you provide.
+            </p>
+            <div class="task-info-grid">
+              <div class="task-info-cell"><div class="task-info-label" data-en="Cost" data-es="Costo">Cost</div><div class="task-info-val">AUD $175</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Processing" data-es="Procesamiento">Processing</div><div class="task-info-val" data-en="1–5 days" data-es="1–5 días">1–5 days</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Must apply" data-es="Debe solicitar">Must apply</div><div class="task-info-val" data-en="Before travel" data-es="Antes de viajar">Before travel</div></div>
+            </div>
+            <div class="task-links">
+              <a class="task-link" href="https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-b-020" target="_blank">🌐 Bridging Visa B info</a>
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PHASE 5 -->
+    <div class="phase-block">
+      <div class="phase-header">
+        <div class="phase-num">05</div>
+        <div class="phase-info">
+          <div class="phase-title" data-en="Wait & Monitor Application" data-es="Espera y Monitorea la Solicitud">Wait & Monitor Application</div>
+          <div class="phase-sub" data-en="Stay informed during the processing period" data-es="Mantente informado durante el período de procesamiento">Stay informed during the processing period</div>
+        </div>
+        <div class="phase-badge" data-en="Months 1–18" data-es="Meses 1–18">Months 1–18</div>
+      </div>
+      <div class="phase-tasks">
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Monitor ImmiAccount weekly for updates or RFI requests" data-es="Monitorea ImmiAccount semanalmente para actualizaciones o solicitudes RFI">Monitor ImmiAccount weekly for updates or RFI requests</div>
+              <div class="task-badges"><span class="task-badge badge-key" data-en="Ongoing" data-es="Continuo">Ongoing</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="Check your ImmiAccount at least once a week and ensure your email address is current. The Department sends Requests for Further Information (RFI) through ImmiAccount. You typically have only 28 days to respond, and missing the deadline is one of the most common causes of visa refusal." data-es="Revisa tu ImmiAccount al menos una vez a la semana y asegúrate de que tu dirección de correo electrónico esté actualizada. El Departamento envía Solicitudes de Información Adicional (RFI) a través de ImmiAccount. Generalmente tienes solo 28 días para responder, y perder el plazo es una de las causas más comunes de rechazo de visa.">
+              Check ImmiAccount at least once a week and ensure your email is current. The Department sends RFI notices through ImmiAccount with a typical 28-day response deadline. Missing it is one of the most common reasons for visa refusal.
+            </p>
+            <div class="task-tip"><strong data-en="Pro tip:" data-es="Consejo profesional:">Pro tip:</strong> <span data-en="Enable email notifications in ImmiAccount settings, and add your migration agent as a secondary contact so they're alerted to any RFI at the same time as you." data-es="Activa las notificaciones por correo electrónico en la configuración de ImmiAccount y agrega a tu agente de migración como contacto secundario para que reciba cualquier RFI al mismo tiempo que tú.">Enable email notifications in ImmiAccount settings, and add your migration agent as a secondary contact for simultaneous RFI alerts.</span></div>
+          </div></div>
+        </div>
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Upon grant: verify new visa and update all records" data-es="Al otorgar: verifica la nueva visa y actualiza todos los registros">Upon grant: verify new visa and update all records</div>
+              <div class="task-badges"><span class="task-badge badge-optional" data-en="After decision" data-es="Después de la decisión">After decision</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="When your visa is granted, you'll receive an email notification and your grant letter in ImmiAccount. Immediately verify the conditions on VEVO, update your employer and bank with your new visa details, and — if you were granted a permanent visa (186) — celebrate. You are now a permanent resident." data-es="Cuando se otorgue tu visa, recibirás una notificación por correo electrónico y tu carta de otorgamiento en ImmiAccount. Verifica inmediatamente las condiciones en VEVO, actualiza a tu empleador y banco con los detalles de tu nueva visa y — si se te otorgó una visa permanente (186) — celebra. Ahora eres residente permanente.">
+              When your visa is granted, verify conditions on VEVO, update your employer and bank with new visa details. If granted a permanent visa (186) — you are now a Permanent Resident of Australia.
+            </p>
+            <div class="task-links">
+              <a class="task-link" href="migro-plan-citizenship.html">🇦🇺 Next: Plan for Citizenship</a>
+              <a class="task-link" href="https://immi.homeaffairs.gov.au/visas/already-have-a-visa/check-visa-details-and-conditions/check-conditions-online" target="_blank">🌐 VEVO Check</a>
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <!-- JOURNEY SWITCHER -->
+    <div class="sidebar-card">
+      <div class="sidebar-card-title" data-en="Choose Your Journey" data-es="Elige Tu Recorrido">Choose Your Journey</div>
+      <div class="journey-list">
+        <a href="migro-plan.html" class="journey-item">
+          <div class="journey-icon">✈️</div>
+          <div>
+            <div class="journey-label" data-en="New applicant abroad" data-es="Nuevo solicitante en el exterior">New applicant abroad</div>
+            <div class="journey-sub" data-en="Applying from outside Australia" data-es="Solicitando desde fuera de Australia">Applying from outside Australia</div>
+          </div>
+        </a>
+        <a href="migro-plan-existing.html" class="journey-item">
+          <div class="journey-icon">🏠</div>
+          <div>
+            <div class="journey-label" data-en="Already in Australia" data-es="Ya en Australia">Already in Australia</div>
+            <div class="journey-sub" data-en="Changing or upgrading visa" data-es="Cambiando o actualizando visa">Changing or upgrading visa</div>
+          </div>
+        </a>
+        <a href="migro-plan-extension.html" class="journey-item current">
+          <div class="journey-icon">🔄</div>
+          <div>
+            <div class="journey-label" data-en="Extend / Renew visa" data-es="Extender / Renovar visa">Extend / Renew visa</div>
+            <div class="journey-sub" data-en="Same visa class, more time" data-es="Misma clase de visa, más tiempo">Same visa class, more time</div>
+          </div>
+        </a>
+        <a href="migro-plan-citizenship.html" class="journey-item">
+          <div class="journey-icon">🇦🇺</div>
+          <div>
+            <div class="journey-label" data-en="PR → Citizenship" data-es="RP → Ciudadanía">PR → Citizenship</div>
+            <div class="journey-sub" data-en="Permanent resident applying" data-es="Residente permanente solicitando">Permanent resident applying</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- DEADLINE CARD -->
+    <div class="deadline-card">
+      <div class="deadline-title" data-en="⏰ Your Key Deadlines" data-es="⏰ Tus Fechas Límite Clave">⏰ Your Key Deadlines</div>
+      <div class="deadline-items">
+        <div class="deadline-item">
+          <span class="deadline-key" data-en="Current visa expires">Current visa expires</span>
+          <span class="deadline-val">Jul 2026</span>
+        </div>
+        <div class="deadline-item">
+          <span class="deadline-key" data-en="Book health exam by">Book health exam by</span>
+          <span class="deadline-val">Apr 2026</span>
+        </div>
+        <div class="deadline-item">
+          <span class="deadline-key" data-en="Lodge application by">Lodge application by</span>
+          <span class="deadline-val">Jun 2026</span>
+        </div>
+        <div class="deadline-item">
+          <span class="deadline-key" data-en="3-yr anniversary">3-yr anniversary</span>
+          <span class="deadline-val ok" data-en="✓ Reached" data-es="✓ Alcanzado">✓ Reached</span>
+        </div>
+      </div>
+      <a class="deadline-btn" href="https://immi.homeaffairs.gov.au/visas/already-have-a-visa/check-visa-details-and-conditions/check-conditions-online" target="_blank" data-en="Check VEVO now →" data-es="Verificar VEVO ahora →">Check VEVO now →</a>
+    </div>
+
+    <!-- PROGRESS MINI -->
+    <div class="sidebar-card">
+      <div class="sidebar-card-title" data-en="Plan Progress" data-es="Progreso del Plan">Plan Progress</div>
+      <div class="mini-progress">
+        <div class="mini-phase">
+          <div class="mini-dot active"></div>
+          <div class="mini-label active" data-en="01 — Assess situation" data-es="01 — Evaluar situación">01 — Assess situation</div>
+          <div class="mini-count">0/3</div>
+        </div>
+        <div class="mini-phase">
+          <div class="mini-dot"></div>
+          <div class="mini-label" data-en="02 — Documents" data-es="02 — Documentos">02 — Documents</div>
+          <div class="mini-count">0/3</div>
+        </div>
+        <div class="mini-phase">
+          <div class="mini-dot"></div>
+          <div class="mini-label" data-en="03 — Health exam" data-es="03 — Examen médico">03 — Health exam</div>
+          <div class="mini-count">0/1</div>
+        </div>
+        <div class="mini-phase">
+          <div class="mini-dot"></div>
+          <div class="mini-label" data-en="04 — Lodge" data-es="04 — Presentar">04 — Lodge</div>
+          <div class="mini-count">0/2</div>
+        </div>
+        <div class="mini-phase">
+          <div class="mini-dot"></div>
+          <div class="mini-label" data-en="05 — Monitor" data-es="05 — Monitorear">05 — Monitor</div>
+          <div class="mini-count">0/2</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPACT TIMELINE -->
+    <div class="sidebar-card">
+      <div class="sidebar-card-title" data-en="Action Timeline" data-es="Cronograma de Acción">Action Timeline</div>
+      <div class="compact-timeline">
+        <div class="ct-item">
+          <div class="ct-bullet"></div>
+          <div class="ct-text"><strong data-en="This week: VEVO + employer" data-es="Esta semana: VEVO + empleador">This week: VEVO + employer</strong><span data-en="Confirm dates and nomination" data-es="Confirmar fechas y nominación">Confirm dates and nomination</span></div>
+        </div>
+        <div class="ct-item">
+          <div class="ct-bullet"></div>
+          <div class="ct-text"><strong data-en="Weeks 1–2: Documents" data-es="Semanas 1–2: Documentos">Weeks 1–2: Documents</strong><span data-en="Passport, payslips, police check" data-es="Pasaporte, recibos de sueldo, antecedentes">Passport, payslips, police check</span></div>
+        </div>
+        <div class="ct-item">
+          <div class="ct-bullet"></div>
+          <div class="ct-text"><strong data-en="Week 2–4: Health exam" data-es="Semana 2–4: Examen médico">Week 2–4: Health exam</strong><span data-en="Book and complete medical" data-es="Reservar y completar médico">Book and complete medical</span></div>
+        </div>
+        <div class="ct-item">
+          <div class="ct-bullet"></div>
+          <div class="ct-text"><strong data-en="Week 4–6: Lodge" data-es="Semana 4–6: Presentar">Week 4–6: Lodge</strong><span data-en="Submit + BVA protection" data-es="Enviar + protección BVA">Submit + BVA protection</span></div>
+        </div>
+        <div class="ct-item">
+          <div class="ct-bullet"></div>
+          <div class="ct-text"><strong data-en="Months 6–18: Decision" data-es="Meses 6–18: Decisión">Months 6–18: Decision</strong><span data-en="PR granted — you made it!" data-es="RP otorgada — ¡lo lograste!">PR granted — you made it!</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-card">
+      <div class="cta-card-title" data-en="Time is critical.<br>Get expert help." data-es="El tiempo es crítico.<br>Obtén ayuda experta.">Time is critical.<br>Get expert help.</div>
+      <p class="cta-card-desc" data-en="With your visa expiring in 4 months, a registered migration agent can fast-track the process and ensure nothing is missed." data-es="Con tu visa venciendo en 4 meses, un agente de migración registrado puede acelerar el proceso y asegurarse de que no se pierda nada.">With your visa expiring in 4 months, a registered migration agent can fast-track the process and ensure nothing is missed.</p>
+      <a href="migro-services.html" class="cta-card-btn" data-en="Find Migration Agents →" data-es="Encontrar Agentes de Migración →">Find Migration Agents →</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function setLang(l, btn) {
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('[data-en]').forEach(el => {
+      el.innerHTML = l === 'en' ? el.dataset.en : (el.dataset.es || el.dataset.en);
+    });
+  }
+  function toggleTask(item) {
+    const wasOpen = item.classList.contains('open');
+    item.closest('.phase-tasks')?.querySelectorAll('.task-item').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  }
+  function checkTask(e, checkbox) {
+    e.stopPropagation();
+    checkbox.classList.toggle('checked');
+    checkbox.textContent = checkbox.classList.contains('checked') ? '✓' : '';
+  }
+  function selectVisa(card) {
+    document.querySelectorAll('.visa-option').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+  }
+</script>
+</body>
+</html>
