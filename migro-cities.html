@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Migro — Choose Your City</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #0a0a0a;
+      --white: #ffffff;
+      --gray-100: #f5f5f5;
+      --gray-200: #e8e8e8;
+      --gray-300: #d0d0d0;
+      --gray-400: #999999;
+      --gray-600: #555555;
+      --gray-800: #222222;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--gray-100);
+      color: var(--black);
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 48px;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-200);
+      position: sticky; top: 0; z-index: 100;
+    }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px; font-weight: 700;
+      color: var(--black); text-decoration: none;
+    }
+
+    .nav-logo span {
+      display: inline-block; width: 6px; height: 6px;
+      background: var(--black); border-radius: 50%;
+      margin-left: 2px; vertical-align: super;
+    }
+
+    .nav-right { display: flex; align-items: center; gap: 16px; }
+
+    .lang-toggle {
+      display: flex; background: var(--gray-100);
+      border-radius: 6px; padding: 3px; gap: 2px;
+    }
+
+    .lang-btn {
+      padding: 4px 10px; font-size: 11px; font-weight: 700;
+      border: none; background: transparent;
+      border-radius: 4px; cursor: pointer;
+      color: var(--gray-400); transition: all 0.2s;
+    }
+
+    .lang-btn.active { background: var(--black); color: var(--white); }
+
+    .nav-back {
+      font-size: 13px; font-weight: 500;
+      color: var(--gray-600); text-decoration: none;
+      padding: 8px 16px; border-radius: 6px;
+      border: 1px solid var(--gray-200); transition: all 0.2s;
+    }
+
+    .nav-back:hover { border-color: var(--black); color: var(--black); }
+
+    /* ── PROGRESS STRIP ── */
+    .progress-strip {
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-200);
+      padding: 0 48px;
+      display: flex; gap: 0;
+    }
+
+    .progress-step {
+      padding: 14px 0;
+      margin-right: 32px;
+      font-size: 12px; font-weight: 600;
+      color: var(--gray-300);
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+    }
+
+    .progress-step.done { color: var(--gray-400); }
+    .progress-step.active { color: var(--black); border-bottom-color: var(--black); }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--black);
+      padding: 56px 48px 48px;
+    }
+
+    .hero-inner {
+      max-width: 1100px; margin: 0 auto;
+    }
+
+    .hero-tag {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 2px;
+      color: #555; margin-bottom: 12px;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(32px, 4vw, 52px); font-weight: 700;
+      color: var(--white); line-height: 1.1;
+      letter-spacing: -1px; margin-bottom: 14px;
+    }
+
+    .hero-sub {
+      font-size: 16px; color: #777;
+      max-width: 520px; line-height: 1.6;
+      margin-bottom: 36px;
+    }
+
+    /* ── FILTER PILLS ── */
+    .filters-row {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      align-items: center;
+    }
+
+    .filter-label {
+      font-size: 12px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      color: #444; margin-right: 4px;
+    }
+
+    .filter-pill {
+      display: flex; align-items: center; gap: 7px;
+      padding: 9px 16px;
+      border: 1.5px solid #2a2a2a;
+      border-radius: 100px;
+      font-size: 13px; font-weight: 600;
+      color: #888; cursor: pointer;
+      transition: all 0.2s; user-select: none;
+      background: transparent;
+    }
+
+    .filter-pill:hover { border-color: #555; color: var(--white); }
+
+    .filter-pill.active {
+      background: var(--white);
+      border-color: var(--white);
+      color: var(--black);
+    }
+
+    .filter-pill-icon { font-size: 15px; }
+
+    /* ── BODY ── */
+    .page-body {
+      max-width: 1100px; margin: 0 auto;
+      padding: 40px 48px;
+    }
+
+    /* ── RESULTS HEADER ── */
+    .results-header {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+    }
+
+    .results-count {
+      font-size: 14px; font-weight: 600; color: var(--gray-600);
+    }
+
+    .results-count strong { color: var(--black); }
+
+    .sort-select {
+      padding: 8px 14px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 8px; font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      color: var(--black); background: var(--white);
+      cursor: pointer; outline: none;
+    }
+
+    /* ── CITY GRID ── */
+    .city-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    /* ── CITY CARD ── */
+    .city-card {
+      background: var(--white);
+      border: 1.5px solid var(--gray-200);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.25s;
+      cursor: pointer;
+      display: flex; flex-direction: column;
+    }
+
+    .city-card:hover {
+      border-color: var(--black);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+    }
+
+    .city-card.featured {
+      border-color: var(--black);
+    }
+
+    .city-card.hidden { display: none; }
+
+    /* ── CITY MAP VISUAL ── */
+    .city-visual {
+      height: 140px;
+      position: relative;
+      overflow: hidden;
+      background: var(--gray-100);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .city-map-bg {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 80px;
+      opacity: 0.15;
+      position: absolute;
+    }
+
+    .city-skyline {
+      position: relative; z-index: 1;
+      text-align: center;
+    }
+
+    .city-skyline-emoji { font-size: 52px; }
+
+    .city-badge-wrap {
+      position: absolute; top: 12px; right: 12px;
+      display: flex; gap: 6px; flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .city-badge {
+      font-size: 10px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      padding: 4px 10px; border-radius: 100px;
+    }
+
+    .badge-recommended {
+      background: var(--black); color: var(--white);
+    }
+
+    .badge-jobs { background: var(--gray-100); color: var(--black); }
+    .badge-beach { background: #e0f0ff; color: #1a5a8a; }
+    .badge-affordable { background: #e6f9e6; color: #1a5a1a; }
+
+    .city-match-bar {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 3px; background: var(--gray-200);
+    }
+
+    .city-match-fill {
+      height: 3px; background: var(--black);
+      transition: width 1s ease; width: 0;
+    }
+
+    /* ── CITY INFO ── */
+    .city-info { padding: 20px; flex: 1; }
+
+    .city-top {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; margin-bottom: 12px; gap: 8px;
+    }
+
+    .city-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px; font-weight: 700; color: var(--black);
+    }
+
+    .city-state {
+      font-size: 12px; color: var(--gray-400);
+      font-weight: 500; margin-top: 2px;
+    }
+
+    .city-match-score {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px; font-weight: 700; color: var(--black);
+      text-align: right; flex-shrink: 0;
+    }
+
+    .city-match-label {
+      font-size: 10px; color: var(--gray-400);
+      text-align: right; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+
+    .city-desc {
+      font-size: 13px; color: var(--gray-600);
+      line-height: 1.6; margin-bottom: 16px;
+    }
+
+    /* ── CITY STATS ── */
+    .city-stats {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 8px; margin-bottom: 16px;
+    }
+
+    .city-stat {
+      background: var(--gray-100);
+      border-radius: 8px; padding: 10px 12px;
+    }
+
+    .city-stat-label {
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      color: var(--gray-400); margin-bottom: 3px;
+    }
+
+    .city-stat-value {
+      font-size: 14px; font-weight: 700; color: var(--black);
+    }
+
+    /* ── CITY TAGS ── */
+    .city-tags {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .city-tag {
+      font-size: 11px; font-weight: 600;
+      padding: 4px 10px; border-radius: 100px;
+      background: var(--gray-100); color: var(--gray-600);
+    }
+
+    /* ── CITY FOOTER ── */
+    .city-footer {
+      padding: 14px 20px;
+      border-top: 1px solid var(--gray-200);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .city-footer-link {
+      font-size: 13px; font-weight: 700;
+      color: var(--black); text-decoration: none;
+      display: flex; align-items: center; gap: 6px;
+      transition: gap 0.2s;
+    }
+
+    .city-footer-link:hover { gap: 10px; }
+
+    .city-visa-compat {
+      font-size: 11px; color: var(--gray-400); font-weight: 500;
+    }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      text-align: center; padding: 80px 40px;
+      display: none;
+    }
+
+    .empty-state.visible { display: block; }
+
+    .empty-state-icon { font-size: 48px; margin-bottom: 16px; }
+
+    .empty-state-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px; font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .empty-state-sub {
+      font-size: 15px; color: var(--gray-600);
+    }
+
+    /* ── CTA BOTTOM ── */
+    .cta-bottom {
+      background: var(--black);
+      border-radius: 16px;
+      padding: 40px; text-align: center;
+      margin-top: 40px;
+    }
+
+    .cta-bottom-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px; font-weight: 700;
+      color: var(--white); margin-bottom: 10px;
+    }
+
+    .cta-bottom-sub {
+      font-size: 15px; color: #888;
+      margin-bottom: 24px; max-width: 400px; margin-left: auto; margin-right: auto;
+    }
+
+    .btn-cta-bottom {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--white); color: var(--black);
+      padding: 14px 36px; border-radius: 8px;
+      font-size: 15px; font-weight: 700;
+      cursor: pointer; border: none;
+      transition: all 0.2s;
+    }
+
+    .btn-cta-bottom:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(255,255,255,0.15);
+    }
+
+    /* ── FADE ANIM ── */
+    .fade-up {
+      opacity: 0; transform: translateY(20px);
+      transition: all 0.5s ease;
+    }
+
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav, .progress-strip, .hero, .page-body { padding-left: 24px; padding-right: 24px; }
+      .city-grid { grid-template-columns: 1fr; }
+      .progress-step { display: none; }
+      .progress-step.active { display: block; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="migro-landing.html" class="nav-logo">Migro<span></span></a>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('es')">ES</button>
+      </div>
+      <a href="migro-profile.html" class="nav-back" data-en="← My profile" data-es="← Mi perfil">← My profile</a>
+    </div>
+  </nav>
+
+  <!-- PROGRESS STRIP -->
+  <div class="progress-strip">
+    <div class="progress-step done" data-en="✓ Profile" data-es="✓ Perfil">✓ Profile</div>
+    <div class="progress-step done" data-en="✓ Visa Routes" data-es="✓ Rutas de Visa">✓ Visa Routes</div>
+    <div class="progress-step active" data-en="→ Choose City" data-es="→ Elegir Ciudad">→ Choose City</div>
+    <div class="progress-step" data-en="Options" data-es="Opciones">Options</div>
+    <div class="progress-step" data-en="Services" data-es="Servicios">Services</div>
+    <div class="progress-step" data-en="My Plan" data-es="Mi Plan">My Plan</div>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <p class="hero-tag" data-en="STEP 4 · CHOOSE YOUR CITY" data-es="PASO 4 · ELIGE TU CIUDAD">STEP 4 · CHOOSE YOUR CITY</p>
+      <h1 class="hero-title" data-en="Where do you want<br/>to live in Australia?" data-es="¿Dónde quieres<br/>vivir en Australia?">Where do you want<br/>to live in Australia?</h1>
+      <p class="hero-sub" data-en="Filter by your preferences and find the city that fits your lifestyle and career goals." data-es="Filtra por tus preferencias y encuentra la ciudad que se adapta a tu estilo de vida y objetivos.">Filter by your preferences and find the city that fits your lifestyle and career goals.</p>
+
+      <!-- FILTERS -->
+      <div class="filters-row">
+        <span class="filter-label" data-en="Filter:" data-es="Filtrar:">Filter:</span>
+
+        <div class="filter-pill active" onclick="toggleFilter(this,'beach')" data-filter="beach">
+          <span class="filter-pill-icon">🏖️</span>
+          <span data-en="Beach" data-es="Playa">Beach</span>
+        </div>
+        <div class="filter-pill" onclick="toggleFilter(this,'warm')" data-filter="warm">
+          <span class="filter-pill-icon">☀️</span>
+          <span data-en="Warm climate" data-es="Clima cálido">Warm climate</span>
+        </div>
+        <div class="filter-pill" onclick="toggleFilter(this,'affordable')" data-filter="affordable">
+          <span class="filter-pill-icon">💰</span>
+          <span data-en="Affordable" data-es="Asequible">Affordable</span>
+        </div>
+        <div class="filter-pill" onclick="toggleFilter(this,'jobs')" data-filter="jobs">
+          <span class="filter-pill-icon">💼</span>
+          <span data-en="High employment" data-es="Alto empleo">High employment</span>
+        </div>
+        <div class="filter-pill" onclick="toggleFilter(this,'tech')" data-filter="tech">
+          <span class="filter-pill-icon">💻</span>
+          <span data-en="Tech hub" data-es="Hub tecnológico">Tech hub</span>
+        </div>
+        <div class="filter-pill" onclick="toggleFilter(this,'regional')" data-filter="regional">
+          <span class="filter-pill-icon">🌿</span>
+          <span data-en="Regional (+5 pts)" data-es="Regional (+5 pts)">Regional (+5 pts)</span>
+        </div>
+        <div class="filter-pill" onclick="clearFilters(this)" data-filter="all" style="border-color:#444;color:#666;">
+          <span data-en="Show all" data-es="Ver todos">Show all</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAGE BODY -->
+  <div class="page-body">
+
+    <!-- RESULTS HEADER -->
+    <div class="results-header">
+      <p class="results-count"><strong id="cityCount">8</strong> <span data-en="cities found" data-es="ciudades encontradas">cities found</span></p>
+      <select class="sort-select" onchange="sortCities(this.value)">
+        <option value="match" data-en="Sort: Best match" data-es="Ordenar: Mejor coincidencia">Sort: Best match</option>
+        <option value="cost" data-en="Sort: Lowest cost" data-es="Ordenar: Menor costo">Sort: Lowest cost</option>
+        <option value="jobs" data-en="Sort: Most jobs" data-es="Ordenar: Más empleo">Sort: Most empleo</option>
+      </select>
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div class="empty-state" id="emptyState">
+      <div class="empty-state-icon">🔍</div>
+      <div class="empty-state-title" data-en="No cities match your filters" data-es="Ninguna ciudad coincide con tus filtros">No cities match your filters</div>
+      <div class="empty-state-sub" data-en="Try adjusting your preferences above." data-es="Intenta ajustar tus preferencias arriba.">Try adjusting your preferences above.</div>
+    </div>
+
+    <!-- CITY GRID -->
+    <div class="city-grid" id="cityGrid">
+
+      <!-- SYDNEY -->
+      <div class="city-card featured fade-up"
+        data-tags="beach,warm,jobs,tech"
+        data-match="92" data-cost="high" data-jobs="95">
+        <div class="city-visual" style="background: linear-gradient(135deg,#f0f0f0,#e0e0e0);">
+          <div class="city-map-bg">🗺️</div>
+          <div class="city-skyline"><span class="city-skyline-emoji">🦁</span></div>
+          <div class="city-badge-wrap">
+            <span class="city-badge badge-recommended" data-en="Recommended" data-es="Recomendado">Recommended</span>
+            <span class="city-badge badge-beach" data-en="Beach city" data-es="Ciudad costera">Beach city</span>
+          </div>
+          <div class="city-match-bar"><div class="city-match-fill" data-pct="92"></div></div>
+        </div>
+        <div class="city-info">
+          <div class="city-top">
+            <div>
+              <div class="city-name">Sydney</div>
+              <div class="city-state">New South Wales</div>
+            </div>
+            <div>
+              <div class="city-match-score">92%</div>
+              <div class="city-match-label" data-en="match" data-es="coincidencia">match</div>
+            </div>
+          </div>
+          <p class="city-desc" data-en="Australia's largest city. World-class beaches, strong tech sector, and the highest concentration of international companies." data-es="La ciudad más grande de Australia. Playas de clase mundial, sector tecnológico sólido y la mayor concentración de empresas internacionales.">Australia's largest city. World-class beaches, strong tech sector, and the highest concentration of international companies.</p>
+          <div class="city-stats">
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="AVG RENT / MO" data-es="RENTA PROM / MES">AVG RENT / MO</div>
+              <div class="city-stat-value">AUD $2,800</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="AVG SALARY" data-es="SALARIO PROM">AVG SALARY</div>
+              <div class="city-stat-value">AUD $95k/yr</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="CLIMATE" data-es="CLIMA">CLIMATE</div>
+              <div class="city-stat-value">☀️ Temperate</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="UNEMPLOYMENT" data-es="DESEMPLEO">UNEMPLOYMENT</div>
+              <div class="city-stat-value">3.2%</div>
+            </div>
+          </div>
+          <div class="city-tags">
+            <span class="city-tag">🏖️ Bondi Beach</span>
+            <span class="city-tag">💻 Tech jobs</span>
+            <span class="city-tag">🌍 Multicultural</span>
+            <span class="city-tag">🚇 Great transit</span>
+          </div>
+        </div>
+        <div class="city-footer">
+          <a href="#" class="city-footer-link" data-en="Explore Sydney →" data-es="Explorar Sydney →">Explore Sydney →</a>
+          <span class="city-visa-compat" data-en="✓ Compatible with Subclass 482" data-es="✓ Compatible con Subclase 482">✓ Compatible with Subclass 482</span>
+        </div>
+      </div>
+
+      <!-- MELBOURNE -->
+      <div class="city-card fade-up"
+        data-tags="jobs,tech,affordable"
+        data-match="88" data-cost="medium" data-jobs="92">
+        <div class="city-visual" style="background: linear-gradient(135deg,#ececec,#dcdcdc);">
+          <div class="city-map-bg">🗺️</div>
+          <div class="city-skyline"><span class="city-skyline-emoji">🏙️</span></div>
+          <div class="city-badge-wrap">
+            <span class="city-badge badge-jobs" data-en="Most jobs" data-es="Más empleos">Most jobs</span>
+          </div>
+          <div class="city-match-bar"><div class="city-match-fill" data-pct="88"></div></div>
+        </div>
+        <div class="city-info">
+          <div class="city-top">
+            <div>
+              <div class="city-name">Melbourne</div>
+              <div class="city-state">Victoria</div>
+            </div>
+            <div>
+              <div class="city-match-score">88%</div>
+              <div class="city-match-label" data-en="match" data-es="coincidencia">match</div>
+            </div>
+          </div>
+          <p class="city-desc" data-en="Australia's cultural capital. Consistently ranked among the world's most liveable cities with a thriving arts, food and tech scene." data-es="La capital cultural de Australia. Constantemente rankeada entre las ciudades más habitables del mundo, con una vibrante escena artística, gastronómica y tecnológica.">Australia's cultural capital. Consistently ranked among the world's most liveable cities with a thriving arts, food and tech scene.</p>
+          <div class="city-stats">
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="AVG RENT / MO" data-es="RENTA PROM / MES">AVG RENT / MO</div>
+              <div class="city-stat-value">AUD $2,200</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="AVG SALARY" data-es="SALARIO PROM">AVG SALARY</div>
+              <div class="city-stat-value">AUD $88k/yr</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="CLIMATE" data-es="CLIMA">CLIMATE</div>
+              <div class="city-stat-value">🌤️ Variable</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="UNEMPLOYMENT" data-es="DESEMPLEO">UNEMPLOYMENT</div>
+              <div class="city-stat-value">3.5%</div>
+            </div>
+          </div>
+          <div class="city-tags">
+            <span class="city-tag">☕ Coffee culture</span>
+            <span class="city-tag">💻 Tech hub</span>
+            <span class="city-tag">🎭 Arts & culture</span>
+            <span class="city-tag">🎓 Top unis</span>
+          </div>
+        </div>
+        <div class="city-footer">
+          <a href="#" class="city-footer-link" data-en="Explore Melbourne →" data-es="Explorar Melbourne →">Explore Melbourne →</a>
+          <span class="city-visa-compat" data-en="✓ All visa types" data-es="✓ Todos los tipos de visa">✓ All visa types</span>
+        </div>
+      </div>
+
+      <!-- BRISBANE -->
+      <div class="city-card fade-up"
+        data-tags="beach,warm,affordable,jobs"
+        data-match="85" data-cost="low" data-jobs="88">
+        <div class="city-visual" style="background: linear-gradient(135deg,#f5f0e0,#ece0c0);">
+          <div class="city-map-bg">🗺️</div>
+          <div class="city-skyline"><span class="city-skyline-emoji">☀️</span></div>
+          <div class="city-badge-wrap">
+            <span class="city-badge badge-affordable" data-en="Affordable" data-es="Asequible">Affordable</span>
+            <span class="city-badge badge-beach" data-en="Near beach" data-es="Cerca al mar">Near beach</span>
+          </div>
+          <div class="city-match-bar"><div class="city-match-fill" data-pct="85"></div></div>
+        </div>
+        <div class="city-info">
+          <div class="city-top">
+            <div>
+              <div class="city-name">Brisbane</div>
+              <div class="city-state">Queensland</div>
+            </div>
+            <div>
+              <div class="city-match-score">85%</div>
+              <div class="city-match-label" data-en="match" data-es="coincidencia">match</div>
+            </div>
+          </div>
+          <p class="city-desc" data-en="Fast-growing city with a sunny climate, lower living costs than Sydney or Melbourne, and a booming construction sector ahead of the 2032 Olympics." data-es="Ciudad de rápido crecimiento con clima soleado, costos de vida más bajos que Sídney o Melbourne, y un sector de construcción en auge antes de los Juegos Olímpicos 2032.">Fast-growing city with a sunny climate, lower living costs than Sydney or Melbourne, and a booming construction sector ahead of the 2032 Olympics.</p>
+          <div class="city-stats">
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="AVG RENT / MO" data-es="RENTA PROM / MES">AVG RENT / MO</div>
+              <div class="city-stat-value">AUD $1,900</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="AVG SALARY" data-es="SALARIO PROM">AVG SALARY</div>
+              <div class="city-stat-value">AUD $82k/yr</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="CLIMATE" data-es="CLIMA">CLIMATE</div>
+              <div class="city-stat-value">🌞 Subtropical</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="UNEMPLOYMENT" data-es="DESEMPLEO">UNEMPLOYMENT</div>
+              <div class="city-stat-value">3.8%</div>
+            </div>
+          </div>
+          <div class="city-tags">
+            <span class="city-tag">🏖️ Gold Coast nearby</span>
+            <span class="city-tag">🏗️ Construction boom</span>
+            <span class="city-tag">🌡️ Warm year-round</span>
+            <span class="city-tag">⚡ Fast growing</span>
+          </div>
+        </div>
+        <div class="city-footer">
+          <a href="#" class="city-footer-link" data-en="Explore Brisbane →" data-es="Explorar Brisbane →">Explore Brisbane →</a>
+          <span class="city-visa-compat" data-en="✓ Compatible with Subclass 482" data-es="✓ Compatible con Subclase 482">✓ Compatible with Subclass 482</span>
+        </div>
+      </div>
+
+      <!-- PERTH -->
+      <div class="city-card fade-up"
+        data-tags="beach,warm,affordable,regional"
+        data-match="78" data-cost="low" data-jobs="80">
+        <div class="city-visual" style="background: linear-gradient(135deg,#e8f0f5,#d0e4f0);">
+          <div class="city-map-bg">🗺️</div>
+          <div class="city-skyline"><span class="city-skyline-emoji">🌊</span></div>
+          <div class="city-badge-wrap">
+            <span class="city-badge badge-beach" data-en="Beach lifestyle" data-es="Vida costera">Beach lifestyle</span>
+          </div>
+          <div class="city-match-bar"><div class="city-match-fill" data-pct="78"></div></div>
+        </div>
+        <div class="city-info">
+          <div class="city-top">
+            <div>
+              <div class="city-name">Perth</div>
+              <div class="city-state">Western Australia</div>
+            </div>
+            <div>
+              <div class="city-match-score">78%</div>
+              <div class="city-match-label" data-en="match" data-es="coincidencia">match</div>
+            </div>
+          </div>
+          <p class="city-desc" data-en="The sunniest capital city in Australia with stunning beaches, a strong mining sector, and a relaxed lifestyle at lower costs than the east coast." data-es="La capital más soleada de Australia con playas impresionantes, un sólido sector minero y un estilo de vida relajado a costos más bajos que la costa este.">The sunniest capital city in Australia with stunning beaches, a strong mining sector, and a relaxed lifestyle at lower costs than the east coast.</p>
+          <div class="city-stats">
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="AVG RENT / MO" data-es="RENTA PROM / MES">AVG RENT / MO</div>
+              <div class="city-stat-value">AUD $1,750</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="AVG SALARY" data-es="SALARIO PROM">AVG SALARY</div>
+              <div class="city-stat-value">AUD $90k/yr</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="CLIMATE" data-es="CLIMA">CLIMATE</div>
+              <div class="city-stat-value">☀️ Mediterranean</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="UNEMPLOYMENT" data-es="DESEMPLEO">UNEMPLOYMENT</div>
+              <div class="city-stat-value">3.6%</div>
+            </div>
+          </div>
+          <div class="city-tags">
+            <span class="city-tag">⛏️ Mining sector</span>
+            <span class="city-tag">🏖️ Indian Ocean</span>
+            <span class="city-tag">🌞 300+ sunny days</span>
+            <span class="city-tag">🏠 Spacious living</span>
+          </div>
+        </div>
+        <div class="city-footer">
+          <a href="#" class="city-footer-link" data-en="Explore Perth →" data-es="Explorar Perth →">Explore Perth →</a>
+          <span class="city-visa-compat" data-en="✓ State nomination available" data-es="✓ Nominación estatal disponible">✓ State nomination available</span>
+        </div>
+      </div>
+
+      <!-- ADELAIDE -->
+      <div class="city-card fade-up"
+        data-tags="affordable,regional,warm"
+        data-match="74" data-cost="low" data-jobs="75">
+        <div class="city-visual" style="background: linear-gradient(135deg,#f0ece0,#e4dcc8);">
+          <div class="city-map-bg">🗺️</div>
+          <div class="city-skyline"><span class="city-skyline-emoji">🍷</span></div>
+          <div class="city-badge-wrap">
+            <span class="city-badge badge-affordable" data-en="Most affordable" data-es="Más asequible">Most affordable</span>
+          </div>
+          <div class="city-match-bar"><div class="city-match-fill" data-pct="74"></div></div>
+        </div>
+        <div class="city-info">
+          <div class="city-top">
+            <div>
+              <div class="city-name">Adelaide</div>
+              <div class="city-state">South Australia</div>
+            </div>
+            <div>
+              <div class="city-match-score">74%</div>
+              <div class="city-match-label" data-en="match" data-es="coincidencia">match</div>
+            </div>
+          </div>
+          <p class="city-desc" data-en="Australia's most affordable capital with a relaxed Mediterranean lifestyle, world-famous wine regions, and strong state nomination programs." data-es="La capital más asequible de Australia con un estilo de vida mediterráneo relajado, regiones vitivinícolas de fama mundial y sólidos programas de nominación estatal.">Australia's most affordable capital with a relaxed Mediterranean lifestyle, world-famous wine regions, and strong state nomination programs.</p>
+          <div class="city-stats">
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="AVG RENT / MO" data-es="RENTA PROM / MES">AVG RENT / MO</div>
+              <div class="city-stat-value">AUD $1,600</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="AVG SALARY" data-es="SALARIO PROM">AVG SALARY</div>
+              <div class="city-stat-value">AUD $78k/yr</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="CLIMATE" data-es="CLIMA">CLIMATE</div>
+              <div class="city-stat-value">🌤️ Mediterranean</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="UNEMPLOYMENT" data-es="DESEMPLEO">UNEMPLOYMENT</div>
+              <div class="city-stat-value">4.1%</div>
+            </div>
+          </div>
+          <div class="city-tags">
+            <span class="city-tag">🍷 Wine & food</span>
+            <span class="city-tag">🏛️ Arts festivals</span>
+            <span class="city-tag">🌿 Regional bonus</span>
+            <span class="city-tag">🏠 Low cost living</span>
+          </div>
+        </div>
+        <div class="city-footer">
+          <a href="#" class="city-footer-link" data-en="Explore Adelaide →" data-es="Explorar Adelaide →">Explore Adelaide →</a>
+          <span class="city-visa-compat" data-en="✓ Strong 190 nomination" data-es="✓ Fuerte nominación 190">✓ Strong 190 nomination</span>
+        </div>
+      </div>
+
+      <!-- GOLD COAST -->
+      <div class="city-card fade-up"
+        data-tags="beach,warm,affordable"
+        data-match="71" data-cost="medium" data-jobs="72">
+        <div class="city-visual" style="background: linear-gradient(135deg,#e0f0f8,#c8e4f4);">
+          <div class="city-map-bg">🗺️</div>
+          <div class="city-skyline"><span class="city-skyline-emoji">🏄</span></div>
+          <div class="city-badge-wrap">
+            <span class="city-badge badge-beach" data-en="Beach paradise" data-es="Paraíso costero">Beach paradise</span>
+          </div>
+          <div class="city-match-bar"><div class="city-match-fill" data-pct="71"></div></div>
+        </div>
+        <div class="city-info">
+          <div class="city-top">
+            <div>
+              <div class="city-name">Gold Coast</div>
+              <div class="city-state">Queensland</div>
+            </div>
+            <div>
+              <div class="city-match-score">71%</div>
+              <div class="city-match-label" data-en="match" data-es="coincidencia">match</div>
+            </div>
+          </div>
+          <p class="city-desc" data-en="70km of iconic beaches, a booming tourism and hospitality industry, and growing tech sector. Perfect for those who love warm weather and outdoor lifestyle." data-es="70km de playas icónicas, un sector turístico y de hotelería en auge y un creciente sector tecnológico. Perfecto para quienes aman el clima cálido y el estilo de vida al aire libre.">70km of iconic beaches, a booming tourism and hospitality industry, and growing tech sector. Perfect for those who love warm weather and outdoor lifestyle.</p>
+          <div class="city-stats">
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="AVG RENT / MO" data-es="RENTA PROM / MES">AVG RENT / MO</div>
+              <div class="city-stat-value">AUD $2,100</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="AVG SALARY" data-es="SALARIO PROM">AVG SALARY</div>
+              <div class="city-stat-value">AUD $72k/yr</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="CLIMATE" data-es="CLIMA">CLIMATE</div>
+              <div class="city-stat-value">🌞 Subtropical</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="UNEMPLOYMENT" data-es="DESEMPLEO">UNEMPLOYMENT</div>
+              <div class="city-stat-value">4.3%</div>
+            </div>
+          </div>
+          <div class="city-tags">
+            <span class="city-tag">🌊 Surfing</span>
+            <span class="city-tag">🎢 Tourism</span>
+            <span class="city-tag">🌡️ Year-round sun</span>
+            <span class="city-tag">🏗️ Growing fast</span>
+          </div>
+        </div>
+        <div class="city-footer">
+          <a href="#" class="city-footer-link" data-en="Explore Gold Coast →" data-es="Explorar Gold Coast →">Explore Gold Coast →</a>
+          <span class="city-visa-compat" data-en="✓ Hospitality & tourism visas" data-es="✓ Visas hotelería y turismo">✓ Hospitality & tourism visas</span>
+        </div>
+      </div>
+
+      <!-- CANBERRA -->
+      <div class="city-card fade-up"
+        data-tags="jobs,tech,regional"
+        data-match="68" data-cost="medium" data-jobs="90">
+        <div class="city-visual" style="background: linear-gradient(135deg,#eef0ec,#dde0d8);">
+          <div class="city-map-bg">🗺️</div>
+          <div class="city-skyline"><span class="city-skyline-emoji">🏛️</span></div>
+          <div class="city-badge-wrap">
+            <span class="city-badge badge-jobs" data-en="Gov & tech jobs" data-es="Empleos gov & tech">Gov & tech jobs</span>
+          </div>
+          <div class="city-match-bar"><div class="city-match-fill" data-pct="68"></div></div>
+        </div>
+        <div class="city-info">
+          <div class="city-top">
+            <div>
+              <div class="city-name">Canberra</div>
+              <div class="city-state">Australian Capital Territory</div>
+            </div>
+            <div>
+              <div class="city-match-score">68%</div>
+              <div class="city-match-label" data-en="match" data-es="coincidencia">match</div>
+            </div>
+          </div>
+          <p class="city-desc" data-en="Australia's capital with the highest average income in the country. Strong government sector, cybersecurity, and defence industries with excellent quality of life." data-es="La capital de Australia con el ingreso promedio más alto del país. Sólido sector gubernamental, ciberseguridad e industrias de defensa con excelente calidad de vida.">Australia's capital with the highest average income in the country. Strong government sector, cybersecurity, and defence industries with excellent quality of life.</p>
+          <div class="city-stats">
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="AVG RENT / MO" data-es="RENTA PROM / MES">AVG RENT / MO</div>
+              <div class="city-stat-value">AUD $2,400</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="AVG SALARY" data-es="SALARIO PROM">AVG SALARY</div>
+              <div class="city-stat-value">AUD $105k/yr</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="CLIMATE" data-es="CLIMA">CLIMATE</div>
+              <div class="city-stat-value">❄️ Four seasons</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="UNEMPLOYMENT" data-es="DESEMPLEO">UNEMPLOYMENT</div>
+              <div class="city-stat-value">2.8%</div>
+            </div>
+          </div>
+          <div class="city-tags">
+            <span class="city-tag">🏛️ Government hub</span>
+            <span class="city-tag">🔐 Cybersecurity</span>
+            <span class="city-tag">🎓 ANU university</span>
+            <span class="city-tag">🌿 Green city</span>
+          </div>
+        </div>
+        <div class="city-footer">
+          <a href="#" class="city-footer-link" data-en="Explore Canberra →" data-es="Explorar Canberra →">Explore Canberra →</a>
+          <span class="city-visa-compat" data-en="✓ ACT nomination program" data-es="✓ Programa nominación ACT">✓ ACT nomination program</span>
+        </div>
+      </div>
+
+      <!-- HOBART -->
+      <div class="city-card fade-up"
+        data-tags="affordable,regional"
+        data-match="60" data-cost="low" data-jobs="65">
+        <div class="city-visual" style="background: linear-gradient(135deg,#e8ecf0,#d4dce8);">
+          <div class="city-map-bg">🗺️</div>
+          <div class="city-skyline"><span class="city-skyline-emoji">⛰️</span></div>
+          <div class="city-badge-wrap">
+            <span class="city-badge badge-affordable" data-en="+5 visa pts" data-es="+5 pts visa">+5 visa pts</span>
+          </div>
+          <div class="city-match-bar"><div class="city-match-fill" data-pct="60"></div></div>
+        </div>
+        <div class="city-info">
+          <div class="city-top">
+            <div>
+              <div class="city-name">Hobart</div>
+              <div class="city-state">Tasmania</div>
+            </div>
+            <div>
+              <div class="city-match-score">60%</div>
+              <div class="city-match-label" data-en="match" data-es="coincidencia">match</div>
+            </div>
+          </div>
+          <p class="city-desc" data-en="Tasmania's capital is a hidden gem — charming, affordable, and offering extra visa points as a regional area. Growing arts and tech scene with stunning natural surroundings." data-es="La capital de Tasmania es una joya escondida — encantadora, asequible y que ofrece puntos adicionales de visa como área regional. Escena artística y tecnológica en crecimiento con entornos naturales impresionantes.">Tasmania's capital is a hidden gem — charming, affordable, and offering extra visa points as a regional area. Growing arts and tech scene with stunning natural surroundings.</p>
+          <div class="city-stats">
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="AVG RENT / MO" data-es="RENTA PROM / MES">AVG RENT / MO</div>
+              <div class="city-stat-value">AUD $1,400</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="AVG SALARY" data-es="SALARIO PROM">AVG SALARY</div>
+              <div class="city-stat-value">AUD $72k/yr</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="CLIMATE" data-es="CLIMA">CLIMATE</div>
+              <div class="city-stat-value">🌧️ Cool & crisp</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-label" data-en="UNEMPLOYMENT" data-es="DESEMPLEO">UNEMPLOYMENT</div>
+              <div class="city-stat-value">4.5%</div>
+            </div>
+          </div>
+          <div class="city-tags">
+            <span class="city-tag">🌿 Regional +5pts</span>
+            <span class="city-tag">🏔️ Nature & hiking</span>
+            <span class="city-tag">🎨 MONA museum</span>
+            <span class="city-tag">🏠 Cheapest capital</span>
+          </div>
+        </div>
+        <div class="city-footer">
+          <a href="#" class="city-footer-link" data-en="Explore Hobart →" data-es="Explorar Hobart →">Explore Hobart →</a>
+          <span class="city-visa-compat" data-en="✓ Regional visa bonus" data-es="✓ Bono visa regional">✓ Regional visa bonus</span>
+        </div>
+      </div>
+
+    </div><!-- /city-grid -->
+
+    <!-- CTA BOTTOM -->
+    <div class="cta-bottom fade-up">
+      <div class="cta-bottom-title" data-en="Found your city?" data-es="¿Encontraste tu ciudad?">Found your city?</div>
+      <p class="cta-bottom-sub" data-en="Now explore schools, universities, employers and opportunities in your chosen city." data-es="Ahora explora escuelas, universidades, empleadores y oportunidades en tu ciudad elegida.">Now explore schools, universities, employers and opportunities in your chosen city.</p>
+      <button class="btn-cta-bottom" onclick="alert('Paso 5 — Opciones disponibles próximamente / Step 5 coming next!')">
+        <span data-en="→ Explore opportunities" data-es="→ Explorar oportunidades">→ Explore opportunities</span>
+      </button>
+    </div>
+
+  </div><!-- /page-body -->
+
+  <script>
+    let currentLang = 'en';
+    let activeFilters = new Set(['beach']);
+
+    // ── LANG ──
+    function setLang(lang) {
+      currentLang = lang;
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent === lang.toUpperCase()));
+      document.querySelectorAll('[data-en]').forEach(el => {
+        const t = el.getAttribute('data-' + lang);
+        if (t) el.innerHTML = t;
+      });
+    }
+
+    // ── FILTERS ──
+    function toggleFilter(pill, filter) {
+      if (filter === 'all') { clearFilters(); return; }
+      pill.classList.toggle('active');
+      if (activeFilters.has(filter)) activeFilters.delete(filter);
+      else activeFilters.add(filter);
+      applyFilters();
+    }
+
+    function clearFilters() {
+      activeFilters.clear();
+      document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const cards = document.querySelectorAll('.city-card');
+      let visible = 0;
+      cards.forEach(card => {
+        if (activeFilters.size === 0) {
+          card.classList.remove('hidden'); visible++;
+        } else {
+          const tags = (card.dataset.tags || '').split(',');
+          const matches = [...activeFilters].every(f => tags.includes(f));
+          card.classList.toggle('hidden', !matches);
+          if (matches) visible++;
+        }
+      });
+      document.getElementById('cityCount').textContent = visible;
+      document.getElementById('emptyState').classList.toggle('visible', visible === 0);
+    }
+
+    // ── SORT ──
+    function sortCities(mode) {
+      const grid = document.getElementById('cityGrid');
+      const cards = [...grid.querySelectorAll('.city-card')];
+      cards.sort((a, b) => {
+        if (mode === 'match')  return parseInt(b.dataset.match) - parseInt(a.dataset.match);
+        if (mode === 'cost')   return costRank(a.dataset.cost) - costRank(b.dataset.cost);
+        if (mode === 'jobs')   return parseInt(b.dataset.jobs) - parseInt(a.dataset.jobs);
+        return 0;
+      });
+      cards.forEach(c => grid.appendChild(c));
+    }
+
+    function costRank(c) { return c === 'low' ? 0 : c === 'medium' ? 1 : 2; }
+
+    // ── ANIMATIONS ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+            entry.target.querySelectorAll('.city-match-fill').forEach(bar => {
+              bar.style.width = bar.dataset.pct + '%';
+            });
+          }, i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // ── INIT ──
+    applyFilters();
+  </script>
+
+</body>
+</html>
