@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Migro — Visa 485 Graduate Temporary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --black:#0f0f0f;--white:#ffffff;
+  --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-300:#d1d5db;
+  --gray-500:#6b7280;--gray-600:#4b5563;--gray-700:#374151;--gray-800:#1f2937;
+  --green:#16a34a;--green-bg:#f0fdf4;--green-border:#bbf7d0;
+  --amber:#d97706;--amber-bg:#fffbeb;--amber-border:#fde68a;
+  --red:#dc2626;--red-bg:#fef2f2;--red-border:#fecaca;
+  --blue:#2563eb;--blue-bg:#eff6ff;--blue-border:#bfdbfe;
+  --purple:#7c3aed;--purple-bg:#f5f3ff;--purple-border:#ddd6fe;
+  --teal:#0d9488;--teal-bg:#f0fdfa;--teal-border:#99f6e4;
+  --orange:#ea580c;--orange-bg:#fff7ed;--orange-border:#fed7aa;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:var(--gray-800);background:var(--gray-50);line-height:1.6}
+a{color:inherit;text-decoration:none}
+.nav{background:var(--white);border-bottom:1px solid var(--gray-200);position:sticky;top:0;z-index:100;padding:0 1.5rem}
+.nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+.nav-brand{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--black)}
+.nav-links{display:flex;align-items:center;gap:1.25rem}
+.nav-links a{font-size:.85rem;font-weight:500;color:var(--gray-600);transition:color .2s}
+.nav-links a:hover{color:var(--black)}
+.lang-btn{background:var(--gray-100);border:none;border-radius:6px;padding:.3rem .75rem;font-size:.8rem;font-weight:600;cursor:pointer;color:var(--gray-700)}
+.hero{background:linear-gradient(135deg,#eff6ff 0%,#bfdbfe 100%);padding:3rem 1.5rem 2.5rem}
+.hero-inner{max-width:1100px;margin:0 auto}
+.hero-tag{display:inline-block;background:var(--blue);color:#fff;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .75rem;border-radius:999px;margin-bottom:1rem}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;color:var(--black);max-width:700px;line-height:1.2;margin-bottom:.75rem}
+.hero p{color:var(--gray-600);font-size:1rem;max-width:600px}
+.breadcrumb{display:flex;align-items:center;gap:.5rem;margin-bottom:1.5rem;font-size:.8rem;color:var(--gray-500)}
+.breadcrumb a{color:var(--blue);font-weight:500}
+.container{max-width:1100px;margin:0 auto;padding:3rem 1.5rem}
+.section-title{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--black);margin-bottom:1.5rem}
+.section{margin-bottom:3rem}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
+.card{background:var(--white);border:1px solid var(--gray-200);border-radius:12px;padding:1.25rem}
+.card-icon{font-size:1.6rem;margin-bottom:.6rem}
+.card-label{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gray-500);margin-bottom:.3rem}
+.card-value{font-size:1rem;font-weight:600;color:var(--black)}
+.card-sub{font-size:.8rem;color:var(--gray-500);margin-top:.25rem}
+.stream-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem}
+.stream-card{background:var(--white);border:2px solid var(--gray-200);border-radius:14px;padding:1.5rem}
+.stream-card.highlight{border-color:var(--blue)}
+.stream-name{font-size:1.05rem;font-weight:700;color:var(--black);margin-bottom:.3rem}
+.stream-sub{font-size:.8rem;color:var(--gray-500);margin-bottom:1rem}
+.stream-row{display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;border-bottom:1px solid var(--gray-100);font-size:.85rem}
+.stream-row:last-child{border-bottom:none}
+.stream-row .label{color:var(--gray-600)}
+.stream-row .val{font-weight:600;color:var(--black)}
+.badge{display:inline-block;font-size:.68rem;font-weight:700;padding:.2rem .55rem;border-radius:999px}
+.badge-green{background:var(--green-bg);color:var(--green)}
+.badge-amber{background:var(--amber-bg);color:var(--amber)}
+.badge-blue{background:var(--blue-bg);color:var(--blue)}
+.badge-red{background:var(--red-bg);color:var(--red)}
+.steps{display:flex;flex-direction:column;gap:0}
+.step{display:grid;grid-template-columns:48px 1fr;gap:1rem;position:relative}
+.step:not(:last-child)::after{content:'';position:absolute;left:23px;top:48px;width:2px;height:calc(100% - 24px);background:var(--gray-200)}
+.step-num{width:48px;height:48px;border-radius:50%;background:var(--blue-bg);border:2px solid var(--blue);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.95rem;color:var(--blue);flex-shrink:0;z-index:1}
+.step-body{padding-bottom:1.75rem}
+.step-title{font-weight:700;font-size:.95rem;color:var(--black);margin-bottom:.3rem}
+.step-desc{font-size:.85rem;color:var(--gray-600);line-height:1.6}
+.callout{border-radius:12px;padding:1.25rem 1.5rem;display:flex;gap:1rem;align-items:flex-start;margin-bottom:1.5rem}
+.callout-green{background:var(--green-bg);border:1px solid var(--green-border)}
+.callout-amber{background:var(--amber-bg);border:1px solid var(--amber-border)}
+.callout-blue{background:var(--blue-bg);border:1px solid var(--blue-border)}
+.callout-red{background:var(--red-bg);border:1px solid var(--red-border)}
+.callout-icon{font-size:1.25rem;flex-shrink:0;margin-top:.05rem}
+.callout-body h4{font-size:.9rem;font-weight:700;color:var(--black);margin-bottom:.3rem}
+.callout-body p{font-size:.82rem;color:var(--gray-700);line-height:1.5}
+/* TIMELINE VISUAL */
+.timeline{display:flex;gap:0;margin:1rem 0 2rem}
+.tl-item{flex:1;text-align:center;position:relative}
+.tl-item:not(:last-child)::after{content:'';position:absolute;top:18px;left:50%;width:100%;height:2px;background:var(--gray-200);z-index:0}
+.tl-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .5rem;font-size:.85rem;font-weight:700;position:relative;z-index:1}
+.tl-dot-blue{background:var(--blue-bg);border:2px solid var(--blue);color:var(--blue)}
+.tl-dot-green{background:var(--green-bg);border:2px solid var(--green);color:var(--green)}
+.tl-dot-amber{background:var(--amber-bg);border:2px solid var(--amber);color:var(--amber)}
+.tl-dot-gray{background:var(--gray-100);border:2px solid var(--gray-300);color:var(--gray-500)}
+.tl-label{font-size:.72rem;font-weight:600;color:var(--black);margin-bottom:.2rem}
+.tl-sub{font-size:.68rem;color:var(--gray-500)}
+/* ELIGIBILITY CHECKER */
+.checker-card{background:var(--white);border:1px solid var(--gray-200);border-radius:14px;padding:1.75rem}
+.form-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;margin-bottom:1.25rem}
+.form-group{display:flex;flex-direction:column;gap:.4rem}
+.form-group label{font-size:.8rem;font-weight:600;color:var(--gray-700)}
+.form-group select,.form-group input{padding:.5rem .75rem;border:1px solid var(--gray-300);border-radius:8px;font-size:.85rem;color:var(--gray-800);background:var(--white)}
+.check-btn{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:.6rem 1.5rem;font-size:.85rem;font-weight:600;cursor:pointer;transition:background .2s}
+.check-btn:hover{background:#1d4ed8}
+.result-panel{margin-top:1.25rem;border-radius:10px;padding:1.25rem;display:none}
+.result-panel.show{display:block}
+.result-green{background:var(--green-bg);border:1px solid var(--green-border)}
+.result-amber{background:var(--amber-bg);border:1px solid var(--amber-border)}
+.result-red{background:var(--red-bg);border:1px solid var(--red-border)}
+.result-title{font-size:1rem;font-weight:700;margin-bottom:.4rem}
+.result-detail{font-size:.83rem;color:var(--gray-700);line-height:1.6}
+/* AFTER 485 PATHS */
+.path-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem}
+.path-card{background:var(--white);border:1px solid var(--gray-200);border-radius:12px;padding:1.25rem;border-left:4px solid var(--blue)}
+.path-title{font-weight:700;font-size:.9rem;color:var(--black);margin-bottom:.4rem}
+.path-desc{font-size:.8rem;color:var(--gray-600);line-height:1.5}
+.path-link{font-size:.78rem;color:var(--blue);font-weight:500;margin-top:.5rem;display:block}
+/* TIPS / ACCORDION */
+.tips-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.9rem}
+.tip{background:var(--white);border:1px solid var(--gray-200);border-radius:10px;padding:1rem 1.1rem;display:flex;gap:.75rem}
+.tip-icon{font-size:1.1rem;flex-shrink:0}
+.tip-text{font-size:.83rem;color:var(--gray-700);line-height:1.5}
+.tip-text strong{color:var(--black);display:block;margin-bottom:.15rem}
+.accordion{display:flex;flex-direction:column;gap:.5rem}
+.acc-item{background:var(--white);border:1px solid var(--gray-200);border-radius:10px;overflow:hidden}
+.acc-trigger{width:100%;display:flex;justify-content:space-between;align-items:center;padding:1rem 1.25rem;background:none;border:none;cursor:pointer;font-size:.9rem;font-weight:600;color:var(--black);text-align:left;gap:1rem}
+.acc-trigger:hover{background:var(--gray-50)}
+.acc-chevron{font-size:1rem;transition:transform .3s;flex-shrink:0}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1)}
+.acc-body.open{max-height:800px}
+.acc-content{padding:0 1.25rem 1rem;font-size:.85rem;color:var(--gray-600);line-height:1.7}
+.compare-table{width:100%;border-collapse:collapse;background:var(--white);border-radius:12px;overflow:hidden;border:1px solid var(--gray-200)}
+.compare-table th{background:var(--gray-100);padding:.75rem 1rem;text-align:left;font-size:.78rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--gray-600);border-bottom:1px solid var(--gray-200)}
+.compare-table td{padding:.75rem 1rem;font-size:.85rem;color:var(--gray-700);border-bottom:1px solid var(--gray-100)}
+.compare-table tr:last-child td{border-bottom:none}
+.compare-table tr:hover td{background:var(--gray-50)}
+.resources-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.9rem}
+.resource-card{background:var(--white);border:1px solid var(--gray-200);border-radius:10px;padding:1rem;display:flex;flex-direction:column;gap:.35rem;transition:border-color .2s}
+.resource-card:hover{border-color:var(--blue)}
+.resource-card .res-title{font-size:.85rem;font-weight:600;color:var(--black)}
+.resource-card .res-sub{font-size:.75rem;color:var(--gray-500)}
+.resource-card .res-link{font-size:.75rem;color:var(--blue);font-weight:500;margin-top:auto}
+.fade-up{opacity:0;transform:translateY(24px);transition:opacity .55s ease,transform .55s ease}
+.fade-up.visible{opacity:1;transform:none}
+@media(max-width:640px){.stream-grid,.card-grid,.form-row,.tips-grid,.resources-grid,.path-grid{grid-template-columns:1fr}.timeline{flex-direction:column;gap:.5rem}.tl-item::after{display:none}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="migro-dashboard.html" class="nav-brand">Migro</a>
+    <div class="nav-links">
+      <a href="migro-dashboard.html" data-en="Dashboard" data-es="Inicio">Dashboard</a>
+      <a href="migro-roadmap.html" data-en="Roadmap" data-es="Hoja de ruta">Roadmap</a>
+      <a href="migro-costs.html" data-en="Costs" data-es="Costos">Costs</a>
+      <button class="lang-btn" onclick="toggleLang()">ES</button>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb">
+      <a href="migro-dashboard.html">Migro</a>
+      <span>›</span>
+      <span>Visa 485</span>
+    </div>
+    <div class="hero-tag" data-en="Post-Study Temporary" data-es="Temporal Post-Estudios">Post-Study Temporary</div>
+    <h1 data-en="Subclass 485 — Graduate Temporary Visa" data-es="Subclase 485 — Visa Temporal de Graduado">Subclass 485 — Graduate Temporary Visa</h1>
+    <p data-en="Work and live in Australia after graduating from an Australian institution. A critical bridge between your studies and permanent residence." data-es="Trabaja y vive en Australia después de graduarte de una institución australiana. Un puente fundamental entre tus estudios y la residencia permanente.">Work and live in Australia after graduating from an Australian institution. A critical bridge between your studies and permanent residence.</p>
+  </div>
+</section>
+
+<div class="container">
+
+  <!-- KEY FACTS -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Key facts at a glance" data-es="Datos clave de un vistazo">Key facts at a glance</h2>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">🎓</div>
+        <div class="card-label" data-en="Visa type" data-es="Tipo de visa">Visa type</div>
+        <div class="card-value" data-en="Temporary — post-study" data-es="Temporal — post-estudio">Temporary — post-study</div>
+        <div class="card-sub" data-en="No permanent residence directly" data-es="Sin residencia permanente directa">No permanent residence directly</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📍</div>
+        <div class="card-label" data-en="Where to apply" data-es="Dónde aplicar">Where to apply</div>
+        <div class="card-value" data-en="Onshore only" data-es="Solo dentro de Australia">Onshore only</div>
+        <div class="card-sub" data-en="Must be in Australia at time of application" data-es="Debes estar en Australia al aplicar">Must be in Australia at time of application</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">💰</div>
+        <div class="card-label" data-en="VAC (primary)" data-es="Cargo visa (principal)">VAC (primary)</div>
+        <div class="card-value">$1,895</div>
+        <div class="card-sub" data-en="2025–26 financial year" data-es="Año financiero 2025–26">2025–26 financial year</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🌏</div>
+        <div class="card-label" data-en="Work rights" data-es="Derechos laborales">Work rights</div>
+        <div class="card-value" data-en="Unlimited" data-es="Ilimitados">Unlimited</div>
+        <div class="card-sub" data-en="Any employer, any occupation" data-es="Cualquier empleador, cualquier ocupación">Any employer, any occupation</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">⏱️</div>
+        <div class="card-label" data-en="Processing time" data-es="Tiempo de procesamiento">Processing time</div>
+        <div class="card-value" data-en="2–6 months" data-es="2–6 meses">2–6 months</div>
+        <div class="card-sub" data-en="Typically faster than other visas" data-es="Generalmente más rápido que otras visas">Typically faster than other visas</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📅</div>
+        <div class="card-label" data-en="Apply deadline" data-es="Plazo de solicitud">Apply deadline</div>
+        <div class="card-value" data-en="Within 6 months" data-es="Dentro de 6 meses">Within 6 months</div>
+        <div class="card-sub" data-en="Of course completion (not graduation ceremony)" data-es="De la finalización del curso (no la ceremonia)">Of course completion (not graduation ceremony)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 STREAMS -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="The 2 streams" data-es="Las 2 corrientes">The 2 streams</h2>
+    <div class="stream-grid">
+      <div class="stream-card highlight">
+        <div class="stream-name" data-en="Graduate Work Stream" data-es="Corriente de Trabajo de Graduado">Graduate Work Stream</div>
+        <div class="stream-sub" data-en="Occupation-linked stream" data-es="Corriente vinculada a ocupación">Occupation-linked stream</div>
+        <div class="stream-row"><span class="label" data-en="Duration" data-es="Duración">Duration</span><span class="val" data-en="18 months" data-es="18 meses">18 months</span></div>
+        <div class="stream-row"><span class="label" data-en="Study level" data-es="Nivel de estudio">Study level</span><span class="val" data-en="Any CRICOS degree" data-es="Cualquier título CRICOS">Any CRICOS degree</span></div>
+        <div class="stream-row"><span class="label" data-en="Occupation list" data-es="Lista de ocupaciones">Occupation list</span><span class="val">MLTSSL</span></div>
+        <div class="stream-row"><span class="label" data-en="Skills assessment" data-es="Eval. habilidades">Skills assessment</span><span class="val" data-en="Required" data-es="Requerida">Required</span></div>
+        <div class="stream-row"><span class="label" data-en="Best for" data-es="Mejor para">Best for</span><span class="val" data-en="MLTSSL occupation grads" data-es="Graduados ocupación MLTSSL">MLTSSL occupation grads</span></div>
+      </div>
+      <div class="stream-card">
+        <div class="stream-name" data-en="Post-Study Work Stream" data-es="Corriente de Trabajo Post-Estudios">Post-Study Work Stream</div>
+        <div class="stream-sub" data-en="Degree-level stream, no occupation restriction" data-es="Corriente por nivel de título, sin restricción de ocupación">Degree-level stream, no occupation restriction</div>
+        <div class="stream-row"><span class="label" data-en="Duration" data-es="Duración">Duration</span><span class="val" data-en="2–4 years (see table)" data-es="2–4 años (ver tabla)">2–4 years (see table)</span></div>
+        <div class="stream-row"><span class="label" data-en="Degree level" data-es="Nivel de título">Degree level</span><span class="val" data-en="Bachelor or above" data-es="Licenciatura o superior">Bachelor or above</span></div>
+        <div class="stream-row"><span class="label" data-en="Study location" data-es="Lugar de estudios">Study location</span><span class="val" data-en="2 yrs in Australia" data-es="2 años en Australia">2 yrs in Australia</span></div>
+        <div class="stream-row"><span class="label" data-en="Skills assessment" data-es="Eval. habilidades">Skills assessment</span><span class="val" data-en="Not required" data-es="No requerida">Not required</span></div>
+        <div class="stream-row"><span class="label" data-en="Best for" data-es="Mejor para">Best for</span><span class="val" data-en="Non-MLTSSL grads" data-es="Graduados no MLTSSL">Non-MLTSSL grads</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- POST-STUDY WORK DURATION TABLE -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Post-Study Work stream duration" data-es="Duración corriente Trabajo Post-Estudios">Post-Study Work stream duration</h2>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th data-en="Qualification" data-es="Calificación">Qualification</th>
+          <th data-en="Duration" data-es="Duración">Duration</th>
+          <th data-en="Notes" data-es="Notas">Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td data-en="Bachelor degree" data-es="Licenciatura">Bachelor degree</td><td><strong data-en="2 years" data-es="2 años">2 years</strong></td><td data-en="Must have studied 2 yrs in Australia" data-es="Debe haber estudiado 2 años en Australia">Must have studied 2 yrs in Australia</td></tr>
+        <tr><td data-en="Bachelor (Honours)" data-es="Licenciatura (con honores)">Bachelor (Honours)</td><td><strong data-en="2 years" data-es="2 años">2 years</strong></td><td data-en="Separate honours year qualifies" data-es="Año de honores separado califica">Separate honours year qualifies</td></tr>
+        <tr><td data-en="Masters by coursework" data-es="Maestría por cursos">Masters by coursework</td><td><strong data-en="2 years" data-es="2 años">2 years</strong></td><td>—</td></tr>
+        <tr><td data-en="Masters by research" data-es="Maestría por investigación">Masters by research</td><td><strong data-en="3 years" data-es="3 años">3 years</strong></td><td data-en="Research component required" data-es="Componente de investigación requerido">Research component required</td></tr>
+        <tr><td data-en="Doctoral degree (PhD)" data-es="Doctorado (PhD)">Doctoral degree (PhD)</td><td><strong data-en="4 years" data-es="4 años">4 years</strong></td><td data-en="Longest duration available" data-es="La duración más larga disponible">Longest duration available</td></tr>
+        <tr><td data-en="Degree in regional Australia" data-es="Título en Australia regional">Degree in regional Australia</td><td><strong data-en="+1 year bonus" data-es="+1 año de bonificación">+1 year bonus</strong></td><td><span class="badge badge-green" data-en="Regional bonus" data-es="Bonificación regional">Regional bonus</span></td></tr>
+      </tbody>
+    </table>
+    <div class="callout callout-blue" style="margin-top:1rem">
+      <div class="callout-icon">ℹ️</div>
+      <div class="callout-body">
+        <h4 data-en="Regional study bonus" data-es="Bonificación por estudio regional">Regional study bonus</h4>
+        <p data-en="If your principal place of study was in a regional area of Australia (outside major cities), you may be entitled to an additional 1 year on your 485. Regional areas include most locations outside Sydney, Melbourne, Brisbane, Perth, and the Gold Coast." data-es="Si tu lugar principal de estudio fue en una área regional de Australia (fuera de las ciudades principales), puedes tener derecho a 1 año adicional en tu visa 485. Las áreas regionales incluyen la mayoría de los lugares fuera de Sídney, Melbourne, Brisbane, Perth y la Costa de Oro.">If your principal place of study was in a regional area of Australia (outside major cities), you may be entitled to an additional 1 year on your 485. Regional areas include most locations outside Sydney, Melbourne, Brisbane, Perth, and the Gold Coast.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ELIGIBILITY CHECKER -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Quick eligibility check" data-es="Verificación rápida de elegibilidad">Quick eligibility check</h2>
+    <div class="checker-card">
+      <div class="form-row">
+        <div class="form-group">
+          <label data-en="Qualification level" data-es="Nivel de calificación">Qualification level</label>
+          <select id="qualLevel" onchange="checkElig()">
+            <option value="" data-en="Select..." data-es="Selecciona...">Select...</option>
+            <option value="bachelor" data-en="Bachelor degree" data-es="Licenciatura">Bachelor degree</option>
+            <option value="masters_cw" data-en="Masters by coursework" data-es="Maestría por cursos">Masters by coursework</option>
+            <option value="masters_res" data-en="Masters by research" data-es="Maestría por investigación">Masters by research</option>
+            <option value="phd" data-en="Doctoral / PhD" data-es="Doctorado / PhD">Doctoral / PhD</option>
+            <option value="diploma" data-en="Diploma / Certificate" data-es="Diploma / Certificado">Diploma / Certificate</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label data-en="Study duration in Australia" data-es="Duración de estudios en Australia">Study duration in Australia</label>
+          <select id="studyYears" onchange="checkElig()">
+            <option value="" data-en="Select..." data-es="Selecciona...">Select...</option>
+            <option value="lt2" data-en="Less than 2 years" data-es="Menos de 2 años">Less than 2 years</option>
+            <option value="2plus" data-en="2 or more years" data-es="2 años o más">2 or more years</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label data-en="Study location" data-es="Lugar de estudios">Study location</label>
+          <select id="studyLoc" onchange="checkElig()">
+            <option value="" data-en="Select..." data-es="Selecciona...">Select...</option>
+            <option value="metro" data-en="Major city (metro)" data-es="Ciudad principal (metro)">Major city (metro)</option>
+            <option value="regional" data-en="Regional area" data-es="Área regional">Regional area</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label data-en="MLTSSL occupation?" data-es="¿Ocupación en MLTSSL?">MLTSSL occupation?</label>
+          <select id="isMltssl" onchange="checkElig()">
+            <option value="" data-en="Select..." data-es="Selecciona...">Select...</option>
+            <option value="yes" data-en="Yes" data-es="Sí">Yes</option>
+            <option value="no" data-en="No / Not sure" data-es="No / No estoy seguro">No / Not sure</option>
+          </select>
+        </div>
+      </div>
+      <div id="eligResult" class="result-panel"></div>
+    </div>
+  </section>
+
+  <!-- APPLICATION STEPS -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="How to apply" data-es="Cómo aplicar">How to apply</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title" data-en="Confirm your course completion date" data-es="Confirma tu fecha de finalización del curso">Confirm your course completion date</div>
+          <div class="step-desc" data-en="Your course completion date is the date all requirements were met (last exam, final submission) — not your graduation ceremony. You have 6 months from this date to lodge. Request your official course completion letter from your institution." data-es="La fecha de finalización del curso es cuando se cumplieron todos los requisitos (último examen, entrega final), no la ceremonia de graduación. Tienes 6 meses desde esta fecha para presentar la solicitud. Pide tu carta oficial de finalización a tu institución.">Your course completion date is the date all requirements were met (last exam, final submission) — not your graduation ceremony. You have 6 months from this date to lodge. Request your official course completion letter from your institution.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title" data-en="Gather documents" data-es="Reunir documentos">Gather documents</div>
+          <div class="step-desc" data-en="You'll need: passport, course completion letter from institution, academic transcripts, English test results (if required), health insurance details (OSHC or equivalent), and skills assessment (if Graduate Work stream)." data-es="Necesitarás: pasaporte, carta de finalización del curso de la institución, expediente académico, resultados de inglés (si aplica), detalles de seguro de salud (OSHC o equivalente) y evaluación de habilidades (si aplicas por la corriente Graduate Work).">You'll need: passport, course completion letter from institution, academic transcripts, English test results (if required), health insurance details (OSHC or equivalent), and skills assessment (if Graduate Work stream).</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title" data-en="Lodge on ImmiAccount" data-es="Presentar en ImmiAccount">Lodge on ImmiAccount</div>
+          <div class="step-desc" data-en="Create or log in to your ImmiAccount and select 'Apply for a visa'. Choose subclass 485. Complete all forms and upload documents. Pay the visa application charge ($1,895 for primary applicant)." data-es="Crea o inicia sesión en ImmiAccount y selecciona 'Solicitar visa'. Elige la subclase 485. Completa todos los formularios y sube los documentos. Paga el cargo de solicitud de visa ($1,895 para el solicitante principal).">Create or log in to your ImmiAccount and select 'Apply for a visa'. Choose subclass 485. Complete all forms and upload documents. Pay the visa application charge ($1,895 for primary applicant).</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title" data-en="Complete health examination" data-es="Completar examen médico">Complete health examination</div>
+          <div class="step-desc" data-en="Book a health examination with an approved panel physician. You'll receive an HAP (Health Assessment Portal) ID after lodging your visa. Health exams cost $300–$500 per person." data-es="Reserva un examen médico con un médico panel aprobado. Recibirás un ID HAP (Portal de Evaluación de Salud) al presentar tu visa. Los exámenes de salud cuestan $300–$500 por persona.">Book a health examination with an approved panel physician. You'll receive an HAP (Health Assessment Portal) ID after lodging your visa. Health exams cost $300–$500 per person.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title" data-en="Await decision" data-es="Esperar decisión">Await decision</div>
+          <div class="step-desc" data-en="Processing is typically 2–6 months. You'll receive a Bridging Visa A while waiting if your student visa is about to expire. Once granted, you can travel in and out of Australia freely." data-es="El procesamiento es típicamente de 2–6 meses. Recibirás una Visa Puente A mientras esperas si tu visa de estudiante está por vencer. Una vez otorgada, puedes viajar dentro y fuera de Australia libremente.">Processing is typically 2–6 months. You'll receive a Bridging Visa A while waiting if your student visa is about to expire. Once granted, you can travel in and out of Australia freely.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AFTER 485 -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="What to do on your 485" data-es="Qué hacer con tu visa 485">What to do on your 485</h2>
+    <div class="path-grid">
+      <div class="path-card">
+        <div class="path-title">📋 <span data-en="Build your points score" data-es="Construye tu puntaje">Build your points score</span></div>
+        <div class="path-desc" data-en="Every year of skilled employment in Australia adds 5 points (up to 10 points for regional). Use your 485 time to accumulate experience, improve English, and hit invitation-worthy scores." data-es="Cada año de empleo calificado en Australia agrega 5 puntos (hasta 10 en regional). Usa tu tiempo en la 485 para acumular experiencia, mejorar inglés y alcanzar puntajes que reciban invitación.">Every year of skilled employment in Australia adds 5 points (up to 10 points for regional). Use your 485 time to accumulate experience, improve English, and hit invitation-worthy scores.</div>
+        <a href="migro-eoi.html" class="path-link" data-en="See EOI guide →" data-es="Ver guía EOI →">See EOI guide →</a>
+      </div>
+      <div class="path-card" style="border-left-color:var(--green)">
+        <div class="path-title">🏢 <span data-en="Find an employer sponsor" data-es="Encuentra empleador patrocinador">Find an employer sponsor</span></div>
+        <div class="path-desc" data-en="Australian work experience makes you more attractive for employer sponsorship (482 → 186). Many graduates find their sponsoring employer while on their 485." data-es="La experiencia laboral australiana te hace más atractivo para el patrocinio de empleador (482 → 186). Muchos graduados encuentran su empleador patrocinador mientras tienen la visa 485.">Australian work experience makes you more attractive for employer sponsorship (482 → 186). Many graduates find their sponsoring employer while on their 485.</div>
+        <a href="migro-482.html" class="path-link" data-en="See 482 guide →" data-es="Ver guía 482 →">See 482 guide →</a>
+      </div>
+      <div class="path-card" style="border-left-color:var(--purple)">
+        <div class="path-title">🗺️ <span data-en="Consider regional pathways" data-es="Considera vías regionales">Consider regional pathways</span></div>
+        <div class="path-desc" data-en="Working regionally while on your 485 gives you extra points AND can be a fast track to PR via the 491 visa, which offers 15 extra points and eventually the 191 PR visa." data-es="Trabajar en área regional con la visa 485 te da puntos extra Y puede ser una vía rápida a la PR mediante la visa 491, que ofrece 15 puntos adicionales y eventualmente la visa 191 de PR.">Working regionally while on your 485 gives you extra points AND can be a fast track to PR via the 491 visa, which offers 15 extra points and eventually the 191 PR visa.</div>
+        <a href="migro-491-191.html" class="path-link" data-en="See 491→191 guide →" data-es="Ver guía 491→191 →">See 491→191 guide →</a>
+      </div>
+      <div class="path-card" style="border-left-color:var(--amber)">
+        <div class="path-title">🎓 <span data-en="Further study" data-es="Estudios adicionales">Further study</span></div>
+        <div class="path-desc" data-en="Completing a higher degree (e.g. Masters after Bachelor) while on your 485 may qualify you for a new 485 with a longer duration, or directly improve your visa pathway options." data-es="Completar un título superior (ej. maestría tras licenciatura) mientras tienes la visa 485 puede calificarte para una nueva 485 con mayor duración, o mejorar directamente tus opciones de vía de visa.">Completing a higher degree (e.g. Masters after Bachelor) while on your 485 may qualify you for a new 485 with a longer duration, or directly improve your visa pathway options.</div>
+        <a href="migro-500.html" class="path-link" data-en="See student visa guide →" data-es="Ver guía visa estudiante →">See student visa guide →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CALLOUT: English -->
+  <section class="section fade-up">
+    <div class="callout callout-amber">
+      <div class="callout-icon">📝</div>
+      <div class="callout-body">
+        <h4 data-en="English test — are you exempt?" data-es="Prueba de inglés — ¿estás exento?">English test — are you exempt?</h4>
+        <p data-en="You may be exempt from the English test requirement if you hold a passport from the UK, USA, Canada, New Zealand, or Ireland. You may also be exempt if you completed at least 5 years of study (primary or secondary) in English in one of these countries. Otherwise, you'll need IELTS 6.0 in each band, PTE 50 in each component, or equivalent." data-es="Puedes estar exento del requisito de prueba de inglés si tienes pasaporte del RU, EE.UU., Canadá, Nueva Zelanda o Irlanda. También puedes estar exento si completaste al menos 5 años de estudio (primario o secundario) en inglés en uno de estos países. De lo contrario, necesitarás IELTS 6.0 en cada banda, PTE 50 en cada componente o equivalente.">You may be exempt from the English test requirement if you hold a passport from the UK, USA, Canada, New Zealand, or Ireland. You may also be exempt if you completed at least 5 years of study (primary or secondary) in English in one of these countries. Otherwise, you'll need IELTS 6.0 in each band, PTE 50 in each component, or equivalent.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIPS -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Strategy tips" data-es="Consejos estratégicos">Strategy tips</h2>
+    <div class="tips-grid">
+      <div class="tip">
+        <div class="tip-icon">⏰</div>
+        <div class="tip-text"><strong data-en="Apply as soon as possible" data-es="Aplica lo antes posible">Apply as soon as possible</strong><span data-en="The 6-month window to apply runs from course completion, not graduation. Apply early to get your Bridging Visa and stay lawful if your student visa is expiring." data-es="La ventana de 6 meses comienza en la finalización del curso, no en la graduación. Aplica temprano para obtener tu Visa Puente y permanecer legal si tu visa de estudiante está por vencer.">The 6-month window to apply runs from course completion, not graduation. Apply early to get your Bridging Visa and stay lawful if your student visa is expiring.</span></div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">📍</div>
+        <div class="tip-text"><strong data-en="Study in a regional area for the extra year" data-es="Estudia en área regional para el año extra">Study in a regional area for the extra year</strong><span data-en="If you're choosing where to study, picking a regional institution can give you an extra year on your 485 AND regional study bonus points for the points test." data-es="Si estás eligiendo dónde estudiar, una institución regional puede darte un año extra en tu visa 485 Y puntos de bonificación por estudio regional en la prueba de puntos.">If you're choosing where to study, picking a regional institution can give you an extra year on your 485 AND regional study bonus points for the points test.</span></div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">📋</div>
+        <div class="tip-text"><strong data-en="Get the right stream" data-es="Elige la corriente correcta">Get the right stream</strong><span data-en="Graduate Work stream gives only 18 months but doesn't require 2 years of study. Post-Study Work is longer but requires at least a Bachelor degree and 2 years study in Australia." data-es="La corriente Graduate Work da solo 18 meses pero no requiere 2 años de estudio. Post-Study Work es más larga pero requiere al menos licenciatura y 2 años de estudio en Australia.">Graduate Work stream gives only 18 months but doesn't require 2 years of study. Post-Study Work is longer but requires at least a Bachelor degree and 2 years study in Australia.</span></div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">💼</div>
+        <div class="tip-text"><strong data-en="Get skilled work in your field" data-es="Consigue trabajo calificado en tu área">Get skilled work in your field</strong><span data-en="Australian work experience is worth 5–10 points in the points test. Even 1 year of skilled work post-485 significantly boosts your EOI competitiveness." data-es="La experiencia laboral australiana vale 5–10 puntos en la prueba de puntos. Incluso 1 año de trabajo calificado post-485 aumenta significativamente tu competitividad en el EOI.">Australian work experience is worth 5–10 points in the points test. Even 1 year of skilled work post-485 significantly boosts your EOI competitiveness.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Frequently asked questions" data-es="Preguntas frecuentes">Frequently asked questions</h2>
+    <div class="accordion">
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span data-en="Can I apply for a second 485 visa?" data-es="¿Puedo solicitar una segunda visa 485?">Can I apply for a second 485 visa?</span>
+          <span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content" data-en="In most cases, you can only hold one subclass 485 visa in your lifetime. However, if you completed a new, higher qualification after your first 485 was granted, you may be eligible for a second 485 under specific circumstances. This is a complex area — consult a migration agent." data-es="En la mayoría de los casos, solo puedes tener una visa subclase 485 en tu vida. Sin embargo, si completaste una calificación nueva y de mayor nivel después de que se otorgó tu primera visa 485, puedes ser elegible para una segunda 485 bajo circunstancias específicas. Esta es un área compleja — consulta con un agente de migración.">In most cases, you can only hold one subclass 485 visa in your lifetime. However, if you completed a new, higher qualification after your first 485 was granted, you may be eligible for a second 485 under specific circumstances. This is a complex area — consult a migration agent.</div>
+        </div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span data-en="Can my partner work on the 485?" data-es="¿Puede mi pareja trabajar con la visa 485?">Can my partner work on the 485?</span>
+          <span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content" data-en="Yes. Your partner and dependent children can be included in your 485 application. Partners are granted unlimited work rights on the 485. Children can study and receive Medicare if you are eligible for Medicare." data-es="Sí. Tu pareja e hijos dependientes pueden ser incluidos en tu solicitud de visa 485. Las parejas tienen derechos laborales ilimitados con la visa 485. Los hijos pueden estudiar y recibir Medicare si tú eres elegible para Medicare.">Yes. Your partner and dependent children can be included in your 485 application. Partners are granted unlimited work rights on the 485. Children can study and receive Medicare if you are eligible for Medicare.</div>
+        </div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span data-en="Does a vocational diploma qualify for the 485?" data-es="¿Un diploma vocacional califica para la visa 485?">Does a vocational diploma qualify for the 485?</span>
+          <span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content" data-en="VET qualifications (diplomas, certificates) completed at an Australian CRICOS provider can qualify for the Graduate Work stream (18 months) if your occupation is on the MLTSSL. However, they do NOT qualify for the Post-Study Work stream, which requires at least a bachelor degree." data-es="Las calificaciones VET (diplomas, certificados) completadas en un proveedor CRICOS australiano pueden calificar para la corriente Graduate Work (18 meses) si tu ocupación está en el MLTSSL. Sin embargo, NO califican para la corriente Post-Study Work, que requiere al menos una licenciatura.">VET qualifications (diplomas, certificates) completed at an Australian CRICOS provider can qualify for the Graduate Work stream (18 months) if your occupation is on the MLTSSL. However, they do NOT qualify for the Post-Study Work stream, which requires at least a bachelor degree.</div>
+        </div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span data-en="What if I was studying online from overseas during COVID?" data-es="¿Qué pasa si estudié en línea desde el exterior durante el COVID?">What if I was studying online from overseas during COVID?</span>
+          <span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content" data-en="The Department of Home Affairs made special provisions for students who were forced to study online from outside Australia during the pandemic. Time spent studying online from overseas during specified COVID periods may count towards the 2-year Australian study requirement. Check the current Home Affairs guidance as policies have evolved." data-es="El Departamento de Home Affairs hizo disposiciones especiales para estudiantes que se vieron obligados a estudiar en línea desde fuera de Australia durante la pandemia. El tiempo de estudio en línea desde el exterior durante los períodos COVID especificados puede contar para el requisito de 2 años de estudio en Australia. Verifica la guía actual de Home Affairs ya que las políticas han evolucionado.">The Department of Home Affairs made special provisions for students who were forced to study online from outside Australia during the pandemic. Time spent studying online from outside Australia during specified COVID periods may count towards the 2-year Australian study requirement. Check the current Home Affairs guidance as policies have evolved.</div>
+        </div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span data-en="Can I leave Australia while waiting for my 485?" data-es="¿Puedo salir de Australia mientras espero la visa 485?">Can I leave Australia while waiting for my 485?</span>
+          <span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content" data-en="While you hold a Bridging Visa A (BVA), you cannot leave Australia without a Bridging Visa B (BVB). If you need to travel, apply for a BVB before leaving. If you leave on a BVA without a BVB, your bridging visa will cease and you may not be able to return." data-es="Mientras tengas una Visa Puente A (BVA), no puedes salir de Australia sin una Visa Puente B (BVB). Si necesitas viajar, solicita una BVB antes de salir. Si sales con una BVA sin BVB, tu visa puente cesará y puede que no puedas regresar.">While you hold a Bridging Visa A (BVA), you cannot leave Australia without a Bridging Visa B (BVB). If you need to travel, apply for a BVB before leaving. If you leave on a BVA without a BVB, your bridging visa will cease and you may not be able to return.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESOURCES -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Official resources" data-es="Recursos oficiales">Official resources</h2>
+    <div class="resources-grid">
+      <a href="https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-graduate-485" target="_blank" class="resource-card">
+        <div class="res-title" data-en="Visa 485 — Home Affairs" data-es="Visa 485 — Home Affairs">Visa 485 — Home Affairs</div>
+        <div class="res-sub" data-en="Official eligibility and requirements" data-es="Elegibilidad y requisitos oficiales">Official eligibility and requirements</div>
+        <div class="res-link">immi.homeaffairs.gov.au ↗</div>
+      </a>
+      <a href="https://immi.homeaffairs.gov.au/help-support/announcements/post-study-work-rights-update" target="_blank" class="resource-card">
+        <div class="res-title" data-en="Post-study work rights update" data-es="Actualización derechos post-estudio">Post-study work rights update</div>
+        <div class="res-sub" data-en="Latest changes and durations" data-es="Últimos cambios y duraciones">Latest changes and durations</div>
+        <div class="res-link">immi.homeaffairs.gov.au ↗</div>
+      </a>
+      <a href="migro-eoi.html" class="resource-card">
+        <div class="res-title" data-en="EOI & SkillSelect guide" data-es="Guía EOI y SkillSelect">EOI & SkillSelect guide</div>
+        <div class="res-sub" data-en="Plan your PR pathway from the 485" data-es="Planea tu camino a la PR desde la 485">Plan your PR pathway from the 485</div>
+        <div class="res-link" data-en="Within Migro →" data-es="Dentro de Migro →">Within Migro →</div>
+      </a>
+      <a href="migro-491-191.html" class="resource-card">
+        <div class="res-title" data-en="Regional pathway (491→191)" data-es="Vía regional (491→191)">Regional pathway (491→191)</div>
+        <div class="res-sub" data-en="Often faster PR from the 485" data-es="A menudo PR más rápida desde la 485">Often faster PR from the 485</div>
+        <div class="res-link" data-en="Within Migro →" data-es="Dentro de Migro →">Within Migro →</div>
+      </a>
+    </div>
+  </section>
+
+</div>
+
+<script>
+let lang = 'en';
+function setLang(l){
+  lang = l;
+  document.querySelectorAll('[data-en]').forEach(el=>{
+    el.innerHTML = el.getAttribute('data-' + l);
+  });
+  document.querySelector('.lang-btn').textContent = l === 'en' ? 'ES' : 'EN';
+}
+function toggleLang(){ setLang(lang === 'en' ? 'es' : 'en'); }
+
+function checkElig(){
+  const qual = document.getElementById('qualLevel').value;
+  const years = document.getElementById('studyYears').value;
+  const loc = document.getElementById('studyLoc').value;
+  const mltssl = document.getElementById('isMltssl').value;
+  const panel = document.getElementById('eligResult');
+  if(!qual || !years || !loc || !mltssl){ panel.className='result-panel'; return; }
+
+  let stream = '', duration = '', note = '', cls = 'result-green';
+  const isGrad = ['bachelor','masters_cw','masters_res','phd'].includes(qual);
+  const isResearch = ['masters_res','phd'].includes(qual);
+
+  if(qual === 'diploma'){
+    if(mltssl === 'yes'){
+      stream = 'Graduate Work Stream'; duration = '18 months';
+      note = 'Your diploma qualifies only for the Graduate Work stream (18 months). No Post-Study Work stream available for diploma-level qualifications.';
+      cls = 'result-amber';
+    } else {
+      stream = 'Not eligible'; duration = '—';
+      note = 'A diploma without an MLTSSL occupation does not qualify for the 485. Consider if your occupation is actually on the MLTSSL, or pursue a bachelor degree.';
+      cls = 'result-red';
+    }
+  } else if(years === 'lt2'){
+    if(mltssl === 'yes'){
+      stream = 'Graduate Work Stream'; duration = '18 months';
+      note = 'With less than 2 years study in Australia, you can only apply for the Graduate Work stream (18 months). A skills assessment is required.';
+      cls = 'result-amber';
+    } else {
+      stream = 'Not eligible'; duration = '—';
+      note = 'Without 2 years of Australian study AND without an MLTSSL occupation, you do not qualify for the 485. You need at least 2 years of Australian study for the Post-Study Work stream.';
+      cls = 'result-red';
+    }
+  } else {
+    // 2+ years study, graduate level
+    let dur = qual === 'phd' ? 4 : isResearch ? 3 : 2;
+    if(loc === 'regional') dur += 1;
+    stream = 'Post-Study Work Stream';
+    duration = dur + ' year' + (dur > 1 ? 's' : '') + (loc === 'regional' ? ' (incl. +1 regional bonus)' : '');
+    note = 'You qualify for the Post-Study Work stream. No skills assessment required. You can work for any employer in any occupation.';
+    if(mltssl === 'yes') note += ' You may also qualify for the Graduate Work stream (18 months) but the Post-Study Work stream is longer.';
+    cls = 'result-green';
+  }
+
+  panel.className = 'result-panel show ' + cls;
+  panel.innerHTML = `<div class="result-title">Stream: ${stream} — ${duration}</div><div class="result-detail">${note}</div>`;
+}
+
+function toggleAcc(btn){
+  const body = btn.nextElementSibling;
+  const chevron = btn.querySelector('.acc-chevron');
+  const isOpen = body.classList.contains('open');
+  document.querySelectorAll('.acc-body.open').forEach(b=>{ b.classList.remove('open'); b.previousElementSibling.querySelector('.acc-chevron').style.transform=''; });
+  if(!isOpen){ body.classList.add('open'); chevron.style.transform='rotate(180deg)'; }
+}
+
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.08});
+document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>
