@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Migro — State Nomination Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black:#0a0a0a; --white:#ffffff;
+    --gray-50:#f9fafb; --gray-100:#f3f4f6; --gray-200:#e5e7eb;
+    --gray-300:#d1d5db; --gray-400:#9ca3af; --gray-500:#6b7280;
+    --gray-600:#4b5563; --gray-700:#374151; --gray-800:#1f2937;
+    --green:#16a34a;  --green-bg:#f0fdf4;  --green-border:#bbf7d0;
+    --amber:#d97706;  --amber-bg:#fffbeb;  --amber-border:#fde68a;
+    --red:#dc2626;    --red-bg:#fef2f2;    --red-border:#fecaca;
+    --blue:#2563eb;   --blue-bg:#eff6ff;   --blue-border:#bfdbfe;
+    --purple:#7c3aed; --purple-bg:#f5f3ff; --purple-border:#ddd6fe;
+    --teal:#0d9488;   --teal-bg:#f0fdfa;   --teal-border:#99f6e4;
+    --orange:#ea580c; --orange-bg:#fff7ed; --orange-border:#fed7aa;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; color: var(--gray-800); background: var(--gray-50); line-height: 1.6; }
+
+  /* NAV */
+  nav { position: sticky; top: 0; z-index: 100; background: var(--black); color: var(--white); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; height: 56px; }
+  .nav-brand { font-family: 'Playfair Display', serif; font-size: 1.3rem; letter-spacing: -0.5px; }
+  .nav-brand span { color: var(--amber); }
+  .nav-right { display: flex; align-items: center; gap: 16px; }
+  .nav-back { color: var(--gray-300); text-decoration: none; font-size: .85rem; display: flex; align-items: center; gap: 6px; transition: color .2s; }
+  .nav-back:hover { color: var(--white); }
+  .lang-btn { background: none; border: 1px solid var(--gray-600); color: var(--gray-300); padding: 4px 10px; border-radius: 4px; font-size: .78rem; cursor: pointer; transition: all .2s; font-family: inherit; }
+  .lang-btn:hover, .lang-btn.active { background: var(--white); color: var(--black); border-color: var(--white); }
+
+  /* HERO */
+  .hero { background: var(--black); color: var(--white); padding: 56px 24px 48px; text-align: center; }
+  .hero-tag { display: inline-block; background: var(--orange-bg); color: var(--orange); border: 1px solid var(--orange-border); padding: 4px 12px; border-radius: 20px; font-size: .78rem; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 16px; }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3rem); line-height: 1.15; margin-bottom: 16px; }
+  .hero h1 span { color: var(--amber); }
+  .hero p { color: var(--gray-300); font-size: 1.05rem; max-width: 600px; margin: 0 auto; }
+
+  /* LAYOUT */
+  .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+  .section { padding: 48px 0; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 8px; }
+  .section-sub { color: var(--gray-500); margin-bottom: 28px; font-size: .95rem; }
+
+  /* COMPARE CARDS */
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media(max-width:620px){ .compare-grid { grid-template-columns: 1fr; } }
+  .cmp-card { background: var(--white); border-radius: 12px; overflow: hidden; border: 2px solid var(--gray-200); }
+  .cmp-head { padding: 18px 20px; }
+  .cmp-head.v190 { background: var(--green-bg); border-bottom: 2px solid var(--green-border); }
+  .cmp-head.v491 { background: var(--purple-bg); border-bottom: 2px solid var(--purple-border); }
+  .cmp-visa { font-size: 1.5rem; font-weight: 700; font-family: 'Playfair Display', serif; }
+  .cmp-visa.v190 { color: var(--green); }
+  .cmp-visa.v491 { color: var(--purple); }
+  .cmp-name { font-size: .82rem; color: var(--gray-600); margin-top: 2px; }
+  .cmp-body { padding: 18px 20px; }
+  .cmp-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--gray-100); font-size: .875rem; }
+  .cmp-row:last-child { border-bottom: none; }
+  .cmp-label { color: var(--gray-500); font-size: .8rem; flex-shrink: 0; }
+  .cmp-val { font-weight: 500; text-align: right; color: var(--gray-800); }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: .72rem; font-weight: 600; }
+  .pill-green  { background: var(--green-bg);  color: var(--green); }
+  .pill-purple { background: var(--purple-bg); color: var(--purple); }
+  .pill-amber  { background: var(--amber-bg);  color: var(--amber); }
+  .pill-blue   { background: var(--blue-bg);   color: var(--blue); }
+  .pill-red    { background: var(--red-bg);     color: var(--red); }
+
+  /* FILTER BAR */
+  .filter-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+  .filter-btn { padding: 7px 16px; border-radius: 20px; border: 1px solid var(--gray-300); background: var(--white); font-family: inherit; font-size: .82rem; font-weight: 500; cursor: pointer; transition: all .2s; color: var(--gray-700); }
+  .filter-btn:hover { border-color: var(--gray-500); }
+  .filter-btn.active { background: var(--black); color: var(--white); border-color: var(--black); }
+
+  /* STATE CARDS GRID */
+  .states-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px; }
+  .state-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 12px; overflow: hidden; transition: box-shadow .2s, transform .2s; }
+  .state-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,.08); transform: translateY(-2px); }
+  .state-card.hidden { display: none; }
+  .state-head { padding: 16px 18px; border-bottom: 1px solid var(--gray-100); display: flex; align-items: center; gap: 12px; }
+  .state-flag { font-size: 1.6rem; }
+  .state-name { font-weight: 700; font-size: 1rem; }
+  .state-abbr { font-size: .78rem; color: var(--gray-400); font-weight: 500; }
+  .state-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+  .state-body { padding: 14px 18px; }
+  .state-row { display: flex; justify-content: space-between; align-items: baseline; padding: 5px 0; border-bottom: 1px dashed var(--gray-100); font-size: .84rem; }
+  .state-row:last-child { border: none; padding-bottom: 0; }
+  .state-row-lbl { color: var(--gray-500); }
+  .state-row-val { font-weight: 500; color: var(--gray-800); text-align: right; max-width: 60%; }
+  .state-status { display: flex; align-items: center; gap: 6px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--gray-100); font-size: .8rem; font-weight: 600; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .dot-green  { background: var(--green); }
+  .dot-amber  { background: var(--amber); }
+  .dot-red    { background: var(--red); }
+  .state-link { display: block; margin-top: 10px; text-align: center; padding: 8px; background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 7px; font-size: .8rem; font-weight: 600; color: var(--gray-700); text-decoration: none; transition: all .2s; }
+  .state-link:hover { background: var(--black); color: var(--white); border-color: var(--black); }
+  .no-results { display: none; text-align: center; padding: 40px 20px; color: var(--gray-400); font-size: .95rem; }
+  .no-results.show { display: block; }
+
+  /* KEY REQUIREMENTS */
+  .req-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+  .req-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; padding: 16px 18px; }
+  .req-icon { font-size: 1.3rem; margin-bottom: 8px; }
+  .req-title { font-weight: 600; font-size: .9rem; margin-bottom: 4px; }
+  .req-body { color: var(--gray-600); font-size: .84rem; line-height: 1.6; }
+
+  /* TIPS */
+  .tips-list { display: flex; flex-direction: column; gap: 12px; }
+  .tip { background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; padding: 16px 18px; display: flex; gap: 14px; align-items: flex-start; }
+  .tip-num { background: var(--black); color: var(--white); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .78rem; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+  .tip-title { font-weight: 600; font-size: .9rem; margin-bottom: 3px; }
+  .tip-body  { font-size: .85rem; color: var(--gray-600); line-height: 1.6; }
+
+  /* CALLOUT */
+  .callout { border-radius: 10px; padding: 16px 18px; margin-bottom: 20px; display: flex; gap: 12px; }
+  .callout.blue   { background: var(--blue-bg);   border: 1px solid var(--blue-border); }
+  .callout.amber  { background: var(--amber-bg);  border: 1px solid var(--amber-border); }
+  .callout.green  { background: var(--green-bg);  border: 1px solid var(--green-border); }
+  .callout.orange { background: var(--orange-bg); border: 1px solid var(--orange-border); }
+  .callout-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 2px; }
+  .callout-body { font-size: .875rem; line-height: 1.6; color: var(--gray-700); }
+  .callout-body strong { color: var(--gray-800); }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--gray-200); background: var(--white); }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+  thead { background: var(--gray-800); color: var(--white); }
+  th { padding: 11px 13px; text-align: left; font-weight: 600; font-size: .78rem; text-transform: uppercase; letter-spacing: .4px; white-space: nowrap; }
+  td { padding: 10px 13px; border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--gray-50); }
+
+  /* FAQ ACCORDION */
+  .acc-list { display: flex; flex-direction: column; gap: 8px; }
+  .acc-item { background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; overflow: hidden; }
+  .acc-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; cursor: pointer; user-select: none; gap: 12px; }
+  .acc-head:hover { background: var(--gray-50); }
+  .acc-title { font-weight: 600; font-size: .95rem; display: flex; align-items: center; gap: 10px; }
+  .acc-icon { font-size: 1.1rem; flex-shrink: 0; }
+  .acc-arrow { color: var(--gray-400); font-size: 1.1rem; transition: transform .3s; flex-shrink: 0; }
+  .acc-item.open .acc-arrow { transform: rotate(180deg); }
+  .acc-body { max-height: 0; overflow: hidden; transition: max-height .4s cubic-bezier(.4,0,.2,1); }
+  .acc-item.open .acc-body { max-height: 2000px; }
+  .acc-content { padding: 0 20px 20px; color: var(--gray-700); font-size: .9rem; line-height: 1.7; }
+  .acc-content ul { padding-left: 20px; margin-top: 8px; }
+  .acc-content li { margin-bottom: 6px; }
+  .acc-content strong { color: var(--gray-800); }
+  .acc-content a { color: var(--blue); text-decoration: none; }
+  .acc-content a:hover { text-decoration: underline; }
+
+  /* FADE-UP */
+  .fade-up { opacity: 0; transform: translateY(24px); transition: opacity .5s ease, transform .5s ease; }
+  .fade-up.visible { opacity: 1; transform: none; }
+
+  /* FOOTER */
+  footer { background: var(--black); color: var(--gray-400); text-align: center; padding: 28px 24px; font-size: .82rem; margin-top: 48px; }
+  .footer-brand { font-family: 'Playfair Display', serif; color: var(--white); font-size: 1rem; margin-bottom: 6px; }
+  .footer-brand span { color: var(--amber); }
+
+  @media(max-width:600px){
+    .hero { padding: 40px 16px 32px; }
+    .container { padding: 0 16px; }
+    .states-grid { grid-template-columns: 1fr; }
+    th, td { padding: 8px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">Mi<span>gro</span></div>
+  <div class="nav-right">
+    <a href="migro-dashboard.html" class="nav-back">⊞ <span data-en="Dashboard" data-es="Inicio">Dashboard</span></a>
+    <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" id="btn-es" onclick="setLang('es')">ES</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag" data-en="State Nomination" data-es="Nominación Estatal">State Nomination</div>
+  <h1 data-en="Find your <span style='color:var(--amber)'>state sponsor</span>" data-es="Encuentra tu <span style='color:var(--amber)'>estado patrocinador</span>">Find your <span style="color:var(--amber)">state sponsor</span></h1>
+  <p data-en="Compare all 8 states and territories for subclass 190 and 491. Understand requirements, points bonuses, and how to get nominated." data-es="Compara los 8 estados y territorios para las subclases 190 y 491. Comprende los requisitos, bonificaciones de puntos y cómo ser nominado.">Compare all 8 states and territories for subclass 190 and 491. Understand requirements, points bonuses, and how to get nominated.</p>
+</div>
+
+<div class="container">
+
+  <!-- 190 vs 491 -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="190 vs 491 — key differences" data-es="190 vs 491 — diferencias clave">190 vs 491 — key differences</h2>
+    <p class="section-sub" data-en="Both visas award bonus points for state nomination, but have different conditions and pathways to permanent residence." data-es="Ambas visas otorgan puntos adicionales por nominación estatal, pero tienen diferentes condiciones y vías hacia la residencia permanente.">Both visas award bonus points for state nomination, but have different conditions and pathways to permanent residence.</p>
+
+    <div class="compare-grid">
+      <div class="cmp-card">
+        <div class="cmp-head v190">
+          <div class="cmp-visa v190">190</div>
+          <div class="cmp-name" data-en="Skilled Nominated" data-es="Calificado Nominado">Skilled Nominated</div>
+        </div>
+        <div class="cmp-body">
+          <div class="cmp-row"><span class="cmp-label" data-en="Visa type" data-es="Tipo de visa">Visa type</span><span class="cmp-val"><span class="pill pill-green" data-en="Permanent" data-es="Permanente">Permanent</span></span></div>
+          <div class="cmp-row"><span class="cmp-label" data-en="Points bonus" data-es="Puntos extra">Points bonus</span><span class="cmp-val" style="color:var(--green);font-weight:700">+5 pts</span></div>
+          <div class="cmp-row"><span class="cmp-label" data-en="Work/live requirement" data-es="Requisito de residencia">Work/live requirement</span><span class="cmp-val" data-en="Must live & work in nominating state for 2 years" data-es="Debes vivir y trabajar en el estado nominante por 2 años">Must live & work in nominating state for 2 years</span></div>
+          <div class="cmp-row"><span class="cmp-label" data-en="Occupation lists" data-es="Listas de ocupaciones">Occupation lists</span><span class="cmp-val" data-en="MLTSSL or STSOL" data-es="MLTSSL o STSOL">MLTSSL or STSOL</span></div>
+          <div class="cmp-row"><span class="cmp-label" data-en="Who nominates" data-es="Quién nomina">Who nominates</span><span class="cmp-val" data-en="State/territory govt" data-es="Gobierno estatal/territorial">State/territory govt</span></div>
+          <div class="cmp-row"><span class="cmp-label" data-en="PR pathway" data-es="Vía a la residencia">PR pathway</span><span class="cmp-val" data-en="Immediate PR on grant" data-es="Residencia permanente inmediata">Immediate PR on grant</span></div>
+        </div>
+      </div>
+      <div class="cmp-card">
+        <div class="cmp-head v491">
+          <div class="cmp-visa v491">491</div>
+          <div class="cmp-name" data-en="Skilled Work Regional (Provisional)" data-es="Trabajo Calificado Regional (Provisional)">Skilled Work Regional (Provisional)</div>
+        </div>
+        <div class="cmp-body">
+          <div class="cmp-row"><span class="cmp-label" data-en="Visa type" data-es="Tipo de visa">Visa type</span><span class="cmp-val"><span class="pill pill-amber" data-en="Provisional 5 yr" data-es="Provisional 5 años">Provisional 5 yr</span></span></div>
+          <div class="cmp-row"><span class="cmp-label" data-en="Points bonus" data-es="Puntos extra">Points bonus</span><span class="cmp-val" style="color:var(--purple);font-weight:700">+15 pts</span></div>
+          <div class="cmp-row"><span class="cmp-label" data-en="Work/live requirement" data-es="Requisito de residencia">Work/live requirement</span><span class="cmp-val" data-en="Must live & work in designated regional area" data-es="Debes vivir y trabajar en área regional designada">Must live & work in designated regional area</span></div>
+          <div class="cmp-row"><span class="cmp-label" data-en="Occupation lists" data-es="Listas de ocupaciones">Occupation lists</span><span class="cmp-val">MLTSSL, STSOL, ROL</span></div>
+          <div class="cmp-row"><span class="cmp-label" data-en="Who nominates" data-es="Quién nomina">Who nominates</span><span class="cmp-val" data-en="State govt or eligible relative" data-es="Gobierno estatal o familiar elegible">State govt or eligible relative</span></div>
+          <div class="cmp-row"><span class="cmp-label" data-en="PR pathway" data-es="Vía a la residencia">PR pathway</span><span class="cmp-val" data-en="Apply for 191 after 3 years" data-es="Solicitar 191 tras 3 años">Apply for 191 after 3 years</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout orange" style="margin-top:16px">
+      <div class="callout-icon">📌</div>
+      <div class="callout-body" data-en="<strong>Key rule:</strong> When granted a 190 or 491, you must initially enter Australia via the nominating state or territory. After that, the residence obligation applies for 2 years (190) or for the duration of the visa (491)." data-es="<strong>Regla clave:</strong> Al otorgarte una visa 190 o 491, debes ingresar a Australia inicialmente por el estado o territorio nominante. Después, la obligación de residencia aplica por 2 años (190) o durante la vigencia de la visa (491)."><strong>Key rule:</strong> When granted a 190 or 491, you must initially enter Australia via the nominating state or territory. After that, the residence obligation applies for 2 years (190) or for the duration of the visa (491).</div>
+    </div>
+  </div>
+
+  <!-- STATE CARDS -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="All states &amp; territories" data-es="Todos los estados y territorios">All states &amp; territories</h2>
+    <p class="section-sub" data-en="Filter by visa type or status. Always check official state websites — lists open and close throughout the year." data-es="Filtra por tipo de visa o estado. Siempre verifica los sitios oficiales estatales: las listas abren y cierran durante el año.">Filter by visa type or status. Always check official state websites — lists open and close throughout the year.</p>
+
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterStates('all', this)" data-en="All states" data-es="Todos">All states</button>
+      <button class="filter-btn" onclick="filterStates('190', this)" data-en="Offers 190" data-es="Ofrece 190">Offers 190</button>
+      <button class="filter-btn" onclick="filterStates('491', this)" data-en="Offers 491" data-es="Ofrece 491">Offers 491</button>
+      <button class="filter-btn" onclick="filterStates('open', this)" data-en="Currently open" data-es="Actualmente abierto">Currently open</button>
+    </div>
+
+    <div class="callout amber" style="margin-bottom:24px">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body" data-en="<strong>Status is indicative only.</strong> State nomination lists open and close frequently and without notice. Minimum points, age, and occupation requirements vary. Always verify directly with each state's official immigration website before applying." data-es="<strong>El estado es solo indicativo.</strong> Las listas de nominación estatal abren y cierran frecuentemente y sin previo aviso. Los puntos mínimos, edad y requisitos de ocupación varían. Siempre verifica directamente en el sitio oficial de inmigración de cada estado antes de solicitar."><strong>Status is indicative only.</strong> State nomination lists open and close frequently and without notice. Always verify directly with each state's official immigration website before applying.</div>
+    </div>
+
+    <div class="states-grid" id="states-grid">
+
+      <!-- NSW -->
+      <div class="state-card" data-visas="190,491" data-status="open">
+        <div class="state-head">
+          <div class="state-flag">🔵</div>
+          <div>
+            <div class="state-name" data-en="New South Wales" data-es="Nueva Gales del Sur">New South Wales</div>
+            <div class="state-abbr">NSW · Sydney</div>
+          </div>
+          <div class="state-badges" style="margin-left:auto">
+            <span class="pill pill-green">190</span>
+            <span class="pill pill-purple">491</span>
+          </div>
+        </div>
+        <div class="state-body">
+          <div class="state-row"><span class="state-row-lbl" data-en="Min. points (190)" data-es="Pts mín. (190)">Min. points (190)</span><span class="state-row-val">65 + nomination</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="Age limit" data-es="Límite de edad">Age limit</span><span class="state-row-val" data-en="Under 45" data-es="Menor de 45">Under 45</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="English requirement" data-es="Requisito de inglés">English requirement</span><span class="state-row-val" data-en="Competent+ (varies by occ.)" data-es="Competente+ (varía por ocupación)">Competent+ (varies by occ.)</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="Connection req." data-es="Req. de conexión">Connection req.</span><span class="state-row-val" data-en="Strong preference for NSW residents / job offer" data-es="Preferencia para residentes de NSW / oferta de trabajo">NSW residents / job offer preferred</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="Notable occupations" data-es="Ocupaciones notables">Notable occupations</span><span class="state-row-val">Tech, Health, Engineering, Finance</span></div>
+          <div class="state-status"><span class="dot dot-green"></span><span data-en="Open — intake rounds throughout year" data-es="Abierto — rondas de admisión durante el año">Open — intake rounds throughout year</span></div>
+          <a class="state-link" href="https://www.nsw.gov.au/topics/skilled-worker" target="_blank" data-en="Official NSW page →" data-es="Página oficial NSW →">Official NSW page →</a>
+        </div>
+      </div>
+
+      <!-- VIC -->
+      <div class="state-card" data-visas="190,491" data-status="open">
+        <div class="state-head">
+          <div class="state-flag">🔷</div>
+          <div>
+            <div class="state-name">Victoria</div>
+            <div class="state-abbr">VIC · Melbourne</div>
+          </div>
+          <div class="state-badges" style="margin-left:auto">
+            <span class="pill pill-green">190</span>
+            <span class="pill pill-purple">491</span>
+          </div>
+        </div>
+        <div class="state-body">
+          <div class="state-row"><span class="state-row-lbl" data-en="Min. points (190)" data-es="Pts mín. (190)">Min. points (190)</span><span class="state-row-val">65 + nomination</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="Age limit" data-es="Límite de edad">Age limit</span><span class="state-row-val" data-en="Under 45" data-es="Menor de 45">Under 45</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="English requirement" data-es="Requisito de inglés">English requirement</span><span class="state-row-val" data-en="Competent+ (Proficient for some)" data-es="Competente+ (Proficiente para algunos)">Competent+ (Proficient for some)</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="Connection req." data-es="Req. de conexión">Connection req.</span><span class="state-row-val" data-en="VIC resident or job offer in VIC" data-es="Residente en VIC u oferta de trabajo en VIC">VIC resident or job offer in VIC</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="Notable occupations" data-es="Ocupaciones notables">Notable occupations</span><span class="state-row-val">Tech, Health, Education, Construction</span></div>
+          <div class="state-status"><span class="dot dot-green"></span><span data-en="Open — competitive, high demand state" data-es="Abierto — estado competitivo, alta demanda">Open — competitive, high demand state</span></div>
+          <a class="state-link" href="https://www.studymelbourne.vic.gov.au/working/skilled-migration" target="_blank" data-en="Official VIC page →" data-es="Página oficial VIC →">Official VIC page →</a>
+        </div>
+      </div>
+
+      <!-- QLD -->
+      <div class="state-card" data-visas="190,491" data-status="open">
+        <div class="state-head">
+          <div class="state-flag">🟡</div>
+          <div>
+            <div class="state-name">Queensland</div>
+            <div class="state-abbr">QLD · Brisbane</div>
+          </div>
+          <div class="state-badges" style="margin-left:auto">
+            <span class="pill pill-green">190</span>
+            <span class="pill pill-purple">491</span>
+          </div>
+        </div>
+        <div class="state-body">
+          <div class="state-row"><span class="state-row-lbl" data-en="Min. points (190)" data-es="Pts mín. (190)">Min. points (190)</span><span class="state-row-val">65 + nomination</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="Age limit" data-es="Límite de edad">Age limit</span><span class="state-row-val" data-en="Under 45" data-es="Menor de 45">Under 45</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="English requirement" data-es="Requisito de inglés">English requirement</span><span class="state-row-val" data-en="Competent (6.0 IELTS each band)" data-es="Competente (6.0 IELTS cada banda)">Competent (6.0 each band)</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="Connection req." data-es="Req. de conexión">Connection req.</span><span class="state-row-val" data-en="QLD resident or intent to live in QLD" data-es="Residente en QLD o intención de vivir en QLD">QLD resident or intent to live in QLD</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="Notable occupations" data-es="Ocupaciones notables">Notable occupaciones</span><span class="state-row-val">Health, Mining, Agri, Construction</span></div>
+          <div class="state-status"><span class="dot dot-green"></span><span data-en="Open — growing demand post-Olympics 2032" data-es="Abierto — demanda creciente post-Olimpiadas 2032">Open — growing demand post-Olympics 2032</span></div>
+          <a class="state-link" href="https://www.migration.qld.gov.au" target="_blank" data-en="Official QLD page →" data-es="Página oficial QLD →">Official QLD page →</a>
+        </div>
+      </div>
+
+      <!-- SA -->
+      <div class="state-card" data-visas="190,491" data-status="open">
+        <div class="state-head">
+          <div class="state-flag">🔴</div>
+          <div>
+            <div class="state-name">South Australia</div>
+            <div class="state-abbr">SA · Adelaide</div>
+          </div>
+          <div class="state-badges" style="margin-left:auto">
+            <span class="pill pill-green">190</span>
+            <span class="pill pill-purple">491</span>
+          </div>
+        </div>
+        <div class="state-body">
+          <div class="state-row"><span class="state-row-lbl" data-en="Min. points (190)" data-es="Pts mín. (190)">Min. points (190)</span><span class="state-row-val">65 + nomination</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="Age limit" data-es="Límite de edad">Age limit</span><span class="state-row-val" data-en="Under 45" data-es="Menor de 45">Under 45</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="English requirement" data-es="Requisito de inglés">English requirement</span><span class="state-row-val" data-en="Competent minimum" data-es="Mínimo Competente">Competent minimum</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="Connection req." data-es="Req. de conexión">Connection req.</span><span class="state-row-val" data-en="Genuine intention to live in SA" data-es="Intención genuina de vivir en SA">Genuine intention to live in SA</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="Notable occupations" data-es="Ocupaciones notables">Notable occupations</span><span class="state-row-val">Defence, Health, Agri, Wine industry</span></div>
+          <div class="state-status"><span class="dot dot-green"></span><span data-en="Open — often less competitive than Sydney/Melbourne" data-es="Abierto — a menudo menos competitivo que Sídney/Melbourne">Open — often less competitive</span></div>
+          <a class="state-link" href="https://www.migration.sa.gov.au" target="_blank" data-en="Official SA page →" data-es="Página oficial SA →">Official SA page →</a>
+        </div>
+      </div>
+
+      <!-- WA -->
+      <div class="state-card" data-visas="190,491" data-status="open">
+        <div class="state-head">
+          <div class="state-flag">🟠</div>
+          <div>
+            <div class="state-name">Western Australia</div>
+            <div class="state-abbr">WA · Perth</div>
+          </div>
+          <div class="state-badges" style="margin-left:auto">
+            <span class="pill pill-green">190</span>
+            <span class="pill pill-purple">491</span>
+          </div>
+        </div>
+        <div class="state-body">
+          <div class="state-row"><span class="state-row-lbl" data-en="Min. points (190)" data-es="Pts mín. (190)">Min. points (190)</span><span class="state-row-val">65 + nomination</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="Age limit" data-es="Límite de edad">Age limit</span><span class="state-row-val" data-en="Under 45" data-es="Menor de 45">Under 45</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="English requirement" data-es="Requisito de inglés">English requirement</span><span class="state-row-val" data-en="Competent (varies by stream)" data-es="Competente (varía por modalidad)">Competent (varies by stream)</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="Connection req." data-es="Req. de conexión">Connection req.</span><span class="state-row-val" data-en="WA resident or job offer or sponsored by employer" data-es="Residente en WA, oferta de trabajo o empleador patrocinador">WA resident, job offer, or employer sponsored</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="Notable occupations" data-es="Ocupaciones notables">Notable occupations</span><span class="state-row-val">Mining, Resources, Health, Tech</span></div>
+          <div class="state-status"><span class="dot dot-green"></span><span data-en="Open — strong resources sector demand" data-es="Abierto — fuerte demanda del sector de recursos">Open — strong resources sector demand</span></div>
+          <a class="state-link" href="https://www.migration.wa.gov.au" target="_blank" data-en="Official WA page →" data-es="Página oficial WA →">Official WA page →</a>
+        </div>
+      </div>
+
+      <!-- TAS -->
+      <div class="state-card" data-visas="190,491" data-status="open">
+        <div class="state-head">
+          <div class="state-flag">🟢</div>
+          <div>
+            <div class="state-name">Tasmania</div>
+            <div class="state-abbr">TAS · Hobart</div>
+          </div>
+          <div class="state-badges" style="margin-left:auto">
+            <span class="pill pill-green">190</span>
+            <span class="pill pill-purple">491</span>
+          </div>
+        </div>
+        <div class="state-body">
+          <div class="state-row"><span class="state-row-lbl" data-en="Min. points (190)" data-es="Pts mín. (190)">Min. points (190)</span><span class="state-row-val">65 + nomination</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="Age limit" data-es="Límite de edad">Age limit</span><span class="state-row-val" data-en="Under 45" data-es="Menor de 45">Under 45</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="English requirement" data-es="Requisito de inglés">English requirement</span><span class="state-row-val" data-en="Competent minimum" data-es="Mínimo Competente">Competent minimum</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="Connection req." data-es="Req. de conexión">Connection req.</span><span class="state-row-val" data-en="Job offer in TAS strongly preferred" data-es="Oferta de trabajo en TAS muy preferida">Job offer in TAS strongly preferred</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="Notable occupations" data-es="Ocupaciones notables">Notable occupations</span><span class="state-row-val">Health, Education, Tourism, Agri</span></div>
+          <div class="state-status"><span class="dot dot-green"></span><span data-en="Open — smaller pool, can be easier to get nominated" data-es="Abierto — grupo más pequeño, puede ser más fácil ser nominado">Open — smaller pool, can be easier</span></div>
+          <a class="state-link" href="https://www.migration.tas.gov.au" target="_blank" data-en="Official TAS page →" data-es="Página oficial TAS →">Official TAS page →</a>
+        </div>
+      </div>
+
+      <!-- ACT -->
+      <div class="state-card" data-visas="190" data-status="open">
+        <div class="state-head">
+          <div class="state-flag">⚫</div>
+          <div>
+            <div class="state-name">Australian Capital Territory</div>
+            <div class="state-abbr">ACT · Canberra</div>
+          </div>
+          <div class="state-badges" style="margin-left:auto">
+            <span class="pill pill-green">190</span>
+          </div>
+        </div>
+        <div class="state-body">
+          <div class="state-row"><span class="state-row-lbl" data-en="Min. points (190)" data-es="Pts mín. (190)">Min. points (190)</span><span class="state-row-val">65 + nomination</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="Age limit" data-es="Límite de edad">Age limit</span><span class="state-row-val" data-en="Under 45" data-es="Menor de 45">Under 45</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="English requirement" data-es="Requisito de inglés">English requirement</span><span class="state-row-val" data-en="Proficient (7.0) for most occupations" data-es="Proficiente (7.0) para la mayoría">Proficient (7.0) for most</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="Connection req." data-es="Req. de conexión">Connection req.</span><span class="state-row-val" data-en="Must be living/working in ACT for 3+ months" data-es="Debe vivir/trabajar en ACT por 3+ meses">Living/working in ACT 3+ months</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="Notable occupations" data-es="Ocupaciones notables">Notable occupations</span><span class="state-row-val">Government, IT, Policy, Research</span></div>
+          <div class="state-status"><span class="dot dot-green"></span><span data-en="Open — strong connection to ACT required" data-es="Abierto — se requiere conexión fuerte con ACT">Open — strong ACT connection required</span></div>
+          <a class="state-link" href="https://www.act.gov.au/migration" target="_blank" data-en="Official ACT page →" data-es="Página oficial ACT →">Official ACT page →</a>
+        </div>
+      </div>
+
+      <!-- NT -->
+      <div class="state-card" data-visas="190,491" data-status="open">
+        <div class="state-head">
+          <div class="state-flag">🟤</div>
+          <div>
+            <div class="state-name">Northern Territory</div>
+            <div class="state-abbr">NT · Darwin</div>
+          </div>
+          <div class="state-badges" style="margin-left:auto">
+            <span class="pill pill-green">190</span>
+            <span class="pill pill-purple">491</span>
+          </div>
+        </div>
+        <div class="state-body">
+          <div class="state-row"><span class="state-row-lbl" data-en="Min. points (190)" data-es="Pts mín. (190)">Min. points (190)</span><span class="state-row-val">65 + nomination</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="Age limit" data-es="Límite de edad">Age limit</span><span class="state-row-val" data-en="Under 45" data-es="Menor de 45">Under 45</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="English requirement" data-es="Requisito de inglés">English requirement</span><span class="state-row-val" data-en="Competent minimum" data-es="Mínimo Competente">Competent minimum</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="Connection req." data-es="Req. de conexión">Connection req.</span><span class="state-row-val" data-en="Job offer in NT or NT resident" data-es="Oferta de trabajo en NT o residente">Job offer in NT or NT resident</span></div>
+          <div class="state-row"><span class="state-row-lbl" data-en="Notable occupations" data-es="Ocupaciones notables">Notable occupations</span><span class="state-row-val">Health, Construction, Hospitality</span></div>
+          <div class="state-status"><span class="dot dot-green"></span><span data-en="Open — least competitive, broad occupation list" data-es="Abierto — menos competitivo, lista amplia de ocupaciones">Open — least competitive, broad list</span></div>
+          <a class="state-link" href="https://theterritory.com.au/work/skilled-migration" target="_blank" data-en="Official NT page →" data-es="Página oficial NT →">Official NT page →</a>
+        </div>
+      </div>
+
+    </div>
+    <div class="no-results" id="no-results" data-en="No states match the current filter." data-es="Ningún estado coincide con el filtro actual.">No states match the current filter.</div>
+  </div>
+
+  <!-- REQUIREMENTS OVERVIEW -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="Common nomination requirements" data-es="Requisitos comunes de nominación">Common nomination requirements</h2>
+    <p class="section-sub" data-en="Most states share these core criteria — but each adds its own conditions." data-es="La mayoría de los estados comparten estos criterios principales, pero cada uno añade sus propias condiciones.">Most states share these core criteria — but each adds its own conditions.</p>
+
+    <div class="req-grid">
+      <div class="req-card">
+        <div class="req-icon">📋</div>
+        <div class="req-title" data-en="Eligible occupation" data-es="Ocupación elegible">Eligible occupation</div>
+        <div class="req-body" data-en="Your nominated occupation must be on the state's current occupation list. Lists differ between states — an occupation open in SA may be closed in NSW." data-es="Tu ocupación nominada debe estar en la lista actual de ocupaciones del estado. Las listas difieren entre estados: una ocupación abierta en SA puede estar cerrada en NSW.">Your nominated occupation must be on the state's current occupation list. Lists differ between states — an occupation open in SA may be closed in NSW.</div>
+      </div>
+      <div class="req-card">
+        <div class="req-icon">✅</div>
+        <div class="req-title" data-en="Positive skills assessment" data-es="Evaluación de habilidades positiva">Positive skills assessment</div>
+        <div class="req-body" data-en="A positive assessment from the relevant assessing authority (e.g. Engineers Australia, ACS, VETASSESS) is required before nomination. This must match your nominated occupation." data-es="Se requiere una evaluación positiva de la autoridad evaluadora relevante (p.ej. Engineers Australia, ACS, VETASSESS) antes de la nominación. Debe coincidir con tu ocupación nominada.">A positive assessment from the relevant assessing authority is required before nomination. Must match your nominated occupation.</div>
+      </div>
+      <div class="req-card">
+        <div class="req-icon">🎯</div>
+        <div class="req-title" data-en="Minimum points score" data-es="Puntaje mínimo de puntos">Minimum points score</div>
+        <div class="req-body" data-en="The federal minimum is 65 points. States may set higher thresholds depending on demand. Some states require 70, 75, or higher for competitive occupations." data-es="El mínimo federal es 65 puntos. Los estados pueden establecer umbrales más altos según la demanda. Algunos estados requieren 70, 75 o más para ocupaciones competitivas.">The federal minimum is 65 points. States may set higher thresholds. Some require 70–75+ for competitive occupations.</div>
+      </div>
+      <div class="req-card">
+        <div class="req-icon">🗣️</div>
+        <div class="req-title" data-en="English proficiency" data-es="Competencia en inglés">English proficiency</div>
+        <div class="req-body" data-en="Minimum Competent English (IELTS 6.0 each band) for most states. Some states (ACT, VIC for certain occupations) require Proficient English (7.0) or higher." data-es="Inglés Competente mínimo (IELTS 6.0 cada banda) para la mayoría de los estados. Algunos estados (ACT, VIC para ciertas ocupaciones) requieren Inglés Proficiente (7.0) o superior.">Minimum Competent English (6.0 each band). ACT and some VIC occupations require Proficient (7.0) or higher.</div>
+      </div>
+      <div class="req-card">
+        <div class="req-icon">🏡</div>
+        <div class="req-title" data-en="Genuine intention to reside" data-es="Intención genuina de residir">Genuine intention to reside</div>
+        <div class="req-body" data-en="States require a credible commitment to live and work in the state after visa grant. Strong evidence: current residence, job offer, family, or property in the state." data-es="Los estados requieren un compromiso creíble de vivir y trabajar en el estado después del otorgamiento de la visa. Evidencia sólida: residencia actual, oferta de trabajo, familia o propiedad en el estado.">States require a credible commitment to live and work in the state. Evidence: current residence, job offer, family, or property in the state.</div>
+      </div>
+      <div class="req-card">
+        <div class="req-icon">💼</div>
+        <div class="req-title" data-en="Work experience / qualifications" data-es="Experiencia laboral / calificaciones">Work experience / qualifications</div>
+        <div class="req-body" data-en="Most states require relevant work experience (typically 3 years within the last 5 years) or Australian qualifications in the nominated occupation." data-es="La mayoría de los estados requieren experiencia laboral relevante (típicamente 3 años en los últimos 5) o calificaciones australianas en la ocupación nominada.">Most states require relevant work experience (typically 3 years in the last 5) or Australian qualifications in the nominated occupation.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OCCUPATION LIST COMPARISON TABLE -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="Which occupation list do you need?" data-es="¿Qué lista de ocupaciones necesitas?">Which occupation list do you need?</h2>
+    <p class="section-sub" data-en="Your occupation must appear on the correct list for each visa subclass." data-es="Tu ocupación debe aparecer en la lista correcta para cada subclase de visa.">Your occupation must appear on the correct list for each visa subclass.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th data-en="List" data-es="Lista">List</th>
+            <th data-en="Full name" data-es="Nombre completo">Full name</th>
+            <th data-en="189" data-es="189">189</th>
+            <th data-en="190" data-es="190">190</th>
+            <th data-en="491" data-es="491">491</th>
+            <th data-en="Description" data-es="Descripción">Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>MLTSSL</strong></td>
+            <td data-en="Medium &amp; Long-term Strategic Skills List" data-es="Lista de Habilidades Estratégicas de Mediano y Largo Plazo">Medium &amp; Long-term Strategic Skills List</td>
+            <td><span class="pill pill-green">✓</span></td>
+            <td><span class="pill pill-green">✓</span></td>
+            <td><span class="pill pill-green">✓</span></td>
+            <td data-en="High-demand occupations needed long-term. Broadest access." data-es="Ocupaciones de alta demanda necesarias a largo plazo. Acceso más amplio.">High-demand occupations needed long-term. Broadest access.</td>
+          </tr>
+          <tr>
+            <td><strong>STSOL</strong></td>
+            <td data-en="Short-term Skilled Occupation List" data-es="Lista de Ocupaciones Calificadas de Corto Plazo">Short-term Skilled Occupation List</td>
+            <td><span class="pill pill-red">✗</span></td>
+            <td><span class="pill pill-green">✓</span></td>
+            <td><span class="pill pill-green">✓</span></td>
+            <td data-en="Occupations needed but not long-term priority. Cannot use for 189." data-es="Ocupaciones necesarias pero no prioritarias a largo plazo. No se puede usar para 189.">Occupations needed but not long-term priority. Cannot use for 189.</td>
+          </tr>
+          <tr>
+            <td><strong>ROL</strong></td>
+            <td data-en="Regional Occupation List" data-es="Lista de Ocupaciones Regionales">Regional Occupation List</td>
+            <td><span class="pill pill-red">✗</span></td>
+            <td><span class="pill pill-red">✗</span></td>
+            <td><span class="pill pill-green">✓</span></td>
+            <td data-en="Only for 491 regional visa. Occupations needed in regional areas." data-es="Solo para visa regional 491. Ocupaciones necesarias en áreas regionales.">Only for 491 regional visa. Occupations needed in regional areas.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout blue" style="margin-top:16px">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body" data-en="Occupation lists are updated regularly by the Department of Home Affairs. Check the official list before submitting your EOI. Your occupation may move between lists or be added/removed." data-es="Las listas de ocupaciones son actualizadas regularmente por el Departamento de Home Affairs. Verifica la lista oficial antes de presentar tu EOI. Tu ocupación puede moverse entre listas o ser agregada/eliminada.">Occupation lists are updated regularly. Check the <a href='https://immi.homeaffairs.gov.au/visas/working-in-australia/skillselect/eligible-skilles-occupations' target='_blank' style='color:var(--blue)'>official list</a> before submitting your EOI. Your occupation may move between lists.</div>
+    </div>
+  </div>
+
+  <!-- STRATEGY TIPS -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="How to choose the right state" data-es="Cómo elegir el estado correcto">How to choose the right state</h2>
+    <p class="section-sub" data-en="State nomination is competitive. These strategies improve your chances." data-es="La nominación estatal es competitiva. Estas estrategias mejoran tus posibilidades.">State nomination is competitive. These strategies improve your chances.</p>
+
+    <div class="tips-list">
+      <div class="tip">
+        <div class="tip-num">1</div>
+        <div>
+          <div class="tip-title" data-en="Apply to multiple states simultaneously" data-es="Solicita en múltiples estados simultáneamente">Apply to multiple states simultaneously</div>
+          <div class="tip-body" data-en="You can apply for nomination from multiple states at the same time. There's no rule against it — it's actually common strategy. If multiple states nominate you, you choose which one to use. Your EOI in SkillSelect can include all states you're willing to live in." data-es="Puedes solicitar nominación de múltiples estados al mismo tiempo. No hay ninguna regla en contra de ello, de hecho es una estrategia común. Si múltiples estados te nominan, tú eliges cuál usar. Tu EOI en SkillSelect puede incluir todos los estados en los que estás dispuesto a vivir.">You can apply for nomination from multiple states at the same time. It's common strategy. If multiple states nominate you, you choose which to use.</div>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-num">2</div>
+        <div>
+          <div class="tip-title" data-en="Match your occupation to state demand" data-es="Haz coincidir tu ocupación con la demanda estatal">Match your occupation to state demand</div>
+          <div class="tip-body" data-en="Different states have different workforce needs. Mining engineers will find WA and QLD more receptive; government/policy roles suit ACT; healthcare is in demand virtually everywhere. Research which states have your occupation on their priority lists." data-es="Diferentes estados tienen diferentes necesidades laborales. Los ingenieros de minería encontrarán WA y QLD más receptivos; los roles de gobierno/política se adaptan al ACT; la atención médica tiene demanda prácticamente en todas partes. Investiga qué estados tienen tu ocupación en sus listas prioritarias.">Different states have different workforce needs. Mining suits WA/QLD; policy roles suit ACT; healthcare is in demand everywhere. Research which states prioritise your occupation.</div>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-num">3</div>
+        <div>
+          <div class="tip-title" data-en="Consider smaller states for less competition" data-es="Considera estados más pequeños para menos competencia">Consider smaller states for less competition</div>
+          <div class="tip-body" data-en="NSW and VIC receive the most applications and are the most competitive. States like SA, TAS, and NT often have fewer applicants for the same number of nomination spots — meaning your application may be assessed more favourably even with the same points score." data-es="NSW y VIC reciben la mayor cantidad de solicitudes y son los más competitivos. Estados como SA, TAS y NT a menudo tienen menos solicitantes para la misma cantidad de lugares de nominación, lo que significa que tu solicitud puede ser evaluada más favorablemente incluso con el mismo puntaje de puntos.">NSW and VIC are most competitive. SA, TAS, and NT often have fewer applicants for the same spots — your application may be assessed more favourably with the same score.</div>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-num">4</div>
+        <div>
+          <div class="tip-title" data-en="Build a genuine connection before applying" data-es="Construye una conexión genuina antes de solicitar">Build a genuine connection before applying</div>
+          <div class="tip-body" data-en="States take 'genuine intention to reside' seriously. If you're already in Australia, spending time in your target state (visiting, working, renting) strengthens your application. A job offer in the state is arguably the strongest connection you can demonstrate." data-es="Los estados toman en serio la 'intención genuina de residir'. Si ya estás en Australia, pasar tiempo en tu estado objetivo (visitando, trabajando, alquilando) fortalece tu solicitud. Una oferta de trabajo en el estado es posiblemente la conexión más sólida que puedes demostrar.">States take genuine intention seriously. Spend time in your target state before applying. A job offer there is the strongest connection you can demonstrate.</div>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-num">5</div>
+        <div>
+          <div class="tip-title" data-en="491 → 191 pathway: consider the long game" data-es="Vía 491 → 191: considera el largo plazo">491 → 191 pathway: consider the long game</div>
+          <div class="tip-body" data-en="The 491 (+15 pts) makes it much easier to get invited than 190 (+5 pts). After 3 years on the 491 working in a regional area, you can apply for the subclass 191 Permanent Residence (Regional). For many people, 491 → 191 is a faster path to PR than waiting for a 189 invitation." data-es="El 491 (+15 pts) hace que sea mucho más fácil ser invitado que el 190 (+5 pts). Después de 3 años con la 491 trabajando en un área regional, puedes solicitar la subclase 191 de Residencia Permanente (Regional). Para muchas personas, 491 → 191 es una vía más rápida a la residencia permanente que esperar una invitación para el 189.">The 491 (+15 pts) is much easier to get invited than 190 (+5 pts). After 3 years in a regional area, apply for the 191 PR. For many, 491 → 191 is faster to PR than waiting for 189.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="Common questions" data-es="Preguntas frecuentes">Common questions</h2>
+    <p class="section-sub" data-en="Things people often ask about state nomination." data-es="Preguntas que la gente hace frecuentemente sobre la nominación estatal.">Things people often ask about state nomination.</p>
+
+    <div class="acc-list">
+
+      <div class="acc-item" id="q1">
+        <div class="acc-head" onclick="toggleAcc('q1')">
+          <div class="acc-title"><span class="acc-icon">❓</span><span data-en="Do I have to stay in the nominating state forever?" data-es="¿Tengo que quedarme en el estado nominante para siempre?">Do I have to stay in the nominating state forever?</span></div>
+          <div class="acc-arrow">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p data-en="No. For the 190 visa, the requirement is to live and work in the nominating state for 2 years after your visa is granted. There is no ongoing obligation after that — you can move anywhere in Australia. For the 491 visa, the obligation runs for the duration of the visa (5 years). After transitioning to the 191 PR, you're free to live anywhere. Note that the obligation is on a 'best endeavours' basis — if your circumstances change (e.g., a medical emergency, your employer closes), you won't necessarily be penalised, but you should not deliberately disregard the commitment." data-es="No. Para la visa 190, el requisito es vivir y trabajar en el estado nominante durante 2 años después de otorgarse la visa. No hay obligación continua después de eso: puedes mudarte a cualquier parte de Australia. Para la visa 491, la obligación dura toda la vigencia de la visa (5 años). Después de transitar a la 191 RP, eres libre de vivir en cualquier lugar. Ten en cuenta que la obligación se basa en el 'mejor esfuerzo': si tus circunstancias cambian (p.ej., una emergencia médica), no necesariamente serás penalizado, pero no debes incumplir deliberadamente el compromiso.">No. For 190 visa: 2 years in the nominating state, then you're free to move anywhere. For 491 visa: obligation lasts for the 5-year visa duration. After the 191 PR, no restrictions. The obligation is on a 'best endeavours' basis — genuine emergencies are understood.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item" id="q2">
+        <div class="acc-head" onclick="toggleAcc('q2')">
+          <div class="acc-title"><span class="acc-icon">❓</span><span data-en="Can a state reject my nomination application?" data-es="¿Puede un estado rechazar mi solicitud de nominación?">Can a state reject my nomination application?</span></div>
+          <div class="acc-arrow">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p data-en="Yes. States are not obligated to nominate you. They review your application independently and can decline based on: occupation not on their list, quota already filled, insufficient connection to the state, weak evidence of intention to reside, or insufficient points. A rejection from one state does not affect your eligibility to apply to other states. Most states don't provide detailed feedback on rejection, so it's worth applying to multiple states to maximise chances." data-es="Sí. Los estados no están obligados a nominarte. Revisan tu solicitud de forma independiente y pueden rechazarla por: ocupación no en su lista, cupo ya lleno, conexión insuficiente con el estado, evidencia débil de intención de residir, o puntos insuficientes. El rechazo de un estado no afecta tu elegibilidad para solicitar en otros estados.">Yes. States can decline based on: occupation not on their list, quota filled, insufficient connection, weak evidence of intention to reside, or insufficient points. A rejection from one state doesn't affect others. Apply to multiple states for the best chances.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item" id="q3">
+        <div class="acc-head" onclick="toggleAcc('q3')">
+          <div class="acc-title"><span class="acc-icon">❓</span><span data-en="Is there a fee to apply for state nomination?" data-es="¿Hay una tarifa para solicitar la nominación estatal?">Is there a fee to apply for state nomination?</span></div>
+          <div class="acc-arrow">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p data-en="Most states offer free nomination applications, but some charge an administrative fee. As of 2025/26, fees range from AUD $0 to around $300 depending on the state and stream. This is separate from the federal visa application charge (VAC), which is several thousand dollars and paid after receiving an ITA. Always check the current fee schedule on each state's official website." data-es="La mayoría de los estados ofrecen solicitudes de nominación gratuitas, pero algunos cobran una tarifa administrativa. En 2025/26, las tarifas van desde AUD $0 hasta alrededor de $300 según el estado y la modalidad. Esto es independiente del cargo de solicitud de visa federal (VAC), que asciende a varios miles de dólares y se paga después de recibir una ITA.">Most states are free, but some charge a small admin fee (AUD $0–$300). This is separate from the federal visa application charge (several thousand AUD) paid after receiving an ITA. Check each state's current fee schedule.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item" id="q4">
+        <div class="acc-head" onclick="toggleAcc('q4')">
+          <div class="acc-title"><span class="acc-icon">❓</span><span data-en="How long does state nomination take?" data-es="¿Cuánto tiempo tarda la nominación estatal?">How long does state nomination take?</span></div>
+          <div class="acc-arrow">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p data-en="Processing times vary widely by state and demand. Typically: 4–12 weeks for most states. Some states process faster (NT, TAS often quicker) while peak-demand states like NSW and VIC may take longer. After nomination, Home Affairs must issue an ITA — this happens through the SkillSelect system in regular rounds (usually twice monthly). So the total time from state nomination application to ITA can range from 6 weeks to 6+ months." data-es="Los tiempos de procesamiento varían ampliamente por estado y demanda. Típicamente: 4–12 semanas para la mayoría de los estados. Algunos estados procesan más rápido (NT, TAS generalmente más rápido) mientras que los estados de alta demanda como NSW y VIC pueden demorar más. Después de la nominación, Home Affairs debe emitir una ITA a través del sistema SkillSelect en rondas regulares (generalmente dos veces al mes).">Typically 4–12 weeks. NT and TAS tend to be faster; NSW and VIC may take longer during peak periods. After nomination, you still need to wait for an ITA through SkillSelect rounds. Total time from applying to state to ITA: 6 weeks to 6+ months.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item" id="q5">
+        <div class="acc-head" onclick="toggleAcc('q5')">
+          <div class="acc-title"><span class="acc-icon">❓</span><span data-en="What is 'regional Australia' for the 491 visa?" data-es="¿Qué es 'Australia regional' para la visa 491?">What is 'regional Australia' for the 491 visa?</span></div>
+          <div class="acc-arrow">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p data-en="'Regional Australia' for the 491 visa is broadly defined and includes most of Australia except the major metropolitan centres of Sydney, Melbourne, and Brisbane (and their immediate surroundings). Perth, Adelaide, Hobart, Darwin, Canberra, and the Gold Coast are all classified as regional for 491 purposes. This means you can live in a major city on a 491 visa — just not Sydney, Melbourne, or inner Brisbane." data-es="'Australia regional' para la visa 491 está definido de manera amplia e incluye la mayor parte de Australia, excepto los principales centros metropolitanos de Sídney, Melbourne y Brisbane (y sus inmediaciones). Perth, Adelaide, Hobart, Darwin, Canberra y la Costa Dorada se clasifican como regionales a efectos de la 491. Esto significa que puedes vivir en una ciudad importante con una visa 491, solo no en Sídney, Melbourne o Brisbane interior.">'Regional Australia' broadly includes everything except Sydney, Melbourne, and Brisbane city centres. Perth, Adelaide, Hobart, Darwin, Canberra, and the Gold Coast all qualify as regional for 491. You can live in a major city — just not Sydney, Melbourne, or inner Brisbane.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="section fade-up">
+    <div class="callout blue">
+      <div class="callout-icon">ℹ️</div>
+      <div class="callout-body" data-en="<strong>Migro is an independent guidance tool.</strong> State nomination requirements, occupation lists, and quotas change frequently. Always verify current information directly with each state's official immigration website and/or a Registered Migration Agent before submitting an application." data-es="<strong>Migro es una herramienta de orientación independiente.</strong> Los requisitos de nominación estatal, las listas de ocupaciones y los cupos cambian frecuentemente. Siempre verifica la información actual directamente en el sitio oficial de inmigración de cada estado y/o con un Agente de Migración Registrado antes de presentar una solicitud."><strong>Migro is an independent guidance tool.</strong> State nomination requirements, occupation lists, and quotas change frequently. Always verify directly with each state's official immigration website and/or a Registered Migration Agent before applying.</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-brand">Mi<span>gro</span></div>
+  <div data-en="Australian immigration guidance — independent &amp; bilingual." data-es="Orientación sobre inmigración australiana — independiente y bilingüe.">Australian immigration guidance — independent &amp; bilingual.</div>
+  <div style="margin-top:4px" data-en="Not legal advice. Always verify with Home Affairs." data-es="No es asesoramiento legal. Siempre verifica con Home Affairs.">Not legal advice. Always verify with Home Affairs.</div>
+</footer>
+
+<script>
+/* ── LANG ── */
+let lang = 'en';
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('[data-en]').forEach(el => {
+    el.innerHTML = el.getAttribute('data-' + l);
+  });
+  document.getElementById('btn-en').classList.toggle('active', l === 'en');
+  document.getElementById('btn-es').classList.toggle('active', l === 'es');
+}
+
+/* ── ACCORDION ── */
+function toggleAcc(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+/* ── STATE FILTER ── */
+function filterStates(mode, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const cards = document.querySelectorAll('.state-card');
+  let visible = 0;
+  cards.forEach(card => {
+    const visas   = card.dataset.visas || '';
+    const status  = card.dataset.status || '';
+    let show = false;
+    if (mode === 'all')  show = true;
+    else if (mode === '190') show = visas.includes('190');
+    else if (mode === '491') show = visas.includes('491');
+    else if (mode === 'open') show = status === 'open';
+    card.classList.toggle('hidden', !show);
+    if (show) visible++;
+  });
+  const noRes = document.getElementById('no-results');
+  noRes.classList.toggle('show', visible === 0);
+}
+
+/* ── FADE-UP ── */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+}, { threshold: 0.08 });
+document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
