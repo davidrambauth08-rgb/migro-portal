@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Migro — IELTS Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --black: #0a0a0a; --white: #ffffff;
+      --gray-100: #f5f5f5; --gray-200: #e8e8e8;
+      --gray-300: #d0d0d0; --gray-400: #999;
+      --gray-600: #555; --gray-800: #222;
+      --green: #16a34a; --green-bg: #f0fdf4; --green-border: #bbf7d0;
+      --amber: #b45309; --amber-bg: #fffbeb; --amber-border: #fde68a;
+      --red: #dc2626; --red-bg: #fef2f2; --red-border: #fecaca;
+      --blue: #2563eb; --blue-bg: #eff6ff; --blue-border: #bfdbfe;
+      --purple: #7c3aed; --purple-bg: #f5f3ff; --purple-border: #ddd6fe;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--gray-100); color: var(--black); }
+
+    /* NAV */
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 48px; background: var(--white); border-bottom: 1px solid var(--gray-200); position: sticky; top: 0; z-index: 100; }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--black); text-decoration: none; }
+    .nav-logo span { display: inline-block; width: 6px; height: 6px; background: var(--black); border-radius: 50%; margin-left: 2px; vertical-align: super; }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .lang-toggle { display: flex; background: var(--gray-100); border-radius: 6px; padding: 3px; gap: 2px; }
+    .lang-btn { padding: 4px 10px; font-size: 11px; font-weight: 700; border: none; background: transparent; border-radius: 4px; cursor: pointer; color: var(--gray-400); transition: all .2s; }
+    .lang-btn.active { background: var(--black); color: var(--white); }
+    .nav-back { font-size: 13px; font-weight: 500; color: var(--gray-600); text-decoration: none; padding: 7px 14px; border-radius: 6px; border: 1px solid var(--gray-200); transition: all .2s; }
+    .nav-back:hover { border-color: var(--black); color: var(--black); }
+
+    /* HERO */
+    .hero { background: var(--black); padding: 52px 48px 40px; }
+    .hero-inner { max-width: 1200px; margin: 0 auto; }
+    .hero-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #555; margin-bottom: 12px; }
+    .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(28px, 3.5vw, 46px); font-weight: 700; color: var(--white); line-height: 1.1; letter-spacing: -1px; margin-bottom: 14px; }
+    .hero-sub { font-size: 15px; color: #777; max-width: 560px; line-height: 1.6; margin-bottom: 28px; }
+    .hero-chips { display: flex; gap: 10px; flex-wrap: wrap; }
+    .hero-chip { display: flex; align-items: center; gap: 8px; background: #111; border: 1px solid #222; border-radius: 100px; padding: 7px 14px; font-size: 13px; font-weight: 600; color: #aaa; }
+    .chip-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .chip-dot.green { background: #4ade80; }
+    .chip-dot.amber { background: #fbbf24; }
+
+    /* PAGE BODY */
+    .page-body { max-width: 1200px; margin: 0 auto; padding: 36px 48px; display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start; }
+
+    /* TRACKER CARD */
+    .tracker-card { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); overflow: hidden; }
+    .tracker-header { padding: 22px 24px 0; }
+    .tracker-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .tracker-sub { font-size: 13px; color: var(--gray-400); margin-bottom: 20px; }
+
+    /* BAND INPUTS */
+    .bands-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 0 24px 24px; }
+    .band-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+    .band-pts-chip { font-size: 10px; padding: 2px 7px; border-radius: 100px; font-weight: 800; }
+    input[type=range] { -webkit-appearance: none; width: 100%; height: 5px; border-radius: 100px; outline: none; cursor: pointer; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--black); cursor: pointer; border: 3px solid var(--white); box-shadow: 0 0 0 1.5px var(--gray-300); }
+    .band-markers { display: flex; justify-content: space-between; margin-top: 4px; font-size: 10px; color: var(--gray-300); }
+    .band-value { font-size: 36px; font-weight: 800; margin-top: 8px; }
+    .band-value.low { color: var(--red); }
+    .band-value.ok { color: var(--amber); }
+    .band-value.good { color: var(--green); }
+    .band-value.great { color: var(--purple); }
+
+    /* DIVIDER + OVERALL */
+    .bands-divider { height: 1px; background: var(--gray-100); margin: 0 24px; }
+    .overall-row { padding: 20px 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .overall-avg-val { font-size: 40px; font-weight: 800; color: var(--black); }
+    .overall-avg-label { font-size: 11px; color: var(--gray-400); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+    .level-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 700; }
+    .level-badge.none { background: var(--gray-100); color: var(--gray-400); }
+    .level-badge.competent { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
+    .level-badge.proficient { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+    .level-badge.superior { background: var(--purple-bg); color: var(--purple); border: 1px solid var(--purple-border); }
+    .level-badge.below { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+    .overall-pts-chip { font-size: 24px; font-weight: 800; color: var(--black); }
+    .overall-pts-label { font-size: 11px; color: var(--gray-400); text-align: center; }
+
+    /* BAND TABLE */
+    .band-table { width: 100%; border-collapse: collapse; }
+    .band-table th { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); padding: 10px 24px; text-align: left; background: var(--gray-100); border-top: 1px solid var(--gray-200); border-bottom: 1px solid var(--gray-200); }
+    .band-table td { font-size: 13px; padding: 12px 24px; border-bottom: 1px solid var(--gray-100); color: var(--gray-800); }
+    .band-table tr:last-child td { border-bottom: none; }
+    .score-pill { display: inline-block; padding: 2px 10px; border-radius: 100px; font-size: 12px; font-weight: 800; }
+    .score-pill.low { background: var(--red-bg); color: var(--red); }
+    .score-pill.ok  { background: var(--amber-bg); color: var(--amber); }
+    .score-pill.good { background: var(--green-bg); color: var(--green); }
+    .score-pill.great { background: var(--purple-bg); color: var(--purple); }
+    .band-status.met { color: var(--green); font-weight: 600; font-size: 12px; }
+    .band-status.unmet { color: var(--red); font-weight: 600; font-size: 12px; }
+
+    /* HISTORY */
+    .history-card { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); overflow: hidden; }
+    .history-header { padding: 20px 24px; border-bottom: 1px solid var(--gray-100); display: flex; align-items: center; justify-content: space-between; }
+    .history-title { font-size: 15px; font-weight: 700; }
+    .btn-add-attempt { padding: 7px 14px; background: var(--black); color: var(--white); border: none; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all .2s; }
+    .btn-add-attempt:hover { background: var(--gray-800); }
+    .history-body { padding: 0 24px 20px; }
+    .history-empty { padding: 28px 0; text-align: center; color: var(--gray-400); font-size: 13px; }
+    .attempt-list { display: flex; flex-direction: column; gap: 10px; padding-top: 16px; }
+    .attempt-item { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border: 1.5px solid var(--gray-200); border-radius: 10px; background: var(--gray-100); flex-wrap: wrap; }
+    .attempt-date { font-size: 12px; font-weight: 600; color: var(--gray-400); min-width: 70px; }
+    .attempt-bands { display: flex; gap: 6px; flex: 1; flex-wrap: wrap; }
+    .attempt-band { font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 6px; background: var(--white); border: 1px solid var(--gray-200); color: var(--black); }
+    .attempt-overall { font-size: 18px; font-weight: 800; color: var(--black); min-width: 40px; text-align: right; }
+    .attempt-level { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 100px; }
+    .attempt-level.competent { background: var(--amber-bg); color: var(--amber); }
+    .attempt-level.proficient { background: var(--green-bg); color: var(--green); }
+    .attempt-level.superior { background: var(--purple-bg); color: var(--purple); }
+    .attempt-level.below { background: var(--red-bg); color: var(--red); }
+    .attempt-del { padding: 4px 8px; background: none; border: none; cursor: pointer; color: var(--gray-300); font-size: 14px; transition: color .2s; }
+    .attempt-del:hover { color: var(--red); }
+
+    /* ADD FORM */
+    .add-attempt-form { display: none; border: 1.5px solid var(--gray-200); border-radius: 10px; padding: 18px; margin-top: 12px; background: var(--gray-100); }
+    .add-attempt-form.open { display: block; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+    .form-group label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); display: block; margin-bottom: 5px; }
+    .form-group input { width: 100%; padding: 9px 12px; border: 1.5px solid var(--gray-200); border-radius: 7px; font-size: 14px; font-weight: 700; font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); transition: border-color .2s; }
+    .form-group input:focus { outline: none; border-color: var(--black); }
+    .form-actions { display: flex; gap: 8px; }
+    .btn-save { padding: 9px 18px; background: var(--black); color: var(--white); border: none; border-radius: 7px; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .btn-cancel { padding: 9px 18px; background: none; border: 1.5px solid var(--gray-200); border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; color: var(--gray-600); }
+
+    /* CHART */
+    .chart-card { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); overflow: hidden; }
+    .chart-header { padding: 20px 24px; border-bottom: 1px solid var(--gray-100); }
+    .chart-title { font-size: 15px; font-weight: 700; }
+    .chart-sub { font-size: 12px; color: var(--gray-400); margin-top: 3px; }
+    .chart-wrap { padding: 20px 24px; overflow-x: auto; }
+    svg.progress-chart { width: 100%; min-width: 300px; }
+    .chart-legend { display: flex; gap: 14px; padding: 0 24px 16px; flex-wrap: wrap; }
+    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--gray-600); }
+    .legend-dot { width: 10px; height: 3px; border-radius: 2px; }
+
+    /* RIGHT PANEL */
+    .right-panel { display: flex; flex-direction: column; gap: 16px; position: sticky; top: 84px; }
+
+    /* IMPACT CARD */
+    .impact-card { background: var(--black); border-radius: 14px; padding: 24px; }
+    .impact-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #555; margin-bottom: 14px; }
+    .impact-pts { font-family: 'Playfair Display', serif; font-size: 60px; font-weight: 700; color: var(--white); line-height: 1; }
+    .impact-pts-label { font-size: 13px; color: #555; margin-top: 4px; margin-bottom: 18px; }
+    .impact-levels { display: flex; flex-direction: column; gap: 8px; }
+    .impact-level-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-radius: 8px; border: 1.5px solid #1a1a1a; cursor: default; }
+    .impact-level-row.active { border-color: var(--white); background: #111; }
+    .impact-level-name { font-size: 12px; font-weight: 600; color: #666; }
+    .impact-level-row.active .impact-level-name { color: var(--white); }
+    .impact-level-score { font-size: 10px; color: #444; }
+    .impact-level-row.active .impact-level-score { color: #888; }
+    .impact-level-pts { font-size: 13px; font-weight: 800; color: #333; }
+    .impact-level-row.active .impact-level-pts { color: var(--white); }
+
+    /* MILESTONES */
+    .milestone-card { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); overflow: hidden; }
+    .milestone-header { padding: 18px 20px; border-bottom: 1px solid var(--gray-100); }
+    .milestone-title { font-size: 14px; font-weight: 700; }
+    .milestone-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px 20px; border-bottom: 1px solid var(--gray-100); }
+    .milestone-item:last-child { border-bottom: none; }
+    .milestone-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px; transition: all .3s; }
+    .milestone-name { font-size: 13px; font-weight: 700; color: var(--black); }
+    .milestone-desc { font-size: 11px; color: var(--gray-400); margin-top: 2px; line-height: 1.4; }
+
+    /* PREP RESOURCES */
+    .prep-card { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); overflow: hidden; }
+    .prep-header { padding: 18px 20px; border-bottom: 1px solid var(--gray-100); }
+    .prep-title { font-size: 14px; font-weight: 700; }
+    .prep-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid var(--gray-100); cursor: pointer; transition: background .2s; }
+    .prep-item:last-child { border-bottom: none; }
+    .prep-item:hover { background: var(--gray-100); }
+    .prep-icon { width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+    .prep-info { flex: 1; }
+    .prep-name { font-size: 13px; font-weight: 600; color: var(--black); }
+    .prep-desc { font-size: 11px; color: var(--gray-400); margin-top: 1px; }
+    .prep-arrow { color: var(--gray-300); font-size: 14px; }
+
+    /* TIPS ACCORDION */
+    .tips-card { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); overflow: hidden; }
+    .tips-title-row { padding: 18px 20px; border-bottom: 1px solid var(--gray-100); }
+    .tips-title { font-size: 14px; font-weight: 700; }
+    .tip-section { border-bottom: 1px solid var(--gray-100); }
+    .tip-section:last-child { border-bottom: none; }
+    .tip-section-hdr { padding: 13px 20px; display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
+    .tip-band-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .tip-band-name { font-size: 13px; font-weight: 600; flex: 1; }
+    .tip-chevron { font-size: 10px; color: var(--gray-300); transition: transform .25s; }
+    .tip-section.open .tip-chevron { transform: rotate(180deg); }
+    .tip-section-body { max-height: 0; overflow: hidden; transition: max-height .35s cubic-bezier(.4,0,.2,1); }
+    .tip-section.open .tip-section-body { max-height: 400px; }
+    .tip-list { padding: 0 20px 14px; display: flex; flex-direction: column; gap: 8px; }
+    .tip-row { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: var(--gray-600); line-height: 1.5; }
+    .tip-bullet { color: var(--gray-300); flex-shrink: 0; margin-top: 2px; }
+
+    /* EQUIV TABLE */
+    .equiv-card { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); overflow: hidden; }
+    .equiv-header { padding: 20px 24px; border-bottom: 1px solid var(--gray-100); }
+    .equiv-title { font-size: 15px; font-weight: 700; }
+    .equiv-sub { font-size: 12px; color: var(--gray-400); margin-top: 3px; }
+    .equiv-table { width: 100%; border-collapse: collapse; }
+    .equiv-table th { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); padding: 10px 16px; text-align: center; background: var(--gray-100); border-bottom: 1px solid var(--gray-200); }
+    .equiv-table th:first-child { text-align: left; }
+    .equiv-table td { font-size: 12px; padding: 11px 16px; border-bottom: 1px solid var(--gray-100); text-align: center; color: var(--gray-800); }
+    .equiv-table td:first-child { text-align: left; font-weight: 600; }
+    .equiv-table tr:last-child td { border-bottom: none; }
+    .equiv-badge { display: inline-block; padding: 2px 9px; border-radius: 100px; font-size: 11px; font-weight: 800; }
+    .equiv-badge.b { background: var(--red-bg); color: var(--red); }
+    .equiv-badge.c { background: var(--amber-bg); color: var(--amber); }
+    .equiv-badge.p { background: var(--green-bg); color: var(--green); }
+    .equiv-badge.s { background: var(--purple-bg); color: var(--purple); }
+
+    /* FADE UP */
+    .fade-up { opacity: 0; transform: translateY(18px); transition: opacity .5s ease, transform .5s ease; }
+    .fade-up.visible { opacity: 1; transform: none; }
+
+    @media (max-width: 900px) {
+      nav { padding: 14px 20px; }
+      .hero { padding: 36px 20px 28px; }
+      .page-body { padding: 20px; grid-template-columns: 1fr; }
+      .right-panel { position: static; }
+      .bands-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="migro-dashboard.html" class="nav-logo">Migro<span></span></a>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('es')">ES</button>
+    </div>
+    <a href="migro-dashboard.html" class="nav-back">⊞ Dashboard</a>
+    <a href="migro-points-calc.html" class="nav-back" data-en="🧮 Points calc" data-es="🧮 Calculadora">🧮 Points calc</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag" data-en="English Proficiency" data-es="Competencia en Inglés">English Proficiency</div>
+    <h1 class="hero-title" data-en="IELTS score<br/>tracker" data-es="Seguimiento de<br/>puntaje IELTS">IELTS score<br/>tracker</h1>
+    <p class="hero-sub" data-en="Track your band scores across attempts, see how your English level maps to migration points, and get targeted improvement tips." data-es="Registra tus puntajes por banda, ve cómo tu nivel de inglés se traduce en puntos y obtén consejos de mejora por habilidad.">Track your band scores across attempts, see how your English level maps to migration points, and get targeted improvement tips.</p>
+    <div class="hero-chips">
+      <div class="hero-chip"><div class="chip-dot green"></div><span data-en="Live points impact" data-es="Impacto en puntos en vivo">Live points impact</span></div>
+      <div class="hero-chip"><div class="chip-dot amber"></div><span data-en="Attempt history" data-es="Historial de intentos">Attempt history</span></div>
+      <div class="hero-chip"><div class="chip-dot green"></div><span data-en="Per-band tips" data-es="Consejos por banda">Per-band tips</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE BODY -->
+<div class="page-body">
+
+  <!-- LEFT COLUMN -->
+  <div style="display:flex;flex-direction:column;gap:20px;">
+
+    <!-- SCORE TRACKER -->
+    <div class="tracker-card fade-up">
+      <div class="tracker-header">
+        <div class="tracker-title" data-en="My current IELTS scores" data-es="Mis puntajes IELTS actuales">My current IELTS scores</div>
+        <div class="tracker-sub" data-en="Drag the sliders to enter your most recent band scores (0 – 9.0)" data-es="Arrastra los controles para ingresar tus puntajes más recientes (0 – 9.0)">Drag the sliders to enter your most recent band scores (0 – 9.0)</div>
+      </div>
+      <div class="bands-grid">
+        <!-- Listening -->
+        <div class="band-group">
+          <div class="band-label">
+            <span data-en="Listening" data-es="Comprensión auditiva">Listening</span>
+            <span class="band-pts-chip" id="chip-L" style="background:var(--gray-100);color:var(--gray-400);">—</span>
+          </div>
+          <input type="range" id="slider-L" min="0" max="9" step="0.5" value="0" oninput="updateBand('L',this.value)"
+            style="background:linear-gradient(to right,var(--black) 0%,var(--gray-200) 0%)">
+          <div class="band-markers"><span>0</span><span>3</span><span>6</span><span>9</span></div>
+          <div class="band-value low" id="val-L">—</div>
+        </div>
+        <!-- Reading -->
+        <div class="band-group">
+          <div class="band-label">
+            <span data-en="Reading" data-es="Comprensión lectora">Reading</span>
+            <span class="band-pts-chip" id="chip-R" style="background:var(--gray-100);color:var(--gray-400);">—</span>
+          </div>
+          <input type="range" id="slider-R" min="0" max="9" step="0.5" value="0" oninput="updateBand('R',this.value)"
+            style="background:linear-gradient(to right,var(--black) 0%,var(--gray-200) 0%)">
+          <div class="band-markers"><span>0</span><span>3</span><span>6</span><span>9</span></div>
+          <div class="band-value low" id="val-R">—</div>
+        </div>
+        <!-- Writing -->
+        <div class="band-group">
+          <div class="band-label">
+            <span data-en="Writing" data-es="Expresión escrita">Writing</span>
+            <span class="band-pts-chip" id="chip-W" style="background:var(--gray-100);color:var(--gray-400);">—</span>
+          </div>
+          <input type="range" id="slider-W" min="0" max="9" step="0.5" value="0" oninput="updateBand('W',this.value)"
+            style="background:linear-gradient(to right,var(--black) 0%,var(--gray-200) 0%)">
+          <div class="band-markers"><span>0</span><span>3</span><span>6</span><span>9</span></div>
+          <div class="band-value low" id="val-W">—</div>
+        </div>
+        <!-- Speaking -->
+        <div class="band-group">
+          <div class="band-label">
+            <span data-en="Speaking" data-es="Expresión oral">Speaking</span>
+            <span class="band-pts-chip" id="chip-S" style="background:var(--gray-100);color:var(--gray-400);">—</span>
+          </div>
+          <input type="range" id="slider-S" min="0" max="9" step="0.5" value="0" oninput="updateBand('S',this.value)"
+            style="background:linear-gradient(to right,var(--black) 0%,var(--gray-200) 0%)">
+          <div class="band-markers"><span>0</span><span>3</span><span>6</span><span>9</span></div>
+          <div class="band-value low" id="val-S">—</div>
+        </div>
+      </div>
+
+      <div class="bands-divider"></div>
+
+      <div class="overall-row">
+        <div>
+          <div class="overall-avg-val" id="overallAvg">—</div>
+          <div class="overall-avg-label" data-en="Overall band" data-es="Banda general">Overall band</div>
+        </div>
+        <div style="flex:1;">
+          <div class="level-badge none" id="levelBadge">—</div>
+          <div style="font-size:12px;color:var(--gray-400);margin-top:6px;line-height:1.5;max-width:280px;" id="levelNote">—</div>
+        </div>
+        <div style="text-align:center;">
+          <div class="overall-pts-chip" id="overallPts">—</div>
+          <div class="overall-pts-label" data-en="points from English" data-es="puntos de inglés">points from English</div>
+        </div>
+      </div>
+
+      <table class="band-table">
+        <thead>
+          <tr>
+            <th data-en="Skill" data-es="Habilidad">Skill</th>
+            <th data-en="Your score" data-es="Tu puntaje">Your score</th>
+            <th data-en="Competent ≥6.0" data-es="Competente ≥6.0">Competent ≥6.0</th>
+            <th data-en="Proficient ≥7.0" data-es="Avanzado ≥7.0">Proficient ≥7.0</th>
+            <th data-en="Superior ≥8.0" data-es="Superior ≥8.0">Superior ≥8.0</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td data-en="Listening" data-es="Auditiva">Listening</td><td><span class="score-pill low" id="tval-L">—</span></td><td class="band-status" id="tc-L">—</td><td class="band-status" id="tp-L">—</td><td class="band-status" id="ts-L">—</td></tr>
+          <tr><td data-en="Reading" data-es="Lectora">Reading</td><td><span class="score-pill low" id="tval-R">—</span></td><td class="band-status" id="tc-R">—</td><td class="band-status" id="tp-R">—</td><td class="band-status" id="ts-R">—</td></tr>
+          <tr><td data-en="Writing" data-es="Escrita">Writing</td><td><span class="score-pill low" id="tval-W">—</span></td><td class="band-status" id="tc-W">—</td><td class="band-status" id="tp-W">—</td><td class="band-status" id="ts-W">—</td></tr>
+          <tr><td data-en="Speaking" data-es="Oral">Speaking</td><td><span class="score-pill low" id="tval-S">—</span></td><td class="band-status" id="tc-S">—</td><td class="band-status" id="tp-S">—</td><td class="band-status" id="ts-S">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ATTEMPT HISTORY -->
+    <div class="history-card fade-up">
+      <div class="history-header">
+        <div class="history-title" data-en="Attempt history" data-es="Historial de intentos">Attempt history</div>
+        <button class="btn-add-attempt" onclick="toggleAddForm()">
+          <span>+</span><span data-en="Add attempt" data-es="Agregar intento">Add attempt</span>
+        </button>
+      </div>
+      <div class="history-body">
+        <div class="add-attempt-form" id="addAttemptForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label data-en="Date" data-es="Fecha">Date</label>
+              <input type="date" id="inp-date"/>
+            </div>
+            <div class="form-group">
+              <label data-en="Listening" data-es="Auditiva">Listening</label>
+              <input type="number" id="inp-L" min="0" max="9" step="0.5" placeholder="7.5"/>
+            </div>
+            <div class="form-group">
+              <label data-en="Reading" data-es="Lectora">Reading</label>
+              <input type="number" id="inp-R" min="0" max="9" step="0.5" placeholder="7.0"/>
+            </div>
+            <div class="form-group">
+              <label data-en="Writing" data-es="Escrita">Writing</label>
+              <input type="number" id="inp-W" min="0" max="9" step="0.5" placeholder="6.5"/>
+            </div>
+            <div class="form-group">
+              <label data-en="Speaking" data-es="Oral">Speaking</label>
+              <input type="number" id="inp-S" min="0" max="9" step="0.5" placeholder="7.0"/>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn-save" onclick="saveAttempt()" data-en="Save attempt" data-es="Guardar intento">Save attempt</button>
+            <button class="btn-cancel" onclick="toggleAddForm()" data-en="Cancel" data-es="Cancelar">Cancel</button>
+          </div>
+        </div>
+        <div id="attemptList">
+          <div class="history-empty" id="emptyMsg" data-en="No attempts recorded yet. Add your first IELTS result above." data-es="Ningún intento registrado aún. Agrega tu primer resultado IELTS arriba.">No attempts recorded yet. Add your first IELTS result above.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROGRESS CHART (shown when 2+ attempts) -->
+    <div class="chart-card fade-up" id="chartCard" style="display:none;">
+      <div class="chart-header">
+        <div class="chart-title" data-en="Score progression" data-es="Progresión de puntaje">Score progression</div>
+        <div class="chart-sub" data-en="Band scores across all attempts" data-es="Puntajes por banda en todos los intentos">Band scores across all attempts</div>
+      </div>
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#0a0a0a;height:3px;"></div><span data-en="Overall" data-es="General">Overall</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#3b82f6;"></div><span data-en="Listening" data-es="Auditiva">Listening</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#10b981;"></div><span data-en="Reading" data-es="Lectora">Reading</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#f59e0b;"></div><span data-en="Writing" data-es="Escrita">Writing</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6;"></div><span data-en="Speaking" data-es="Oral">Speaking</span></div>
+      </div>
+      <div class="chart-wrap">
+        <svg class="progress-chart" id="progressChart" viewBox="0 0 600 160" preserveAspectRatio="none"></svg>
+      </div>
+    </div>
+
+    <!-- EQUIVALENCE TABLE -->
+    <div class="equiv-card fade-up">
+      <div class="equiv-header">
+        <div class="equiv-title" data-en="Test score equivalence table" data-es="Tabla de equivalencia de puntajes">Test score equivalence table</div>
+        <div class="equiv-sub" data-en="Minimum band scores across IELTS, PTE Academic, TOEFL iBT and Cambridge C1/C2" data-es="Puntajes mínimos en IELTS, PTE, TOEFL iBT y Cambridge C1/C2">Minimum band scores across IELTS, PTE Academic, TOEFL iBT and Cambridge C1/C2</div>
+      </div>
+      <table class="equiv-table">
+        <thead>
+          <tr>
+            <th data-en="Level" data-es="Nivel">Level</th>
+            <th>IELTS</th>
+            <th>PTE Academic</th>
+            <th>TOEFL iBT</th>
+            <th>Cambridge</th>
+            <th data-en="Points" data-es="Puntos">Points</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="equiv-badge b" data-en="Below" data-es="Por debajo">Below</span></td>
+            <td data-en="Any band &lt; 6.0" data-es="Alguna banda &lt; 6.0">Any band &lt; 6.0</td>
+            <td data-en="Any &lt; 50" data-es="Alguno &lt; 50">Any &lt; 50</td>
+            <td data-en="Any &lt; 12" data-es="Alguno &lt; 12">Any &lt; 12</td>
+            <td data-en="Below B2" data-es="Bajo B2">Below B2</td>
+            <td>0 pts</td>
+          </tr>
+          <tr style="background:#fffbf0;">
+            <td><span class="equiv-badge c" data-en="Competent" data-es="Competente">Competent</span></td>
+            <td>6.0 each band</td>
+            <td>50 each component</td>
+            <td>12 / 13 / 21 / 18</td>
+            <td>169 (B2)</td>
+            <td><strong>0 pts</strong></td>
+          </tr>
+          <tr>
+            <td><span class="equiv-badge p" data-en="Proficient" data-es="Avanzado">Proficient</span></td>
+            <td>7.0 each band</td>
+            <td>65 each component</td>
+            <td>24 / 24 / 27 / 23</td>
+            <td>185 (C1)</td>
+            <td><strong>+10 pts</strong></td>
+          </tr>
+          <tr>
+            <td><span class="equiv-badge s" data-en="Superior" data-es="Superior">Superior</span></td>
+            <td>8.0 each band</td>
+            <td>79 each component</td>
+            <td>28 / 29 / 30 / 26</td>
+            <td>200 (C2)</td>
+            <td><strong>+20 pts</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div><!-- /left -->
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+
+    <!-- POINTS IMPACT -->
+    <div class="impact-card">
+      <div class="impact-label" data-en="Points test impact" data-es="Impacto en el test de puntos">Points test impact</div>
+      <div class="impact-pts" id="impactPts">—</div>
+      <div class="impact-pts-label" data-en="points from English" data-es="puntos de inglés">points from English</div>
+      <div class="impact-levels">
+        <div class="impact-level-row" id="il-below">
+          <span class="impact-level-name" data-en="Below competent" data-es="Por debajo">Below competent</span>
+          <span class="impact-level-score" data-en="Visa requirement not met" data-es="Requisito no cumplido">Visa requirement not met</span>
+          <span class="impact-level-pts">0 pts</span>
+        </div>
+        <div class="impact-level-row" id="il-comp">
+          <span class="impact-level-name" data-en="Competent" data-es="Competente">Competent</span>
+          <span class="impact-level-score">IELTS 6.0</span>
+          <span class="impact-level-pts">0 pts</span>
+        </div>
+        <div class="impact-level-row" id="il-prof">
+          <span class="impact-level-name" data-en="Proficient" data-es="Avanzado">Proficient</span>
+          <span class="impact-level-score">IELTS 7.0</span>
+          <span class="impact-level-pts">+10 pts</span>
+        </div>
+        <div class="impact-level-row" id="il-sup">
+          <span class="impact-level-name" data-en="Superior" data-es="Superior">Superior</span>
+          <span class="impact-level-score">IELTS 8.0</span>
+          <span class="impact-level-pts">+20 pts</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MILESTONES -->
+    <div class="milestone-card">
+      <div class="milestone-header">
+        <div class="milestone-title" data-en="IELTS milestones" data-es="Hitos IELTS">IELTS milestones</div>
+      </div>
+      <div class="milestone-item">
+        <div class="milestone-dot" id="ms-visa" style="background:var(--gray-100);color:var(--gray-400);">1</div>
+        <div>
+          <div class="milestone-name" data-en="Meet visa requirement" data-es="Cumplir requisito de visa">Meet visa requirement</div>
+          <div class="milestone-desc" data-en="All 4 bands ≥ 6.0 (Competent English)" data-es="Las 4 bandas ≥ 6.0 (Inglés competente)">All 4 bands ≥ 6.0 (Competent English)</div>
+        </div>
+      </div>
+      <div class="milestone-item">
+        <div class="milestone-dot" id="ms-prof" style="background:var(--gray-100);color:var(--gray-400);">2</div>
+        <div>
+          <div class="milestone-name" data-en="+10 points — Proficient" data-es="+10 puntos — Avanzado">+10 points — Proficient</div>
+          <div class="milestone-desc" data-en="All 4 bands ≥ 7.0" data-es="Las 4 bandas ≥ 7.0">All 4 bands ≥ 7.0</div>
+        </div>
+      </div>
+      <div class="milestone-item">
+        <div class="milestone-dot" id="ms-sup" style="background:var(--gray-100);color:var(--gray-400);">3</div>
+        <div>
+          <div class="milestone-name" data-en="+20 points — Superior" data-es="+20 puntos — Superior">+20 points — Superior</div>
+          <div class="milestone-desc" data-en="All 4 bands ≥ 8.0 — maximum English points" data-es="Las 4 bandas ≥ 8.0 — máximo de puntos de inglés">All 4 bands ≥ 8.0 — maximum English points</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIPS ACCORDION -->
+    <div class="tips-card">
+      <div class="tips-title-row">
+        <div class="tips-title" data-en="Tips by skill" data-es="Consejos por habilidad">Tips by skill</div>
+      </div>
+      <div class="tip-section">
+        <div class="tip-section-hdr" onclick="this.parentElement.classList.toggle('open')">
+          <div class="tip-band-dot" style="background:#3b82f6;"></div>
+          <div class="tip-band-name" data-en="Listening" data-es="Auditiva">Listening</div>
+          <div class="tip-chevron">▼</div>
+        </div>
+        <div class="tip-section-body">
+          <div class="tip-list">
+            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="Practice with Australian accents — BBC 6 Minute English, ABC Radio National." data-es="Practica con acentos australianos — BBC 6 Minute English, ABC Radio National.">Practice with Australian accents — BBC 6 Minute English, ABC Radio National.</span></div>
+            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="Read questions before the audio — you get 30 seconds per section." data-es="Lee las preguntas antes del audio — tienes 30 segundos por sección.">Read questions before the audio — you get 30 seconds per section.</span></div>
+            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="Never leave an answer blank — there's no penalty for wrong answers." data-es="Nunca dejes una respuesta en blanco — no hay penalización.">Never leave an answer blank — there's no penalty for wrong answers.</span></div>
+            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="Sections 3 and 4 are harder — allocate more focus to these in practice." data-es="Las secciones 3 y 4 son más difíciles — concéntrate más en ellas al practicar.">Sections 3 and 4 are harder — allocate more focus to these in practice.</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-section">
+        <div class="tip-section-hdr" onclick="this.parentElement.classList.toggle('open')">
+          <div class="tip-band-dot" style="background:#10b981;"></div>
+          <div class="tip-band-name" data-en="Reading" data-es="Lectora">Reading</div>
+          <div class="tip-chevron">▼</div>
+        </div>
+        <div class="tip-section-body">
+          <div class="tip-list">
+            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="Skim first, scan for answers — don't read every word, you'll run out of time." data-es="Escanea primero, busca respuestas — no leas cada palabra o te quedará sin tiempo.">Skim first, scan for answers — don't read every word, you'll run out of time.</span></div>
+            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="True / False / Not Given: 'Not Given' means the text doesn't mention it at all." data-es="V/F/NG: 'No dado' significa que el texto no lo menciona en absoluto.">True / False / Not Given: 'Not Given' means the text doesn't mention it at all.</span></div>
+            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="Aim for 20 minutes per passage — 3 passages, 60 minutes total." data-es="Apunta a 20 minutos por pasaje — 3 pasajes, 60 minutos en total.">Aim for 20 minutes per passage — 3 passages, 60 minutes total.</span></div>
+            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="Build vocabulary: The Guardian, The Economist, academic word lists (AWL)." data-es="Amplía vocabulario: The Guardian, The Economist, listas de palabras académicas.">Build vocabulary: The Guardian, The Economist, academic word lists (AWL).</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-section">
+        <div class="tip-section-hdr" onclick="this.parentElement.classList.toggle('open')">
+          <div class="tip-band-dot" style="background:#f59e0b;"></div>
+          <div class="tip-band-name" data-en="Writing" data-es="Escrita">Writing</div>
+          <div class="tip-chevron">▼</div>
+        </div>
+        <div class="tip-section-body">
+          <div class="tip-list">
+            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="The hardest skill to improve — start preparation at least 3 months before your exam." data-es="La habilidad más difícil de mejorar — empieza a prepararte al menos 3 meses antes.">The hardest skill to improve — start preparation at least 3 months before your exam.</span></div>
+            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="Task 1: describe data objectively. Task 2: structured argument — intro, 2 body paragraphs, conclusion." data-es="Tarea 1: describe datos objetivamente. Tarea 2: argumento estructurado — intro, 2 párrafos, conclusión.">Task 1: describe data objectively. Task 2: structured argument — intro, 2 body paragraphs, conclusion.</span></div>
+            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="Vary your sentence structures and vocabulary — avoid repeating the same words." data-es="Varía tus estructuras y vocabulario — evita repetir las mismas palabras.">Vary your sentence structures and vocabulary — avoid repeating the same words.</span></div>
+            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="Get feedback from a teacher or AI — self-assessment misses grammar and coherence issues." data-es="Obtén retroalimentación de un profesor o IA — la autoevaluación pierde errores de gramática y coherencia.">Get feedback from a teacher or AI — self-assessment misses grammar and coherence issues.</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-section">
+        <div class="tip-section-hdr" onclick="this.parentElement.classList.toggle('open')">
+          <div class="tip-band-dot" style="background:#8b5cf6;"></div>
+          <div class="tip-band-name" data-en="Speaking" data-es="Oral">Speaking</div>
+          <div class="tip-chevron">▼</div>
+        </div>
+        <div class="tip-section-body">
+          <div class="tip-list">
+            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="Fluency over accuracy — don't pause to search for the 'perfect' word." data-es="Fluidez sobre precisión — no te detengas a buscar la palabra perfecta.">Fluency over accuracy — don't pause to search for the 'perfect' word.</span></div>
+            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="Part 2 long turn: structure around situation → action → result → how you felt." data-es="Parte 2 turno largo: estructura en situación → acción → resultado → cómo te sentiste.">Part 2 long turn: structure around situation → action → result → how you felt.</span></div>
+            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="Practice with native speakers — iTalki, Cambly, or free language exchange apps." data-es="Practica con hablantes nativos — iTalki, Cambly o apps de intercambio de idiomas.">Practice with native speakers — iTalki, Cambly, or free language exchange apps.</span></div>
+            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="Record yourself daily — reveals filler words, pace issues, and pronunciation patterns." data-es="Grábate diariamente — revela muletillas, velocidad y patrones de pronunciación.">Record yourself daily — reveals filler words, pace issues, and pronunciation patterns.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PREP RESOURCES -->
+    <div class="prep-card">
+      <div class="prep-header">
+        <div class="prep-title" data-en="Official resources" data-es="Recursos oficiales">Official resources</div>
+      </div>
+      <div class="prep-item" onclick="window.open('https://www.ielts.org/studying-for-ielts/free-study-resources','_blank')">
+        <div class="prep-icon" style="background:#fff3e0;">📘</div>
+        <div class="prep-info">
+          <div class="prep-name">IELTS.org</div>
+          <div class="prep-desc" data-en="Official free practice tests and sample questions" data-es="Pruebas de práctica y preguntas de muestra oficiales">Official free practice tests and sample questions</div>
+        </div>
+        <div class="prep-arrow">›</div>
+      </div>
+      <div class="prep-item" onclick="window.open('https://www.britishcouncil.org/exam/ielts/preparation','_blank')">
+        <div class="prep-icon" style="background:#e3f2fd;">🇬🇧</div>
+        <div class="prep-info">
+          <div class="prep-name">British Council</div>
+          <div class="prep-desc" data-en="Free preparation courses and practice materials" data-es="Cursos gratuitos de preparación y materiales de práctica">Free preparation courses and practice materials</div>
+        </div>
+        <div class="prep-arrow">›</div>
+      </div>
+      <div class="prep-item" onclick="window.open('https://ieltsliz.com/','_blank')">
+        <div class="prep-icon" style="background:#f3e5f5;">📝</div>
+        <div class="prep-info">
+          <div class="prep-name">IELTS Liz</div>
+          <div class="prep-desc" data-en="Tips and lessons from a former IELTS examiner" data-es="Consejos y lecciones de una ex-examinadora IELTS">Tips and lessons from a former IELTS examiner</div>
+        </div>
+        <div class="prep-arrow">›</div>
+      </div>
+      <div class="prep-item" onclick="window.open('https://www.cambridgeenglish.org/learning-english/free-resources/','_blank')">
+        <div class="prep-icon" style="background:#e8f5e9;">🎓</div>
+        <div class="prep-info">
+          <div class="prep-name">Cambridge English</div>
+          <div class="prep-desc" data-en="Free skills practice and vocabulary tools" data-es="Práctica de habilidades y herramientas de vocabulario gratuitas">Free skills practice and vocabulary tools</div>
+        </div>
+        <div class="prep-arrow">›</div>
+      </div>
+    </div>
+
+  </div><!-- /right-panel -->
+
+</div><!-- /page-body -->
+
+<script>
+  let lang = 'en';
+  const bands = { L: 0, R: 0, W: 0, S: 0 };
+  function lsGet(key, fallback) { try { return JSON.parse(localStorage.getItem(key) || fallback); } catch(e) { return JSON.parse(fallback); } }
+  function lsSet(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {} }
+  let attempts = lsGet('migro_ielts_attempts', '[]');
+
+  // ─── HELPERS ────────────────────────────────────────────────────────────
+  function bandClass(v) {
+    if (v >= 8.0) return 'great';
+    if (v >= 7.0) return 'good';
+    if (v >= 6.0) return 'ok';
+    return 'low';
+  }
+  function pillClass(v) { return bandClass(v); }
+
+  // ─── UPDATE BAND SLIDER ─────────────────────────────────────────────────
+  function updateBand(b, v) {
+    v = parseFloat(v);
+    bands[b] = v;
+
+    // slider track fill
+    const pct = (v / 9) * 100;
+    document.getElementById('slider-' + b).style.background =
+      `linear-gradient(to right, var(--black) ${pct}%, var(--gray-200) ${pct}%)`;
+
+    // big value display
+    const valEl = document.getElementById('val-' + b);
+    valEl.textContent = v.toFixed(1);
+    valEl.className = 'band-value ' + bandClass(v);
+
+    // table score pill
+    const tvalEl = document.getElementById('tval-' + b);
+    tvalEl.textContent = v.toFixed(1);
+    tvalEl.className = 'score-pill ' + pillClass(v);
+
+    // threshold checks
+    [['c',6],['p',7],['s',8]].forEach(([key, min]) => {
+      const el = document.getElementById('t' + key + '-' + b);
+      if (v >= min) { el.textContent = '✓'; el.className = 'band-status met'; }
+      else { el.textContent = '+' + (min - v).toFixed(1); el.className = 'band-status unmet'; }
+    });
+
+    // label chip
+    const chip = document.getElementById('chip-' + b);
+    if (v >= 8.0)      { chip.textContent = lang==='en'?'Superior':'Superior';    chip.style.cssText = 'background:var(--purple-bg);color:var(--purple);'; }
+    else if (v >= 7.0) { chip.textContent = lang==='en'?'Proficient':'Avanzado';  chip.style.cssText = 'background:var(--green-bg);color:var(--green);'; }
+    else if (v >= 6.0) { chip.textContent = lang==='en'?'Competent':'Competente'; chip.style.cssText = 'background:var(--amber-bg);color:var(--amber);'; }
+    else               { chip.textContent = 'Below 6.0';                          chip.style.cssText = 'background:var(--red-bg);color:var(--red);'; }
+
+    updateOverall();
+  }
+
+  // ─── OVERALL ─────────────────────────────────────────────────────────────
+  function updateOverall() {
+    const vals = [bands.L, bands.R, bands.W, bands.S];
+    const minVal = Math.min(...vals);
+    const overall = Math.round(vals.reduce((a,b)=>a+b,0)/4 * 2) / 2;
+
+    document.getElementById('overallAvg').textContent = overall.toFixed(1);
+
+    let pts = 0, level = 'below';
+    if (minVal >= 8.0)      { pts = 20; level = 'superior'; }
+    else if (minVal >= 7.0) { pts = 10; level = 'proficient'; }
+    else if (minVal >= 6.0) { pts = 0;  level = 'competent'; }
+
+    const badge = document.getElementById('levelBadge');
+    badge.className = 'level-badge ' + level;
+    const labels = {
+      en:{ below:'⚠ Below Competent', competent:'✓ Competent English', proficient:'✓ Proficient English', superior:'⭐ Superior English' },
+      es:{ below:'⚠ Por debajo del mínimo', competent:'✓ Inglés competente', proficient:'✓ Inglés avanzado', superior:'⭐ Inglés superior' }
+    };
+    badge.textContent = labels[lang][level];
+
+    const notes = {
+      en:{ below:'Need all 4 bands ≥ 6.0 to meet the minimum visa English requirement.', competent:'Minimum met — push for 7.0+ in all bands to earn +10 points.', proficient:'Great — earning 10 pts. Reach 8.0 in all bands for 20 total.', superior:'Maximum English points achieved.' },
+      es:{ below:'Necesitas las 4 bandas ≥ 6.0 para cumplir el requisito mínimo.', competent:'Requisito mínimo cumplido — apunta a 7.0+ en todas las bandas.', proficient:'Bien — obtienes 10 pts. Alcanza 8.0 en todas para 20 en total.', superior:'Máximo de puntos de inglés conseguido.' }
+    };
+    document.getElementById('levelNote').textContent = notes[lang][level];
+    document.getElementById('overallPts').textContent = pts + ' pts';
+    document.getElementById('impactPts').textContent = pts;
+
+    // impact highlight
+    ['below','comp','prof','sup'].forEach(id => document.getElementById('il-'+id).classList.remove('active'));
+    ({ below:'il-below', competent:'il-comp', proficient:'il-prof', superior:'il-sup' })[level] &&
+      document.getElementById(({ below:'il-below', competent:'il-comp', proficient:'il-prof', superior:'il-sup' })[level]).classList.add('active');
+
+    // milestones
+    ['visa','prof','sup'].forEach((key, i) => {
+      const thresholds = [6, 7, 8];
+      const el = document.getElementById('ms-' + key);
+      if (minVal >= thresholds[i]) {
+        el.textContent = '✓'; el.style.background = 'var(--black)'; el.style.color = 'var(--white)';
+      } else {
+        el.textContent = i + 1; el.style.background = 'var(--gray-100)'; el.style.color = 'var(--gray-400)';
+      }
+    });
+  }
+
+  // ─── ATTEMPT HISTORY ─────────────────────────────────────────────────────
+  function toggleAddForm() {
+    const f = document.getElementById('addAttemptForm');
+    f.classList.toggle('open');
+    if (f.classList.contains('open'))
+      document.getElementById('inp-date').value = new Date().toISOString().split('T')[0];
+  }
+
+  function calcOverall(L,R,W,S){ return Math.round((L+R+W+S)/4*2)/2; }
+  function getLevel(min){ return min>=8?'superior':min>=7?'proficient':min>=6?'competent':'below'; }
+
+  function saveAttempt() {
+    const date = document.getElementById('inp-date').value;
+    const L = parseFloat(document.getElementById('inp-L').value);
+    const R = parseFloat(document.getElementById('inp-R').value);
+    const W = parseFloat(document.getElementById('inp-W').value);
+    const S = parseFloat(document.getElementById('inp-S').value);
+    if (!date || [L,R,W,S].some(isNaN)) { alert(lang==='en'?'Fill in all fields.':'Completa todos los campos.'); return; }
+    if ([L,R,W,S].some(v=>v<0||v>9)) { alert(lang==='en'?'Scores must be 0–9.':'Puntajes deben ser 0–9.'); return; }
+    const a = { date, L, R, W, S, overall: calcOverall(L,R,W,S), level: getLevel(Math.min(L,R,W,S)), id: Date.now() };
+    attempts.unshift(a);
+    lsSet('migro_ielts_attempts', attempts);
+    toggleAddForm();
+    renderAttempts();
+    // load into sliders
+    ['L','R','W','S'].forEach(b => { document.getElementById('slider-'+b).value = a[b]; updateBand(b, a[b]); });
+  }
+
+  function deleteAttempt(id) {
+    attempts = attempts.filter(a => a.id !== id);
+    lsSet('migro_ielts_attempts', attempts);
+    renderAttempts();
+  }
+
+  const levelLabel = (l) => ({ en:{below:'Below',competent:'Competent',proficient:'Proficient',superior:'Superior'}, es:{below:'Bajo mínimo',competent:'Competente',proficient:'Avanzado',superior:'Superior'} })[lang][l];
+
+  function renderAttempts() {
+    const el = document.getElementById('attemptList');
+    if (!attempts.length) {
+      el.innerHTML = `<div class="history-empty">${lang==='en'?'No attempts recorded yet. Add your first IELTS result above.':'Ningún intento registrado. Agrega tu primer resultado IELTS arriba.'}</div>`;
+      document.getElementById('chartCard').style.display = 'none';
+      return;
+    }
+    el.innerHTML = '<div class="attempt-list">' + attempts.map(a => `
+      <div class="attempt-item">
+        <div class="attempt-date">${a.date}</div>
+        <div class="attempt-bands">
+          <span class="attempt-band">L ${a.L.toFixed(1)}</span>
+          <span class="attempt-band">R ${a.R.toFixed(1)}</span>
+          <span class="attempt-band">W ${a.W.toFixed(1)}</span>
+          <span class="attempt-band">S ${a.S.toFixed(1)}</span>
+        </div>
+        <div class="attempt-overall">${a.overall.toFixed(1)}</div>
+        <span class="attempt-level ${a.level}">${levelLabel(a.level)}</span>
+        <button class="attempt-del" onclick="deleteAttempt(${a.id})">✕</button>
+      </div>`).join('') + '</div>';
+
+    if (attempts.length >= 2) { document.getElementById('chartCard').style.display='block'; renderChart(); }
+    else document.getElementById('chartCard').style.display='none';
+  }
+
+  // ─── SVG CHART ───────────────────────────────────────────────────────────
+  function renderChart() {
+    const svg = document.getElementById('progressChart');
+    const data = [...attempts].reverse();
+    const n = data.length; if (n < 2) return;
+    const W=600, H=160, pad=34;
+    const xStep = (W - pad*2) / (n-1);
+    const yMin=4, yMax=9;
+    const ys = v => H - pad - ((v-yMin)/(yMax-yMin))*(H-pad*2);
+    let out = '';
+
+    // grid
+    [5,6,7,8,9].forEach(y => {
+      const yy = ys(y);
+      out += `<line x1="${pad}" y1="${yy}" x2="${W-pad}" y2="${yy}" stroke="#f0f0f0" stroke-width="1"/>`;
+      out += `<text x="${pad-6}" y="${yy+4}" font-size="9" fill="#bbb" text-anchor="end">${y}</text>`;
+    });
+    // threshold dashes
+    [[6,'#fde68a'],[7,'#bbf7d0'],[8,'#ddd6fe']].forEach(([yv,c]) =>
+      out += `<line x1="${pad}" y1="${ys(yv)}" x2="${W-pad}" y2="${ys(yv)}" stroke="${c}" stroke-width="1.5" stroke-dasharray="4,3"/>`
+    );
+    // band lines
+    [{b:'L',c:'#3b82f6'},{b:'R',c:'#10b981'},{b:'W',c:'#f59e0b'},{b:'S',c:'#8b5cf6'}].forEach(({b,c}) => {
+      const pts = data.map((a,i) => `${pad+i*xStep},${ys(a[b])}`);
+      out += `<polyline points="${pts.join(' ')}" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>`;
+    });
+    // overall line + dots
+    const oPts = data.map((a,i) => [pad+i*xStep, ys(a.overall)]);
+    out += `<polyline points="${oPts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="#0a0a0a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+    oPts.forEach((p,i) => {
+      out += `<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="#0a0a0a"/>`;
+      out += `<text x="${p[0]}" y="${p[1]-8}" font-size="9" fill="#0a0a0a" text-anchor="middle" font-weight="700">${data[i].overall.toFixed(1)}</text>`;
+      out += `<text x="${p[0]}" y="${H-4}" font-size="9" fill="#bbb" text-anchor="middle">${data[i].date.slice(5)}</text>`;
+    });
+    svg.innerHTML = out;
+  }
+
+  // ─── LANG ─────────────────────────────────────────────────────────────────
+  function setLang(l) {
+    lang = l;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent===l.toUpperCase()));
+    document.querySelectorAll('[data-en]').forEach(el => { const t=el.getAttribute('data-'+l); if(t) el.innerHTML=t; });
+    renderAttempts();
+    ['L','R','W','S'].forEach(b => { if (bands[b] > 0) updateBand(b, bands[b]); });
+  }
+
+  // ─── FADE UP ──────────────────────────────────────────────────────────────
+  const fadeObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); fadeObs.unobserve(e.target); } });
+  }, { threshold: 0.06 });
+  document.querySelectorAll('.fade-up').forEach(el => fadeObs.observe(el));
+
+  // ─── INIT ─────────────────────────────────────────────────────────────────
+  window.addEventListener('DOMContentLoaded', () => { renderAttempts(); });
+</script>
+</body>
+</html>
