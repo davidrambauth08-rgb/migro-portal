@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Migro — Build Your Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #0a0a0a;
+      --white: #ffffff;
+      --gray-100: #f5f5f5;
+      --gray-200: #e8e8e8;
+      --gray-300: #d0d0d0;
+      --gray-400: #999999;
+      --gray-600: #555555;
+      --gray-800: #222222;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--white);
+      color: var(--black);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 48px;
+      border-bottom: 1px solid var(--gray-200);
+      background: var(--white);
+      position: sticky; top: 0; z-index: 50;
+    }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px; font-weight: 700;
+      color: var(--black); text-decoration: none;
+    }
+
+    .nav-logo span {
+      display: inline-block;
+      width: 6px; height: 6px;
+      background: var(--black); border-radius: 50%;
+      margin-left: 2px; vertical-align: super;
+    }
+
+    .nav-right {
+      display: flex; align-items: center; gap: 16px;
+    }
+
+    .lang-toggle {
+      display: flex; background: var(--gray-100);
+      border-radius: 6px; padding: 3px; gap: 2px;
+    }
+
+    .lang-btn {
+      padding: 4px 10px; font-size: 11px; font-weight: 700;
+      border: none; background: transparent;
+      border-radius: 4px; cursor: pointer;
+      color: var(--gray-400); transition: all 0.2s;
+    }
+
+    .lang-btn.active { background: var(--black); color: var(--white); }
+
+    .save-exit {
+      font-size: 13px; font-weight: 500;
+      color: var(--gray-600); text-decoration: none;
+      padding: 8px 16px; border-radius: 6px;
+      border: 1px solid var(--gray-200);
+      transition: all 0.2s;
+    }
+
+    .save-exit:hover { border-color: var(--black); color: var(--black); }
+
+    /* ── PROGRESS BAR ── */
+    .progress-bar-wrap {
+      background: var(--gray-100);
+      padding: 0;
+      height: 3px;
+    }
+
+    .progress-bar-fill {
+      height: 3px;
+      background: var(--black);
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ── MAIN LAYOUT ── */
+    .main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      min-height: calc(100vh - 65px);
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      border-right: 1px solid var(--gray-200);
+      padding: 48px 32px;
+      position: sticky;
+      top: 65px;
+      height: calc(100vh - 65px);
+      overflow-y: auto;
+    }
+
+    .sidebar-title {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 2px;
+      color: var(--gray-400); margin-bottom: 32px;
+    }
+
+    .sidebar-steps { list-style: none; }
+
+    .sidebar-step {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--gray-100);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .sidebar-step:last-child { border-bottom: none; }
+
+    .step-indicator {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      border: 2px solid var(--gray-200);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700;
+      color: var(--gray-400);
+      flex-shrink: 0;
+      transition: all 0.3s;
+    }
+
+    .sidebar-step.completed .step-indicator {
+      background: var(--black);
+      border-color: var(--black);
+      color: var(--white);
+    }
+
+    .sidebar-step.active .step-indicator {
+      border-color: var(--black);
+      color: var(--black);
+      background: transparent;
+    }
+
+    .step-info { flex: 1; }
+
+    .step-info-num {
+      font-size: 10px; font-weight: 600;
+      color: var(--gray-400);
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+
+    .step-info-name {
+      font-size: 13px; font-weight: 600;
+      color: var(--gray-400);
+      margin-top: 2px; line-height: 1.3;
+    }
+
+    .sidebar-step.active .step-info-name,
+    .sidebar-step.completed .step-info-name {
+      color: var(--black);
+    }
+
+    /* ── CONTENT AREA ── */
+    .content {
+      padding: 64px 72px;
+      max-width: 760px;
+    }
+
+    /* ── STEP PANEL ── */
+    .step-panel {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .step-panel.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .step-tag {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 2px;
+      color: var(--gray-400); margin-bottom: 12px;
+    }
+
+    .step-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 3vw, 40px);
+      font-weight: 700; line-height: 1.15;
+      letter-spacing: -0.5px;
+      margin-bottom: 12px;
+    }
+
+    .step-sub {
+      font-size: 16px; color: var(--gray-600);
+      line-height: 1.6; margin-bottom: 40px;
+      max-width: 500px;
+    }
+
+    /* ── OPTION CARDS ── */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+
+    .options-grid.cols-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .options-grid.cols-1 {
+      grid-template-columns: 1fr;
+    }
+
+    .option-card {
+      border: 1.5px solid var(--gray-200);
+      border-radius: 10px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex; align-items: center; gap: 14px;
+      user-select: none;
+    }
+
+    .option-card:hover {
+      border-color: var(--gray-400);
+      background: var(--gray-100);
+    }
+
+    .option-card.selected {
+      border-color: var(--black);
+      background: var(--black);
+    }
+
+    .option-card.selected .option-label { color: var(--white); }
+    .option-card.selected .option-sub { color: #888; }
+    .option-card.selected .option-check { background: var(--white); border-color: var(--white); }
+    .option-card.selected .option-check::after {
+      content: '✓';
+      position: absolute;
+      font-size: 11px; font-weight: 800;
+      color: var(--black);
+    }
+
+    .option-emoji { font-size: 24px; flex-shrink: 0; }
+
+    .option-text { flex: 1; }
+
+    .option-label {
+      font-size: 15px; font-weight: 600;
+      color: var(--black); line-height: 1.2;
+    }
+
+    .option-sub {
+      font-size: 12px; color: var(--gray-400);
+      margin-top: 3px;
+    }
+
+    .option-check {
+      width: 20px; height: 20px; border-radius: 50%;
+      border: 2px solid var(--gray-200);
+      flex-shrink: 0; position: relative;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+
+    /* ── NATIONALITY SEARCH ── */
+    .search-input-wrap {
+      position: relative; margin-bottom: 16px;
+    }
+
+    .search-icon {
+      position: absolute; left: 16px; top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px; pointer-events: none;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 16px 16px 16px 44px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 10px;
+      font-size: 15px; font-family: 'Inter', sans-serif;
+      color: var(--black); background: var(--white);
+      outline: none; transition: border-color 0.2s;
+    }
+
+    .input-field:focus { border-color: var(--black); }
+
+    .input-field.no-icon { padding-left: 16px; }
+
+    .country-list {
+      border: 1.5px solid var(--gray-200);
+      border-radius: 10px; overflow: hidden;
+      max-height: 320px; overflow-y: auto;
+    }
+
+    .country-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 18px; cursor: pointer;
+      border-bottom: 1px solid var(--gray-100);
+      transition: all 0.15s;
+    }
+
+    .country-item:last-child { border-bottom: none; }
+    .country-item:hover { background: var(--gray-100); }
+
+    .country-item.selected {
+      background: var(--black);
+    }
+
+    .country-item.selected .country-name { color: var(--white); }
+    .country-item.selected .country-flag { filter: none; }
+
+    .country-flag { font-size: 22px; }
+    .country-name { font-size: 14px; font-weight: 500; color: var(--black); }
+
+    /* ── RANGE SLIDER ── */
+    .age-display {
+      font-family: 'Playfair Display', serif;
+      font-size: 72px; font-weight: 700;
+      color: var(--black); line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .age-label {
+      font-size: 14px; color: var(--gray-400);
+      margin-bottom: 32px;
+    }
+
+    .range-wrap { margin-bottom: 40px; }
+
+    .range-slider {
+      -webkit-appearance: none;
+      width: 100%; height: 3px;
+      background: var(--gray-200);
+      outline: none; border-radius: 2px;
+    }
+
+    .range-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: var(--black);
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    }
+
+    .range-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .range-labels {
+      display: flex; justify-content: space-between;
+      margin-top: 8px;
+    }
+
+    .range-labels span {
+      font-size: 12px; color: var(--gray-400); font-weight: 500;
+    }
+
+    /* ── ENGLISH LEVEL ── */
+    .english-grid {
+      display: flex; flex-direction: column; gap: 10px;
+      margin-bottom: 40px;
+    }
+
+    .english-card {
+      border: 1.5px solid var(--gray-200);
+      border-radius: 10px; padding: 18px 20px;
+      cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; gap: 16px;
+    }
+
+    .english-card:hover { border-color: var(--gray-400); background: var(--gray-100); }
+
+    .english-card.selected {
+      border-color: var(--black); background: var(--black);
+    }
+
+    .english-card.selected .english-level { color: var(--white); }
+    .english-card.selected .english-desc { color: #888; }
+    .english-card.selected .english-dots span { background: var(--white); }
+    .english-card.selected .english-dots span.empty { background: #444; }
+
+    .english-dots {
+      display: flex; gap: 4px; align-items: center;
+    }
+
+    .english-dots span {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--black); transition: all 0.2s;
+    }
+
+    .english-dots span.empty { background: var(--gray-200); }
+
+    .english-text { flex: 1; }
+
+    .english-level {
+      font-size: 15px; font-weight: 700; color: var(--black);
+    }
+
+    .english-desc {
+      font-size: 12px; color: var(--gray-400); margin-top: 2px;
+    }
+
+    /* ── TEXTAREA ── */
+    .text-area {
+      width: 100%;
+      padding: 16px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 10px;
+      font-size: 15px; font-family: 'Inter', sans-serif;
+      color: var(--black); resize: vertical;
+      min-height: 100px; outline: none;
+      transition: border-color 0.2s;
+      margin-bottom: 40px;
+    }
+
+    .text-area:focus { border-color: var(--black); }
+
+    /* ── NAVIGATION BUTTONS ── */
+    .nav-buttons {
+      display: flex; gap: 12px; align-items: center;
+      padding-top: 24px;
+      border-top: 1px solid var(--gray-200);
+    }
+
+    .btn-back {
+      padding: 14px 28px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 8px; font-size: 15px; font-weight: 600;
+      color: var(--gray-600); background: transparent;
+      cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .btn-back:hover { border-color: var(--black); color: var(--black); }
+
+    .btn-next {
+      padding: 14px 36px;
+      background: var(--black); color: var(--white);
+      border: 1.5px solid var(--black);
+      border-radius: 8px; font-size: 15px; font-weight: 700;
+      cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; gap: 8px;
+      flex: 1; justify-content: center;
+    }
+
+    .btn-next:hover {
+      background: var(--gray-800);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+
+    .btn-next:disabled {
+      opacity: 0.35; cursor: not-allowed;
+      transform: none; box-shadow: none;
+    }
+
+    /* ── TAGS (multi-select) ── */
+    .tags-wrap {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      margin-bottom: 40px;
+    }
+
+    .tag {
+      padding: 10px 18px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 100px; font-size: 14px; font-weight: 500;
+      cursor: pointer; transition: all 0.2s; user-select: none;
+      color: var(--black);
+    }
+
+    .tag:hover { border-color: var(--gray-400); background: var(--gray-100); }
+
+    .tag.selected {
+      background: var(--black); border-color: var(--black);
+      color: var(--white);
+    }
+
+    /* ── STEP 5 — STATUS ── */
+    .status-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+
+    /* ── COMPLETION SCREEN ── */
+    .completion {
+      display: none;
+      text-align: center;
+      padding: 80px 40px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .completion.active { display: block; }
+
+    .completion-icon {
+      width: 80px; height: 80px;
+      background: var(--black);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px;
+      margin: 0 auto 32px;
+      animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .completion-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 40px; font-weight: 700;
+      letter-spacing: -1px; margin-bottom: 16px;
+    }
+
+    .completion-sub {
+      font-size: 17px; color: var(--gray-600);
+      max-width: 400px; margin: 0 auto 40px;
+      line-height: 1.7;
+    }
+
+    .btn-see-profile {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--black); color: var(--white);
+      padding: 16px 40px; border-radius: 8px;
+      font-size: 16px; font-weight: 700;
+      text-decoration: none; transition: all 0.2s;
+      cursor: pointer; border: none;
+    }
+
+    .btn-see-profile:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      .main { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .content { padding: 40px 24px; }
+      nav { padding: 16px 24px; }
+      .options-grid.cols-2 { grid-template-columns: 1fr; }
+      .status-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="migro-landing.html" class="nav-logo">Migro<span></span></a>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('es')">ES</button>
+      </div>
+      <a href="migro-landing.html" class="save-exit" data-en="← Back to home" data-es="← Volver al inicio">← Back to home</a>
+    </div>
+  </nav>
+
+  <!-- PROGRESS BAR -->
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progressBar" style="width: 16.6%"></div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <p class="sidebar-title" data-en="YOUR PROFILE" data-es="TU PERFIL">YOUR PROFILE</p>
+      <ul class="sidebar-steps" id="sidebarSteps">
+        <li class="sidebar-step active" data-step="1">
+          <div class="step-indicator">1</div>
+          <div class="step-info">
+            <div class="step-info-num">Step 1</div>
+            <div class="step-info-name" data-en="Nationality" data-es="Nacionalidad">Nationality</div>
+          </div>
+        </li>
+        <li class="sidebar-step" data-step="2">
+          <div class="step-indicator">2</div>
+          <div class="step-info">
+            <div class="step-info-num">Step 2</div>
+            <div class="step-info-name" data-en="Age" data-es="Edad">Age</div>
+          </div>
+        </li>
+        <li class="sidebar-step" data-step="3">
+          <div class="step-indicator">3</div>
+          <div class="step-info">
+            <div class="step-info-num">Step 3</div>
+            <div class="step-info-name" data-en="English Level" data-es="Nivel de Inglés">English Level</div>
+          </div>
+        </li>
+        <li class="sidebar-step" data-step="4">
+          <div class="step-indicator">4</div>
+          <div class="step-info">
+            <div class="step-info-num">Step 4</div>
+            <div class="step-info-name" data-en="Education & Experience" data-es="Estudios y Experiencia">Education & Experience</div>
+          </div>
+        </li>
+        <li class="sidebar-step" data-step="5">
+          <div class="step-indicator">5</div>
+          <div class="step-info">
+            <div class="step-info-num">Step 5</div>
+            <div class="step-info-name" data-en="Current Situation" data-es="Situación Actual">Current Situation</div>
+          </div>
+        </li>
+        <li class="sidebar-step" data-step="6">
+          <div class="step-indicator">6</div>
+          <div class="step-info">
+            <div class="step-info-num">Step 6</div>
+            <div class="step-info-name" data-en="Your Goal" data-es="Tu Objetivo">Your Goal</div>
+          </div>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- STEP 1: NATIONALITY -->
+      <div class="step-panel active" id="step1">
+        <p class="step-tag" data-en="STEP 1 OF 6 · NATIONALITY" data-es="PASO 1 DE 6 · NACIONALIDAD">STEP 1 OF 6 · NATIONALITY</p>
+        <h1 class="step-headline" data-en="Where are you from?" data-es="¿De dónde eres?">Where are you from?</h1>
+        <p class="step-sub" data-en="Your nationality determines which visas are available to you and what requirements apply." data-es="Tu nacionalidad determina qué visas están disponibles y qué requisitos aplican.">Your nationality determines which visas are available to you and what requirements apply.</p>
+
+        <div class="search-input-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" class="input-field" id="countrySearch"
+            placeholder="Search your country... / Busca tu país..."
+            oninput="filterCountries()" autocomplete="off"/>
+        </div>
+
+        <div class="country-list" id="countryList"></div>
+
+        <div class="nav-buttons" style="margin-top: 32px;">
+          <button class="btn-next" id="next1" onclick="goToStep(2)" disabled>
+            <span data-en="Continue" data-es="Continuar">Continue</span> →
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 2: AGE -->
+      <div class="step-panel" id="step2">
+        <p class="step-tag" data-en="STEP 2 OF 6 · AGE" data-es="PASO 2 DE 6 · EDAD">STEP 2 OF 6 · AGE</p>
+        <h1 class="step-headline" data-en="How old are you?" data-es="¿Cuántos años tienes?">How old are you?</h1>
+        <p class="step-sub" data-en="Age is a key factor in the points-based system for Australian skilled visas." data-es="La edad es un factor clave en el sistema de puntos para visas de habilidades de Australia.">Age is a key factor in the points-based system for Australian skilled visas.</p>
+
+        <div class="age-display" id="ageDisplay">25</div>
+        <p class="age-label" data-en="years old" data-es="años">years old</p>
+
+        <div class="range-wrap">
+          <input type="range" class="range-slider" id="ageSlider"
+            min="18" max="65" value="25"
+            oninput="updateAge(this.value)"/>
+          <div class="range-labels">
+            <span>18</span>
+            <span data-en="Best points: 25–32" data-es="Mejor puntaje: 25–32">Best points: 25–32</span>
+            <span>65+</span>
+          </div>
+        </div>
+
+        <div class="nav-buttons">
+          <button class="btn-back" onclick="goToStep(1)">← <span data-en="Back" data-es="Atrás">Back</span></button>
+          <button class="btn-next" onclick="goToStep(3)">
+            <span data-en="Continue" data-es="Continuar">Continue</span> →
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 3: ENGLISH -->
+      <div class="step-panel" id="step3">
+        <p class="step-tag" data-en="STEP 3 OF 6 · ENGLISH LEVEL" data-es="PASO 3 DE 6 · NIVEL DE INGLÉS">STEP 3 OF 6 · ENGLISH LEVEL</p>
+        <h1 class="step-headline" data-en="What's your English level?" data-es="¿Cuál es tu nivel de inglés?">What's your English level?</h1>
+        <p class="step-sub" data-en="English proficiency directly affects your points score and available visa options." data-es="El dominio del inglés afecta directamente tu puntaje y las opciones de visa disponibles.">English proficiency directly affects your points score and available visa options.</p>
+
+        <div class="english-grid">
+          <div class="english-card" onclick="selectEnglish(this, 'none')" data-en-label="No English" data-en-desc="I don't speak English" data-es-label="Sin inglés" data-es-desc="No hablo inglés">
+            <div class="english-dots">
+              <span class="empty"></span><span class="empty"></span><span class="empty"></span><span class="empty"></span><span class="empty"></span>
+            </div>
+            <div class="english-text">
+              <div class="english-level">No English</div>
+              <div class="english-desc">I don't speak English</div>
+            </div>
+          </div>
+          <div class="english-card" onclick="selectEnglish(this, 'basic')" data-en-label="Basic" data-en-desc="I can handle simple conversations" data-es-label="Básico" data-es-desc="Puedo manejar conversaciones simples">
+            <div class="english-dots">
+              <span></span><span class="empty"></span><span class="empty"></span><span class="empty"></span><span class="empty"></span>
+            </div>
+            <div class="english-text">
+              <div class="english-level">Basic</div>
+              <div class="english-desc">I can handle simple conversations</div>
+            </div>
+          </div>
+          <div class="english-card" onclick="selectEnglish(this, 'intermediate')" data-en-label="Intermediate" data-en-desc="I can work and communicate comfortably" data-es-label="Intermedio" data-es-desc="Puedo trabajar y comunicarme con comodidad">
+            <div class="english-dots">
+              <span></span><span></span><span></span><span class="empty"></span><span class="empty"></span>
+            </div>
+            <div class="english-text">
+              <div class="english-level">Intermediate</div>
+              <div class="english-desc">I can work and communicate comfortably</div>
+            </div>
+          </div>
+          <div class="english-card" onclick="selectEnglish(this, 'proficient')" data-en-label="Proficient" data-en-desc="Strong English — IELTS 7+ equivalent" data-es-label="Avanzado" data-es-desc="Inglés sólido — equivalente IELTS 7+">
+            <div class="english-dots">
+              <span></span><span></span><span></span><span></span><span class="empty"></span>
+            </div>
+            <div class="english-text">
+              <div class="english-level">Proficient</div>
+              <div class="english-desc">Strong English — IELTS 7+ equivalent</div>
+            </div>
+          </div>
+          <div class="english-card" onclick="selectEnglish(this, 'superior')" data-en-label="Superior / Native" data-en-desc="IELTS 8+ or native speaker" data-es-label="Superior / Nativo" data-es-desc="IELTS 8+ o hablante nativo">
+            <div class="english-dots">
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <div class="english-text">
+              <div class="english-level">Superior / Native</div>
+              <div class="english-desc">IELTS 8+ or native speaker</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="nav-buttons">
+          <button class="btn-back" onclick="goToStep(2)">← <span data-en="Back" data-es="Atrás">Back</span></button>
+          <button class="btn-next" id="next3" onclick="goToStep(4)" disabled>
+            <span data-en="Continue" data-es="Continuar">Continue</span> →
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 4: EDUCATION & EXPERIENCE -->
+      <div class="step-panel" id="step4">
+        <p class="step-tag" data-en="STEP 4 OF 6 · EDUCATION & EXPERIENCE" data-es="PASO 4 DE 6 · ESTUDIOS Y EXPERIENCIA">STEP 4 OF 6 · EDUCATION & EXPERIENCE</p>
+        <h1 class="step-headline" data-en="Your education &amp; work experience" data-es="Tu educación y experiencia laboral">Your education &amp; work experience</h1>
+        <p class="step-sub" data-en="Select your highest level of education and how many years of work experience you have." data-es="Selecciona tu nivel educativo más alto y cuántos años de experiencia laboral tienes.">Select your highest level of education and how many years of work experience you have.</p>
+
+        <p style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--gray-400);margin-bottom:12px;" data-en="EDUCATION LEVEL" data-es="NIVEL EDUCATIVO">EDUCATION LEVEL</p>
+        <div class="options-grid" style="margin-bottom:32px;">
+          <div class="option-card" onclick="selectOption(this,'edu','highschool')">
+            <span class="option-emoji">🏫</span>
+            <div class="option-text">
+              <div class="option-label" data-en="High School" data-es="Secundaria">High School</div>
+              <div class="option-sub" data-en="Completed secondary education" data-es="Secundaria completa">Completed secondary education</div>
+            </div>
+            <div class="option-check"></div>
+          </div>
+          <div class="option-card" onclick="selectOption(this,'edu','vocational')">
+            <span class="option-emoji">🔧</span>
+            <div class="option-text">
+              <div class="option-label" data-en="Vocational / Technical" data-es="Técnico / Vocacional">Vocational / Technical</div>
+              <div class="option-sub" data-en="Certificate or diploma" data-es="Certificado o diploma">Certificate or diploma</div>
+            </div>
+            <div class="option-check"></div>
+          </div>
+          <div class="option-card" onclick="selectOption(this,'edu','bachelor')">
+            <span class="option-emoji">🎓</span>
+            <div class="option-text">
+              <div class="option-label" data-en="Bachelor's Degree" data-es="Licenciatura">Bachelor's Degree</div>
+              <div class="option-sub" data-en="University undergraduate" data-es="Pregrado universitario">University undergraduate</div>
+            </div>
+            <div class="option-check"></div>
+          </div>
+          <div class="option-card" onclick="selectOption(this,'edu','postgrad')">
+            <span class="option-emoji">🏆</span>
+            <div class="option-text">
+              <div class="option-label" data-en="Postgraduate" data-es="Posgrado">Postgraduate</div>
+              <div class="option-sub" data-en="Masters or PhD" data-es="Maestría o Doctorado">Masters or PhD</div>
+            </div>
+            <div class="option-check"></div>
+          </div>
+        </div>
+
+        <p style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--gray-400);margin-bottom:12px;" data-en="YEARS OF WORK EXPERIENCE" data-es="AÑOS DE EXPERIENCIA LABORAL">YEARS OF WORK EXPERIENCE</p>
+        <div class="tags-wrap" id="expTags">
+          <div class="tag" onclick="selectTag(this,'exp','0')" data-en="None" data-es="Ninguna">None</div>
+          <div class="tag" onclick="selectTag(this,'exp','1-2')" data-en="1–2 years" data-es="1–2 años">1–2 years</div>
+          <div class="tag" onclick="selectTag(this,'exp','3-4')" data-en="3–4 years" data-es="3–4 años">3–4 years</div>
+          <div class="tag" onclick="selectTag(this,'exp','5-7')" data-en="5–7 years" data-es="5–7 años">5–7 years</div>
+          <div class="tag" onclick="selectTag(this,'exp','8+')" data-en="8+ years" data-es="8+ años">8+ years</div>
+        </div>
+
+        <div class="nav-buttons">
+          <button class="btn-back" onclick="goToStep(3)">← <span data-en="Back" data-es="Atrás">Back</span></button>
+          <button class="btn-next" id="next4" onclick="goToStep(5)" disabled>
+            <span data-en="Continue" data-es="Continuar">Continue</span> →
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 5: CURRENT SITUATION -->
+      <div class="step-panel" id="step5">
+        <p class="step-tag" data-en="STEP 5 OF 6 · CURRENT SITUATION" data-es="PASO 5 DE 6 · SITUACIÓN ACTUAL">STEP 5 OF 6 · CURRENT SITUATION</p>
+        <h1 class="step-headline" data-en="Where are you right now?" data-es="¿Dónde estás ahora?">Where are you right now?</h1>
+        <p class="step-sub" data-en="Your current migration status changes which pathways are open to you." data-es="Tu situación migratoria actual determina qué caminos están disponibles.">Your current migration status changes which pathways are open to you.</p>
+
+        <div class="status-grid">
+          <div class="option-card" onclick="selectOption(this,'status','home')">
+            <span class="option-emoji">🏠</span>
+            <div class="option-text">
+              <div class="option-label" data-en="In my home country" data-es="En mi país de origen">In my home country</div>
+              <div class="option-sub" data-en="Applying from abroad" data-es="Solicitando desde el extranjero">Applying from abroad</div>
+            </div>
+            <div class="option-check"></div>
+          </div>
+          <div class="option-card" onclick="selectOption(this,'status','australia_visitor')">
+            <span class="option-emoji">🛬</span>
+            <div class="option-text">
+              <div class="option-label" data-en="In Australia (visitor)" data-es="En Australia (turista)">In Australia (visitor)</div>
+              <div class="option-sub" data-en="Tourist or short stay visa" data-es="Visa turista o estadía corta">Tourist or short stay visa</div>
+            </div>
+            <div class="option-check"></div>
+          </div>
+          <div class="option-card" onclick="selectOption(this,'status','australia_student')">
+            <span class="option-emoji">📚</span>
+            <div class="option-text">
+              <div class="option-label" data-en="In Australia (student)" data-es="En Australia (estudiante)">In Australia (student)</div>
+              <div class="option-sub" data-en="Currently on student visa" data-es="Actualmente con visa estudiantil">Currently on student visa</div>
+            </div>
+            <div class="option-check"></div>
+          </div>
+          <div class="option-card" onclick="selectOption(this,'status','australia_work')">
+            <span class="option-emoji">💼</span>
+            <div class="option-text">
+              <div class="option-label" data-en="In Australia (working)" data-es="En Australia (trabajando)">In Australia (working)</div>
+              <div class="option-sub" data-en="Currently on work visa" data-es="Actualmente con visa de trabajo">Currently on work visa</div>
+            </div>
+            <div class="option-check"></div>
+          </div>
+          <div class="option-card" onclick="selectOption(this,'status','third_country')">
+            <span class="option-emoji">✈️</span>
+            <div class="option-text">
+              <div class="option-label" data-en="In a third country" data-es="En un tercer país">In a third country</div>
+              <div class="option-sub" data-en="Living outside my home country" data-es="Viviendo fuera de mi país de origen">Living outside my home country</div>
+            </div>
+            <div class="option-check"></div>
+          </div>
+          <div class="option-card" onclick="selectOption(this,'status','pr')">
+            <span class="option-emoji">🟢</span>
+            <div class="option-text">
+              <div class="option-label" data-en="Australian PR / Citizen" data-es="RP / Ciudadano australiano">Australian PR / Citizen</div>
+              <div class="option-sub" data-en="Permanent resident or citizen" data-es="Residente permanente o ciudadano">Permanent resident or citizen</div>
+            </div>
+            <div class="option-check"></div>
+          </div>
+        </div>
+
+        <div class="nav-buttons">
+          <button class="btn-back" onclick="goToStep(4)">← <span data-en="Back" data-es="Atrás">Back</span></button>
+          <button class="btn-next" id="next5" onclick="goToStep(6)" disabled>
+            <span data-en="Continue" data-es="Continuar">Continue</span> →
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 6: GOAL -->
+      <div class="step-panel" id="step6">
+        <p class="step-tag" data-en="STEP 6 OF 6 · YOUR GOAL" data-es="PASO 6 DE 6 · TU OBJETIVO">STEP 6 OF 6 · YOUR GOAL</p>
+        <h1 class="step-headline" data-en="What do you want to do?" data-es="¿Qué quieres hacer?">What do you want to do?</h1>
+        <p class="step-sub" data-en="Your goal shapes which visa routes we recommend and how we build your plan." data-es="Tu objetivo determina qué rutas de visa recomendamos y cómo construimos tu plan.">Your goal shapes which visa routes we recommend and how we build your plan.</p>
+
+        <div class="options-grid cols-1" style="margin-bottom:40px;">
+          <div class="option-card" onclick="selectOption(this,'goal','work')">
+            <span class="option-emoji">💼</span>
+            <div class="option-text">
+              <div class="option-label" data-en="Work in Australia" data-es="Trabajar en Australia">Work in Australia</div>
+              <div class="option-sub" data-en="Skilled work, employer sponsorship, or working holiday" data-es="Trabajo calificado, patrocinio de empleador, o vacaciones laborales">Skilled work, employer sponsorship, or working holiday</div>
+            </div>
+            <div class="option-check"></div>
+          </div>
+          <div class="option-card" onclick="selectOption(this,'goal','study')">
+            <span class="option-emoji">🎓</span>
+            <div class="option-text">
+              <div class="option-label" data-en="Study in Australia" data-es="Estudiar en Australia">Study in Australia</div>
+              <div class="option-sub" data-en="University, vocational, or language programs" data-es="Universidad, técnico o programas de idiomas">University, vocational, or language programs</div>
+            </div>
+            <div class="option-check"></div>
+          </div>
+          <div class="option-card" onclick="selectOption(this,'goal','pr')">
+            <span class="option-emoji">🏡</span>
+            <div class="option-text">
+              <div class="option-label" data-en="Permanent Residency" data-es="Residencia Permanente">Permanent Residency</div>
+              <div class="option-sub" data-en="Points-based skilled migration or employer nomination" data-es="Migración calificada por puntos o nominación de empleador">Points-based skilled migration or employer nomination</div>
+            </div>
+            <div class="option-check"></div>
+          </div>
+          <div class="option-card" onclick="selectOption(this,'goal','extend')">
+            <span class="option-emoji">🔄</span>
+            <div class="option-text">
+              <div class="option-label" data-en="Extend / Change my visa" data-es="Extender / Cambiar mi visa">Extend / Change my visa</div>
+              <div class="option-sub" data-en="Already in Australia and need to stay or change status" data-es="Ya estoy en Australia y necesito quedarme o cambiar estatus">Already in Australia and need to stay or change status</div>
+            </div>
+            <div class="option-check"></div>
+          </div>
+        </div>
+
+        <div class="nav-buttons">
+          <button class="btn-back" onclick="goToStep(5)">← <span data-en="Back" data-es="Atrás">Back</span></button>
+          <button class="btn-next" id="next6" onclick="completeOnboarding()" disabled>
+            <span data-en="Build my profile" data-es="Crear mi perfil">Build my profile</span> →
+          </button>
+        </div>
+      </div>
+
+      <!-- COMPLETION -->
+      <div class="completion" id="completion">
+        <div class="completion-icon">✓</div>
+        <h2 class="completion-title" data-en="Profile complete!" data-es="¡Perfil completo!">Profile complete!</h2>
+        <p class="completion-sub" data-en="We've built your migration profile. Let's show you your best visa routes and next steps." data-es="Hemos creado tu perfil migratorio. Ahora te mostramos tus mejores rutas de visa y próximos pasos.">We've built your migration profile. Let's show you your best visa routes and next steps.</p>
+        <button class="btn-see-profile" onclick="alert('Paso 3 — Perfil migratorio próximamente! / Step 3 — Migration profile coming next!')">
+          <span data-en="View my migration profile" data-es="Ver mi perfil migratorio">View my migration profile</span> →
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ── DATA ──
+    const userProfile = { country: null, age: 25, english: null, edu: null, exp: null, status: null, goal: null };
+    let currentLang = 'en';
+    let currentStep = 1;
+
+    const countries = [
+      { flag:'🇦🇷', name:'Argentina' }, { flag:'🇧🇴', name:'Bolivia' },
+      { flag:'🇧🇷', name:'Brazil' }, { flag:'🇨🇱', name:'Chile' },
+      { flag:'🇨🇴', name:'Colombia' }, { flag:'🇨🇷', name:'Costa Rica' },
+      { flag:'🇨🇺', name:'Cuba' }, { flag:'🇩🇴', name:'Dominican Republic' },
+      { flag:'🇪🇨', name:'Ecuador' }, { flag:'🇸🇻', name:'El Salvador' },
+      { flag:'🇬🇹', name:'Guatemala' }, { flag:'🇭🇳', name:'Honduras' },
+      { flag:'🇲🇽', name:'Mexico' }, { flag:'🇳🇮', name:'Nicaragua' },
+      { flag:'🇵🇦', name:'Panama' }, { flag:'🇵🇾', name:'Paraguay' },
+      { flag:'🇵🇪', name:'Peru' }, { flag:'🇵🇷', name:'Puerto Rico' },
+      { flag:'🇺🇾', name:'Uruguay' }, { flag:'🇻🇪', name:'Venezuela' },
+      { flag:'🇨🇳', name:'China' }, { flag:'🇮🇳', name:'India' },
+      { flag:'🇵🇭', name:'Philippines' }, { flag:'🇧🇩', name:'Bangladesh' },
+      { flag:'🇵🇰', name:'Pakistan' }, { flag:'🇻🇳', name:'Vietnam' },
+      { flag:'🇳🇵', name:'Nepal' }, { flag:'🇮🇩', name:'Indonesia' },
+      { flag:'🇰🇷', name:'South Korea' }, { flag:'🇯🇵', name:'Japan' },
+      { flag:'🇵🇱', name:'Poland' }, { flag:'🇷🇺', name:'Russia' },
+      { flag:'🇺🇦', name:'Ukraine' }, { flag:'🇬🇧', name:'United Kingdom' },
+      { flag:'🇿🇦', name:'South Africa' }, { flag:'🇳🇬', name:'Nigeria' },
+      { flag:'🇪🇹', name:'Ethiopia' }, { flag:'🇰🇪', name:'Kenya' },
+      { flag:'🇺🇸', name:'United States' }, { flag:'🇨🇦', name:'Canada' },
+      { flag:'🇩🇪', name:'Germany' }, { flag:'🇫🇷', name:'France' },
+      { flag:'🇮🇹', name:'Italy' }, { flag:'🇪🇸', name:'Spain' },
+      { flag:'🇵🇹', name:'Portugal' }, { flag:'🇳🇿', name:'New Zealand' },
+    ];
+
+    // ── RENDER COUNTRIES ──
+    function renderCountries(list) {
+      const el = document.getElementById('countryList');
+      el.innerHTML = list.map(c => `
+        <div class="country-item ${userProfile.country === c.name ? 'selected' : ''}"
+          onclick="selectCountry('${c.name}', this)">
+          <span class="country-flag">${c.flag}</span>
+          <span class="country-name">${c.name}</span>
+        </div>`).join('');
+    }
+
+    function filterCountries() {
+      const q = document.getElementById('countrySearch').value.toLowerCase();
+      renderCountries(countries.filter(c => c.name.toLowerCase().includes(q)));
+    }
+
+    function selectCountry(name, el) {
+      userProfile.country = name;
+      document.querySelectorAll('.country-item').forEach(i => i.classList.remove('selected'));
+      el.classList.add('selected');
+      document.getElementById('next1').disabled = false;
+    }
+
+    renderCountries(countries);
+
+    // ── AGE SLIDER ──
+    function updateAge(val) {
+      userProfile.age = parseInt(val);
+      document.getElementById('ageDisplay').textContent = val;
+    }
+
+    // ── ENGLISH SELECT ──
+    function selectEnglish(el, level) {
+      userProfile.english = level;
+      document.querySelectorAll('.english-card').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      document.getElementById('next3').disabled = false;
+    }
+
+    // ── OPTION CARDS (single select per group) ──
+    const selections = {};
+
+    function selectOption(el, group, value) {
+      selections[group] = value;
+      userProfile[group] = value;
+      el.closest('.options-grid, .status-grid').querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      checkStep4(); checkStep5(); checkStep6();
+    }
+
+    function checkStep4() {
+      const ok = selections['edu'] && selections['exp'];
+      const btn = document.getElementById('next4');
+      if (btn) btn.disabled = !ok;
+    }
+
+    function checkStep5() {
+      const btn = document.getElementById('next5');
+      if (btn) btn.disabled = !selections['status'];
+    }
+
+    function checkStep6() {
+      const btn = document.getElementById('next6');
+      if (btn) btn.disabled = !selections['goal'];
+    }
+
+    // ── TAGS ──
+    function selectTag(el, group, value) {
+      selections[group] = value;
+      userProfile[group] = value;
+      el.closest('.tags-wrap').querySelectorAll('.tag').forEach(t => t.classList.remove('selected'));
+      el.classList.add('selected');
+      checkStep4();
+    }
+
+    // ── STEP NAVIGATION ──
+    function goToStep(n) {
+      document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('step' + n).classList.add('active');
+      currentStep = n;
+      updateSidebar(n);
+      updateProgress(n);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function updateSidebar(active) {
+      document.querySelectorAll('.sidebar-step').forEach(s => {
+        const n = parseInt(s.dataset.step);
+        s.classList.remove('active', 'completed');
+        if (n === active) s.classList.add('active');
+        else if (n < active) s.classList.add('completed');
+      });
+    }
+
+    function updateProgress(step) {
+      const pct = (step / 6) * 100;
+      document.getElementById('progressBar').style.width = pct + '%';
+    }
+
+    // ── COMPLETE ──
+    function completeOnboarding() {
+      document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('completion').classList.add('active');
+      document.getElementById('progressBar').style.width = '100%';
+      document.querySelectorAll('.sidebar-step').forEach(s => s.classList.add('completed'));
+    }
+
+    // ── LANG TOGGLE ──
+    function setLang(lang) {
+      currentLang = lang;
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent === lang.toUpperCase()));
+
+      // generic data-en / data-es
+      document.querySelectorAll('[data-en]').forEach(el => {
+        const t = el.getAttribute('data-' + lang);
+        if (t) el.innerHTML = t;
+      });
+
+      // english cards labels
+      document.querySelectorAll('.english-card').forEach(card => {
+        const lbl = card.getAttribute('data-' + lang + '-label');
+        const desc = card.getAttribute('data-' + lang + '-desc');
+        if (lbl) card.querySelector('.english-level').textContent = lbl;
+        if (desc) card.querySelector('.english-desc').textContent = desc;
+      });
+    }
+  </script>
+</body>
+</html>
