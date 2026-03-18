@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Migro — EOI & SkillSelect Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black:#0a0a0a; --white:#ffffff;
+    --gray-50:#f9fafb; --gray-100:#f3f4f6; --gray-200:#e5e7eb;
+    --gray-300:#d1d5db; --gray-400:#9ca3af; --gray-500:#6b7280;
+    --gray-600:#4b5563; --gray-700:#374151; --gray-800:#1f2937;
+    --green:#16a34a; --green-bg:#f0fdf4; --green-border:#bbf7d0;
+    --amber:#d97706; --amber-bg:#fffbeb; --amber-border:#fde68a;
+    --red:#dc2626;   --red-bg:#fef2f2;   --red-border:#fecaca;
+    --blue:#2563eb;  --blue-bg:#eff6ff;  --blue-border:#bfdbfe;
+    --purple:#7c3aed;--purple-bg:#f5f3ff;--purple-border:#ddd6fe;
+    --teal:#0d9488;  --teal-bg:#f0fdfa;  --teal-border:#99f6e4;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; color: var(--gray-800); background: var(--gray-50); line-height: 1.6; }
+
+  /* NAV */
+  nav { position: sticky; top: 0; z-index: 100; background: var(--black); color: var(--white); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; height: 56px; }
+  .nav-brand { font-family: 'Playfair Display', serif; font-size: 1.3rem; letter-spacing: -0.5px; }
+  .nav-brand span { color: var(--amber); }
+  .nav-right { display: flex; align-items: center; gap: 16px; }
+  .nav-back { color: var(--gray-300); text-decoration: none; font-size: .85rem; display: flex; align-items: center; gap: 6px; transition: color .2s; }
+  .nav-back:hover { color: var(--white); }
+  .lang-btn { background: none; border: 1px solid var(--gray-600); color: var(--gray-300); padding: 4px 10px; border-radius: 4px; font-size: .78rem; cursor: pointer; transition: all .2s; font-family: inherit; }
+  .lang-btn:hover, .lang-btn.active { background: var(--white); color: var(--black); border-color: var(--white); }
+
+  /* HERO */
+  .hero { background: var(--black); color: var(--white); padding: 56px 24px 48px; text-align: center; }
+  .hero-tag { display: inline-block; background: var(--teal-bg); color: var(--teal); border: 1px solid var(--teal-border); padding: 4px 12px; border-radius: 20px; font-size: .78rem; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 16px; }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3rem); line-height: 1.15; margin-bottom: 16px; }
+  .hero h1 span { color: var(--amber); }
+  .hero p { color: var(--gray-300); font-size: 1.05rem; max-width: 600px; margin: 0 auto; }
+
+  /* LAYOUT */
+  .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+  .section { padding: 48px 0; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 8px; }
+  .section-sub { color: var(--gray-500); margin-bottom: 28px; font-size: .95rem; }
+
+  /* PROCESS STEPS */
+  .steps { display: flex; flex-direction: column; gap: 0; position: relative; }
+  .step { display: flex; gap: 20px; padding: 0 0 32px; position: relative; }
+  .step:last-child { padding-bottom: 0; }
+  .step-left { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 44px; }
+  .step-num { width: 44px; height: 44px; border-radius: 50%; background: var(--black); color: var(--white); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; flex-shrink: 0; z-index: 1; }
+  .step-num.done { background: var(--green); }
+  .step-num.warn { background: var(--amber); }
+  .step-line { flex: 1; width: 2px; background: var(--gray-200); margin-top: 4px; }
+  .step:last-child .step-line { display: none; }
+  .step-body { padding-top: 10px; }
+  .step-title { font-weight: 600; font-size: 1rem; margin-bottom: 4px; }
+  .step-desc { color: var(--gray-600); font-size: .9rem; line-height: 1.6; }
+  .step-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: .72rem; font-weight: 600; margin-left: 8px; vertical-align: middle; }
+  .tag-blue { background: var(--blue-bg); color: var(--blue); }
+  .tag-green { background: var(--green-bg); color: var(--green); }
+  .tag-amber { background: var(--amber-bg); color: var(--amber); }
+
+  /* ROUNDS TABLE */
+  .table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--gray-200); background: var(--white); }
+  table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+  thead { background: var(--gray-800); color: var(--white); }
+  th { padding: 12px 14px; text-align: left; font-weight: 600; font-size: .8rem; text-transform: uppercase; letter-spacing: .4px; white-space: nowrap; }
+  td { padding: 11px 14px; border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--gray-50); }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: .72rem; font-weight: 600; }
+  .badge-189 { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue-border); }
+  .badge-190 { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+  .badge-491 { background: var(--purple-bg); color: var(--purple); border: 1px solid var(--purple-border); }
+  .pts-high { color: var(--green); font-weight: 600; }
+  .pts-mid  { color: var(--amber); font-weight: 600; }
+  .pts-low  { color: var(--gray-500); font-weight: 600; }
+
+  /* INFO CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+  .card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; padding: 20px; }
+  .card-icon { font-size: 1.5rem; margin-bottom: 10px; }
+  .card-title { font-weight: 600; font-size: .95rem; margin-bottom: 6px; }
+  .card-body { color: var(--gray-600); font-size: .875rem; line-height: 1.6; }
+  .card.blue  { border-color: var(--blue-border);   background: var(--blue-bg); }
+  .card.green { border-color: var(--green-border);  background: var(--green-bg); }
+  .card.amber { border-color: var(--amber-border);  background: var(--amber-bg); }
+  .card.purple{ border-color: var(--purple-border); background: var(--purple-bg); }
+
+  /* EOI CHECKER */
+  .checker { background: var(--white); border: 1px solid var(--gray-200); border-radius: 12px; overflow: hidden; }
+  .checker-head { background: var(--gray-800); color: var(--white); padding: 20px 24px; display: flex; align-items: center; gap: 12px; }
+  .checker-head h3 { font-size: 1rem; font-weight: 600; }
+  .checker-body { padding: 24px; }
+  .field-row { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; }
+  .field { flex: 1; min-width: 180px; }
+  label { display: block; font-size: .82rem; font-weight: 600; color: var(--gray-600); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .4px; }
+  select, input[type=number] { width: 100%; padding: 10px 12px; border: 1px solid var(--gray-300); border-radius: 8px; font-family: inherit; font-size: .9rem; background: var(--gray-50); color: var(--gray-800); appearance: none; -webkit-appearance: none; transition: border-color .2s; }
+  select:focus, input[type=number]:focus { outline: none; border-color: var(--blue); background: var(--white); }
+  .check-btn { width: 100%; padding: 12px; background: var(--black); color: var(--white); border: none; border-radius: 8px; font-family: inherit; font-size: .95rem; font-weight: 600; cursor: pointer; transition: background .2s; }
+  .check-btn:hover { background: var(--gray-800); }
+  .checker-result { margin-top: 20px; border-radius: 8px; padding: 16px 18px; display: none; }
+  .checker-result.show { display: block; }
+  .checker-result.green { background: var(--green-bg); border: 1px solid var(--green-border); }
+  .checker-result.amber { background: var(--amber-bg); border: 1px solid var(--amber-border); }
+  .checker-result.red   { background: var(--red-bg);   border: 1px solid var(--red-border); }
+  .result-title { font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+  .result-body  { font-size: .875rem; color: var(--gray-700); line-height: 1.6; }
+
+  /* ACCORDION */
+  .acc-list { display: flex; flex-direction: column; gap: 8px; }
+  .acc-item { background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; overflow: hidden; }
+  .acc-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; cursor: pointer; user-select: none; gap: 12px; }
+  .acc-head:hover { background: var(--gray-50); }
+  .acc-title { font-weight: 600; font-size: .95rem; display: flex; align-items: center; gap: 10px; }
+  .acc-icon { font-size: 1.1rem; flex-shrink: 0; }
+  .acc-arrow { color: var(--gray-400); font-size: 1.1rem; transition: transform .3s; flex-shrink: 0; }
+  .acc-item.open .acc-arrow { transform: rotate(180deg); }
+  .acc-body { max-height: 0; overflow: hidden; transition: max-height .4s cubic-bezier(.4,0,.2,1); }
+  .acc-item.open .acc-body { max-height: 2000px; }
+  .acc-content { padding: 0 20px 20px; color: var(--gray-700); font-size: .9rem; line-height: 1.7; }
+  .acc-content ul { padding-left: 20px; margin-top: 8px; }
+  .acc-content li { margin-bottom: 6px; }
+  .acc-content strong { color: var(--gray-800); }
+  .acc-content a { color: var(--blue); text-decoration: none; }
+  .acc-content a:hover { text-decoration: underline; }
+
+  /* TIMELINE */
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+  .tl-item { display: flex; gap: 16px; padding-bottom: 24px; position: relative; }
+  .tl-item:last-child { padding-bottom: 0; }
+  .tl-left { display: flex; flex-direction: column; align-items: center; width: 36px; flex-shrink: 0; }
+  .tl-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--teal); border: 3px solid var(--white); box-shadow: 0 0 0 2px var(--teal); flex-shrink: 0; margin-top: 4px; }
+  .tl-line { flex: 1; width: 2px; background: var(--gray-200); margin-top: 4px; }
+  .tl-item:last-child .tl-line { display: none; }
+  .tl-body { padding-top: 0; }
+  .tl-label { font-size: .72rem; font-weight: 600; color: var(--teal); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 2px; }
+  .tl-title { font-weight: 600; font-size: .9rem; margin-bottom: 2px; }
+  .tl-desc  { font-size: .85rem; color: var(--gray-500); }
+
+  /* TIPS LIST */
+  .tips-list { display: flex; flex-direction: column; gap: 12px; }
+  .tip { background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; padding: 16px 18px; display: flex; gap: 14px; align-items: flex-start; }
+  .tip-num { background: var(--black); color: var(--white); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .78rem; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+  .tip-title { font-weight: 600; font-size: .9rem; margin-bottom: 3px; }
+  .tip-body  { font-size: .85rem; color: var(--gray-600); line-height: 1.6; }
+
+  /* CALLOUT */
+  .callout { border-radius: 10px; padding: 16px 18px; margin-bottom: 20px; display: flex; gap: 12px; }
+  .callout.blue   { background: var(--blue-bg);   border: 1px solid var(--blue-border); }
+  .callout.amber  { background: var(--amber-bg);  border: 1px solid var(--amber-border); }
+  .callout.green  { background: var(--green-bg);  border: 1px solid var(--green-border); }
+  .callout-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 2px; }
+  .callout-body { font-size: .875rem; line-height: 1.6; color: var(--gray-700); }
+  .callout-body strong { color: var(--gray-800); }
+
+  /* DIVIDER */
+  .divider { border: none; border-top: 1px solid var(--gray-200); margin: 8px 0 32px; }
+
+  /* FADE-UP */
+  .fade-up { opacity: 0; transform: translateY(24px); transition: opacity .5s ease, transform .5s ease; }
+  .fade-up.visible { opacity: 1; transform: none; }
+
+  /* FOOTER */
+  footer { background: var(--black); color: var(--gray-400); text-align: center; padding: 28px 24px; font-size: .82rem; margin-top: 48px; }
+  footer a { color: var(--gray-400); text-decoration: none; }
+  footer .footer-brand { font-family: 'Playfair Display', serif; color: var(--white); font-size: 1rem; margin-bottom: 6px; }
+  footer .footer-brand span { color: var(--amber); }
+
+  @media (max-width: 600px) {
+    .hero { padding: 40px 16px 32px; }
+    .container { padding: 0 16px; }
+    th, td { padding: 9px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">Mi<span>gro</span></div>
+  <div class="nav-right">
+    <a href="migro-dashboard.html" class="nav-back">⊞ <span data-en="Dashboard" data-es="Inicio">Dashboard</span></a>
+    <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" id="btn-es" onclick="setLang('es')">ES</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag" data-en="EOI & SkillSelect" data-es="EOI y SkillSelect">EOI & SkillSelect</div>
+  <h1 data-en="How <span style='color:var(--amber)'>invitations</span> work" data-es="Cómo funcionan las <span style='color:var(--amber)'>invitaciones</span>">How <span style="color:var(--amber)">invitations</span> work</h1>
+  <p data-en="Everything you need to know about submitting an Expression of Interest and getting invited to apply." data-es="Todo lo que necesitas saber sobre presentar una Expresión de Interés y recibir una invitación para solicitar.">Everything you need to know about submitting an Expression of Interest and getting invited to apply.</p>
+</div>
+
+<div class="container">
+
+  <!-- WHAT IS EOI -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="What is an EOI?" data-es="¿Qué es una EOI?">What is an EOI?</h2>
+    <p class="section-sub" data-en="An Expression of Interest is not a visa application — it's your profile in the SkillSelect pool." data-es="Una Expresión de Interés no es una solicitud de visa — es tu perfil en el grupo de SkillSelect.">An Expression of Interest is not a visa application — it's your profile in the SkillSelect pool.</p>
+
+    <div class="card-grid">
+      <div class="card blue">
+        <div class="card-icon">🎯</div>
+        <div class="card-title" data-en="Expression of Interest" data-es="Expresión de Interés">Expression of Interest</div>
+        <div class="card-body" data-en="You submit an EOI via ImmiAccount to indicate your interest in a skilled visa. You are NOT yet applying for the visa." data-es="Presentas una EOI a través de ImmiAccount para indicar tu interés en una visa de habilidades. AÚN NO estás solicitando la visa.">You submit an EOI via ImmiAccount to indicate your interest in a skilled visa. You are NOT yet applying for the visa.</div>
+      </div>
+      <div class="card teal" style="border-color:var(--teal-border);background:var(--teal-bg)">
+        <div class="card-icon">🔄</div>
+        <div class="card-title" data-en="SkillSelect Pool" data-es="Grupo SkillSelect">SkillSelect Pool</div>
+        <div class="card-body" data-en="Your EOI sits in a pool with thousands of other candidates. The Department ranks everyone by points, then date of EOI submission." data-es="Tu EOI queda en un grupo con miles de otros candidatos. El Departamento clasifica a todos por puntos y luego por fecha de envío de la EOI.">Your EOI sits in a pool with thousands of other candidates. The Department ranks everyone by points, then date of EOI submission.</div>
+      </div>
+      <div class="card green">
+        <div class="card-icon">✉️</div>
+        <div class="card-title" data-en="Invitation to Apply (ITA)" data-es="Invitación para Solicitar (ITA)">Invitation to Apply (ITA)</div>
+        <div class="card-body" data-en="If invited, you receive an ITA and have 60 days to lodge a full visa application with all supporting documents." data-es="Si eres invitado, recibes una ITA y tienes 60 días para presentar una solicitud de visa completa con todos los documentos de respaldo.">If invited, you receive an ITA and have 60 days to lodge a full visa application with all supporting documents.</div>
+      </div>
+      <div class="card amber">
+        <div class="card-icon">⚡</div>
+        <div class="card-title" data-en="Invitation Rounds" data-es="Rondas de Invitación">Invitation Rounds</div>
+        <div class="card-body" data-en="The Department typically runs rounds twice per month. Each round has a cutoff (points score + date) called the Closing Date for Invitations (CDI)." data-es="El Departamento normalmente realiza rondas dos veces al mes. Cada ronda tiene un punto de corte (puntaje + fecha) llamado Fecha de Cierre para Invitaciones (CDI).">The Department typically runs rounds twice per month. Each round has a cutoff (points score + date) called the Closing Date for Invitations (CDI).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS STEP BY STEP -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="Step-by-step process" data-es="Proceso paso a paso">Step-by-step process</h2>
+    <p class="section-sub" data-en="From skills assessment to visa grant — what to expect at each stage." data-es="Desde la evaluación de habilidades hasta el otorgamiento de la visa — qué esperar en cada etapa.">From skills assessment to visa grant — what to expect at each stage.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <div class="step-title" data-en="Get a positive skills assessment" data-es="Obtén una evaluación de habilidades positiva">Get a positive skills assessment <span class="step-tag tag-blue" data-en="Before EOI" data-es="Antes de EOI">Before EOI</span></div>
+          <div class="step-desc" data-en="You must have a positive outcome from the relevant assessing authority for your nominated occupation before lodging an EOI. This can take weeks to months." data-es="Debes tener un resultado positivo de la autoridad evaluadora relevante para tu ocupación nominada antes de presentar una EOI. Esto puede demorar semanas o meses.">You must have a positive outcome from the relevant assessing authority for your nominated occupation before lodging an EOI. This can take weeks to months.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <div class="step-title" data-en="Meet English language requirements" data-es="Cumple los requisitos de inglés">Meet English language requirements <span class="step-tag tag-blue" data-en="Before EOI" data-es="Antes de EOI">Before EOI</span></div>
+          <div class="step-desc" data-en="Minimum: Competent English (IELTS 6.0 each band). For additional points: Proficient (7.0) or Superior (8.0) English is needed. Test results must be valid (≤3 years)." data-es="Mínimo: Inglés Competente (IELTS 6.0 en cada banda). Para puntos adicionales: se necesita inglés Proficiente (7.0) o Superior (8.0). Los resultados deben ser válidos (≤3 años).">Minimum: Competent English (IELTS 6.0 each band). For additional points: Proficient (7.0) or Superior (8.0) English is needed. Test results must be valid (≤3 years).</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-num">3</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <div class="step-title" data-en="Create ImmiAccount and submit EOI" data-es="Crea ImmiAccount y presenta EOI">Create ImmiAccount and submit EOI</div>
+          <div class="step-desc" data-en="Log in to ImmiAccount on the Home Affairs website. Complete the EOI form carefully — errors can affect your points score. Select all visa subclasses you're eligible for (189, 190, 491)." data-es="Inicia sesión en ImmiAccount en el sitio web de Home Affairs. Completa el formulario EOI cuidadosamente: los errores pueden afectar tu puntaje. Selecciona todas las subclases de visa para las que eres elegible (189, 190, 491).">Log in to ImmiAccount on the Home Affairs website. Complete the EOI form carefully — errors can affect your points score. Select all visa subclasses you're eligible for (189, 190, 491).</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-num">4</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <div class="step-title" data-en="Wait in the SkillSelect pool" data-es="Espera en el grupo SkillSelect">Wait in the SkillSelect pool</div>
+          <div class="step-desc" data-en="Your EOI remains active for 2 years. You can update it at any time — but if you change your score upward, your 'date in pool' resets for that score. Higher points = higher priority in each round." data-es="Tu EOI permanece activa por 2 años. Puedes actualizarla en cualquier momento, pero si aumentas tu puntaje, tu 'fecha en el grupo' se reinicia para ese puntaje. Más puntos = mayor prioridad en cada ronda.">Your EOI remains active for 2 years. You can update it at any time — but if you change your score upward, your 'date in pool' resets for that score. Higher points = higher priority in each round.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-num">5</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <div class="step-title" data-en="Receive Invitation to Apply (ITA)" data-es="Recibe Invitación para Solicitar (ITA)">Receive Invitation to Apply (ITA) <span class="step-tag tag-green" data-en="60-day deadline" data-es="Plazo 60 días">60-day deadline</span></div>
+          <div class="step-desc" data-en="You'll be notified via ImmiAccount. You have exactly 60 days to lodge your complete visa application. Extensions are not granted — missing this deadline means starting over." data-es="Serás notificado a través de ImmiAccount. Tienes exactamente 60 días para presentar tu solicitud de visa completa. No se otorgan prórrogas: perder este plazo significa empezar de nuevo.">You'll be notified via ImmiAccount. You have exactly 60 days to lodge your complete visa application. Extensions are not granted — missing this deadline means starting over.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-num done">6</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <div class="step-title" data-en="Lodge full visa application" data-es="Presenta la solicitud de visa completa">Lodge full visa application</div>
+          <div class="step-desc" data-en="Submit all evidence: skills assessment, English results, employment records, health, character checks. Pay the visa application charge. Then wait for a decision (typically 6–18 months)." data-es="Envía todas las evidencias: evaluación de habilidades, resultados de inglés, registros de empleo, salud, verificación de antecedentes. Paga el cargo de solicitud de visa. Luego espera una decisión (normalmente 6–18 meses).">Submit all evidence: skills assessment, English results, employment records, health, character checks. Pay the visa application charge. Then wait for a decision (typically 6–18 months).</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECENT ROUNDS -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="Recent invitation rounds" data-es="Rondas de invitación recientes">Recent invitation rounds</h2>
+    <p class="section-sub" data-en="Points scores and dates from the latest SkillSelect rounds. 'CDI' = Closing Date for Invitations (tie-breaker date)." data-es="Puntajes y fechas de las últimas rondas de SkillSelect. 'CDI' = Fecha de Cierre para Invitaciones (fecha de desempate).">Points scores and dates from the latest SkillSelect rounds. 'CDI' = Closing Date for Invitations (tie-breaker date).</p>
+
+    <div class="callout amber">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body" data-en="<strong>Points scores vary by occupation.</strong> The table shows typical ranges. Some high-demand occupations like Software Engineers consistently invite at 85–90 pts; others may go lower. Always check the official Home Affairs website for exact figures." data-es="<strong>Los puntajes varían según la ocupación.</strong> La tabla muestra rangos típicos. Algunas ocupaciones de alta demanda, como Ingenieros de Software, consistentemente invitan a 85–90 pts; otras pueden ser más bajas. Siempre verifica el sitio oficial de Home Affairs para las cifras exactas."><strong>Points scores vary by occupation.</strong> The table shows typical ranges. Some high-demand occupations like Software Engineers consistently invite at 85–90 pts; others may go lower. Always check the official Home Affairs website for exact figures.</div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th data-en="Round" data-es="Ronda">Round</th>
+            <th data-en="Date" data-es="Fecha">Date</th>
+            <th>Visa</th>
+            <th data-en="Min. Points" data-es="Puntos mín.">Min. Points</th>
+            <th data-en="CDI (tie-break)" data-es="CDI (desempate)">CDI (tie-break)</th>
+            <th data-en="Invitations" data-es="Invitaciones">Invitations</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Feb 2026 #2</td><td>27 Feb 2026</td>
+            <td><span class="badge badge-189">189</span></td>
+            <td class="pts-high">90</td><td>May 2023</td><td>~1,100</td>
+          </tr>
+          <tr>
+            <td>Feb 2026 #2</td><td>27 Feb 2026</td>
+            <td><span class="badge badge-190">190</span></td>
+            <td class="pts-mid">85</td><td>Dec 2023</td><td>~2,400</td>
+          </tr>
+          <tr>
+            <td>Feb 2026 #1</td><td>13 Feb 2026</td>
+            <td><span class="badge badge-189">189</span></td>
+            <td class="pts-high">90</td><td>Apr 2023</td><td>~1,050</td>
+          </tr>
+          <tr>
+            <td>Feb 2026 #1</td><td>13 Feb 2026</td>
+            <td><span class="badge badge-190">190</span></td>
+            <td class="pts-mid">85</td><td>Nov 2023</td><td>~2,200</td>
+          </tr>
+          <tr>
+            <td>Jan 2026 #2</td><td>23 Jan 2026</td>
+            <td><span class="badge badge-189">189</span></td>
+            <td class="pts-high">90</td><td>Mar 2023</td><td>~1,000</td>
+          </tr>
+          <tr>
+            <td>Jan 2026 #2</td><td>23 Jan 2026</td>
+            <td><span class="badge badge-190">190</span></td>
+            <td class="pts-mid">85</td><td>Oct 2023</td><td>~2,350</td>
+          </tr>
+          <tr>
+            <td>Jan 2026 #1</td><td>09 Jan 2026</td>
+            <td><span class="badge badge-189">189</span></td>
+            <td class="pts-high">90</td><td>Jan 2023</td><td>~980</td>
+          </tr>
+          <tr>
+            <td>Dec 2025 #1</td><td>11 Dec 2025</td>
+            <td><span class="badge badge-189">189</span></td>
+            <td class="pts-high">90</td><td>Dec 2022</td><td>~1,200</td>
+          </tr>
+          <tr>
+            <td>Dec 2025 #1</td><td>11 Dec 2025</td>
+            <td><span class="badge badge-190">190</span></td>
+            <td class="pts-mid">80</td><td>Sep 2023</td><td>~2,800</td>
+          </tr>
+          <tr>
+            <td>Nov 2025 #2</td><td>27 Nov 2025</td>
+            <td><span class="badge badge-189">189</span></td>
+            <td class="pts-high">90</td><td>Nov 2022</td><td>~950</td>
+          </tr>
+          <tr>
+            <td>Nov 2025 #1</td><td>13 Nov 2025</td>
+            <td><span class="badge badge-491">491</span></td>
+            <td class="pts-mid">85</td><td>Aug 2023</td><td>~1,600</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- EOI READINESS CHECKER -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="EOI readiness checker" data-es="Verificador de preparación EOI">EOI readiness checker</h2>
+    <p class="section-sub" data-en="Estimate your chances of getting invited based on current round trends." data-es="Estima tus posibilidades de ser invitado según las tendencias actuales de las rondas.">Estimate your chances of getting invited based on current round trends.</p>
+
+    <div class="checker">
+      <div class="checker-head">
+        <span style="font-size:1.2rem">🔍</span>
+        <h3 data-en="Quick invitation estimate" data-es="Estimación rápida de invitación">Quick invitation estimate</h3>
+      </div>
+      <div class="checker-body">
+        <div class="field-row">
+          <div class="field">
+            <label data-en="Visa subclass" data-es="Subclase de visa">Visa subclass</label>
+            <select id="chk-visa">
+              <option value="189">189 — Skilled Independent</option>
+              <option value="190">190 — Skilled Nominated</option>
+              <option value="491">491 — Regional (Family Sponsored)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label data-en="Your points score" data-es="Tu puntaje">Your points score</label>
+            <input type="number" id="chk-pts" min="65" max="130" placeholder="e.g. 90" style="height:42px">
+          </div>
+          <div class="field">
+            <label data-en="EOI submitted date" data-es="Fecha de EOI">EOI submitted date</label>
+            <input type="month" id="chk-date" style="height:42px; padding:10px 12px; border:1px solid var(--gray-300); border-radius:8px; font-family:inherit; font-size:.9rem; background:var(--gray-50); width:100%">
+          </div>
+        </div>
+        <button class="check-btn" onclick="checkEOI()" data-en="Check my chances →" data-es="Verificar mis posibilidades →">Check my chances →</button>
+        <div class="checker-result" id="chk-result"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WAITING STRATEGY TIPS -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="Maximise your invitation chances" data-es="Maximiza tus posibilidades de invitación">Maximise your invitation chances</h2>
+    <p class="section-sub" data-en="Strategic moves you can make while waiting in the SkillSelect pool." data-es="Movimientos estratégicos que puedes hacer mientras esperas en el grupo de SkillSelect.">Strategic moves you can make while waiting in the SkillSelect pool.</p>
+
+    <div class="tips-list">
+      <div class="tip">
+        <div class="tip-num">1</div>
+        <div>
+          <div class="tip-title" data-en="Submit your EOI as early as possible" data-es="Presenta tu EOI lo antes posible">Submit your EOI as early as possible</div>
+          <div class="tip-body" data-en="When two candidates have the same points score, the one who submitted their EOI earlier gets priority. Don't wait until everything is 'perfect' — submit once you meet minimum requirements and update later." data-es="Cuando dos candidatos tienen el mismo puntaje, el que presentó su EOI antes tiene prioridad. No esperes hasta que todo esté 'perfecto': presenta una vez que cumplas los requisitos mínimos y actualiza después.">When two candidates have the same points score, the one who submitted their EOI earlier gets priority. Don't wait until everything is 'perfect' — submit once you meet minimum requirements and update later.</div>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-num">2</div>
+        <div>
+          <div class="tip-title" data-en="Apply for all visa subclasses you're eligible for" data-es="Solicita todas las subclases de visa para las que eres elegible">Apply for all visa subclasses you're eligible for</div>
+          <div class="tip-body" data-en="You can nominate for 189, 190, and 491 in a single EOI. State nomination (190) often has lower points cutoffs than 189 — being flexible dramatically increases your chances." data-es="Puedes nominar para 189, 190 y 491 en una sola EOI. La nominación estatal (190) a menudo tiene puntos de corte más bajos que 189: ser flexible aumenta dramáticamente tus posibilidades.">You can nominate for 189, 190, and 491 in a single EOI. State nomination (190) often has lower points cutoffs than 189 — being flexible dramatically increases your chances.</div>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-num">3</div>
+        <div>
+          <div class="tip-title" data-en="Retake English test if you can improve your band" data-es="Repite el examen de inglés si puedes mejorar tu banda">Retake English test if you can improve your band</div>
+          <div class="tip-body" data-en="Going from Competent (6.0) to Proficient (7.0) adds 10 points; from Competent to Superior (8.0) adds 20 points. This is often the fastest way to jump from 80 to 90+ points." data-es="Pasar de Competente (6.0) a Proficiente (7.0) añade 10 puntos; de Competente a Superior (8.0) añade 20 puntos. Esta suele ser la forma más rápida de saltar de 80 a más de 90 puntos.">Going from Competent (6.0) to Proficient (7.0) adds 10 points; from Competent to Superior (8.0) adds 20 points. This is often the fastest way to jump from 80 to 90+ points.</div>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-num">4</div>
+        <div>
+          <div class="tip-title" data-en="Accumulate Australian work experience while waiting" data-es="Acumula experiencia laboral australiana mientras esperas">Accumulate Australian work experience while waiting</div>
+          <div class="tip-body" data-en="If you're already in Australia on a working visa, every year of skilled work in your nominated occupation adds points — up to 20 pts for 8+ years. Working toward the 1, 3, 5, or 8-year thresholds can be game-changing." data-es="Si ya estás en Australia con una visa de trabajo, cada año de trabajo calificado en tu ocupación nominada suma puntos: hasta 20 pts por 8 o más años. Trabajar hacia los umbrales de 1, 3, 5 u 8 años puede ser decisivo.">If you're already in Australia on a working visa, every year of skilled work in your nominated occupation adds points — up to 20 pts for 8+ years. Working toward the 1, 3, 5, or 8-year thresholds can be game-changing.</div>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-num">5</div>
+        <div>
+          <div class="tip-title" data-en="Check state nomination lists regularly" data-es="Revisa las listas de nominación estatal regularmente">Check state nomination lists regularly</div>
+          <div class="tip-body" data-en="State nomination (190/491) availability changes throughout the year. States open and close their lists, change occupations, and alter point requirements. Checking monthly can reveal new opportunities." data-es="La disponibilidad de nominación estatal (190/491) cambia durante el año. Los estados abren y cierran sus listas, cambian ocupaciones y modifican los requisitos de puntos. Verificar mensualmente puede revelar nuevas oportunidades.">State nomination (190/491) availability changes throughout the year. States open and close their lists, change occupations, and alter point requirements. Checking monthly can reveal new opportunities.</div>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-num">6</div>
+        <div>
+          <div class="tip-title" data-en="Consider a Professional Year program" data-es="Considera un programa de Año Profesional">Consider a Professional Year program</div>
+          <div class="tip-body" data-en="If you studied in Australia and are in IT, Engineering, or Accounting, completing a Professional Year program earns 5 bonus points. Combined with other improvements, it can push you to the invitation threshold." data-es="Si estudiaste en Australia y trabajas en TI, Ingeniería o Contabilidad, completar un programa de Año Profesional te otorga 5 puntos adicionales. Combinado con otras mejoras, puede llevarte al umbral de invitación.">If you studied in Australia and are in IT, Engineering, or Accounting, completing a Professional Year program earns 5 bonus points. Combined with other improvements, it can push you to the invitation threshold.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIMELINE AFTER ITA -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="After receiving your ITA" data-es="Después de recibir tu ITA">After receiving your ITA</h2>
+    <p class="section-sub" data-en="A typical timeline from invitation to visa grant. Times are indicative." data-es="Un cronograma típico desde la invitación hasta el otorgamiento de la visa. Los tiempos son indicativos.">A typical timeline from invitation to visa grant. Times are indicative.</p>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
+        <div class="tl-body">
+          <div class="tl-label" data-en="Day 0" data-es="Día 0">Day 0</div>
+          <div class="tl-title" data-en="Invitation to Apply received" data-es="Invitación para Solicitar recibida">Invitation to Apply received</div>
+          <div class="tl-desc" data-en="Clock starts. You have 60 days to lodge." data-es="El reloj comienza. Tienes 60 días para presentar.">Clock starts. You have 60 days to lodge.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
+        <div class="tl-body">
+          <div class="tl-label" data-en="Week 1–3" data-es="Semana 1–3">Week 1–3</div>
+          <div class="tl-title" data-en="Gather all documents" data-es="Reúne todos los documentos">Gather all documents</div>
+          <div class="tl-desc" data-en="Employment references, tax records, skills assessment, English test, police clearances, medical schedule." data-es="Referencias laborales, registros fiscales, evaluación de habilidades, examen de inglés, antecedentes penales, programa médico.">Employment references, tax records, skills assessment, English test, police clearances, medical schedule.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
+        <div class="tl-body">
+          <div class="tl-label" data-en="Week 3–5" data-es="Semana 3–5">Week 3–5</div>
+          <div class="tl-title" data-en="Complete health examinations" data-es="Completa los exámenes médicos">Complete health examinations</div>
+          <div class="tl-desc" data-en="Book with an approved panel physician. Usually chest X-ray + general medical; biometrics if required." data-es="Reserva con un médico panel aprobado. Normalmente radiografía de tórax + médico general; biometría si se requiere.">Book with an approved panel physician. Usually chest X-ray + general medical; biometrics if required.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
+        <div class="tl-body">
+          <div class="tl-label" data-en="Day 45–55" data-es="Día 45–55">Day 45–55</div>
+          <div class="tl-title" data-en="Lodge visa application" data-es="Presenta la solicitud de visa">Lodge visa application</div>
+          <div class="tl-desc" data-en="Upload all documents in ImmiAccount and pay the visa application charge (VAC). Keep buffer time before the 60-day deadline." data-es="Carga todos los documentos en ImmiAccount y paga el cargo de solicitud de visa (VAC). Mantén tiempo de reserva antes del plazo de 60 días.">Upload all documents in ImmiAccount and pay the visa application charge (VAC). Keep buffer time before the 60-day deadline.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
+        <div class="tl-body">
+          <div class="tl-label" data-en="Month 2–12+" data-es="Mes 2–12+">Month 2–12+</div>
+          <div class="tl-title" data-en="Processing & assessment" data-es="Procesamiento y evaluación">Processing & assessment</div>
+          <div class="tl-desc" data-en="A case officer is assigned. They may request further information (s56 request). Respond promptly. Processing times vary: 189 can be 6–12 months; 190 varies by state." data-es="Se asigna un oficial de caso. Pueden solicitar información adicional (solicitud s56). Responde con prontitud. Los tiempos de procesamiento varían: 189 puede ser 6–12 meses; 190 varía según el estado.">A case officer is assigned. They may request further information (s56 request). Respond promptly. Processing times vary: 189 can be 6–12 months; 190 varies by state.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot" style="background:var(--green)"></div></div>
+        <div class="tl-body">
+          <div class="tl-label" style="color:var(--green)" data-en="Finalised" data-es="Finalizado">Finalised</div>
+          <div class="tl-title" data-en="Visa granted 🎉" data-es="Visa otorgada 🎉">Visa granted 🎉</div>
+          <div class="tl-desc" data-en="You'll receive notification via ImmiAccount and email. For 190/491, you typically must travel to and first enter through the nominating state." data-es="Recibirás notificación a través de ImmiAccount y correo electrónico. Para 190/491, normalmente debes viajar e ingresar primero por el estado nominante.">You'll receive notification via ImmiAccount and email. For 190/491, you typically must travel to and first enter through the nominating state.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ ACCORDION -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="Frequently asked questions" data-es="Preguntas frecuentes">Frequently asked questions</h2>
+    <p class="section-sub" data-en="Common questions about the EOI and SkillSelect system." data-es="Preguntas comunes sobre el sistema EOI y SkillSelect.">Common questions about the EOI and SkillSelect system.</p>
+
+    <div class="acc-list" id="faq-list">
+
+      <div class="acc-item" id="faq1">
+        <div class="acc-head" onclick="toggleAcc('faq1')">
+          <div class="acc-title"><span class="acc-icon">❓</span><span data-en="Can I update my EOI after submitting it?" data-es="¿Puedo actualizar mi EOI después de presentarla?">Can I update my EOI after submitting it?</span></div>
+          <div class="acc-arrow">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p data-en="Yes — you can update your EOI at any time while it's active. However, be aware of the tie-breaker rule: if you increase your points score, your 'time in pool' for that score resets to the date of the update. This means you go back to the 'end of the queue' for candidates at that new score. If you decrease your score (which you generally shouldn't do), no reset occurs. Updates that don't change your score (e.g., correcting a typo) do not affect your date." data-es="Sí — puedes actualizar tu EOI en cualquier momento mientras esté activa. Sin embargo, ten en cuenta la regla de desempate: si aumentas tu puntaje, tu 'tiempo en el grupo' para ese puntaje se reinicia a la fecha de la actualización. Esto significa que vas al 'final de la cola' para los candidatos con ese nuevo puntaje. Si reduces tu puntaje (lo cual generalmente no deberías hacer), no hay reinicio. Las actualizaciones que no cambian tu puntaje (por ejemplo, corregir un error tipográfico) no afectan tu fecha.">Yes — you can update your EOI at any time while it's active. However, be aware of the tie-breaker rule: if you increase your points score, your 'time in pool' for that score resets to the date of the update. This means you go back to the 'end of the queue' for candidates at that new score.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item" id="faq2">
+        <div class="acc-head" onclick="toggleAcc('faq2')">
+          <div class="acc-title"><span class="acc-icon">❓</span><span data-en="How long is an EOI valid?" data-es="¿Cuánto tiempo es válida una EOI?">How long is an EOI valid?</span></div>
+          <div class="acc-arrow">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p data-en="An EOI is valid for 2 years from the date it was submitted. If you haven't been invited within 2 years, you'll need to submit a new EOI. Note that when you resubmit, your 'date in pool' starts fresh — so it's worth trying to get invited within the original 2-year window. If your skills assessment or English test is about to expire, make sure to update these before they do to avoid having your EOI rejected if you're invited." data-es="Una EOI es válida por 2 años desde la fecha en que fue enviada. Si no has sido invitado dentro de los 2 años, deberás presentar una nueva EOI. Ten en cuenta que cuando vuelves a presentar, tu 'fecha en el grupo' comienza de nuevo, por lo que vale la pena intentar ser invitado dentro del período original de 2 años.">An EOI is valid for 2 years from the date it was submitted. If you haven't been invited within 2 years, you'll need to submit a new EOI. Note that when you resubmit, your 'date in pool' starts fresh.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item" id="faq3">
+        <div class="acc-head" onclick="toggleAcc('faq3')">
+          <div class="acc-title"><span class="acc-icon">❓</span><span data-en="What is a CDI (Closing Date for Invitations)?" data-es="¿Qué es una CDI (Fecha de Cierre para Invitaciones)?">What is a CDI (Closing Date for Invitations)?</span></div>
+          <div class="acc-arrow">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p data-en="The CDI is the tie-breaker date used when multiple candidates have the same points score. When the Department runs a round, they invite candidates in order of points (highest first). If they reach a score where more candidates exist than invitation spots available, they use the CDI: candidates who submitted their EOI before the CDI date get invited, those who submitted on or after do not. The CDI date moves later over time as more invitations are issued — it represents roughly when that score 'cleared' the queue." data-es="La CDI es la fecha de desempate que se usa cuando múltiples candidatos tienen el mismo puntaje. Cuando el Departamento realiza una ronda, invita a los candidatos en orden de puntos (de mayor a menor). Si llegan a un puntaje donde hay más candidatos que lugares de invitación disponibles, usan la CDI: los candidatos que presentaron su EOI antes de la fecha CDI son invitados; los que presentaron en esa fecha o después no. La fecha CDI avanza con el tiempo a medida que se emiten más invitaciones.">The CDI is the tie-breaker date used when multiple candidates have the same points score. When the Department runs a round, they invite candidates in order of points. If they reach a score where more candidates exist than spots available, they use the CDI date as a tie-breaker.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item" id="faq4">
+        <div class="acc-head" onclick="toggleAcc('faq4')">
+          <div class="acc-title"><span class="acc-icon">❓</span><span data-en="Can I be invited for multiple visas at once?" data-es="¿Puedo ser invitado para múltiples visas a la vez?">Can I be invited for multiple visas at once?</span></div>
+          <div class="acc-arrow">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p data-en="You can have EOIs for 189, 190, and 491 simultaneously and could in theory receive invitations for all three if rounds run. However, you can only lodge one visa application at a time — so you'd need to choose. You cannot hold two active visa applications. Lodging for one does not automatically cancel your other EOIs, but practically you'd withdraw them after applying." data-es="Puedes tener EOIs para 189, 190 y 491 simultáneamente y, en teoría, podrías recibir invitaciones para los tres si se realizan rondas. Sin embargo, solo puedes presentar una solicitud de visa a la vez, por lo que deberías elegir. No puedes tener dos solicitudes de visa activas al mismo tiempo.">You can have EOIs for 189, 190, and 491 simultaneously and could receive invitations for multiple visas. However, you can only lodge one visa application at a time — so you'd need to choose. You cannot hold two active visa applications.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item" id="faq5">
+        <div class="acc-head" onclick="toggleAcc('faq5')">
+          <div class="acc-title"><span class="acc-icon">❓</span><span data-en="What happens if I decline an invitation?" data-es="¿Qué pasa si rechazo una invitación?">What happens if I decline an invitation?</span></div>
+          <div class="acc-arrow">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p data-en="If you decline an ITA or let it expire, your EOI remains in the SkillSelect pool and you can be invited again in future rounds. Your 'date in pool' is NOT reset by declining. However, if you were invited for a 190 visa and decline the state nomination, the state may flag you and be less likely to nominate you again — though this is not an official policy. Declining a 189 ITA has no such complication." data-es="Si rechazas una ITA o dejas que expire, tu EOI permanece en el grupo de SkillSelect y puedes ser invitado nuevamente en futuras rondas. Tu 'fecha en el grupo' NO se reinicia por rechazar. Sin embargo, si fuiste invitado para una visa 190 y rechazas la nominación estatal, el estado puede registrarte y ser menos propenso a nominarte nuevamente, aunque esto no es una política oficial.">If you decline an ITA or let it expire, your EOI remains in the SkillSelect pool and you can be invited again in future rounds. Your 'date in pool' is NOT reset by declining. However, for 190 visas, states may note your decline.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item" id="faq6">
+        <div class="acc-head" onclick="toggleAcc('faq6')">
+          <div class="acc-title"><span class="acc-icon">❓</span><span data-en="Do I need a migration agent to submit an EOI?" data-es="¿Necesito un agente de migración para presentar una EOI?">Do I need a migration agent to submit an EOI?</span></div>
+          <div class="acc-arrow">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p data-en="No — you can submit an EOI yourself through ImmiAccount for free. However, many people use a Registered Migration Agent (RMA) to ensure accuracy, especially for the full visa application. Errors in your EOI (e.g., claiming incorrect points) can result in your application being refused after invitation, so accuracy is crucial. If you're unsure about your eligibility or points, professional advice is worthwhile." data-es="No — puedes presentar una EOI tú mismo a través de ImmiAccount sin costo. Sin embargo, muchas personas usan un Agente de Migración Registrado (RMA) para garantizar la precisión, especialmente para la solicitud de visa completa. Los errores en tu EOI (por ejemplo, reclamar puntos incorrectos) pueden resultar en que tu solicitud sea rechazada después de la invitación, por lo que la precisión es crucial.">No — you can submit an EOI yourself through ImmiAccount for free. However, many people use a Registered Migration Agent (RMA) to ensure accuracy. Errors in your EOI can result in your application being refused after invitation — accuracy is crucial.</p>
+            <ul>
+              <li data-en="MARA register (official agent lookup): <a href='https://www.mara.gov.au' target='_blank'>www.mara.gov.au</a>" data-es="Registro MARA (búsqueda oficial de agentes): <a href='https://www.mara.gov.au' target='_blank'>www.mara.gov.au</a>">MARA register (official agent lookup): <a href="https://www.mara.gov.au" target="_blank">www.mara.gov.au</a></li>
+              <li data-en="EOI submission is free; visa lodgement fees are set by the Department." data-es="La presentación de EOI es gratuita; las tarifas de presentación de visa son fijadas por el Departamento.">EOI submission is free; visa lodgement fees are set by the Department.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-item" id="faq7">
+        <div class="acc-head" onclick="toggleAcc('faq7')">
+          <div class="acc-title"><span class="acc-icon">❓</span><span data-en="My occupation isn't on the MLTSSL. Can I still get a 189?" data-es="Mi ocupación no está en el MLTSSL. ¿Puedo obtener una 189?">My occupation isn't on the MLTSSL. Can I still get a 189?</span></div>
+          <div class="acc-arrow">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p data-en="The Medium and Long-term Strategic Skills List (MLTSSL) is required for the subclass 189 visa. If your occupation is only on the Short-term Skilled Occupation List (STSOL), you may still be eligible for state-nominated visas (190/491) depending on the state, but not for 189. Check the current occupation lists on the Home Affairs website — lists are updated periodically and occupations move between them." data-es="La Lista de Habilidades Estratégicas de Mediano y Largo Plazo (MLTSSL) es requerida para la visa subclase 189. Si tu ocupación solo está en la Lista de Ocupaciones Calificadas de Corto Plazo (STSOL), podrías ser elegible para visas de nominación estatal (190/491) según el estado, pero no para 189. Verifica las listas actuales de ocupaciones en el sitio web de Home Affairs.">The MLTSSL is required for the subclass 189 visa. If your occupation is only on the STSOL, you may still be eligible for state-nominated visas (190/491) depending on the state, but not for 189. Check current lists on the Home Affairs website — they're updated periodically.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- OFFICIAL LINKS -->
+  <div class="section fade-up">
+    <h2 class="section-title" data-en="Official resources" data-es="Recursos oficiales">Official resources</h2>
+    <p class="section-sub" data-en="Always verify information directly from Australian Government sources." data-es="Siempre verifica la información directamente en las fuentes del Gobierno Australiano.">Always verify information directly from Australian Government sources.</p>
+    <div class="card-grid">
+      <a href="https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-independent-189" target="_blank" class="card" style="text-decoration:none;color:inherit;">
+        <div class="card-icon">🏛️</div>
+        <div class="card-title" data-en="Subclass 189 — Official page" data-es="Subclase 189 — Página oficial">Subclass 189 — Official page</div>
+        <div class="card-body" data-en="Home Affairs official 189 visa information." data-es="Información oficial de Home Affairs sobre la visa 189.">Home Affairs official 189 visa information.</div>
+      </a>
+      <a href="https://immi.homeaffairs.gov.au/visas/working-in-australia/skillselect" target="_blank" class="card" style="text-decoration:none;color:inherit;">
+        <div class="card-icon">📊</div>
+        <div class="card-title">SkillSelect data</div>
+        <div class="card-body" data-en="Official invitation rounds data and EOI statistics." data-es="Datos oficiales de rondas de invitación y estadísticas de EOI.">Official invitation rounds data and EOI statistics.</div>
+      </a>
+      <a href="https://immi.homeaffairs.gov.au/help-support/tools-and-resources/skillselect/find-your-occupation" target="_blank" class="card" style="text-decoration:none;color:inherit;">
+        <div class="card-icon">🔍</div>
+        <div class="card-title" data-en="Find your occupation" data-es="Encuentra tu ocupación">Find your occupation</div>
+        <div class="card-body" data-en="Search ANZSCO codes and check which lists your occupation is on." data-es="Busca códigos ANZSCO y verifica en qué listas está tu ocupación.">Search ANZSCO codes and check which lists your occupation is on.</div>
+      </a>
+      <a href="https://online.immi.homeaffairs.gov.au/lusc/login" target="_blank" class="card" style="text-decoration:none;color:inherit;">
+        <div class="card-icon">💻</div>
+        <div class="card-title">ImmiAccount</div>
+        <div class="card-body" data-en="Submit and manage your EOI, and lodge visa applications." data-es="Presenta y gestiona tu EOI, y presenta solicitudes de visa.">Submit and manage your EOI, and lodge visa applications.</div>
+      </a>
+    </div>
+    <div class="callout blue" style="margin-top:20px">
+      <div class="callout-icon">ℹ️</div>
+      <div class="callout-body" data-en="<strong>Migro is an independent guidance tool.</strong> Immigration law changes frequently. Always confirm current requirements with a Registered Migration Agent or the Department of Home Affairs before making decisions." data-es="<strong>Migro es una herramienta de orientación independiente.</strong> La ley de inmigración cambia frecuentemente. Siempre confirma los requisitos actuales con un Agente de Migración Registrado o el Departamento de Home Affairs antes de tomar decisiones."><strong>Migro is an independent guidance tool.</strong> Immigration law changes frequently. Always confirm current requirements with a Registered Migration Agent or the Department of Home Affairs before making decisions.</div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<footer>
+  <div class="footer-brand">Mi<span>gro</span></div>
+  <div data-en="Australian immigration guidance — independent &amp; bilingual." data-es="Orientación sobre inmigración australiana — independiente y bilingüe.">Australian immigration guidance — independent &amp; bilingual.</div>
+  <div style="margin-top:4px" data-en="Not legal advice. Always verify with Home Affairs." data-es="No es asesoramiento legal. Siempre verifica con Home Affairs.">Not legal advice. Always verify with Home Affairs.</div>
+</footer>
+
+<script>
+/* ── LANGUAGE ── */
+let lang = 'en';
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('[data-en]').forEach(el => {
+    el.innerHTML = el.getAttribute('data-' + l);
+  });
+  document.getElementById('btn-en').classList.toggle('active', l === 'en');
+  document.getElementById('btn-es').classList.toggle('active', l === 'es');
+}
+
+/* ── ACCORDION ── */
+function toggleAcc(id) {
+  const item = document.getElementById(id);
+  item.classList.toggle('open');
+}
+
+/* ── EOI READINESS CHECKER ── */
+function checkEOI() {
+  const visa = document.getElementById('chk-visa').value;
+  const pts  = parseInt(document.getElementById('chk-pts').value, 10);
+  const dateVal = document.getElementById('chk-date').value; // "YYYY-MM"
+  const res  = document.getElementById('chk-result');
+
+  if (!pts || isNaN(pts)) {
+    res.className = 'checker-result show amber';
+    res.innerHTML = `<div class="result-title">⚠️ ${lang==='es'?'Falta el puntaje':'Points required'}</div>
+      <div class="result-body">${lang==='es'?'Por favor ingresa tu puntaje de puntos estimado.':'Please enter your estimated points score.'}</div>`;
+    return;
+  }
+
+  // Current thresholds based on recent rounds data
+  const thresholds = {
+    '189': { min: 90, good: 95 },
+    '190': { min: 85, good: 90 },
+    '491': { min: 80, good: 85 }
+  };
+  const t = thresholds[visa];
+
+  // Date factor — how old is the EOI?
+  let dateFactor = '';
+  if (dateVal) {
+    const eoi = new Date(dateVal + '-01');
+    const now = new Date('2026-03-01');
+    const months = (now.getFullYear() - eoi.getFullYear()) * 12 + (now.getMonth() - eoi.getMonth());
+    if (months >= 12) dateFactor = lang==='es'
+      ? ` Tu EOI tiene ${months} meses en el grupo — excelente posición por antigüedad.`
+      : ` Your EOI has been in the pool for ${months} months — strong tie-breaker position.`;
+    else if (months >= 6) dateFactor = lang==='es'
+      ? ` Tu EOI tiene ${months} meses en el grupo.`
+      : ` Your EOI has been in the pool for ${months} months.`;
+    else dateFactor = lang==='es'
+      ? ` Tu EOI es reciente (${months} meses) — la fecha de desempate aún está construyéndose.`
+      : ` Your EOI is recent (${months} months) — tie-breaker date still building.`;
+  }
+
+  if (pts >= t.good) {
+    res.className = 'checker-result show green';
+    res.innerHTML = `<div class="result-title">✅ ${lang==='es'?'Muy buenas posibilidades':'Strong invitation chances'}</div>
+      <div class="result-body">${lang==='es'
+        ?`Con ${pts} puntos para la visa ${visa}, estás por encima del umbral típico de invitación (${t.good}+ pts). Las rondas recientes muestran que este puntaje recibe invitaciones regularmente.${dateFactor}`
+        :`With ${pts} points for a ${visa} visa, you're above the typical invitation threshold (${t.good}+ pts). Recent rounds show this score receives regular invitations.${dateFactor}`
+      }</div>`;
+  } else if (pts >= t.min) {
+    res.className = 'checker-result show amber';
+    const need = t.good - pts;
+    res.innerHTML = `<div class="result-title">🟡 ${lang==='es'?'En la zona — compite con la fecha':'In the zone — competing on date'}</div>
+      <div class="result-body">${lang==='es'
+        ?`Con ${pts} puntos para la visa ${visa}, estás en el umbral mínimo reciente (${t.min} pts). Las invitaciones a este puntaje dependen fuertemente de la fecha de EOI. Ganar ${need} puntos más te pondría en una posición más sólida.${dateFactor}`
+        :`With ${pts} points for a ${visa} visa, you're at the recent minimum threshold (${t.min} pts). Invitations at this score depend heavily on your EOI submission date. Gaining ${need} more points would put you in a stronger position.${dateFactor}`
+      }</div>`;
+  } else {
+    const gap = t.min - pts;
+    res.className = 'checker-result show red';
+    res.innerHTML = `<div class="result-title">🔴 ${lang==='es'?'Por debajo del umbral actual':'Below current threshold'}</div>
+      <div class="result-body">${lang==='es'
+        ?`Con ${pts} puntos para la visa ${visa}, estás ${gap} puntos por debajo del umbral mínimo reciente de ${t.min} pts. Considera mejorar tu inglés, acumular más experiencia laboral australiana, o explorar la nominación estatal 190/491 que puede tener requisitos más bajos.`
+        :`With ${pts} points for a ${visa} visa, you're ${gap} points below the recent minimum threshold of ${t.min} pts. Consider improving your English, accumulating more Australian work experience, or exploring 190/491 state nomination which may have lower requirements.`
+      }</div>`;
+  }
+}
+
+/* ── FADE-UP OBSERVER ── */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+}, { threshold: 0.08 });
+document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
