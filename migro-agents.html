@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Migro — Migration Agents Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --black:#0f0f0f;--white:#ffffff;
+  --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-300:#d1d5db;
+  --gray-500:#6b7280;--gray-600:#4b5563;--gray-700:#374151;--gray-800:#1f2937;
+  --green:#16a34a;--green-bg:#f0fdf4;--green-border:#bbf7d0;
+  --amber:#d97706;--amber-bg:#fffbeb;--amber-border:#fde68a;
+  --red:#dc2626;--red-bg:#fef2f2;--red-border:#fecaca;
+  --blue:#2563eb;--blue-bg:#eff6ff;--blue-border:#bfdbfe;
+  --purple:#7c3aed;--purple-bg:#f5f3ff;--purple-border:#ddd6fe;
+  --teal:#0d9488;--teal-bg:#f0fdfa;--teal-border:#99f6e4;
+  --orange:#ea580c;--orange-bg:#fff7ed;--orange-border:#fed7aa;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:var(--gray-800);background:var(--gray-50);line-height:1.6}
+a{color:inherit;text-decoration:none}
+.nav{background:var(--white);border-bottom:1px solid var(--gray-200);position:sticky;top:0;z-index:100;padding:0 1.5rem}
+.nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+.nav-brand{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--black)}
+.nav-links{display:flex;align-items:center;gap:1.25rem}
+.nav-links a{font-size:.85rem;font-weight:500;color:var(--gray-600)}
+.nav-links a:hover{color:var(--black)}
+.lang-btn{background:var(--gray-100);border:none;border-radius:6px;padding:.3rem .75rem;font-size:.8rem;font-weight:600;cursor:pointer;color:var(--gray-700)}
+.hero{background:linear-gradient(135deg,#1f2937 0%,#374151 100%);padding:3rem 1.5rem 2.5rem}
+.hero-inner{max-width:1100px;margin:0 auto}
+.hero-tag{display:inline-block;background:var(--amber);color:#fff;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .75rem;border-radius:999px;margin-bottom:1rem}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;color:var(--white);max-width:700px;line-height:1.2;margin-bottom:.75rem}
+.hero p{color:#d1d5db;font-size:1rem;max-width:600px}
+.breadcrumb{display:flex;align-items:center;gap:.5rem;margin-bottom:1.5rem;font-size:.8rem;color:#9ca3af}
+.breadcrumb a{color:var(--amber);font-weight:500}
+.container{max-width:1100px;margin:0 auto;padding:3rem 1.5rem}
+.section-title{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--black);margin-bottom:1.5rem}
+.section{margin-bottom:3rem}
+/* MARA BADGE */
+.mara-badge{background:var(--white);border:2px solid var(--amber);border-radius:14px;padding:1.5rem;display:flex;gap:1.25rem;align-items:flex-start;margin-bottom:2rem}
+.mara-badge .icon{font-size:2rem;flex-shrink:0}
+.mara-badge h3{font-size:1rem;font-weight:700;color:var(--black);margin-bottom:.3rem}
+.mara-badge p{font-size:.83rem;color:var(--gray-600);line-height:1.5}
+/* DO / DON'T GRID */
+.do-dont-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.do-card{background:var(--green-bg);border:1px solid var(--green-border);border-radius:12px;padding:1.25rem}
+.dont-card{background:var(--red-bg);border:1px solid var(--red-border);border-radius:12px;padding:1.25rem}
+.do-card h4{font-size:.9rem;font-weight:700;color:var(--green);margin-bottom:.75rem}
+.dont-card h4{font-size:.9rem;font-weight:700;color:var(--red);margin-bottom:.75rem}
+.do-list,.dont-list{list-style:none;display:flex;flex-direction:column;gap:.4rem}
+.do-list li{font-size:.8rem;color:var(--gray-700);padding-left:1.2rem;position:relative;line-height:1.5}
+.do-list li::before{content:'✓';position:absolute;left:0;color:var(--green);font-weight:700}
+.dont-list li{font-size:.8rem;color:var(--gray-700);padding-left:1.2rem;position:relative;line-height:1.5}
+.dont-list li::before{content:'✗';position:absolute;left:0;color:var(--red);font-weight:700}
+/* RED FLAGS */
+.red-flags-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem}
+.red-flag{background:var(--red-bg);border:1px solid var(--red-border);border-radius:10px;padding:1rem 1.1rem;display:flex;gap:.75rem}
+.rf-icon{font-size:1.1rem;flex-shrink:0}
+.rf-text{font-size:.82rem;color:var(--gray-700);line-height:1.5}
+.rf-text strong{color:var(--black);display:block;margin-bottom:.15rem}
+/* QUESTION CARDS */
+.q-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem}
+.q-card{background:var(--white);border:1px solid var(--gray-200);border-radius:10px;padding:1.1rem}
+.q-card .q-text{font-weight:600;font-size:.85rem;color:var(--black);margin-bottom:.25rem}
+.q-card .q-sub{font-size:.78rem;color:var(--gray-600);line-height:1.5}
+/* COSTS TABLE */
+.costs-table{width:100%;border-collapse:collapse;background:var(--white);border-radius:12px;overflow:hidden;border:1px solid var(--gray-200)}
+.costs-table th{background:var(--gray-100);padding:.65rem 1rem;text-align:left;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--gray-600);border-bottom:1px solid var(--gray-200)}
+.costs-table td{padding:.65rem 1rem;font-size:.84rem;color:var(--gray-700);border-bottom:1px solid var(--gray-100)}
+.costs-table tr:last-child td{border-bottom:none}
+/* CALLOUT */
+.callout{border-radius:12px;padding:1.25rem 1.5rem;display:flex;gap:1rem;align-items:flex-start;margin-bottom:1.5rem}
+.callout-amber{background:var(--amber-bg);border:1px solid var(--amber-border)}
+.callout-green{background:var(--green-bg);border:1px solid var(--green-border)}
+.callout-blue{background:var(--blue-bg);border:1px solid var(--blue-border)}
+.callout-red{background:var(--red-bg);border:1px solid var(--red-border)}
+.callout-icon{font-size:1.25rem;flex-shrink:0;margin-top:.05rem}
+.callout-body h4{font-size:.9rem;font-weight:700;color:var(--black);margin-bottom:.3rem}
+.callout-body p{font-size:.82rem;color:var(--gray-700);line-height:1.5}
+/* WHEN TO USE */
+.when-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.when-card{background:var(--white);border:1px solid var(--gray-200);border-radius:12px;padding:1.25rem}
+.when-card h4{font-size:.9rem;font-weight:700;color:var(--black);margin-bottom:.6rem}
+.when-list{list-style:none;display:flex;flex-direction:column;gap:.4rem}
+.when-list li{font-size:.82rem;color:var(--gray-600);padding-left:1.2rem;position:relative;line-height:1.5}
+.when-list li::before{content:'→';position:absolute;left:0;color:var(--amber)}
+/* ACCORDION */
+.accordion{display:flex;flex-direction:column;gap:.5rem}
+.acc-item{background:var(--white);border:1px solid var(--gray-200);border-radius:10px;overflow:hidden}
+.acc-trigger{width:100%;display:flex;justify-content:space-between;align-items:center;padding:1rem 1.25rem;background:none;border:none;cursor:pointer;font-size:.9rem;font-weight:600;color:var(--black);text-align:left;gap:1rem}
+.acc-trigger:hover{background:var(--gray-50)}
+.acc-chevron{font-size:1rem;transition:transform .3s;flex-shrink:0}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1)}
+.acc-body.open{max-height:800px}
+.acc-content{padding:0 1.25rem 1rem;font-size:.85rem;color:var(--gray-600);line-height:1.7}
+/* VISA COMPLEXITY */
+.complexity-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem}
+.complexity-item{background:var(--white);border:1px solid var(--gray-200);border-radius:10px;padding:.9rem 1rem;display:flex;justify-content:space-between;align-items:center}
+.ci-visa{font-size:.84rem;font-weight:600;color:var(--black)}
+.ci-level{font-size:.75rem;font-weight:700;padding:.2rem .6rem;border-radius:999px}
+.level-low{background:var(--green-bg);color:var(--green)}
+.level-med{background:var(--amber-bg);color:var(--amber)}
+.level-high{background:var(--red-bg);color:var(--red)}
+.resources-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.9rem}
+.resource-card{background:var(--white);border:1px solid var(--gray-200);border-radius:10px;padding:1rem;display:flex;flex-direction:column;gap:.35rem;transition:border-color .2s}
+.resource-card:hover{border-color:var(--amber)}
+.resource-card .res-title{font-size:.85rem;font-weight:600;color:var(--black)}
+.resource-card .res-sub{font-size:.75rem;color:var(--gray-500)}
+.resource-card .res-link{font-size:.75rem;color:var(--amber);font-weight:500;margin-top:auto}
+.fade-up{opacity:0;transform:translateY(24px);transition:opacity .55s ease,transform .55s ease}
+.fade-up.visible{opacity:1;transform:none}
+@media(max-width:640px){.do-dont-grid,.when-grid{grid-template-columns:1fr}.red-flags-grid,.q-grid,.complexity-grid,.resources-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="migro-dashboard.html" class="nav-brand">Migro</a>
+    <div class="nav-links">
+      <a href="migro-dashboard.html" data-en="Dashboard" data-es="Inicio">Dashboard</a>
+      <a href="migro-roadmap.html" data-en="Roadmap" data-es="Hoja de ruta">Roadmap</a>
+      <button class="lang-btn" onclick="toggleLang()">ES</button>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb">
+      <a href="migro-dashboard.html">Migro</a>
+      <span style="color:#6b7280">›</span>
+      <span data-en="Migration Agents" data-es="Agentes de Migración">Migration Agents</span>
+    </div>
+    <div class="hero-tag" data-en="Professional Advice" data-es="Asesoramiento Profesional">Professional Advice</div>
+    <h1 data-en="How to choose a migration agent" data-es="Cómo elegir un agente de migración">How to choose a migration agent</h1>
+    <p data-en="A registered migration agent can make the difference between approval and refusal. Learn what to look for, what to avoid, and how much it should cost." data-es="Un agente de migración registrado puede marcar la diferencia entre la aprobación y el rechazo. Aprende qué buscar, qué evitar y cuánto debería costar.">A registered migration agent can make the difference between approval and refusal. Learn what to look for, what to avoid, and how much it should cost.</p>
+  </div>
+</section>
+
+<div class="container">
+
+  <!-- MARA BADGE -->
+  <section class="section fade-up">
+    <div class="mara-badge">
+      <div class="icon">🏅</div>
+      <div>
+        <h3 data-en="Only use a MARA-registered agent" data-es="Usa solo un agente registrado en MARA">Only use a MARA-registered agent</h3>
+        <p data-en="In Australia, it is illegal for anyone other than a registered migration agent (MARA) or a lawyer with the right to practice migration law to provide immigration assistance for a fee. MARA agents are listed on the Office of the Migration Agents Registration Authority (OMARA) register. Always verify your agent's registration at mara.gov.au before engaging them. Unregistered agents ('migration consultants') may be operating illegally." data-es="En Australia, es ilegal que cualquier persona que no sea un agente de migración registrado (MARA) o un abogado con derecho a practicar la ley de migración proporcione asistencia de inmigración a cambio de una tarifa. Los agentes MARA están listados en el registro de la Oficina de la Autoridad de Registro de Agentes de Migración (OMARA). Siempre verifica el registro de tu agente en mara.gov.au antes de contratarlo. Los agentes no registrados ('consultores de migración') pueden estar operando ilegalmente.">In Australia, it is illegal for anyone other than a registered migration agent (MARA) or a lawyer with the right to practice migration law to provide immigration assistance for a fee. MARA agents are listed on the Office of the Migration Agents Registration Authority (OMARA) register. Always verify your agent's registration at mara.gov.au before engaging them. Unregistered agents ('migration consultants') may be operating illegally.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DO YOU NEED ONE? -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Do you actually need an agent?" data-es="¿Realmente necesitas un agente?">Do you actually need an agent?</h2>
+    <div class="when-grid">
+      <div class="when-card">
+        <h4 data-en="When an agent adds real value" data-es="Cuándo un agente agrega valor real">When an agent adds real value</h4>
+        <ul class="when-list">
+          <li data-en="Complex visa types (186, partner visa, refugee)" data-es="Tipos de visa complejos (186, de pareja, refugiado)">Complex visa types (186, partner visa, refugee)</li>
+          <li data-en="Previous visa refusal or cancellation" data-es="Rechazo o cancelación de visa anterior">Previous visa refusal or cancellation</li>
+          <li data-en="Character issues (criminal record, overstay)" data-es="Problemas de carácter (antecedentes penales, estadía excedida)">Character issues (criminal record, overstay)</li>
+          <li data-en="Unusual employment history or gaps" data-es="Historial laboral inusual o brechas">Unusual employment history or gaps</li>
+          <li data-en="Complex family situation (divorced, children)" data-es="Situación familiar compleja (divorciado, hijos)">Complex family situation (divorced, children)</li>
+          <li data-en="Employer who is new to sponsorship (482/186)" data-es="Empleador nuevo en el patrocinio (482/186)">Employer who is new to sponsorship (482/186)</li>
+          <li data-en="Time-sensitive applications" data-es="Solicitudes urgentes">Time-sensitive applications</li>
+          <li data-en="You are not confident in English" data-es="No te sientes seguro en inglés">You are not confident in English</li>
+        </ul>
+      </div>
+      <div class="when-card">
+        <h4 data-en="When you might be fine DIY" data-es="Cuándo podrías hacerlo solo">When you might be fine DIY</h4>
+        <ul class="when-list">
+          <li data-en="Straightforward 189/190 with clean history" data-es="189/190 sencilla con historial limpio">Straightforward 189/190 with clean history</li>
+          <li data-en="485 graduate visa (usually simple)" data-es="Visa 485 de graduado (generalmente simple)">485 graduate visa (usually simple)</li>
+          <li data-en="Student visa with clear CoE and finances" data-es="Visa de estudiante con CoE y finanzas claros">Student visa with clear CoE and finances</li>
+          <li data-en="You have time to research carefully" data-es="Tienes tiempo para investigar cuidadosamente">You have time to research carefully</li>
+          <li data-en="Your occupation, points, and documents are clear-cut" data-es="Tu ocupación, puntos y documentos son claros">Your occupation, points, and documents are clear-cut</li>
+          <li data-en="You've already had a paid consultation and know your path" data-es="Ya tuviste una consulta pagada y conoces tu camino">You've already had a paid consultation and know your path</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- RED FLAGS -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Red flags — avoid these agents" data-es="Señales de alerta — evita estos agentes">Red flags — avoid these agents</h2>
+    <div class="red-flags-grid">
+      <div class="red-flag">
+        <div class="rf-icon">🚩</div>
+        <div class="rf-text"><strong data-en="Guarantees visa success" data-es="Garantiza el éxito de la visa">Guarantees visa success</strong><span data-en="No legitimate agent can guarantee a visa outcome. The decision belongs to the Department of Home Affairs. Anyone who guarantees approval is misleading you." data-es="Ningún agente legítimo puede garantizar el resultado de una visa. La decisión le pertenece al Departamento de Home Affairs. Cualquiera que garantice la aprobación te está engañando.">No legitimate agent can guarantee a visa outcome. The decision belongs to the Department of Home Affairs. Anyone who guarantees approval is misleading you.</span></div>
+      </div>
+      <div class="red-flag">
+        <div class="rf-icon">🚩</div>
+        <div class="rf-text"><strong data-en="Very cheap fees" data-es="Honorarios muy baratos">Very cheap fees</strong><span data-en="Experienced registered agents charge professional rates. If fees seem too good to be true (e.g. $200 for a partner visa), the agent may be unqualified, outsourcing to unlicensed staff, or cutting corners on your application." data-es="Los agentes registrados con experiencia cobran tarifas profesionales. Si las tarifas parecen demasiado buenas para ser verdad (ej. $200 por una visa de pareja), el agente puede ser no calificado, estar subcontratando a personal sin licencia o descuidando tu solicitud.">Experienced registered agents charge professional rates. If fees seem too good to be true (e.g. $200 for a partner visa), the agent may be unqualified, outsourcing to unlicensed staff, or cutting corners on your application.</span></div>
+      </div>
+      <div class="red-flag">
+        <div class="rf-icon">🚩</div>
+        <div class="rf-text"><strong data-en="Won't provide a written contract" data-es="No proporciona contrato escrito">Won't provide a written contract</strong><span data-en="MARA agents are legally required to provide a written contract before accepting payment. If an agent asks for money without a written agreement, that is a serious red flag." data-es="Los agentes MARA están obligados por ley a proporcionar un contrato escrito antes de aceptar el pago. Si un agente pide dinero sin un acuerdo escrito, eso es una señal de alerta grave.">MARA agents are legally required to provide a written contract before accepting payment. If an agent asks for money without a written agreement, that is a serious red flag.</span></div>
+      </div>
+      <div class="red-flag">
+        <div class="rf-icon">🚩</div>
+        <div class="rf-text"><strong data-en="Can't be found on MARA register" data-es="No se encuentra en el registro MARA">Can't be found on MARA register</strong><span data-en="Before signing anything, search the OMARA register at mara.gov.au. If the person isn't listed or is listed as 'cancelled' or 'barred', do not engage them — they are not legally allowed to charge you for advice." data-es="Antes de firmar nada, busca en el registro de OMARA en mara.gov.au. Si la persona no está listada o aparece como 'cancelada' o 'prohibida', no la contrates — no tiene permiso legal para cobrarte por asesoramiento.">Before signing anything, search the OMARA register at mara.gov.au. If the person isn't listed or is listed as 'cancelled' or 'barred', do not engage them — they are not legally allowed to charge you for advice.</span></div>
+      </div>
+      <div class="red-flag">
+        <div class="rf-icon">🚩</div>
+        <div class="rf-text"><strong data-en="Asks you to misrepresent information" data-es="Te pide tergiversar información">Asks you to misrepresent information</strong><span data-en="If an agent suggests you exaggerate qualifications, misrepresent work history, or provide false documents, they are asking you to commit immigration fraud. This can result in visa cancellation and a permanent ban." data-es="Si un agente sugiere exagerar calificaciones, tergiversar el historial laboral o proporcionar documentos falsos, te está pidiendo cometer fraude migratorio. Esto puede resultar en cancelación de visa y prohibición permanente.">If an agent suggests you exaggerate qualifications, misrepresent work history, or provide false documents, they are asking you to commit immigration fraud. This can result in visa cancellation and a permanent ban.</span></div>
+      </div>
+      <div class="red-flag">
+        <div class="rf-icon">🚩</div>
+        <div class="rf-text"><strong data-en="Pressures you to decide immediately" data-es="Te presiona para decidir de inmediato">Pressures you to decide immediately</strong><span data-en="High-pressure sales tactics — 'This offer is only good today' — are a warning sign. A reputable agent will give you time to consider and ask questions." data-es="Las tácticas de venta de alta presión — 'Esta oferta solo es válida hoy' — son una señal de advertencia. Un agente de confianza te dará tiempo para considerar y hacer preguntas.">High-pressure sales tactics — 'This offer is only good today' — are a warning sign. A reputable agent will give you time to consider and ask questions.</span></div>
+      </div>
+      <div class="red-flag">
+        <div class="rf-icon">🚩</div>
+        <div class="rf-text"><strong data-en="'Connections' at Home Affairs" data-es="'Contactos' en Home Affairs">'Connections' at Home Affairs</strong><span data-en="No agent has 'connections' that can influence visa decisions. Any agent who claims special access to decision-makers is lying. Visa decisions are made by case officers applying the law." data-es="Ningún agente tiene 'contactos' que puedan influir en las decisiones de visa. Cualquier agente que afirme tener acceso especial a los tomadores de decisiones está mintiendo. Las decisiones de visa las toman los oficiales de casos aplicando la ley.">No agent has 'connections' that can influence visa decisions. Any agent who claims special access to decision-makers is lying. Visa decisions are made by case officers applying the law.</span></div>
+      </div>
+      <div class="red-flag">
+        <div class="rf-icon">🚩</div>
+        <div class="rf-text"><strong data-en="Based overseas with no Australian license" data-es="Con sede en el exterior sin licencia australiana">Based overseas with no Australian license</strong><span data-en="If you want to migrate to Australia, your migration agent must be a MARA-registered agent in Australia (or an Australian lawyer). 'Migration consultants' from your home country may not be legally authorised to advise on Australian law." data-es="Si quieres migrar a Australia, tu agente de migración debe ser un agente registrado en MARA en Australia (o un abogado australiano). Los 'consultores de migración' de tu país de origen pueden no estar legalmente autorizados para asesorar sobre la ley australiana.">If you want to migrate to Australia, your migration agent must be a MARA-registered agent in Australia (or an Australian lawyer). 'Migration consultants' from your home country may not be legally authorised to advise on Australian law.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GOOD AGENT CHECKLIST -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="What to look for in a good agent" data-es="Qué buscar en un buen agente">What to look for in a good agent</h2>
+    <div class="do-dont-grid">
+      <div class="do-card">
+        <h4>✓ <span data-en="Green flags" data-es="Señales positivas">Green flags</span></h4>
+        <ul class="do-list">
+          <li data-en="Verifiable MARA registration number" data-es="Número de registro MARA verificable">Verifiable MARA registration number</li>
+          <li data-en="Specialises in your visa type" data-es="Se especializa en tu tipo de visa">Specialises in your visa type</li>
+          <li data-en="Provides a written contract before payment" data-es="Proporciona un contrato escrito antes del pago">Provides a written contract before payment</li>
+          <li data-en="Clear fee structure — no hidden costs" data-es="Estructura de honorarios clara — sin costos ocultos">Clear fee structure — no hidden costs</li>
+          <li data-en="Explains the risks and realistic timeline" data-es="Explica los riesgos y el cronograma realista">Explains the risks and realistic timeline</li>
+          <li data-en="Responsive and communicative" data-es="Receptivo y comunicativo">Responsive and communicative</li>
+          <li data-en="Positive reviews from real clients" data-es="Reseñas positivas de clientes reales">Positive reviews from real clients</li>
+          <li data-en="Asks detailed questions about your situation" data-es="Hace preguntas detalladas sobre tu situación">Asks detailed questions about your situation</li>
+          <li data-en="Uses Australian Immigration law firm or MARA office" data-es="Usa firma de derecho de inmigración australiana o oficina MARA">Uses Australian Immigration law firm or MARA office</li>
+        </ul>
+      </div>
+      <div class="dont-card">
+        <h4>✗ <span data-en="Red flags" data-es="Señales de alerta">Red flags</span></h4>
+        <ul class="dont-list">
+          <li data-en="Guarantees visa outcome" data-es="Garantiza el resultado de la visa">Guarantees visa outcome</li>
+          <li data-en="Very cheap or unusually expensive" data-es="Muy barato o inusualmente caro">Very cheap or unusually expensive</li>
+          <li data-en="Not on the MARA register" data-es="No está en el registro MARA">Not on the MARA register</li>
+          <li data-en="No written contract before payment" data-es="Sin contrato escrito antes del pago">No written contract before payment</li>
+          <li data-en="Suggests hiding or misrepresenting information" data-es="Sugiere ocultar o tergiversar información">Suggests hiding or misrepresenting information</li>
+          <li data-en="Hard to reach — doesn't return calls/emails" data-es="Difícil de contactar — no responde llamadas/emails">Hard to reach — doesn't return calls/emails</li>
+          <li data-en="Claims 'special contacts' at immigration" data-es="Afirma tener 'contactos especiales' en inmigración">Claims 'special contacts' at immigration</li>
+          <li data-en="High-pressure sales, urgency tactics" data-es="Ventas de alta presión, tácticas de urgencia">High-pressure sales, urgency tactics</li>
+          <li data-en="Based overseas, not licensed in Australia" data-es="Con sede en el exterior, sin licencia en Australia">Based overseas, not licensed in Australia</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- TYPICAL COSTS -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Typical agent fees" data-es="Honorarios típicos de agentes">Typical agent fees</h2>
+    <table class="costs-table">
+      <thead>
+        <tr>
+          <th data-en="Service" data-es="Servicio">Service</th>
+          <th data-en="Typical range" data-es="Rango típico">Typical range</th>
+          <th data-en="Notes" data-es="Notas">Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td data-en="Initial consultation (paid)" data-es="Consulta inicial (pagada)">Initial consultation (paid)</td><td>$150–$400</td><td data-en="Worth doing before committing" data-es="Vale la pena hacerlo antes de comprometerse">Worth doing before committing</td></tr>
+        <tr><td data-en="Skills assessment review" data-es="Revisión evaluación de habilidades">Skills assessment review</td><td>$300–$800</td><td data-en="Can include EOI review" data-es="Puede incluir revisión de EOI">Can include EOI review</td></tr>
+        <tr><td data-en="EOI submission and advice" data-es="Presentación de EOI y asesoramiento">EOI submission and advice</td><td>$500–$1,500</td><td data-en="Includes points check" data-es="Incluye verificación de puntos">Includes points check</td></tr>
+        <tr><td data-en="189/190 full application" data-es="Solicitud completa 189/190">189/190 full application</td><td>$2,000–$5,000</td><td data-en="From ITA to grant" data-es="Desde ITA hasta la aprobación">From ITA to grant</td></tr>
+        <tr><td data-en="491 full application" data-es="Solicitud completa 491">491 full application</td><td>$2,000–$5,000</td><td data-en="Includes state nomination help" data-es="Incluye ayuda con nominación estatal">Includes state nomination help</td></tr>
+        <tr><td data-en="482 (employer sponsorship)" data-es="482 (patrocinio de empleador)">482 (employer sponsorship)</td><td>$2,500–$6,000</td><td data-en="May include SBS + nomination + visa" data-es="Puede incluir SBS + nominación + visa">May include SBS + nomination + visa</td></tr>
+        <tr><td data-en="186 (ENS transition stream)" data-es="186 (corriente de transición ENS)">186 (ENS transition stream)</td><td>$3,000–$7,000</td><td data-en="Complex; strong agent value" data-es="Compleja; gran valor del agente">Complex; strong agent value</td></tr>
+        <tr><td data-en="Partner visa 820/801" data-es="Visa de pareja 820/801">Partner visa 820/801</td><td>$2,500–$6,000</td><td data-en="Evidence review critical" data-es="Revisión de evidencia crítica">Evidence review critical</td></tr>
+        <tr><td data-en="Merits Review / AAT" data-es="Revisión de Méritos / AAT">Merits Review / AAT</td><td>$5,000–$15,000+</td><td data-en="After a refusal — specialist required" data-es="Después de un rechazo — requiere especialista">After a refusal — specialist required</td></tr>
+      </tbody>
+    </table>
+    <div class="callout callout-amber" style="margin-top:1rem">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body">
+        <h4 data-en="Beware of 'unbundled' services" data-es="Cuidado con los servicios 'desagregados'">Beware of 'unbundled' services</h4>
+        <p data-en="Some agents quote a low initial fee but charge extra for every communication, document review, or form submission. Ask upfront: 'Is this an all-inclusive fee or will there be additional charges?' Get a detailed scope of work in writing." data-es="Algunos agentes cotizan una tarifa inicial baja pero cobran extra por cada comunicación, revisión de documentos o envío de formularios. Pregunta de antemano: '¿Es esta una tarifa todo incluido o habrá cargos adicionales?' Obtén un alcance de trabajo detallado por escrito.">Some agents quote a low initial fee but charge extra for every communication, document review, or form submission. Ask upfront: 'Is this an all-inclusive fee or will there be additional charges?' Get a detailed scope of work in writing.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- VISA COMPLEXITY GUIDE -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Complexity by visa type" data-es="Complejidad por tipo de visa">Complexity by visa type</h2>
+    <div class="complexity-grid">
+      <div class="complexity-item"><span class="ci-visa">Visa 485</span><span class="ci-level level-low" data-en="Low" data-es="Baja">Low</span></div>
+      <div class="complexity-item"><span class="ci-visa">Visa 500 (Student)</span><span class="ci-level level-low" data-en="Low" data-es="Baja">Low</span></div>
+      <div class="complexity-item"><span class="ci-visa">Visa 189</span><span class="ci-level level-med" data-en="Medium" data-es="Media">Medium</span></div>
+      <div class="complexity-item"><span class="ci-visa">Visa 190</span><span class="ci-level level-med" data-en="Medium" data-es="Media">Medium</span></div>
+      <div class="complexity-item"><span class="ci-visa">Visa 491</span><span class="ci-level level-med" data-en="Medium" data-es="Media">Medium</span></div>
+      <div class="complexity-item"><span class="ci-visa">Visa 482</span><span class="ci-level level-high" data-en="High" data-es="Alta">High</span></div>
+      <div class="complexity-item"><span class="ci-visa">Visa 186</span><span class="ci-level level-high" data-en="High" data-es="Alta">High</span></div>
+      <div class="complexity-item"><span class="ci-visa">Partner (820/801)</span><span class="ci-level level-high" data-en="High" data-es="Alta">High</span></div>
+      <div class="complexity-item"><span class="ci-visa">AAT / Merits Review</span><span class="ci-level level-high" data-en="Very High" data-es="Muy Alta">Very High</span></div>
+      <div class="complexity-item"><span class="ci-visa">Visa 191</span><span class="ci-level level-med" data-en="Medium" data-es="Media">Medium</span></div>
+    </div>
+  </section>
+
+  <!-- QUESTIONS TO ASK -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Questions to ask a potential agent" data-es="Preguntas para hacer a un agente potencial">Questions to ask a potential agent</h2>
+    <div class="q-grid">
+      <div class="q-card">
+        <div class="q-text" data-en='"What is your MARA registration number?"' data-es='"¿Cuál es su número de registro MARA?"'>"What is your MARA registration number?"</div>
+        <div class="q-sub" data-en="Verify it yourself at mara.gov.au before proceeding." data-es="Verifícalo tú mismo en mara.gov.au antes de continuar.">Verify it yourself at mara.gov.au before proceeding.</div>
+      </div>
+      <div class="q-card">
+        <div class="q-text" data-en='"How many cases like mine have you handled?"' data-es='"¿Cuántos casos como el mío ha manejado?"'>"How many cases like mine have you handled?"</div>
+        <div class="q-sub" data-en="A specialist in your visa type will be more effective than a generalist." data-es="Un especialista en tu tipo de visa será más efectivo que un generalista.">A specialist in your visa type will be more effective than a generalist.</div>
+      </div>
+      <div class="q-card">
+        <div class="q-text" data-en='"What is your all-inclusive fee?"' data-es='"¿Cuál es su tarifa todo incluido?"'>"What is your all-inclusive fee?"</div>
+        <div class="q-sub" data-en="Get a written quote covering all services, not just initial lodgement." data-es="Obtén una cotización escrita que cubra todos los servicios, no solo la presentación inicial.">Get a written quote covering all services, not just initial lodgement.</div>
+      </div>
+      <div class="q-card">
+        <div class="q-text" data-en='"What are the realistic risks in my application?"' data-es='"¿Cuáles son los riesgos realistas en mi solicitud?"'>"What are the realistic risks in my application?"</div>
+        <div class="q-sub" data-en="A good agent will identify weaknesses honestly, not just promise success." data-es="Un buen agente identificará las debilidades honestamente, no solo prometerá éxito.">A good agent will identify weaknesses honestly, not just promise success.</div>
+      </div>
+      <div class="q-card">
+        <div class="q-text" data-en='"Who will handle my case day-to-day?"' data-es='"¿Quién manejará mi caso día a día?"'>"Who will handle my case day-to-day?"</div>
+        <div class="q-sub" data-en="Ensure it's the registered agent, not unlicensed support staff." data-es="Asegúrate de que sea el agente registrado, no personal de apoyo sin licencia.">Ensure it's the registered agent, not unlicensed support staff.</div>
+      </div>
+      <div class="q-card">
+        <div class="q-text" data-en='"Do you have references or reviews I can check?"' data-es='"¿Tiene referencias o reseñas que pueda verificar?"'>"Do you have references or reviews I can check?"</div>
+        <div class="q-sub" data-en="Check Google, Facebook, or community forums for real client feedback." data-es="Verifica en Google, Facebook o foros comunitarios para obtener comentarios reales de clientes.">Check Google, Facebook, or community forums for real client feedback.</div>
+      </div>
+      <div class="q-card">
+        <div class="q-text" data-en='"What happens if my application is refused?"' data-es='"¿Qué pasa si mi solicitud es rechazada?"'>"What happens if my application is refused?"</div>
+        <div class="q-sub" data-en="Understand their policy on refusals — do they offer appeals assistance?" data-es="Comprende su política sobre los rechazos — ¿ofrecen asistencia para apelaciones?">Understand their policy on refusals — do they offer appeals assistance?</div>
+      </div>
+      <div class="q-card">
+        <div class="q-text" data-en='"Will you keep me informed at each step?"' data-es='"¿Me mantendrá informado en cada paso?"'>"Will you keep me informed at each step?"</div>
+        <div class="q-sub" data-en="Communication standards vary widely — set expectations upfront." data-es="Los estándares de comunicación varían ampliamente — establece expectativas desde el principio.">Communication standards vary widely — set expectations upfront.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPLAINTS -->
+  <section class="section fade-up">
+    <div class="callout callout-blue">
+      <div class="callout-icon">⚖️</div>
+      <div class="callout-body">
+        <h4 data-en="If something goes wrong" data-es="Si algo sale mal">If something goes wrong</h4>
+        <p data-en="If you have a complaint about a registered migration agent, you can lodge a complaint with the Office of the Migration Agents Registration Authority (OMARA) at mara.gov.au. If you believe you are a victim of migration fraud (e.g. an unregistered agent took your money), contact the Australian Federal Police or your state police. You may also be able to claim compensation through civil proceedings." data-es="Si tienes una queja sobre un agente de migración registrado, puedes presentar una queja ante la Oficina de la Autoridad de Registro de Agentes de Migración (OMARA) en mara.gov.au. Si crees que eres víctima de fraude migratorio (ej. un agente no registrado tomó tu dinero), contacta a la Policía Federal Australiana o a la policía de tu estado. También podrías poder reclamar compensación mediante procedimientos civiles.">If you have a complaint about a registered migration agent, you can lodge a complaint with the Office of the Migration Agents Registration Authority (OMARA) at mara.gov.au. If you believe you are a victim of migration fraud (e.g. an unregistered agent took your money), contact the Australian Federal Police or your state police. You may also be able to claim compensation through civil proceedings.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Frequently asked questions" data-es="Preguntas frecuentes">Frequently asked questions</h2>
+    <div class="accordion">
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span data-en="Is there a difference between a migration agent and an immigration lawyer?" data-es="¿Hay diferencia entre un agente de migración y un abogado de inmigración?">Is there a difference between a migration agent and an immigration lawyer?</span>
+          <span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content" data-en="Both can legally provide immigration advice for a fee. Migration agents are registered with OMARA (MARA). Immigration lawyers are admitted to practice in Australia and may or may not also hold MARA registration. For complex cases involving Federal Court appeals or criminal law intersecting with immigration, a lawyer may be preferable. For most visa applications, a specialist MARA agent is sufficient." data-es="Ambos pueden proporcionar asesoramiento de inmigración legalmente a cambio de una tarifa. Los agentes de migración están registrados en OMARA (MARA). Los abogados de inmigración están admitidos para ejercer en Australia y pueden o no tener también registro MARA. Para casos complejos que involucran apelaciones ante el Tribunal Federal o derecho penal que se intersecta con inmigración, un abogado puede ser preferible. Para la mayoría de las solicitudes de visa, un agente MARA especializado es suficiente.">Both can legally provide immigration advice for a fee. Migration agents are registered with OMARA (MARA). Immigration lawyers are admitted to practice in Australia and may or may not also hold MARA registration. For complex cases involving Federal Court appeals or criminal law intersecting with immigration, a lawyer may be preferable. For most visa applications, a specialist MARA agent is sufficient.</div>
+        </div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span data-en="Can I change agents mid-application?" data-es="¿Puedo cambiar de agente durante la solicitud?">Can I change agents mid-application?</span>
+          <span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content" data-en="Yes, you can change agents at any time. Your visa application belongs to you — not to the agent. You would need to: (1) terminate the existing engagement in writing, (2) request your file and all documents, (3) notify the Department of Home Affairs of the new authorised agent. Check your contract for any exit clauses or fees." data-es="Sí, puedes cambiar de agente en cualquier momento. Tu solicitud de visa te pertenece a ti, no al agente. Necesitarías: (1) terminar el compromiso existente por escrito, (2) solicitar tu archivo y todos los documentos, (3) notificar al Departamento de Home Affairs sobre el nuevo agente autorizado. Verifica tu contrato por cualquier cláusula de salida o tarifas.">Yes, you can change agents at any time. Your visa application belongs to you — not to the agent. You would need to: (1) terminate the existing engagement in writing, (2) request your file and all documents, (3) notify the Department of Home Affairs of the new authorised agent. Check your contract for any exit clauses or fees.</div>
+        </div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span data-en="Is it worth paying for just a single consultation?" data-es="¿Vale la pena pagar solo por una consulta?">Is it worth paying for just a single consultation?</span>
+          <span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content" data-en="Absolutely. A paid consultation ($150–$400) with a qualified MARA agent can save you thousands in mistakes or misguided self-application. Even if you ultimately DIY your application, an initial professional consultation helps you understand your options, risks, and the right pathway. Many agents offer this service and it is separate from a full application engagement." data-es="Absolutamente. Una consulta pagada ($150–$400) con un agente MARA calificado puede ahorrarte miles en errores o solicitudes mal dirigidas. Incluso si finalmente haces la solicitud por tu cuenta, una consulta profesional inicial te ayuda a entender tus opciones, riesgos y el camino correcto. Muchos agentes ofrecen este servicio y es independiente de un compromiso de solicitud completo.">Absolutely. A paid consultation ($150–$400) with a qualified MARA agent can save you thousands in mistakes or misguided self-application. Even if you ultimately DIY your application, an initial professional consultation helps you understand your options, risks, and the right pathway. Many agents offer this service and it is separate from a full application engagement.</div>
+        </div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span data-en="What if I can't afford a migration agent?" data-es="¿Qué pasa si no puedo pagar un agente de migración?">What if I can't afford a migration agent?</span>
+          <span class="acc-chevron">▾</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-content" data-en="Free or subsidised immigration advice is available through: (1) the Refugee and Immigration Legal Service (RAILS) for eligible applicants; (2) community legal centres across Australia; (3) AMES Australia and migrant resource centres for general guidance. For straightforward visas, the Department of Home Affairs also has detailed online guides. The Migro portal is designed to help you understand your options before deciding whether professional help is needed." data-es="El asesoramiento migratorio gratuito o subsidiado está disponible a través de: (1) el Servicio Legal de Refugiados e Inmigración (RAILS) para solicitantes elegibles; (2) centros legales comunitarios en toda Australia; (3) AMES Australia y centros de recursos para migrantes para orientación general. Para visas sencillas, el Departamento de Home Affairs también tiene guías en línea detalladas. El portal Migro está diseñado para ayudarte a entender tus opciones antes de decidir si necesitas ayuda profesional.">Free or subsidised immigration advice is available through: (1) the Refugee and Immigration Legal Service (RAILS) for eligible applicants; (2) community legal centres across Australia; (3) AMES Australia and migrant resource centres for general guidance. For straightforward visas, the Department of Home Affairs also has detailed online guides. The Migro portal is designed to help you understand your options before deciding whether professional help is needed.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESOURCES -->
+  <section class="section fade-up">
+    <h2 class="section-title" data-en="Official resources" data-es="Recursos oficiales">Official resources</h2>
+    <div class="resources-grid">
+      <a href="https://www.mara.gov.au/looking-for-an-agent/" target="_blank" class="resource-card">
+        <div class="res-title" data-en="Find a MARA agent" data-es="Encontrar agente MARA">Find a MARA agent</div>
+        <div class="res-sub" data-en="Search the official OMARA register" data-es="Busca en el registro oficial OMARA">Search the official OMARA register</div>
+        <div class="res-link">mara.gov.au ↗</div>
+      </a>
+      <a href="https://www.mara.gov.au/complaints-and-investigations/" target="_blank" class="resource-card">
+        <div class="res-title" data-en="Lodge a complaint about an agent" data-es="Presentar queja sobre un agente">Lodge a complaint about an agent</div>
+        <div class="res-sub" data-en="OMARA complaints process" data-es="Proceso de quejas de OMARA">OMARA complaints process</div>
+        <div class="res-link">mara.gov.au ↗</div>
+      </a>
+      <a href="https://immi.homeaffairs.gov.au/help-support/contact-us/use-an-agent" target="_blank" class="resource-card">
+        <div class="res-title" data-en="Using an agent — Home Affairs" data-es="Usar un agente — Home Affairs">Using an agent — Home Affairs</div>
+        <div class="res-sub" data-en="Your rights when using an agent" data-es="Tus derechos al usar un agente">Your rights when using an agent</div>
+        <div class="res-link">homeaffairs.gov.au ↗</div>
+      </a>
+      <a href="migro-costs.html" class="resource-card">
+        <div class="res-title" data-en="Migration costs estimator" data-es="Estimador de costos migratorios">Migration costs estimator</div>
+        <div class="res-sub" data-en="Calculate total visa costs including agent fees" data-es="Calcula costos totales incluyendo honorarios">Calculate total visa costs including agent fees</div>
+        <div class="res-link" data-en="Within Migro →" data-es="Dentro de Migro →">Within Migro →</div>
+      </a>
+    </div>
+  </section>
+
+</div>
+
+<script>
+let lang = 'en';
+function setLang(l){
+  lang = l;
+  document.querySelectorAll('[data-en]').forEach(el=>{
+    el.innerHTML = el.getAttribute('data-' + l);
+  });
+  document.querySelector('.lang-btn').textContent = l === 'en' ? 'ES' : 'EN';
+}
+function toggleLang(){ setLang(lang === 'en' ? 'es' : 'en'); }
+
+function toggleAcc(btn){
+  const body = btn.nextElementSibling;
+  const chevron = btn.querySelector('.acc-chevron');
+  const isOpen = body.classList.contains('open');
+  document.querySelectorAll('.acc-body.open').forEach(b=>{ b.classList.remove('open'); b.previousElementSibling.querySelector('.acc-chevron').style.transform=''; });
+  if(!isOpen){ body.classList.add('open'); chevron.style.transform='rotate(180deg)'; }
+}
+
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.08});
+document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>
