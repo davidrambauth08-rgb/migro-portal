@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Migro — Plan: PR to Citizenship</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --black: #0a0a0a; --white: #ffffff;
+      --gray-100: #f5f5f5; --gray-200: #e8e8e8;
+      --gray-300: #d0d0d0; --gray-400: #999; --gray-600: #555;
+      --gold: #d4af37; --gold-light: #f0d060;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--gray-100); color: var(--black); }
+
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; background: var(--white); border-bottom: 1px solid var(--gray-200); position: sticky; top: 0; z-index: 100; }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--black); text-decoration: none; }
+    .nav-logo span { display: inline-block; width: 6px; height: 6px; background: var(--black); border-radius: 50%; margin-left: 2px; vertical-align: super; }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .lang-toggle { display: flex; background: var(--gray-100); border-radius: 6px; padding: 3px; gap: 2px; }
+    .lang-btn { padding: 4px 10px; font-size: 11px; font-weight: 700; border: none; background: transparent; border-radius: 4px; cursor: pointer; color: var(--gray-400); transition: all .2s; }
+    .lang-btn.active { background: var(--black); color: var(--white); }
+    .btn-print { padding: 8px 16px; font-size: 13px; font-weight: 600; border: 1px solid var(--gray-200); border-radius: 6px; background: var(--white); cursor: pointer; color: var(--gray-600); transition: all .2s; }
+    .btn-print:hover { border-color: var(--black); color: var(--black); }
+    .btn-save { padding: 8px 20px; font-size: 13px; font-weight: 700; border: none; border-radius: 6px; background: var(--black); color: var(--white); cursor: pointer; }
+
+    .progress-strip { background: var(--white); border-bottom: 1px solid var(--gray-200); padding: 0 48px; display: flex; overflow-x: auto; }
+    .progress-step { padding: 14px 0; margin-right: 32px; font-size: 12px; font-weight: 600; color: var(--gray-300); border-bottom: 2px solid transparent; white-space: nowrap; }
+    .progress-step.done { color: var(--gray-400); }
+    .progress-step.active { color: var(--black); border-bottom-color: var(--black); }
+
+    /* ACHIEVEMENT BANNER */
+    .achieve-banner { background: linear-gradient(90deg, #0a0a0a 0%, #1a1200 50%, #0a0a0a 100%); padding: 16px 48px; display: flex; align-items: center; justify-content: center; gap: 20px; }
+    .achieve-stars { font-size: 18px; letter-spacing: 4px; }
+    .achieve-text { font-size: 14px; font-weight: 700; color: var(--gold); text-align: center; }
+    .achieve-text span { color: #888; font-weight: 400; font-size: 12px; display: block; margin-top: 2px; }
+
+    /* HERO */
+    .hero { background: var(--black); padding: 56px 48px 52px; position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 400px; height: 400px; background: radial-gradient(circle, #1a1200 0%, transparent 70%); pointer-events: none; }
+    .hero-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 48px; position: relative; }
+    .hero-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #444; margin-bottom: 12px; }
+    .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(30px, 4vw, 54px); font-weight: 700; color: var(--white); line-height: 1.1; letter-spacing: -1px; margin-bottom: 16px; }
+    .hero-title em { color: var(--gold); font-style: normal; }
+    .hero-sub { font-size: 15px; color: #777; line-height: 1.6; max-width: 520px; margin-bottom: 28px; }
+    .hero-chips { display: flex; gap: 10px; flex-wrap: wrap; }
+    .hero-chip { display: flex; align-items: center; gap: 7px; background: #111; border: 1px solid #222; border-radius: 100px; padding: 7px 14px; font-size: 13px; font-weight: 600; color: #aaa; }
+    .chip-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .chip-gold { background: var(--gold); }
+    .chip-green { background: #4ade80; }
+    .chip-blue { background: #60a5fa; }
+
+    /* ELIGIBILITY CARD */
+    .elig-card { background: #110f00; border: 1px solid #2a2200; border-radius: 16px; padding: 28px 24px; min-width: 210px; }
+    .elig-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #443322; margin-bottom: 14px; }
+    .elig-rows { display: flex; flex-direction: column; gap: 12px; }
+    .elig-row { }
+    .elig-row-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #444; margin-bottom: 3px; }
+    .elig-row-bar { height: 6px; background: #1a1a00; border-radius: 100px; overflow: hidden; margin-bottom: 3px; }
+    .elig-row-fill { height: 100%; border-radius: 100px; background: var(--gold); }
+    .elig-row-val { font-size: 12px; font-weight: 700; color: var(--gold); }
+    .elig-divider { border: none; border-top: 1px solid #1a1400; margin: 14px 0; }
+    .elig-status { text-align: center; }
+    .elig-status-text { font-size: 14px; font-weight: 800; color: #4ade80; }
+    .elig-status-sub { font-size: 11px; color: #446644; margin-top: 2px; }
+
+    /* PAGE BODY */
+    .page-body { max-width: 1100px; margin: 0 auto; padding: 40px 48px; display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start; }
+
+    /* ALERT CARDS */
+    .alert-card { border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; display: flex; gap: 14px; align-items: flex-start; }
+    .alert-card.gold { background: #1a1200; border: 1.5px solid #3a2600; }
+    .alert-card.info { background: #eff6ff; border: 1.5px solid #bfdbfe; }
+    .alert-card.green { background: #f0fdf4; border: 1.5px solid #bbf7d0; }
+    .alert-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .alert-title { font-size: 13px; font-weight: 700; color: var(--white); margin-bottom: 4px; }
+    .alert-card.info .alert-title, .alert-card.green .alert-title { color: var(--black); }
+    .alert-desc { font-size: 12px; color: #776644; line-height: 1.6; }
+    .alert-card.info .alert-desc { color: var(--gray-600); }
+    .alert-card.green .alert-desc { color: #166534; }
+    .alert-desc strong { color: var(--gold-light); }
+    .alert-card.info .alert-desc strong { color: var(--black); }
+
+    /* ELIGIBILITY CHECKLIST */
+    .elig-checklist { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 16px; padding: 24px; margin-bottom: 24px; }
+    .elig-checklist-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .elig-checklist-sub { font-size: 13px; color: var(--gray-400); margin-bottom: 20px; }
+    .elig-checks { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .elig-check { display: flex; align-items: flex-start; gap: 10px; padding: 12px; border-radius: 10px; border: 1.5px solid var(--gray-200); }
+    .elig-check.pass { border-color: #bbf7d0; background: #f0fdf4; }
+    .elig-check.warn { border-color: #fde68a; background: #fffbeb; }
+    .elig-check-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .elig-check-label { font-size: 12px; font-weight: 700; color: var(--black); }
+    .elig-check.pass .elig-check-label { color: #166534; }
+    .elig-check.warn .elig-check-label { color: #92400e; }
+    .elig-check-val { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+    .elig-check.pass .elig-check-val { color: #4a7a5a; }
+    .elig-check.warn .elig-check-val { color: #a05000; }
+
+    /* PHASE BLOCKS */
+    .phase-block { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 12px; overflow: hidden; margin-bottom: 16px; }
+    .phase-header { display: flex; align-items: center; gap: 12px; padding: 16px 20px; background: var(--black); }
+    .phase-num { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: #333; line-height: 1; }
+    .phase-info { flex: 1; }
+    .phase-title { font-size: 15px; font-weight: 700; color: var(--white); }
+    .phase-sub { font-size: 12px; color: #555; margin-top: 2px; }
+    .phase-badge { font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 100px; background: #111; color: #666; border: 1px solid #222; }
+    .phase-badge.gold { background: #1a1200; color: var(--gold); border-color: #3a2600; }
+    .phase-tasks { padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+
+    /* ACCORDION */
+    .task-item { border: 1.5px solid var(--gray-200); border-radius: 10px; overflow: hidden; transition: border-color .2s; }
+    .task-item:hover { border-color: var(--gray-300); }
+    .task-item.open { border-color: var(--black); }
+    .task-header { display: flex; align-items: center; gap: 12px; padding: 12px 14px; cursor: pointer; background: var(--white); transition: background .15s; user-select: none; }
+    .task-header:hover { background: var(--gray-100); }
+    .task-item.open .task-header { background: var(--black); }
+    .task-check { width: 20px; height: 20px; border-radius: 5px; border: 2px solid var(--gray-300); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: transparent; transition: all .2s; cursor: pointer; }
+    .task-check.checked { background: #4ade80; border-color: #4ade80; color: var(--black); }
+    .task-item.open .task-check { border-color: #555; }
+    .task-item.open .task-check.checked { background: #4ade80; border-color: #4ade80; color: var(--black); }
+    .task-main { flex: 1; }
+    .task-label { font-size: 13px; font-weight: 600; color: var(--black); }
+    .task-item.open .task-label { color: var(--white); }
+    .task-badges { display: flex; gap: 6px; margin-top: 3px; flex-wrap: wrap; }
+    .task-badge { font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 2px 8px; border-radius: 100px; letter-spacing: .3px; }
+    .badge-key { background: #e6f0ff; color: #1a4a8a; }
+    .badge-optional { background: var(--gray-100); color: var(--gray-400); border: 1px solid var(--gray-200); }
+    .badge-free { background: #e6f9e6; color: #1a6a1a; }
+    .badge-gold { background: #1a1200; color: var(--gold); border: 1px solid #3a2600; }
+    .badge-milestone { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+    .task-item.open .badge-key { background: #0a1a3a; color: #66aaff; }
+    .task-item.open .badge-optional { background: #1a1a1a; color: #777; border-color: #333; }
+    .task-item.open .badge-free { background: #0a2a0a; color: #66dd66; }
+    .task-item.open .badge-gold { background: #1a1000; color: var(--gold); border-color: #2a1800; }
+    .task-item.open .badge-milestone { background: #0a2a0a; color: #66dd66; border-color: #1a4a1a; }
+    .task-chevron { font-size: 12px; color: var(--gray-400); transition: transform .3s ease; flex-shrink: 0; }
+    .task-item.open .task-chevron { transform: rotate(180deg); color: #666; }
+    .task-body { max-height: 0; overflow: hidden; transition: max-height .4s cubic-bezier(0.4,0,0.2,1); background: #fafafa; }
+    .task-item.open .task-body { max-height: 640px; border-top: 1px solid var(--gray-200); }
+    .task-body-inner { padding: 16px 14px 16px 46px; }
+    .task-body-desc { font-size: 13px; color: var(--gray-600); line-height: 1.7; margin-bottom: 14px; }
+    .task-docs-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 8px; }
+    .task-docs { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .task-doc-item { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: var(--gray-600); }
+    .task-doc-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+    .task-info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+    .task-info-cell { background: var(--white); border: 1px solid var(--gray-200); border-radius: 8px; padding: 10px 12px; }
+    .task-info-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--gray-400); margin-bottom: 3px; }
+    .task-info-val { font-size: 13px; font-weight: 700; color: var(--black); }
+    .task-links { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+    .task-link { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 6px; border: 1.5px solid var(--gray-200); font-size: 12px; font-weight: 600; color: var(--black); text-decoration: none; transition: all .2s; background: var(--white); }
+    .task-link:hover { border-color: var(--black); background: var(--black); color: var(--white); }
+    .task-tip { background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 10px 12px; font-size: 12px; color: #92400e; line-height: 1.6; margin-top: 6px; }
+    .task-tip strong { color: #78350f; }
+    .task-celebrate { background: #1a1200; border: 1px solid #3a2600; border-radius: 8px; padding: 10px 12px; font-size: 12px; color: var(--gold); line-height: 1.6; margin-top: 6px; }
+
+    /* CEREMONY BLOCK */
+    .ceremony-card { background: linear-gradient(135deg, #0a0a0a 0%, #1a1200 100%); border: 2px solid #3a2600; border-radius: 16px; padding: 32px; margin-bottom: 16px; text-align: center; }
+    .ceremony-flag { font-size: 64px; margin-bottom: 16px; }
+    .ceremony-title { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: var(--white); margin-bottom: 8px; }
+    .ceremony-title em { color: var(--gold); font-style: normal; }
+    .ceremony-sub { font-size: 13px; color: #776644; line-height: 1.7; max-width: 500px; margin: 0 auto 20px; }
+    .ceremony-pledge { background: #110f00; border: 1px solid #2a2000; border-radius: 12px; padding: 20px; text-align: left; margin-bottom: 16px; }
+    .ceremony-pledge-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #554433; margin-bottom: 10px; }
+    .ceremony-pledge-text { font-size: 13px; color: #886644; line-height: 1.8; font-style: italic; }
+    .ceremony-pledge-text strong { color: var(--gold); font-style: normal; }
+
+    /* RIGHTS GRID */
+    .rights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+    .right-card { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 12px; padding: 16px; }
+    .right-icon { font-size: 24px; margin-bottom: 8px; }
+    .right-title { font-size: 13px; font-weight: 700; color: var(--black); margin-bottom: 4px; }
+    .right-desc { font-size: 12px; color: var(--gray-400); line-height: 1.5; }
+
+    /* IMPORTANT NOTE */
+    .important-note { background: var(--black); border-radius: 12px; padding: 20px; margin-bottom: 24px; }
+    .important-note-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #443300; margin-bottom: 10px; }
+    .important-note-text { font-size: 13px; color: #888; line-height: 1.7; }
+    .important-note-text strong { color: var(--gold-light); }
+
+    /* SIDEBAR */
+    .sidebar { display: flex; flex-direction: column; gap: 20px; }
+    .sidebar-card { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 16px; padding: 22px; }
+    .sidebar-card-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 16px; }
+
+    .journey-list { display: flex; flex-direction: column; gap: 8px; }
+    .journey-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; border: 1.5px solid var(--gray-200); text-decoration: none; transition: all .2s; }
+    .journey-item:hover { border-color: var(--gray-400); }
+    .journey-item.current { background: var(--black); border-color: var(--black); }
+    .journey-icon { font-size: 18px; flex-shrink: 0; }
+    .journey-label { font-size: 12px; font-weight: 700; color: var(--black); }
+    .journey-item.current .journey-label { color: var(--white); }
+    .journey-sub { font-size: 11px; color: var(--gray-400); margin-top: 1px; }
+    .journey-item.current .journey-sub { color: #666; }
+
+    .mini-progress { }
+    .mini-phase { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--gray-100); }
+    .mini-phase:last-child { border-bottom: none; }
+    .mini-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--gray-200); flex-shrink: 0; }
+    .mini-dot.done { background: #4ade80; }
+    .mini-dot.active { background: var(--black); }
+    .mini-dot.gold { background: var(--gold); }
+    .mini-label { font-size: 12px; font-weight: 600; color: var(--gray-400); flex: 1; }
+    .mini-label.active { color: var(--black); }
+    .mini-count { font-size: 11px; color: var(--gray-300); }
+
+    .compact-timeline { padding: 4px 0; }
+    .ct-item { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid var(--gray-100); }
+    .ct-item:last-child { border-bottom: none; }
+    .ct-bullet { width: 6px; height: 6px; border-radius: 50%; background: var(--black); flex-shrink: 0; margin-top: 5px; }
+    .ct-bullet.gold { background: var(--gold); }
+    .ct-text { font-size: 12px; color: var(--gray-600); line-height: 1.5; }
+    .ct-text strong { color: var(--black); display: block; font-size: 12px; margin-bottom: 1px; }
+
+    .cta-card { background: linear-gradient(135deg, var(--black) 0%, #1a1200 100%); border: 1.5px solid #2a1a00; border-radius: 16px; padding: 24px; }
+    .cta-card-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--white); margin-bottom: 8px; }
+    .cta-card-desc { font-size: 13px; color: #665544; line-height: 1.6; margin-bottom: 16px; }
+    .cta-card-btn { display: block; text-align: center; padding: 12px; background: var(--gold); color: var(--black); font-size: 13px; font-weight: 700; border-radius: 8px; text-decoration: none; transition: all .2s; }
+    .cta-card-btn:hover { background: var(--gold-light); }
+
+    /* RESIDENCY COUNTER */
+    .residency-counter { background: #0a0a0a; border: 1.5px solid #1a1800; border-radius: 14px; padding: 18px; }
+    .rc-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #443322; margin-bottom: 14px; }
+    .rc-rows { display: flex; flex-direction: column; gap: 10px; }
+    .rc-row { }
+    .rc-row-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .rc-row-label { font-size: 11px; color: #554433; }
+    .rc-row-val { font-size: 11px; font-weight: 700; color: var(--gold); }
+    .rc-bar-wrap { height: 5px; background: #1a1400; border-radius: 100px; overflow: hidden; }
+    .rc-bar-fill { height: 100%; border-radius: 100px; background: var(--gold); }
+
+    @media print {
+      nav, .progress-strip, .achieve-banner { display: none; }
+      body { background: white; }
+      .page-body { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="migro-landing.html" class="nav-logo">Migro<span></span></a>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en',this)">EN</button>
+      <button class="lang-btn" onclick="setLang('es',this)">ES</button>
+    </div>
+    <button class="btn-print" onclick="window.print()" data-en="Print Plan" data-es="Imprimir Plan">Print Plan</button>
+    <button class="btn-save" data-en="Save Progress" data-es="Guardar Progreso">Save Progress</button>
+  </div>
+</nav>
+
+<!-- PROGRESS STRIP -->
+<div class="progress-strip">
+  <div class="progress-step done" data-en="✓ Profile" data-es="✓ Perfil">✓ Profile</div>
+  <div class="progress-step done" data-en="✓ Score" data-es="✓ Puntaje">✓ Score</div>
+  <div class="progress-step done" data-en="✓ City" data-es="✓ Ciudad">✓ City</div>
+  <div class="progress-step done" data-en="✓ Options" data-es="✓ Opciones">✓ Options</div>
+  <div class="progress-step done" data-en="✓ Services" data-es="✓ Servicios">✓ Services</div>
+  <div class="progress-step active" data-en="→ Migration Plan" data-es="→ Plan Migratorio">→ Migration Plan</div>
+</div>
+
+<!-- ACHIEVEMENT BANNER -->
+<div class="achieve-banner">
+  <div class="achieve-stars">🌟</div>
+  <div class="achieve-text">
+    <span data-en="PERMANENT RESIDENT → CITIZEN" data-es="RESIDENTE PERMANENTE → CIUDADANO">PERMANENT RESIDENT → CITIZEN</span>
+    <span data-en="The final step of your journey to becoming Australian" data-es="El último paso de tu viaje para convertirte en australiano">The final step of your journey to becoming Australian</span>
+  </div>
+  <div class="achieve-stars">🌟</div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag" data-en="Migration Plan · Permanent Residency → Citizenship" data-es="Plan Migratorio · Residencia Permanente → Ciudadanía">Migration Plan · Permanent Residency → Citizenship</div>
+      <h1 class="hero-title" data-en="Become<br><em>Australian.</em>" data-es="Conviértete en<br><em>Australiano.</em>">Become<br><em>Australian.</em></h1>
+      <p class="hero-sub" data-en="You've earned your Permanent Residency. Now, this plan guides you through every step to become an Australian citizen — from meeting the residence requirement to taking your citizenship pledge at the ceremony." data-es="Has ganado tu Residencia Permanente. Ahora, este plan te guía por cada paso para convertirte en ciudadano australiano — desde cumplir el requisito de residencia hasta hacer tu juramento de ciudadanía en la ceremonia.">
+        You've earned your Permanent Residency. Now, this plan guides you through every step to become an Australian citizen — from meeting the residence requirement to taking your citizenship pledge at the ceremony.
+      </p>
+      <div class="hero-chips">
+        <div class="hero-chip"><div class="chip-dot chip-gold"></div><span data-en="4-year residency required" data-es="4 años de residencia requeridos">4-year residency required</span></div>
+        <div class="hero-chip"><div class="chip-dot chip-green"></div><span data-en="Citizenship test included" data-es="Test de ciudadanía incluido">Citizenship test included</span></div>
+        <div class="hero-chip"><div class="chip-dot chip-blue"></div><span data-en="Dual citizenship allowed" data-es="Doble ciudadanía permitida">Dual citizenship allowed</span></div>
+      </div>
+    </div>
+    <div class="elig-card">
+      <div class="elig-label" data-en="Eligibility Check" data-es="Verificación de Elegibilidad">Eligibility Check</div>
+      <div class="elig-rows">
+        <div class="elig-row">
+          <div class="elig-row-label" data-en="Time as PR" data-es="Tiempo como RP">Time as PR</div>
+          <div class="elig-row-bar"><div class="elig-row-fill" style="width:85%"></div></div>
+          <div class="elig-row-val" data-en="3.4 / 4 years" data-es="3.4 / 4 años">3.4 / 4 years</div>
+        </div>
+        <div class="elig-row">
+          <div class="elig-row-label" data-en="Days in Australia" data-es="Días en Australia">Days in Australia</div>
+          <div class="elig-row-bar"><div class="elig-row-fill" style="width:90%"></div></div>
+          <div class="elig-row-val" data-en="1,210 / 1,460" data-es="1.210 / 1.460">1,210 / 1,460</div>
+        </div>
+        <div class="elig-row">
+          <div class="elig-row-label" data-en="Days as PR (last 12m)" data-es="Días como RP (últ. 12m)">Days as PR (last 12m)</div>
+          <div class="elig-row-bar"><div class="elig-row-fill" style="width:75%"></div></div>
+          <div class="elig-row-val" data-en="274 / 365" data-es="274 / 365">274 / 365</div>
+        </div>
+      </div>
+      <hr class="elig-divider">
+      <div class="elig-status">
+        <div class="elig-status-text" data-en="⏳ Almost eligible" data-es="⏳ Casi elegible">⏳ Almost eligible</div>
+        <div class="elig-status-sub" data-en="~7 months to full eligibility" data-es="~7 meses para elegibilidad completa">~7 months to full eligibility</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="page-body">
+  <div>
+
+    <!-- IMPORTANT NOTE -->
+    <div class="important-note">
+      <div class="important-note-title" data-en="🇦🇺 The Requirements at a Glance" data-es="🇦🇺 Los Requisitos de un Vistazo">🇦🇺 The Requirements at a Glance</div>
+      <p class="important-note-text" data-en="To apply for Australian citizenship by conferral, you must have been a <strong>permanent resident (or eligible New Zealand citizen) for at least 4 years</strong> before applying. During those 4 years, you must have spent <strong>at least 1 year as a permanent resident</strong> in the 12 months before applying, and been <strong>present in Australia for at least 1,460 days (4 years) total</strong>, with at least <strong>365 of those days as a permanent resident</strong>. You must also pass the citizenship test and be of good character." data-es="Para solicitar la ciudadanía australiana por conferimiento, debes haber sido <strong>residente permanente (o ciudadano de Nueva Zelanda elegible) durante al menos 4 años</strong> antes de solicitar. Durante esos 4 años, debes haber pasado <strong>al menos 1 año como residente permanente</strong> en los 12 meses antes de solicitar, y haber estado <strong>presente en Australia durante al menos 1.460 días (4 años) en total</strong>, con al menos <strong>365 de esos días como residente permanente</strong>. También debes pasar el test de ciudadanía y tener buen carácter.">
+        To apply for Australian citizenship by conferral, you must have been a <strong>permanent resident for at least 4 years</strong> before applying. During those 4 years, you must have been <strong>present in Australia for at least 1,460 days total</strong>, with at least <strong>365 of those days as a permanent resident in the last 12 months</strong>. You must also pass the citizenship test and be of good character.
+      </p>
+    </div>
+
+    <!-- ELIGIBILITY CHECKS -->
+    <div class="elig-checklist">
+      <div class="elig-checklist-title" data-en="Your Eligibility Snapshot" data-es="Tu Resumen de Elegibilidad">Your Eligibility Snapshot</div>
+      <div class="elig-checklist-sub" data-en="Based on your profile — check all conditions before applying" data-es="Basado en tu perfil — verifica todas las condiciones antes de solicitar">Based on your profile — check all conditions before applying</div>
+      <div class="elig-checks">
+        <div class="elig-check pass">
+          <div class="elig-check-icon">✅</div>
+          <div>
+            <div class="elig-check-label" data-en="Permanent Resident" data-es="Residente Permanente">Permanent Resident</div>
+            <div class="elig-check-val" data-en="Visa 186 granted Feb 2022" data-es="Visa 186 otorgada Feb 2022">Visa 186 granted Feb 2022</div>
+          </div>
+        </div>
+        <div class="elig-check warn">
+          <div class="elig-check-icon">⏳</div>
+          <div>
+            <div class="elig-check-label" data-en="4-year residency period" data-es="Período de residencia de 4 años">4-year residency period</div>
+            <div class="elig-check-val" data-en="~7 months remaining" data-es="~7 meses restantes">~7 months remaining</div>
+          </div>
+        </div>
+        <div class="elig-check pass">
+          <div class="elig-check-icon">✅</div>
+          <div>
+            <div class="elig-check-label" data-en="Good character" data-es="Buen carácter">Good character</div>
+            <div class="elig-check-val" data-en="No criminal record" data-es="Sin antecedentes penales">No criminal record</div>
+          </div>
+        </div>
+        <div class="elig-check warn">
+          <div class="elig-check-icon">⏳</div>
+          <div>
+            <div class="elig-check-label" data-en="365 days as PR in last 12m" data-es="365 días como RP en últ. 12m">365 days as PR in last 12m</div>
+            <div class="elig-check-val" data-en="274 days so far — keep going" data-es="274 días hasta ahora — continúa">274 days so far — keep going</div>
+          </div>
+        </div>
+        <div class="elig-check pass">
+          <div class="elig-check-icon">✅</div>
+          <div>
+            <div class="elig-check-label" data-en="English language" data-es="Idioma inglés">English language</div>
+            <div class="elig-check-val" data-en="Basic English required" data-es="Inglés básico requerido">Basic English required</div>
+          </div>
+        </div>
+        <div class="elig-check pass">
+          <div class="elig-check-icon">✅</div>
+          <div>
+            <div class="elig-check-label" data-en="Citizenship test" data-es="Test de ciudadanía">Citizenship test</div>
+            <div class="elig-check-val" data-en="Taken online at application" data-es="Tomado en línea al solicitar">Taken online at application</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WHAT YOU GAIN -->
+    <div class="section-header" style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
+      <div style="width:40px;height:40px;background:var(--black);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🏆</div>
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;" data-en="What Citizenship Gives You" data-es="Qué Te Da la Ciudadanía">What Citizenship Gives You</div>
+        <div style="font-size:13px;color:var(--gray-400);margin-top:2px;" data-en="Rights and privileges you unlock with an Australian passport" data-es="Derechos y privilegios que desbloqueas con un pasaporte australiano">Rights and privileges you unlock with an Australian passport</div>
+      </div>
+    </div>
+    <div class="rights-grid" style="margin-bottom:28px;">
+      <div class="right-card">
+        <div class="right-icon">🛂</div>
+        <div class="right-title" data-en="Australian Passport" data-es="Pasaporte Australiano">Australian Passport</div>
+        <div class="right-desc" data-en="Visa-free access to 185+ countries including EU, UK, USA, Japan, and more." data-es="Acceso sin visa a más de 185 países incluyendo UE, UK, EE.UU., Japón y más.">Visa-free access to 185+ countries including EU, UK, USA, Japan, and more.</div>
+      </div>
+      <div class="right-card">
+        <div class="right-icon">🗳️</div>
+        <div class="right-title" data-en="Right to Vote" data-es="Derecho a Votar">Right to Vote</div>
+        <div class="right-desc" data-en="Participate in federal, state and local elections. Voting is compulsory in Australia." data-es="Participa en elecciones federales, estatales y locales. Votar es obligatorio en Australia.">Participate in federal, state and local elections. Voting is compulsory in Australia.</div>
+      </div>
+      <div class="right-card">
+        <div class="right-icon">⚖️</div>
+        <div class="right-title" data-en="Government Jobs" data-es="Empleos de Gobierno">Government Jobs</div>
+        <div class="right-desc" data-en="Apply for federal government positions, security clearances, and ADF roles." data-es="Solicita puestos del gobierno federal, autorizaciones de seguridad y roles de las FFA.">Apply for federal government positions, security clearances, and ADF roles.</div>
+      </div>
+      <div class="right-card">
+        <div class="right-icon">🔒</div>
+        <div class="right-title" data-en="Permanent Security" data-es="Seguridad Permanente">Permanent Security</div>
+        <div class="right-desc" data-en="You can never be deported (except for dual citizens with serious crimes). Total security." data-es="Nunca puedes ser deportado (excepto doble ciudadanos con delitos graves). Seguridad total.">You can never be deported (except for dual citizens with serious crimes). Total security.</div>
+      </div>
+    </div>
+
+    <!-- PHASE 1 -->
+    <div class="phase-block">
+      <div class="phase-header">
+        <div class="phase-num">01</div>
+        <div class="phase-info">
+          <div class="phase-title" data-en="Verify Residence & Calculate Eligibility Date" data-es="Verifica Residencia y Calcula Fecha de Elegibilidad">Verify Residence & Calculate Eligibility Date</div>
+          <div class="phase-sub" data-en="Know exactly when you can apply — don't guess" data-es="Sabe exactamente cuándo puedes solicitar — no adivines">Know exactly when you can apply — don't guess</div>
+        </div>
+        <div class="phase-badge" data-en="Right now" data-es="Ahora mismo">Right now</div>
+      </div>
+      <div class="phase-tasks">
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Calculate your total days of presence in Australia" data-es="Calcula tu total de días de presencia en Australia">Calculate your total days of presence in Australia</div>
+              <div class="task-badges"><span class="task-badge badge-key" data-en="Critical calculation" data-es="Cálculo crítico">Critical calculation</span><span class="task-badge badge-free" data-en="Free tool" data-es="Herramienta gratis">Free tool</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="Australian citizenship requires 1,460 days (4 years) of physical presence in Australia during the 4 years before applying, with at least 365 days as a permanent resident. You need to count every day you were physically in Australia and subtract any overseas absences. The official ImmiAccount 'Travel Evidence' tool can help with this." data-es="La ciudadanía australiana requiere 1.460 días (4 años) de presencia física en Australia durante los 4 años antes de solicitar, con al menos 365 días como residente permanente. Necesitas contar cada día que estuviste físicamente en Australia y restar cualquier ausencia en el extranjero. La herramienta oficial 'Travel Evidence' de ImmiAccount puede ayudar con esto.">
+              Australian citizenship requires 1,460 days of physical presence in Australia during the 4 years before applying, with at least 365 days as a permanent resident. Count every day physically in Australia and subtract overseas absences. Use the ImmiAccount Travel Evidence tool.
+            </p>
+            <div class="task-docs-title" data-en="How to count your days" data-es="Cómo contar tus días">How to count your days</div>
+            <div class="task-docs">
+              <div class="task-doc-item"><span class="task-doc-icon">📱</span><span data-en="Use ImmiAccount → Travel Evidence to see your entry/exit records" data-es="Usa ImmiAccount → Travel Evidence para ver tus registros de entrada/salida">Use ImmiAccount → Travel Evidence to see your entry/exit records</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">✈️</span><span data-en="List all overseas trips: departure date, return date, destination" data-es="Lista todos los viajes al extranjero: fecha de salida, fecha de regreso, destino">List all overseas trips: departure date, return date, destination</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📊</span><span data-en="Subtract overseas absence days from your PR grant date to today" data-es="Resta los días de ausencia en el extranjero desde la fecha de otorgamiento de RP hasta hoy">Subtract overseas absence days from your PR grant date to today</span></div>
+            </div>
+            <div class="task-info-grid">
+              <div class="task-info-cell"><div class="task-info-label" data-en="Days needed" data-es="Días necesarios">Days needed</div><div class="task-info-val">1,460 total</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="As PR needed" data-es="Como RP necesarios">As PR needed</div><div class="task-info-val">365 days</div></div>
+              <div class="task-info-cell"><div class="task-info-cell"><div class="task-info-label" data-en="Time window" data-es="Ventana de tiempo">Time window</div><div class="task-info-val" data-en="Last 4 years" data-es="Últimos 4 años">Last 4 years</div></div></div>
+            </div>
+            <div class="task-links">
+              <a class="task-link" href="https://immi.homeaffairs.gov.au/help-support/applying-online-or-on-paper/online/immiaccount" target="_blank">🌐 ImmiAccount – Travel Evidence</a>
+              <a class="task-link" href="https://immi.homeaffairs.gov.au/citizenship/become-a-citizen/by-conferral" target="_blank">🌐 Citizenship eligibility tool</a>
+            </div>
+            <div class="task-tip"><strong data-en="Tip:" data-es="Tip:">Tip:</strong> <span data-en="If you're not yet eligible, note the exact date you WILL reach 1,460 days and 365 days as PR — this is your application open date. Do not apply before this date or your application will be refused." data-es="Si aún no eres elegible, anota la fecha exacta en que ALCANZARÁS 1.460 días y 365 días como RP — esta es la fecha de apertura de tu solicitud. No solicites antes de esta fecha o tu solicitud será rechazada.">If not yet eligible, note the exact date you'll reach 1,460 days + 365 days as PR. That's your application open date. Do not apply before it — you'll be refused.</span></div>
+          </div></div>
+        </div>
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Confirm 'good character' requirements" data-es="Confirma los requisitos de 'buen carácter'">Confirm 'good character' requirements</div>
+              <div class="task-badges"><span class="task-badge badge-key" data-en="Required" data-es="Requerido">Required</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="'Good character' means you must disclose any criminal history, court orders, or pending charges. A single minor offence will not automatically disqualify you, but it must be declared. Any sentence of 12+ months imprisonment in the last 10 years will disqualify you. The Department performs their own checks with Australian police databases and may also check overseas records." data-es="'Buen carácter' significa que debes declarar cualquier antecedente penal, órdenes judiciales o cargos pendientes. Un único delito menor no te descalificará automáticamente, pero debe declararse. Cualquier condena de 12+ meses de prisión en los últimos 10 años te descalificará. El Departamento realiza sus propias verificaciones con bases de datos policiales australianas y también puede verificar registros extranjeros.">
+              'Good character' requires disclosing any criminal history. A single minor offence won't automatically disqualify you, but it must be declared. Any sentence of 12+ months imprisonment in the last 10 years will disqualify you. The Department runs their own police checks.
+            </p>
+            <div class="task-docs-title" data-en="What to declare" data-es="Qué declarar">What to declare</div>
+            <div class="task-docs">
+              <div class="task-doc-item"><span class="task-doc-icon">📋</span><span data-en="Any criminal convictions in Australia or overseas" data-es="Cualquier condena penal en Australia o en el extranjero">Any criminal convictions in Australia or overseas</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📋</span><span data-en="Any apprehended violence orders (AVO/DVO) or court orders" data-es="Cualquier orden de violencia aprehendida (AVO/DVO) u órdenes judiciales">Any apprehended violence orders (AVO/DVO) or court orders</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📋</span><span data-en="Any pending charges or investigations" data-es="Cualquier cargo pendiente o investigación">Any pending charges or investigations</span></div>
+            </div>
+            <div class="task-tip"><strong data-en="Tip:" data-es="Tip:">Tip:</strong> <span data-en="If in doubt about whether to declare something, always declare it. Failing to disclose is treated much more seriously than the original offence and can result in citizenship refusal." data-es="Si tienes dudas sobre si declarar algo, siempre declárralo. No declarar se trata mucho más seriamente que el delito original y puede resultar en el rechazo de la ciudadanía.">If in doubt about whether to declare something, always declare it. Non-disclosure is treated far more seriously than the original offence.</span></div>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PHASE 2 -->
+    <div class="phase-block">
+      <div class="phase-header">
+        <div class="phase-num">02</div>
+        <div class="phase-info">
+          <div class="phase-title" data-en="Prepare for the Citizenship Test" data-es="Prepárate para el Test de Ciudadanía">Prepare for the Citizenship Test</div>
+          <div class="phase-sub" data-en="Online test about Australian values, history and government" data-es="Test en línea sobre valores australianos, historia y gobierno">Online test about Australian values, history and government</div>
+        </div>
+        <div class="phase-badge" data-en="1–2 months before" data-es="1–2 meses antes">1–2 months before</div>
+      </div>
+      <div class="phase-tasks">
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Study the Australian Citizenship test resource book" data-es="Estudia el libro de recursos del test de ciudadanía australiana">Study the Australian Citizenship test resource book</div>
+              <div class="task-badges"><span class="task-badge badge-free" data-en="Free download" data-es="Descarga gratis">Free download</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="The citizenship test is based on the official resource book 'Australian Citizenship: Our Common Bond.' The book is free to download and covers Australian values, history, government, and way of life. The test has 20 questions and you must score at least 75% (15/20) correct. Most people find it straightforward with 1–2 weeks of study." data-es="El test de ciudadanía se basa en el libro de recursos oficial 'Ciudadanía Australiana: Nuestro Vínculo Común.' El libro es de descarga gratuita y cubre los valores australianos, historia, gobierno y forma de vida. El test tiene 20 preguntas y debes obtener al menos 75% (15/20) correcto. La mayoría de las personas lo encuentran sencillo con 1–2 semanas de estudio.">
+              The citizenship test is based on the official resource book 'Australian Citizenship: Our Common Bond.' It has 20 questions; you need 75% (15/20). Most people pass with 1–2 weeks of study. The book is free to download.
+            </p>
+            <div class="task-docs-title" data-en="Key topics covered" data-es="Temas clave cubiertos">Key topics covered</div>
+            <div class="task-docs">
+              <div class="task-doc-item"><span class="task-doc-icon">⚖️</span><span data-en="Australian values: democracy, rule of law, equality, freedom" data-es="Valores australianos: democracia, estado de derecho, igualdad, libertad">Australian values: democracy, rule of law, equality, freedom</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">🏛️</span><span data-en="Government structure: Parliament, Senate, House of Representatives" data-es="Estructura del gobierno: Parlamento, Senado, Cámara de Representantes">Government structure: Parliament, Senate, House of Representatives</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📜</span><span data-en="Australian history: First Nations peoples, Federation, significant events" data-es="Historia australiana: Pueblos de las Primeras Naciones, Federación, eventos significativos">Australian history: First Nations peoples, Federation, significant events</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">🌏</span><span data-en="National symbols: anthem, flag, coat of arms" data-es="Símbolos nacionales: himno, bandera, escudo de armas">National symbols: anthem, flag, coat of arms</span></div>
+            </div>
+            <div class="task-info-grid">
+              <div class="task-info-cell"><div class="task-info-label" data-en="Questions" data-es="Preguntas">Questions</div><div class="task-info-val">20</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Pass mark" data-es="Nota aprobatoria">Pass mark</div><div class="task-info-val">75% (15/20)</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Cost" data-es="Costo">Cost</div><div class="task-info-val" data-en="Free" data-es="Gratis">Free</div></div>
+            </div>
+            <div class="task-links">
+              <a class="task-link" href="https://www.homeaffairs.gov.au/citizenship/test-and-interview/our-common-bond" target="_blank">🌐 Download study guide</a>
+              <a class="task-link" href="https://www.homeaffairs.gov.au/citizenship/test-and-interview/practice-test" target="_blank">📝 Practice test</a>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Learn the national anthem — 'Advance Australia Fair'" data-es="Aprende el himno nacional — 'Advance Australia Fair'">Learn the national anthem — 'Advance Australia Fair'</div>
+              <div class="task-badges"><span class="task-badge badge-gold" data-en="Ceremony required" data-es="Requerido en ceremonia">Ceremony required</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="At the citizenship ceremony, you will be expected to sing the first verse of the Australian national anthem. It's a meaningful moment — and a requirement. The first verse was updated in January 2021 to change 'young and free' to 'one and free' to better acknowledge First Nations peoples." data-es="En la ceremonia de ciudadanía, se espera que cantes la primera estrofa del himno nacional australiano. Es un momento significativo — y un requisito. La primera estrofa fue actualizada en enero de 2021 para cambiar 'young and free' a 'one and free' para reconocer mejor a los Pueblos de las Primeras Naciones.">
+              At the citizenship ceremony, you'll be expected to sing the first verse of the national anthem. It was updated in January 2021. A meaningful moment worth preparing for in advance.
+            </p>
+            <div class="task-tip"><strong data-en="Fun fact:" data-es="Dato curioso:">Fun fact:</strong> <span data-en="The anthem's first verse was changed in January 2021. 'Australians all let us rejoice, for we are one and free' — 'one' replaced 'young' to better honor First Nations peoples' deep connection to the land." data-es="La primera estrofa del himno fue cambiada en enero de 2021. 'Australians all let us rejoice, for we are one and free' — 'one' reemplazó 'young' para honrar mejor la profunda conexión de los Pueblos de las Primeras Naciones con la tierra.">The anthem's first verse was changed in January 2021 — 'one and free' replaced 'young and free' to better honor First Nations peoples' deep connection to the land.</span></div>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PHASE 3 -->
+    <div class="phase-block">
+      <div class="phase-header">
+        <div class="phase-num">03</div>
+        <div class="phase-info">
+          <div class="phase-title" data-en="Gather Documents & Lodge Application" data-es="Reúne Documentos y Presenta la Solicitud">Gather Documents & Lodge Application</div>
+          <div class="phase-sub" data-en="Apply online via ImmiAccount when you reach eligibility" data-es="Solicita en línea via ImmiAccount cuando alcances la elegibilidad">Apply online via ImmiAccount when you reach eligibility</div>
+        </div>
+        <div class="phase-badge" data-en="At eligibility date" data-es="En la fecha de elegibilidad">At eligibility date</div>
+      </div>
+      <div class="phase-tasks">
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Gather identity and residency documents" data-es="Reúne documentos de identidad y residencia">Gather identity and residency documents</div>
+              <div class="task-badges"><span class="task-badge badge-key" data-en="Required" data-es="Requerido">Required</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="The citizenship application requires proof of identity, evidence of your permanent resident status, and evidence of residence in Australia. Fortunately, the document list for citizenship is much simpler than for visa applications — most of what you need is already in your possession." data-es="La solicitud de ciudadanía requiere prueba de identidad, evidencia de tu estado de residente permanente y evidencia de residencia en Australia. Afortunadamente, la lista de documentos para la ciudadanía es mucho más simple que para las solicitudes de visa — la mayoría de lo que necesitas ya está en tu poder.">
+              The citizenship application document list is much simpler than for visa applications. Most of what you need is already in your possession.
+            </p>
+            <div class="task-docs-title" data-en="Required documents" data-es="Documentos requeridos">Required documents</div>
+            <div class="task-docs">
+              <div class="task-doc-item"><span class="task-doc-icon">🛂</span><span data-en="Current valid passport (all passports if you held multiple)" data-es="Pasaporte actual válido (todos los pasaportes si tuviste múltiples)">Current valid passport (all passports if you held multiple)</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📄</span><span data-en="PR visa grant letter (from ImmiAccount)" data-es="Carta de otorgamiento de visa de RP (de ImmiAccount)">PR visa grant letter (from ImmiAccount)</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">🏠</span><span data-en="Evidence of Australian address (utility bill, bank statement, lease)" data-es="Evidencia de dirección australiana (factura de servicios, estado de cuenta bancario, contrato de arrendamiento)">Evidence of Australian address (utility bill, bank statement, lease)</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📸</span><span data-en="Passport-size photo (digital upload)" data-es="Foto tamaño pasaporte (carga digital)">Passport-size photo (digital upload)</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📋</span><span data-en="Birth certificate (if applicable)" data-es="Certificado de nacimiento (si aplica)">Birth certificate (if applicable)</span></div>
+            </div>
+            <div class="task-info-grid">
+              <div class="task-info-cell"><div class="task-info-label" data-en="Application fee" data-es="Tarifa de solicitud">Application fee</div><div class="task-info-val">AUD $490</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Processing" data-es="Procesamiento">Processing</div><div class="task-info-val" data-en="12–24 months" data-es="12–24 meses">12–24 months</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Where" data-es="Dónde">Where</div><div class="task-info-val">ImmiAccount</div></div>
+            </div>
+            <div class="task-links">
+              <a class="task-link" href="https://immi.homeaffairs.gov.au/citizenship/become-a-citizen/by-conferral" target="_blank">🌐 Apply for citizenship</a>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Lodge application online and take citizenship test" data-es="Presenta la solicitud en línea y realiza el test de ciudadanía">Lodge application online and take citizenship test</div>
+              <div class="task-badges"><span class="task-badge badge-key" data-en="Key step" data-es="Paso clave">Key step</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="Submit your citizenship application via ImmiAccount. The citizenship test is taken online as part of the application process (not in person). The test is multiple choice and untimed — you can take as long as you need. You'll get your test result immediately. You can retake the test if you don't pass the first time." data-es="Presenta tu solicitud de ciudadanía a través de ImmiAccount. El test de ciudadanía se realiza en línea como parte del proceso de solicitud (no en persona). El test es de opción múltiple y sin tiempo — puedes tomar el tiempo que necesites. Obtendrás tu resultado del test inmediatamente. Puedes volver a realizar el test si no apruebas la primera vez.">
+              Submit your citizenship application via ImmiAccount. The citizenship test is taken online as part of the application process. The test is multiple choice and untimed — you'll get your result immediately and can retake if needed.
+            </p>
+            <div class="task-info-grid">
+              <div class="task-info-cell"><div class="task-info-label" data-en="Application fee" data-es="Tarifa">Application fee</div><div class="task-info-val">AUD $490</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Test format" data-es="Formato">Test format</div><div class="task-info-val" data-en="Online, untimed" data-es="En línea, sin tiempo">Online, untimed</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Pass score" data-es="Puntaje aprobatorio">Pass score</div><div class="task-info-val">75% (15/20)</div></div>
+            </div>
+            <div class="task-links">
+              <a class="task-link" href="https://immi.homeaffairs.gov.au/help-support/applying-online-or-on-paper/online/immiaccount" target="_blank">🌐 ImmiAccount</a>
+            </div>
+            <div class="task-tip"><strong data-en="Tip:" data-es="Tip:">Tip:</strong> <span data-en="Take the practice test on the Department's website at least 3 times before submitting. You want to be confident — even though there's no time limit, nerves can affect performance." data-es="Realiza el test de práctica en el sitio web del Departamento al menos 3 veces antes de enviar. Quieres tener confianza — aunque no hay límite de tiempo, los nervios pueden afectar el rendimiento.">Take the practice test at least 3 times before submitting. Even though there's no time limit, preparation builds confidence.</span></div>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PHASE 4 -->
+    <div class="phase-block">
+      <div class="phase-header">
+        <div class="phase-num">04</div>
+        <div class="phase-info">
+          <div class="phase-title" data-en="Attend Citizenship Interview (if required)" data-es="Asiste a la Entrevista de Ciudadanía (si es requerido)">Attend Citizenship Interview (if required)</div>
+          <div class="phase-sub" data-en="Not all applicants are called — many go straight to ceremony" data-es="No todos los solicitantes son llamados — muchos van directamente a la ceremonia">Not all applicants are called — many go straight to ceremony</div>
+        </div>
+        <div class="phase-badge" data-en="Months 6–18" data-es="Meses 6–18">Months 6–18</div>
+      </div>
+      <div class="phase-tasks">
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Prepare for citizenship interview (if called)" data-es="Prepárate para la entrevista de ciudadanía (si eres llamado)">Prepare for citizenship interview (if called)</div>
+              <div class="task-badges"><span class="task-badge badge-optional" data-en="If requested" data-es="Si es solicitado">If requested</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="Some applicants are called for an interview with a Department officer. Interviews are more common if there are questions about your residency count, character, or identity. The interview is conversational — you'll be asked about your time in Australia, your community involvement, your understanding of Australian values, and your plans for the future. Bring originals of all your key documents." data-es="Algunos solicitantes son llamados para una entrevista con un funcionario del Departamento. Las entrevistas son más comunes si hay preguntas sobre tu conteo de residencia, carácter o identidad. La entrevista es conversacional — se te preguntará sobre tu tiempo en Australia, tu participación comunitaria, tu comprensión de los valores australianos y tus planes para el futuro. Trae los originales de todos tus documentos clave.">
+              Some applicants are called for an interview, typically when there are questions about residency count, character, or identity. The interview is conversational — bring originals of all your key documents.
+            </p>
+            <div class="task-docs-title" data-en="Bring to the interview" data-es="Lleva a la entrevista">Bring to the interview</div>
+            <div class="task-docs">
+              <div class="task-doc-item"><span class="task-doc-icon">🛂</span><span data-en="Original passport(s)" data-es="Pasaporte(s) original(es)">Original passport(s)</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📄</span><span data-en="PR visa grant letter" data-es="Carta de otorgamiento de visa de RP">PR visa grant letter</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📋</span><span data-en="Evidence of Australian community involvement (optional but helpful)" data-es="Evidencia de participación comunitaria australiana (opcional pero útil)">Evidence of Australian community involvement (optional but helpful)</span></div>
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PHASE 5 — CEREMONY -->
+    <div class="ceremony-card">
+      <div class="ceremony-flag">🇦🇺</div>
+      <div class="ceremony-title" data-en="Phase 5: The <em>Citizenship Ceremony</em>" data-es="Fase 5: La <em>Ceremonia de Ciudadanía</em>">Phase 5: The <em>Citizenship Ceremony</em></div>
+      <p class="ceremony-sub" data-en="After your application is approved, you'll receive an invitation to a citizenship ceremony — held by your local council or the Department. This is where you make your pledge of commitment to Australia and officially become an Australian citizen." data-es="Después de que se apruebe tu solicitud, recibirás una invitación a una ceremonia de ciudadanía — realizada por tu municipio local o el Departamento. Aquí es donde haces tu juramento de compromiso con Australia y te conviertes oficialmente en ciudadano australiano.">
+        After your application is approved, you'll receive an invitation to a citizenship ceremony — held by your local council or the Department. This is where you make your pledge of commitment to Australia and officially become an Australian citizen.
+      </p>
+      <div class="ceremony-pledge">
+        <div class="ceremony-pledge-title" data-en="The Australian Citizenship Pledge" data-es="El Juramento de Ciudadanía Australiana">The Australian Citizenship Pledge</div>
+        <div class="ceremony-pledge-text">
+          <strong data-en="From this time forward..." data-es="De ahora en adelante...">"From this time forward..."</strong>
+          <span data-en="&quot;...I pledge my loyalty to Australia and its people, whose democratic beliefs I share, whose rights and liberties I respect, and whose laws I will uphold and obey.&quot;" data-es="&quot;...Juro mi lealtad a Australia y a su pueblo, cuyos valores democráticos comparto, cuyos derechos y libertades respeto, y cuyas leyes acataré y obedeceré.&quot;">
+            "...I pledge my loyalty to Australia and its people, whose democratic beliefs I share, whose rights and liberties I respect, and whose laws I will uphold and obey."
+          </span>
+        </div>
+      </div>
+      <div class="task-celebrate" data-en="🎉 After the ceremony: you'll receive your Australian citizenship certificate. Apply for your Australian passport immediately — it's one of the most powerful travel documents in the world." data-es="🎉 Después de la ceremonia: recibirás tu certificado de ciudadanía australiana. Solicita tu pasaporte australiano inmediatamente — es uno de los documentos de viaje más poderosos del mundo.">🎉 After the ceremony: you'll receive your Australian citizenship certificate. Apply for your Australian passport immediately — it's one of the most powerful travel documents in the world.</div>
+    </div>
+
+    <!-- PHASE 6 -->
+    <div class="phase-block">
+      <div class="phase-header">
+        <div class="phase-num">06</div>
+        <div class="phase-info">
+          <div class="phase-title" data-en="Apply for Your Australian Passport" data-es="Solicita Tu Pasaporte Australiano">Apply for Your Australian Passport</div>
+          <div class="phase-sub" data-en="The final step — unlocking 185+ countries visa-free" data-es="El último paso — desbloqueando 185+ países sin visa">The final step — unlocking 185+ countries visa-free</div>
+        </div>
+        <div class="phase-badge gold" data-en="🏆 Final milestone" data-es="🏆 Hito final">🏆 Final milestone</div>
+      </div>
+      <div class="phase-tasks">
+
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-header">
+            <div class="task-check" onclick="checkTask(event,this)"></div>
+            <div class="task-main">
+              <div class="task-label" data-en="Apply for Australian passport at Australia Post" data-es="Solicita el pasaporte australiano en Australia Post">Apply for Australian passport at Australia Post</div>
+              <div class="task-badges"><span class="task-badge badge-milestone" data-en="You made it!" data-es="¡Lo lograste!">You made it!</span></div>
+            </div>
+            <span class="task-chevron">▼</span>
+          </div>
+          <div class="task-body"><div class="task-body-inner">
+            <p class="task-body-desc" data-en="Once you have your citizenship certificate, you can apply for an Australian passport at any participating Australia Post outlet. The standard adult passport (10 years) costs AUD $346 and takes approximately 3 weeks. You can request priority processing for an additional fee if you have urgent travel." data-es="Una vez que tengas tu certificado de ciudadanía, puedes solicitar un pasaporte australiano en cualquier oficina de Australia Post participante. El pasaporte adulto estándar (10 años) cuesta AUD $346 y tarda aproximadamente 3 semanas. Puedes solicitar procesamiento prioritario por una tarifa adicional si tienes viaje urgente.">
+              With your citizenship certificate, apply for your Australian passport at Australia Post. Standard adult passport (10 years) costs AUD $346 and takes ~3 weeks.
+            </p>
+            <div class="task-docs-title" data-en="What you need" data-es="Qué necesitas">What you need</div>
+            <div class="task-docs">
+              <div class="task-doc-item"><span class="task-doc-icon">📜</span><span data-en="Australian citizenship certificate (original)" data-es="Certificado de ciudadanía australiana (original)">Australian citizenship certificate (original)</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">📸</span><span data-en="2 passport photos (taken within last 6 months)" data-es="2 fotos de pasaporte (tomadas en los últimos 6 meses)">2 passport photos (taken within last 6 months)</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">🆔</span><span data-en="Proof of identity (driver's licence or birth certificate)" data-es="Prueba de identidad (licencia de conducir o certificado de nacimiento)">Proof of identity (driver's licence or birth certificate)</span></div>
+              <div class="task-doc-item"><span class="task-doc-icon">💳</span><span data-en="Payment: AUD $346 (standard 10-year adult passport)" data-es="Pago: AUD $346 (pasaporte adulto estándar de 10 años)">Payment: AUD $346 (standard 10-year adult passport)</span></div>
+            </div>
+            <div class="task-info-grid">
+              <div class="task-info-cell"><div class="task-info-label" data-en="Cost" data-es="Costo">Cost</div><div class="task-info-val">AUD $346</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Processing" data-es="Procesamiento">Processing</div><div class="task-info-val" data-en="~3 weeks" data-es="~3 semanas">~3 weeks</div></div>
+              <div class="task-info-cell"><div class="task-info-label" data-en="Valid for" data-es="Válido por">Valid for</div><div class="task-info-val" data-en="10 years" data-es="10 años">10 years</div></div>
+            </div>
+            <div class="task-links">
+              <a class="task-link" href="https://www.passports.gov.au" target="_blank">🌐 Apply for Australian Passport</a>
+            </div>
+            <div class="task-celebrate" data-en="🇦🇺 Congratulations. You are now an Australian citizen. Welcome home." data-es="🇦🇺 Felicitaciones. Ahora eres ciudadano australiano. Bienvenido a casa.">🇦🇺 Congratulations. You are now an Australian citizen. Welcome home.</div>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <!-- JOURNEY SWITCHER -->
+    <div class="sidebar-card">
+      <div class="sidebar-card-title" data-en="Choose Your Journey" data-es="Elige Tu Recorrido">Choose Your Journey</div>
+      <div class="journey-list">
+        <a href="migro-plan.html" class="journey-item">
+          <div class="journey-icon">✈️</div>
+          <div>
+            <div class="journey-label" data-en="New applicant abroad" data-es="Nuevo solicitante en el exterior">New applicant abroad</div>
+            <div class="journey-sub" data-en="Applying from outside Australia" data-es="Solicitando desde fuera de Australia">Applying from outside Australia</div>
+          </div>
+        </a>
+        <a href="migro-plan-existing.html" class="journey-item">
+          <div class="journey-icon">🏠</div>
+          <div>
+            <div class="journey-label" data-en="Already in Australia" data-es="Ya en Australia">Already in Australia</div>
+            <div class="journey-sub" data-en="Changing or upgrading visa" data-es="Cambiando o actualizando visa">Changing or upgrading visa</div>
+          </div>
+        </a>
+        <a href="migro-plan-extension.html" class="journey-item">
+          <div class="journey-icon">🔄</div>
+          <div>
+            <div class="journey-label" data-en="Extend / Renew visa" data-es="Extender / Renovar visa">Extend / Renew visa</div>
+            <div class="journey-sub" data-en="Same visa class, more time" data-es="Misma clase de visa, más tiempo">Same visa class, more time</div>
+          </div>
+        </a>
+        <a href="migro-plan-citizenship.html" class="journey-item current">
+          <div class="journey-icon">🇦🇺</div>
+          <div>
+            <div class="journey-label" data-en="PR → Citizenship" data-es="RP → Ciudadanía">PR → Citizenship</div>
+            <div class="journey-sub" data-en="Permanent resident applying" data-es="Residente permanente solicitando">Permanent resident applying</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- RESIDENCY COUNTER -->
+    <div class="residency-counter">
+      <div class="rc-title" data-en="📊 YOUR ELIGIBILITY TRACKER" data-es="📊 TU RASTREADOR DE ELEGIBILIDAD">📊 YOUR ELIGIBILITY TRACKER</div>
+      <div class="rc-rows">
+        <div class="rc-row">
+          <div class="rc-row-top">
+            <span class="rc-row-label" data-en="Total days in AU">Total days in AU</span>
+            <span class="rc-row-val">1,210 / 1,460</span>
+          </div>
+          <div class="rc-bar-wrap"><div class="rc-bar-fill" style="width:83%"></div></div>
+        </div>
+        <div class="rc-row">
+          <div class="rc-row-top">
+            <span class="rc-row-label" data-en="Days as PR (last 12m)">Days as PR (last 12m)</span>
+            <span class="rc-row-val">274 / 365</span>
+          </div>
+          <div class="rc-bar-wrap"><div class="rc-bar-fill" style="width:75%"></div></div>
+        </div>
+        <div class="rc-row">
+          <div class="rc-row-top">
+            <span class="rc-row-label" data-en="Time as PR">Time as PR</span>
+            <span class="rc-row-val">3.4 / 4 yrs</span>
+          </div>
+          <div class="rc-bar-wrap"><div class="rc-bar-fill" style="width:85%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROGRESS MINI -->
+    <div class="sidebar-card">
+      <div class="sidebar-card-title" data-en="Plan Progress" data-es="Progreso del Plan">Plan Progress</div>
+      <div class="mini-progress">
+        <div class="mini-phase">
+          <div class="mini-dot active"></div>
+          <div class="mini-label active" data-en="01 — Verify eligibility" data-es="01 — Verificar elegibilidad">01 — Verify eligibility</div>
+          <div class="mini-count">0/2</div>
+        </div>
+        <div class="mini-phase">
+          <div class="mini-dot"></div>
+          <div class="mini-label" data-en="02 — Citizenship test" data-es="02 — Test de ciudadanía">02 — Citizenship test</div>
+          <div class="mini-count">0/2</div>
+        </div>
+        <div class="mini-phase">
+          <div class="mini-dot"></div>
+          <div class="mini-label" data-en="03 — Lodge application" data-es="03 — Presentar solicitud">03 — Lodge application</div>
+          <div class="mini-count">0/2</div>
+        </div>
+        <div class="mini-phase">
+          <div class="mini-dot"></div>
+          <div class="mini-label" data-en="04 — Interview (if needed)" data-es="04 — Entrevista (si es necesario)">04 — Interview (if needed)</div>
+          <div class="mini-count">0/1</div>
+        </div>
+        <div class="mini-phase">
+          <div class="mini-dot"></div>
+          <div class="mini-label" data-en="05 — Ceremony" data-es="05 — Ceremonia">05 — Ceremony</div>
+          <div class="mini-count">0/1</div>
+        </div>
+        <div class="mini-phase">
+          <div class="mini-dot gold"></div>
+          <div class="mini-label" data-en="06 — Australian passport 🇦🇺" data-es="06 — Pasaporte australiano 🇦🇺">06 — Australian passport 🇦🇺</div>
+          <div class="mini-count">0/1</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIMELINE -->
+    <div class="sidebar-card">
+      <div class="sidebar-card-title" data-en="Estimated Timeline" data-es="Cronograma Estimado">Estimated Timeline</div>
+      <div class="compact-timeline">
+        <div class="ct-item">
+          <div class="ct-bullet"></div>
+          <div class="ct-text"><strong data-en="Now: Count your days" data-es="Ahora: Cuenta tus días">Now: Count your days</strong><span data-en="VEVO + travel records + eligibility calc" data-es="VEVO + registros de viaje + cálculo de elegibilidad">VEVO + travel records + eligibility calc</span></div>
+        </div>
+        <div class="ct-item">
+          <div class="ct-bullet"></div>
+          <div class="ct-text"><strong data-en="Month 7: Eligibility reached" data-es="Mes 7: Elegibilidad alcanzada">Month 7: Eligibility reached</strong><span data-en="Apply immediately — don't wait" data-es="Solicita inmediatamente — no esperes">Apply immediately — don't wait</span></div>
+        </div>
+        <div class="ct-item">
+          <div class="ct-bullet"></div>
+          <div class="ct-text"><strong data-en="Months 12–24: Processing" data-es="Meses 12–24: Procesamiento">Months 12–24: Processing</strong><span data-en="Dept reviews application" data-es="Dept revisa la solicitud">Dept reviews application</span></div>
+        </div>
+        <div class="ct-item">
+          <div class="ct-bullet"></div>
+          <div class="ct-text"><strong data-en="Ceremony: Pledge day" data-es="Ceremonia: Día del juramento">Ceremony: Pledge day</strong><span data-en="Sing anthem, receive certificate" data-es="Canta el himno, recibe el certificado">Sing anthem, receive certificate</span></div>
+        </div>
+        <div class="ct-item">
+          <div class="ct-bullet gold"></div>
+          <div class="ct-text"><strong data-en="🇦🇺 Australian passport" data-es="🇦🇺 Pasaporte australiano">🇦🇺 Australian passport</strong><span data-en="185+ countries, visa-free" data-es="185+ países, sin visa">185+ countries, visa-free</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-card">
+      <div class="cta-card-title" data-en="Need Help Counting Your Days?" data-es="¿Necesitas Ayuda Contando Tus Días?">Need Help Counting Your Days?</div>
+      <p class="cta-card-desc" data-en="A registered migration agent can calculate your exact eligibility date, review your travel history, and prepare the strongest possible application for citizenship." data-es="Un agente de migración registrado puede calcular tu fecha exacta de elegibilidad, revisar tu historial de viajes y preparar la solicitud de ciudadanía más sólida posible.">A registered migration agent can calculate your exact eligibility date, review your travel history, and prepare the strongest possible citizenship application.</p>
+      <a href="migro-services.html" class="cta-card-btn" data-en="Find Migration Agents →" data-es="Encontrar Agentes de Migración →">Find Migration Agents →</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function setLang(l, btn) {
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('[data-en]').forEach(el => {
+      el.innerHTML = l === 'en' ? el.dataset.en : (el.dataset.es || el.dataset.en);
+    });
+  }
+  function toggleTask(item) {
+    const wasOpen = item.classList.contains('open');
+    item.closest('.phase-tasks')?.querySelectorAll('.task-item').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  }
+  function checkTask(e, checkbox) {
+    e.stopPropagation();
+    checkbox.classList.toggle('checked');
+    checkbox.textContent = checkbox.classList.contains('checked') ? '✓' : '';
+  }
+</script>
+</body>
+</html>
