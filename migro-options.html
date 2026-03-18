@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Migro — Explore Your Options</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --black: #0a0a0a; --white: #ffffff;
+      --gray-100: #f5f5f5; --gray-200: #e8e8e8;
+      --gray-300: #d0d0d0; --gray-400: #999;
+      --gray-600: #555; --gray-800: #222;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--gray-100); color: var(--black); min-height: 100vh; }
+
+    /* NAV */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 48px; background: var(--white);
+      border-bottom: 1px solid var(--gray-200);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--black); text-decoration: none; }
+    .nav-logo span { display: inline-block; width: 6px; height: 6px; background: var(--black); border-radius: 50%; margin-left: 2px; vertical-align: super; }
+    .nav-right { display: flex; align-items: center; gap: 16px; }
+    .lang-toggle { display: flex; background: var(--gray-100); border-radius: 6px; padding: 3px; gap: 2px; }
+    .lang-btn { padding: 4px 10px; font-size: 11px; font-weight: 700; border: none; background: transparent; border-radius: 4px; cursor: pointer; color: var(--gray-400); transition: all .2s; }
+    .lang-btn.active { background: var(--black); color: var(--white); }
+    .nav-back { font-size: 13px; font-weight: 500; color: var(--gray-600); text-decoration: none; padding: 8px 16px; border-radius: 6px; border: 1px solid var(--gray-200); transition: all .2s; }
+    .nav-back:hover { border-color: var(--black); color: var(--black); }
+
+    /* PROGRESS */
+    .progress-strip { background: var(--white); border-bottom: 1px solid var(--gray-200); padding: 0 48px; display: flex; gap: 0; }
+    .progress-step { padding: 14px 0; margin-right: 32px; font-size: 12px; font-weight: 600; color: var(--gray-300); border-bottom: 2px solid transparent; white-space: nowrap; }
+    .progress-step.done { color: var(--gray-400); }
+    .progress-step.active { color: var(--black); border-bottom-color: var(--black); }
+
+    /* HERO */
+    .hero { background: var(--black); padding: 52px 48px 40px; }
+    .hero-inner { max-width: 1100px; margin: 0 auto; }
+    .hero-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #555; margin-bottom: 12px; }
+    .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(28px, 3.5vw, 46px); font-weight: 700; color: var(--white); line-height: 1.1; letter-spacing: -1px; margin-bottom: 14px; }
+    .hero-sub { font-size: 15px; color: #777; max-width: 500px; line-height: 1.6; margin-bottom: 32px; }
+
+    /* CONTEXT STRIP */
+    .context-strip { display: flex; gap: 12px; flex-wrap: wrap; }
+    .context-tag { display: flex; align-items: center; gap: 8px; background: #111; border: 1px solid #222; border-radius: 100px; padding: 7px 14px; font-size: 13px; font-weight: 600; color: #aaa; }
+    .context-tag-dot { width: 6px; height: 6px; background: #4ade80; border-radius: 50%; }
+
+    /* TABS */
+    .tabs-wrap { background: var(--white); border-bottom: 1px solid var(--gray-200); padding: 0 48px; display: flex; gap: 0; }
+    .tab-btn { padding: 18px 0; margin-right: 36px; font-size: 14px; font-weight: 600; color: var(--gray-400); border: none; background: transparent; cursor: pointer; border-bottom: 2px solid transparent; transition: all .2s; white-space: nowrap; }
+    .tab-btn.active { color: var(--black); border-bottom-color: var(--black); }
+    .tab-btn:hover { color: var(--black); }
+
+    /* BODY */
+    .page-body { max-width: 1100px; margin: 0 auto; padding: 36px 48px; }
+
+    /* SECTION HEADER */
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+    .section-title-sm { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; }
+    .section-count { font-size: 13px; color: var(--gray-400); font-weight: 500; }
+
+    /* FILTER ROW */
+    .filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+    .filter-chip { padding: 7px 14px; border: 1.5px solid var(--gray-200); border-radius: 100px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all .2s; color: var(--gray-600); background: var(--white); }
+    .filter-chip:hover { border-color: var(--gray-400); }
+    .filter-chip.active { background: var(--black); border-color: var(--black); color: var(--white); }
+
+    /* GRID */
+    .options-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 40px; }
+
+    /* OPTION CARD */
+    .opt-card { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 14px; overflow: hidden; transition: all .25s; cursor: pointer; display: flex; flex-direction: column; }
+    .opt-card:hover { border-color: var(--black); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+    .opt-card.featured { border-color: var(--black); }
+
+    /* CARD TOP */
+    .opt-card-top { padding: 20px 20px 0; display: flex; align-items: flex-start; gap: 14px; }
+    .opt-logo { width: 48px; height: 48px; border-radius: 10px; background: var(--gray-100); display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0; border: 1px solid var(--gray-200); }
+    .opt-logo.dark { background: var(--black); }
+    .opt-meta { flex: 1; }
+    .opt-name { font-size: 15px; font-weight: 700; color: var(--black); margin-bottom: 3px; line-height: 1.3; }
+    .opt-type { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-400); }
+    .opt-badge { font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 3px 8px; border-radius: 100px; flex-shrink: 0; }
+    .badge-top { background: var(--black); color: var(--white); }
+    .badge-hot { background: #fff0e0; color: #a05000; }
+    .badge-new { background: #e8f5e8; color: #1a6a1a; }
+
+    /* CARD BODY */
+    .opt-card-body { padding: 14px 20px 16px; flex: 1; }
+    .opt-desc { font-size: 13px; color: var(--gray-600); line-height: 1.6; margin-bottom: 14px; }
+    .opt-stats { display: flex; gap: 16px; flex-wrap: wrap; }
+    .opt-stat { font-size: 12px; color: var(--gray-400); }
+    .opt-stat strong { color: var(--black); font-weight: 700; }
+
+    /* CARD FOOTER */
+    .opt-card-footer { padding: 12px 20px; border-top: 1px solid var(--gray-200); display: flex; align-items: center; justify-content: space-between; }
+    .opt-link { font-size: 13px; font-weight: 700; color: var(--black); text-decoration: none; display: flex; align-items: center; gap: 5px; transition: gap .2s; }
+    .opt-link:hover { gap: 9px; }
+    .opt-visa-tag { font-size: 11px; color: var(--gray-400); font-weight: 500; }
+
+    /* TAB PANELS */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* EMPLOYER CARD VARIANT */
+    .emp-card { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 14px; padding: 20px; transition: all .25s; cursor: pointer; }
+    .emp-card:hover { border-color: var(--black); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+    .emp-top { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+    .emp-logo { width: 44px; height: 44px; border-radius: 8px; background: var(--gray-100); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; border: 1px solid var(--gray-200); }
+    .emp-name { font-size: 15px; font-weight: 700; }
+    .emp-industry { font-size: 12px; color: var(--gray-400); margin-top: 2px; }
+    .emp-desc { font-size: 13px; color: var(--gray-600); line-height: 1.6; margin-bottom: 14px; }
+    .emp-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+    .emp-tag { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 100px; background: var(--gray-100); color: var(--gray-600); }
+    .emp-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid var(--gray-200); }
+    .emp-sponsor { font-size: 11px; font-weight: 700; color: #1a6a1a; background: #e8f5e8; padding: 3px 10px; border-radius: 100px; }
+    .emp-link { font-size: 13px; font-weight: 700; color: var(--black); text-decoration: none; }
+
+    /* COURSE CARD */
+    .course-card { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 14px; overflow: hidden; transition: all .25s; cursor: pointer; }
+    .course-card:hover { border-color: var(--black); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+    .course-header { background: var(--black); padding: 20px; }
+    .course-uni { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #555; margin-bottom: 6px; }
+    .course-name { font-size: 17px; font-weight: 700; color: var(--white); line-height: 1.3; }
+    .course-body { padding: 18px 20px; }
+    .course-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .course-stat { background: var(--gray-100); border-radius: 8px; padding: 10px 12px; }
+    .course-stat-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--gray-400); margin-bottom: 3px; }
+    .course-stat-val { font-size: 14px; font-weight: 700; }
+    .course-footer { padding: 12px 20px; border-top: 1px solid var(--gray-200); display: flex; justify-content: space-between; align-items: center; }
+    .course-visa { font-size: 11px; color: var(--gray-400); }
+    .course-link { font-size: 13px; font-weight: 700; color: var(--black); text-decoration: none; }
+
+    /* CTA BOTTOM */
+    .cta-bottom { background: var(--black); border-radius: 16px; padding: 40px; text-align: center; margin-top: 16px; }
+    .cta-bottom-title { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: var(--white); margin-bottom: 10px; }
+    .cta-bottom-sub { font-size: 14px; color: #888; margin-bottom: 24px; max-width: 380px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+    .btn-cta-bottom { display: inline-flex; align-items: center; gap: 10px; background: var(--white); color: var(--black); padding: 14px 36px; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; border: none; transition: all .2s; }
+    .btn-cta-bottom:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,255,255,.15); }
+
+    /* REVIEWS */
+    .stars { color: #f0b429; font-size: 13px; letter-spacing: 1px; }
+    .stars-row { display: flex; align-items: center; gap: 6px; }
+    .review-count { font-size: 12px; color: var(--gray-400); }
+    .reviews-toggle { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: var(--gray-400); cursor: pointer; background: none; border: none; padding: 0; transition: color .2s; text-decoration: underline; text-underline-offset: 2px; }
+    .reviews-toggle:hover { color: var(--black); }
+    .reviews-panel { max-height: 0; overflow: hidden; transition: max-height .4s cubic-bezier(0.4,0,0.2,1); }
+    .reviews-panel.open { max-height: 700px; }
+    .reviews-inner { padding: 14px 20px 16px; border-top: 1px solid var(--gray-100); background: var(--gray-100); }
+    .reviews-heading { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+    .reviews-heading .write-review { font-size: 11px; font-weight: 700; color: var(--black); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+    .review-item { background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; }
+    .review-item:last-child { margin-bottom: 0; }
+    .review-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .review-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--black); display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--white); font-weight: 700; flex-shrink: 0; }
+    .review-name { font-size: 12px; font-weight: 700; color: var(--black); }
+    .review-date { font-size: 11px; color: var(--gray-400); margin-left: auto; }
+    .review-stars { color: #f0b429; font-size: 11px; letter-spacing: 1px; }
+    .review-text { font-size: 12px; color: var(--gray-600); line-height: 1.6; margin-top: 4px; }
+    .review-verified { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: #1a6a1a; background: #e6f9e6; padding: 2px 7px; border-radius: 100px; margin-top: 6px; font-weight: 600; }
+    .write-review-form { background: var(--white); border: 1.5px dashed var(--gray-300); border-radius: 10px; padding: 14px; margin-top: 8px; display: none; }
+    .write-review-form.open { display: block; }
+    .write-review-form textarea { width: 100%; min-height: 80px; padding: 10px; border: 1.5px solid var(--gray-200); border-radius: 6px; font-size: 12px; font-family: 'Inter', sans-serif; resize: vertical; }
+    .write-review-form textarea:focus { outline: none; border-color: var(--black); }
+    .star-select { display: flex; gap: 4px; margin-bottom: 8px; }
+    .star-btn { font-size: 20px; cursor: pointer; color: var(--gray-300); transition: color .1s; }
+    .star-btn.active { color: #f0b429; }
+    .submit-review-btn { margin-top: 8px; padding: 8px 16px; background: var(--black); color: var(--white); border: none; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; }
+
+    /* FADE */
+    .fade-up { opacity: 0; transform: translateY(20px); transition: all .5s ease; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    @media(max-width:768px) {
+      nav, .progress-strip, .hero, .tabs-wrap, .page-body { padding-left: 24px; padding-right: 24px; }
+      .options-grid { grid-template-columns: 1fr; }
+      .progress-step { display: none; }
+      .progress-step.active { display: block; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="migro-landing.html" class="nav-logo">Migro<span></span></a>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('es')">ES</button>
+    </div>
+    <a href="migro-cities.html" class="nav-back" data-en="← Cities" data-es="← Ciudades">← Cities</a>
+  </div>
+</nav>
+
+<!-- PROGRESS -->
+<div class="progress-strip">
+  <div class="progress-step done" data-en="✓ Profile" data-es="✓ Perfil">✓ Profile</div>
+  <div class="progress-step done" data-en="✓ Visa Routes" data-es="✓ Rutas">✓ Visa Routes</div>
+  <div class="progress-step done" data-en="✓ City: Sydney" data-es="✓ Ciudad: Sydney">✓ City: Sydney</div>
+  <div class="progress-step active" data-en="→ Options" data-es="→ Opciones">→ Options</div>
+  <div class="progress-step" data-en="Services" data-es="Servicios">Services</div>
+  <div class="progress-step" data-en="My Plan" data-es="Mi Plan">My Plan</div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <p class="hero-tag" data-en="STEP 5 · EXPLORE OPTIONS" data-es="PASO 5 · EXPLORAR OPCIONES">STEP 5 · EXPLORE OPTIONS</p>
+    <h1 class="hero-title" data-en="Opportunities waiting<br/>for you in Sydney" data-es="Oportunidades que te<br/>esperan en Sydney">Opportunities waiting<br/>for you in Sydney</h1>
+    <p class="hero-sub" data-en="Browse employers, universities, and courses matched to your profile and visa type." data-es="Explora empleadores, universidades y cursos adaptados a tu perfil y tipo de visa.">Browse employers, universities, and courses matched to your profile and visa type.</p>
+    <div class="context-strip">
+      <div class="context-tag"><span class="context-tag-dot"></span> 🗺️ <span data-en="Sydney, NSW" data-es="Sydney, NSW">Sydney, NSW</span></div>
+      <div class="context-tag">🎯 <span data-en="Subclass 482" data-es="Subclase 482">Subclass 482</span></div>
+      <div class="context-tag">💼 <span data-en="Work goal" data-es="Objetivo: Trabajar">Work goal</span></div>
+      <div class="context-tag">🎓 <span data-en="Bachelor's — 5–7yrs exp" data-es="Licenciatura — 5–7 años">Bachelor's — 5–7yrs exp</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <button class="tab-btn active" onclick="switchTab('employers')" data-en="💼 Employers (24)" data-es="💼 Empleadores (24)">💼 Employers (24)</button>
+  <button class="tab-btn" onclick="switchTab('universities')" data-en="🎓 Universities (8)" data-es="🎓 Universidades (8)">🎓 Universities (8)</button>
+  <button class="tab-btn" onclick="switchTab('courses')" data-en="📚 Courses (16)" data-es="📚 Cursos (16)">📚 Courses (16)</button>
+  <button class="tab-btn" onclick="switchTab('jobs')" data-en="🔍 Job Listings (42)" data-es="🔍 Empleos (42)">🔍 Job Listings (42)</button>
+</div>
+
+<!-- PAGE BODY -->
+<div class="page-body">
+
+  <!-- ── EMPLOYERS TAB ── -->
+  <div class="tab-panel active" id="tab-employers">
+    <div class="section-header">
+      <h2 class="section-title-sm" data-en="Employers sponsoring visas in Sydney" data-es="Empleadores que patrocinan visas en Sydney">Employers sponsoring visas in Sydney</h2>
+      <span class="section-count" data-en="24 approved sponsors" data-es="24 patrocinadores aprobados">24 approved sponsors</span>
+    </div>
+    <div class="filter-row">
+      <div class="filter-chip active" onclick="toggleChip(this)" data-en="All industries" data-es="Todos">All industries</div>
+      <div class="filter-chip" onclick="toggleChip(this)" data-en="Technology" data-es="Tecnología">Technology</div>
+      <div class="filter-chip" onclick="toggleChip(this)" data-en="Healthcare" data-es="Salud">Healthcare</div>
+      <div class="filter-chip" onclick="toggleChip(this)" data-en="Construction" data-es="Construcción">Construction</div>
+      <div class="filter-chip" onclick="toggleChip(this)" data-en="Finance" data-es="Finanzas">Finance</div>
+      <div class="filter-chip" onclick="toggleChip(this)" data-en="Education" data-es="Educación">Education</div>
+    </div>
+    <div class="options-grid">
+
+      <div class="emp-card fade-up">
+        <div class="emp-top">
+          <div class="emp-logo">🍎</div>
+          <div>
+            <div class="emp-name">Atlassian</div>
+            <div class="emp-industry" data-en="Technology · Software" data-es="Tecnología · Software">Technology · Software</div>
+          </div>
+          <span class="opt-badge badge-top" style="margin-left:auto">Top sponsor</span>
+        </div>
+        <p class="emp-desc" data-en="Global software company headquartered in Sydney. Active sponsor of skilled tech workers across engineering, product, and design roles." data-es="Empresa global de software con sede en Sydney. Patrocinador activo de trabajadores tecnológicos calificados en roles de ingeniería, producto y diseño.">Global software company headquartered in Sydney. Active sponsor of skilled tech workers across engineering, product, and design roles.</p>
+        <div class="emp-tags">
+          <span class="emp-tag">💻 Software Engineering</span>
+          <span class="emp-tag">🎨 Product Design</span>
+          <span class="emp-tag">📊 Data Science</span>
+        </div>
+        <div class="stars-row" style="padding: 4px 0 12px;">
+          <span class="stars">★★★★★</span>
+          <span class="review-count">4.8</span>
+          <button class="reviews-toggle" onclick="toggleReviews(this)" data-en="· 312 reviews" data-es="· 312 reseñas">· 312 reviews</button>
+        </div>
+        <div class="reviews-panel" id="reviews-atlassian">
+          <div class="reviews-inner">
+            <div class="reviews-heading"><span data-en="EMPLOYEE REVIEWS" data-es="RESEÑAS DE EMPLEADOS">EMPLOYEE REVIEWS</span><span class="write-review" onclick="toggleWriteReview('wr-atlassian')" data-en="+ Write a review" data-es="+ Escribir reseña">+ Write a review</span></div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">T</div><div class="review-name">Tomás G.</div><div class="review-date">Mar 2025</div></div>
+              <div class="review-stars">★★★★★</div>
+              <p class="review-text" data-en="Atlassian sponsored my 482 from Colombia and the process was seamless. HR team was incredibly organized — they sent all documents on time and the migration agent they hired was excellent. Within the company, the culture is genuinely inclusive." data-es="Atlassian patrocinó mi 482 desde Colombia y el proceso fue impecable. El equipo de RR.HH. estaba increíblemente organizado — enviaron todos los documentos a tiempo y el agente migratorio que contrataron fue excelente. Dentro de la empresa, la cultura es genuinamente inclusiva.">Atlassian sponsored my 482 from Colombia and the process was seamless. HR team was incredibly organized — they sent all documents on time and the migration agent they hired was excellent. Within the company, the culture is genuinely inclusive.</p>
+              <div class="review-verified">✓ <span data-en="Current employee" data-es="Empleado actual">Current employee</span></div>
+            </div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">P</div><div class="review-name">Paula N.</div><div class="review-date">Jan 2025</div></div>
+              <div class="review-stars">★★★★★</div>
+              <p class="review-text" data-en="The relocation package was exceptional — flight, temporary housing, and a $5k settling-in allowance. The visa process took 5 months but Atlassian's internal immigration team kept me updated weekly. Love working here." data-es="El paquete de reubicación fue excepcional: vuelo, alojamiento temporal y $5,000 de ayuda para instalación. El proceso de visa duró 5 meses pero el equipo de inmigración interno de Atlassian me mantuvo actualizada semanalmente. Me encanta trabajar aquí.">The relocation package was exceptional — flight, temporary housing, and a $5k settling-in allowance. The visa process took 5 months but Atlassian's internal immigration team kept me updated weekly. Love working here.</p>
+              <div class="review-verified">✓ <span data-en="Current employee" data-es="Empleada actual">Current employee</span></div>
+            </div>
+            <div class="write-review-form" id="wr-atlassian">
+              <div class="star-select" id="star-atlassian"><span class="star-btn" onclick="setStar('star-atlassian',1)">☆</span><span class="star-btn" onclick="setStar('star-atlassian',2)">☆</span><span class="star-btn" onclick="setStar('star-atlassian',3)">☆</span><span class="star-btn" onclick="setStar('star-atlassian',4)">☆</span><span class="star-btn" onclick="setStar('star-atlassian',5)">☆</span></div>
+              <textarea placeholder="Share your experience working at Atlassian..."></textarea>
+              <button class="submit-review-btn" onclick="submitReview(this)" data-en="Submit Review" data-es="Enviar Reseña">Submit Review</button>
+            </div>
+          </div>
+        </div>
+        <div class="emp-footer">
+          <span class="emp-sponsor" data-en="✓ Approved 482 sponsor" data-es="✓ Patrocinador 482 aprobado">✓ Approved 482 sponsor</span>
+          <a href="#" class="emp-link" data-en="View jobs →" data-es="Ver empleos →">View jobs →</a>
+        </div>
+      </div>
+
+      <div class="emp-card fade-up">
+        <div class="emp-top">
+          <div class="emp-logo">🏦</div>
+          <div>
+            <div class="emp-name">Commonwealth Bank</div>
+            <div class="emp-industry" data-en="Finance · Banking" data-es="Finanzas · Banca">Finance · Banking</div>
+          </div>
+          <span class="opt-badge badge-hot" style="margin-left:auto" data-en="Hiring now" data-es="Contratando">Hiring now</span>
+        </div>
+        <p class="emp-desc" data-en="Australia's largest bank. Regularly sponsors skilled workers in technology, data analytics, cybersecurity, and finance roles across Sydney." data-es="El banco más grande de Australia. Patrocina regularmente trabajadores calificados en tecnología, análisis de datos, ciberseguridad y finanzas en Sydney.">Australia's largest bank. Regularly sponsors skilled workers in technology, data analytics, cybersecurity, and finance roles across Sydney.</p>
+        <div class="emp-tags">
+          <span class="emp-tag">🔐 Cybersecurity</span>
+          <span class="emp-tag">📊 Data Analytics</span>
+          <span class="emp-tag">💰 Finance</span>
+        </div>
+        <div class="stars-row" style="padding: 4px 0 12px;">
+          <span class="stars">★★★★☆</span>
+          <span class="review-count">4.5</span>
+          <button class="reviews-toggle" onclick="toggleReviews(this)" data-en="· 198 reviews" data-es="· 198 reseñas">· 198 reviews</button>
+        </div>
+        <div class="reviews-panel" id="reviews-cba">
+          <div class="reviews-inner">
+            <div class="reviews-heading"><span data-en="EMPLOYEE REVIEWS" data-es="RESEÑAS DE EMPLEADOS">EMPLOYEE REVIEWS</span><span class="write-review" onclick="toggleWriteReview('wr-cba')" data-en="+ Write a review" data-es="+ Escribir reseña">+ Write a review</span></div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">H</div><div class="review-name">Hugo A.</div><div class="review-date">Feb 2025</div></div>
+              <div class="review-stars">★★★★★</div>
+              <p class="review-text" data-en="CBA sponsored my 482 for a data analyst role. The application was handled by their internal immigration team and took about 6 months. Good salary, great career progression, and they transitioned me to a 186 after 2 years. Recommended." data-es="CBA patrocinó mi 482 para un rol de analista de datos. La solicitud fue manejada por su equipo de inmigración interno y tardó unos 6 meses. Buen salario, gran progreso profesional, y me cambiaron a una 186 después de 2 años. Recomendado.">CBA sponsored my 482 for a data analyst role. The application was handled by their internal immigration team and took about 6 months. Good salary, great career progression, and they transitioned me to a 186 after 2 years. Recommended.</p>
+              <div class="review-verified">✓ <span data-en="Former employee" data-es="Expleado">Former employee</span></div>
+            </div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">M</div><div class="review-name">Monica R.</div><div class="review-date">Jan 2025</div></div>
+              <div class="review-stars">★★★★☆</div>
+              <p class="review-text" data-en="Large corporate environment, good for career growth. The visa sponsorship process was somewhat slow internally but they did cover all costs. Sydney office is well-located. International community within the team made integration easier." data-es="Gran entorno corporativo, bueno para el crecimiento profesional. El proceso de patrocinio de visa fue algo lento internamente, pero cubrieron todos los costos. La oficina de Sydney está bien ubicada. La comunidad internacional dentro del equipo facilitó la integración.">Large corporate environment, good for career growth. The visa sponsorship process was somewhat slow internally but they did cover all costs. Sydney office is well-located. International community within the team made integration easier.</p>
+              <div class="review-verified">✓ <span data-en="Current employee" data-es="Empleada actual">Current employee</span></div>
+            </div>
+            <div class="write-review-form" id="wr-cba">
+              <div class="star-select" id="star-cba"><span class="star-btn" onclick="setStar('star-cba',1)">☆</span><span class="star-btn" onclick="setStar('star-cba',2)">☆</span><span class="star-btn" onclick="setStar('star-cba',3)">☆</span><span class="star-btn" onclick="setStar('star-cba',4)">☆</span><span class="star-btn" onclick="setStar('star-cba',5)">☆</span></div>
+              <textarea placeholder="Share your experience working at CBA..."></textarea>
+              <button class="submit-review-btn" onclick="submitReview(this)" data-en="Submit Review" data-es="Enviar Reseña">Submit Review</button>
+            </div>
+          </div>
+        </div>
+        <div class="emp-footer">
+          <span class="emp-sponsor" data-en="✓ Approved 482 sponsor" data-es="✓ Patrocinador 482 aprobado">✓ Approved 482 sponsor</span>
+          <a href="#" class="emp-link" data-en="View jobs →" data-es="Ver empleos →">View jobs →</a>
+        </div>
+      </div>
+
+      <div class="emp-card fade-up">
+        <div class="emp-top">
+          <div class="emp-logo">🏥</div>
+          <div>
+            <div class="emp-name">Sydney Children's Hospital</div>
+            <div class="emp-industry" data-en="Healthcare · Hospital" data-es="Salud · Hospital">Healthcare · Hospital</div>
+          </div>
+        </div>
+        <p class="emp-desc" data-en="One of Australia's leading children's hospitals. Actively recruiting skilled healthcare workers from overseas including nurses, doctors, and allied health." data-es="Uno de los principales hospitales infantiles de Australia. Recluta activamente trabajadores de salud calificados del exterior.">One of Australia's leading children's hospitals. Actively recruiting skilled healthcare workers from overseas including nurses, doctors, and allied health.</p>
+        <div class="emp-tags">
+          <span class="emp-tag">👩‍⚕️ Nursing</span>
+          <span class="emp-tag">🩺 Medicine</span>
+          <span class="emp-tag">🧬 Allied Health</span>
+        </div>
+        <div class="stars-row" style="padding: 4px 0 12px;">
+          <span class="stars">★★★★★</span>
+          <span class="review-count">4.9</span>
+          <button class="reviews-toggle" onclick="toggleReviews(this)" data-en="· 147 reviews" data-es="· 147 reseñas">· 147 reviews</button>
+        </div>
+        <div class="reviews-panel" id="reviews-sch">
+          <div class="reviews-inner">
+            <div class="reviews-heading"><span data-en="EMPLOYEE REVIEWS" data-es="RESEÑAS DE EMPLEADOS">EMPLOYEE REVIEWS</span><span class="write-review" onclick="toggleWriteReview('wr-sch')" data-en="+ Write a review" data-es="+ Escribir reseña">+ Write a review</span></div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">L</div><div class="review-name">Lorena C.</div><div class="review-date">Mar 2025</div></div>
+              <div class="review-stars">★★★★★</div>
+              <p class="review-text" data-en="Came from Colombia as a nurse. Sydney Children's sponsored my 482 in 7 months. The hospital paid for AHPRA registration, bridging support, and even arranged temporary accommodation for my first month. I couldn't have done it without their support." data-es="Llegué de Colombia como enfermera. Sydney Children's patrocinó mi 482 en 7 meses. El hospital pagó el registro de AHPRA, apoyo de transición, e incluso organizó alojamiento temporal para mi primer mes. No podría haberlo hecho sin su apoyo.">Came from Colombia as a nurse. Sydney Children's sponsored my 482 in 7 months. The hospital paid for AHPRA registration, bridging support, and even arranged temporary accommodation for my first month. I couldn't have done it without their support.</p>
+              <div class="review-verified">✓ <span data-en="Current employee" data-es="Empleada actual">Current employee</span></div>
+            </div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">O</div><div class="review-name">Oscar V.</div><div class="review-date">Dec 2024</div></div>
+              <div class="review-stars">★★★★★</div>
+              <p class="review-text" data-en="Working in Allied Health. The HR team was fantastic throughout the visa process, answering every question quickly. Great collegial environment and strong pathway to PR through the 186 after 2 years." data-es="Trabajo en Salud Aliada. El equipo de RR.HH. fue fantástico durante el proceso de visa, respondiendo cada pregunta rápidamente. Excelente ambiente colegial y sólido camino hacia la RP a través de la 186 después de 2 años.">Working in Allied Health. The HR team was fantastic throughout the visa process, answering every question quickly. Great collegial environment and strong pathway to PR through the 186 after 2 years.</p>
+              <div class="review-verified">✓ <span data-en="Current employee" data-es="Empleado actual">Current employee</span></div>
+            </div>
+            <div class="write-review-form" id="wr-sch">
+              <div class="star-select" id="star-sch"><span class="star-btn" onclick="setStar('star-sch',1)">☆</span><span class="star-btn" onclick="setStar('star-sch',2)">☆</span><span class="star-btn" onclick="setStar('star-sch',3)">☆</span><span class="star-btn" onclick="setStar('star-sch',4)">☆</span><span class="star-btn" onclick="setStar('star-sch',5)">☆</span></div>
+              <textarea placeholder="Share your experience at Sydney Children's Hospital..."></textarea>
+              <button class="submit-review-btn" onclick="submitReview(this)" data-en="Submit Review" data-es="Enviar Reseña">Submit Review</button>
+            </div>
+          </div>
+        </div>
+        <div class="emp-footer">
+          <span class="emp-sponsor" data-en="✓ Approved 482 sponsor" data-es="✓ Patrocinador 482 aprobado">✓ Approved 482 sponsor</span>
+          <a href="#" class="emp-link" data-en="View jobs →" data-es="Ver empleos →">View jobs →</a>
+        </div>
+      </div>
+
+      <div class="emp-card fade-up">
+        <div class="emp-top">
+          <div class="emp-logo">🏗️</div>
+          <div>
+            <div class="emp-name">Lendlease</div>
+            <div class="emp-industry" data-en="Construction · Engineering" data-es="Construcción · Ingeniería">Construction · Engineering</div>
+          </div>
+          <span class="opt-badge badge-new" style="margin-left:auto" data-en="New roles" data-es="Nuevos roles">New roles</span>
+        </div>
+        <p class="emp-desc" data-en="Global construction and real estate company. Strong demand for civil engineers, project managers, and architects with sponsorship available." data-es="Empresa global de construcción e inmobiliaria. Gran demanda de ingenieros civiles, gerentes de proyecto y arquitectos con patrocinio disponible.">Global construction and real estate company. Strong demand for civil engineers, project managers, and architects with sponsorship available.</p>
+        <div class="emp-tags">
+          <span class="emp-tag">🏗️ Civil Engineering</span>
+          <span class="emp-tag">📐 Architecture</span>
+          <span class="emp-tag">📋 Project Mgmt</span>
+        </div>
+        <div class="stars-row" style="padding: 4px 0 12px;">
+          <span class="stars">★★★★☆</span>
+          <span class="review-count">4.6</span>
+          <button class="reviews-toggle" onclick="toggleReviews(this)" data-en="· 89 reviews" data-es="· 89 reseñas">· 89 reviews</button>
+        </div>
+        <div class="reviews-panel" id="reviews-lendlease">
+          <div class="reviews-inner">
+            <div class="reviews-heading"><span data-en="EMPLOYEE REVIEWS" data-es="RESEÑAS DE EMPLEADOS">EMPLOYEE REVIEWS</span><span class="write-review" onclick="toggleWriteReview('wr-lendlease')" data-en="+ Write a review" data-es="+ Escribir reseña">+ Write a review</span></div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">A</div><div class="review-name">Andrés P.</div><div class="review-date">Feb 2025</div></div>
+              <div class="review-stars">★★★★★</div>
+              <p class="review-text" data-en="Civil engineer from Chile. Lendlease sponsored my 482 and the process was handled professionally. Complex projects, great team culture, and strong PR pathway through the 186 ENS. Sydney office is excellent." data-es="Ingeniero civil de Chile. Lendlease patrocinó mi 482 y el proceso fue manejado profesionalmente. Proyectos complejos, gran cultura de equipo y sólido camino a la RP a través de la 186 ENS. La oficina de Sydney es excelente.">Civil engineer from Chile. Lendlease sponsored my 482 and the process was handled professionally. Complex projects, great team culture, and strong PR pathway through the 186 ENS. Sydney office is excellent.</p>
+              <div class="review-verified">✓ <span data-en="Current employee" data-es="Empleado actual">Current employee</span></div>
+            </div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">C</div><div class="review-name">Camila E.</div><div class="review-date">Nov 2024</div></div>
+              <div class="review-stars">★★★★☆</div>
+              <p class="review-text" data-en="Project manager role. Good sponsorship support and the company covered all visa costs. Large projects give great experience. Work-life balance can be challenging on deadline-driven projects." data-es="Rol de gerente de proyectos. Buen apoyo de patrocinio y la empresa cubrió todos los costos de visa. Los grandes proyectos dan gran experiencia. El equilibrio trabajo-vida puede ser desafiante en proyectos con fechas límite.">Project manager role. Good sponsorship support and the company covered all visa costs. Large projects give great experience. Work-life balance can be challenging on deadline-driven projects.</p>
+              <div class="review-verified">✓ <span data-en="Current employee" data-es="Empleada actual">Current employee</span></div>
+            </div>
+            <div class="write-review-form" id="wr-lendlease">
+              <div class="star-select" id="star-lendlease"><span class="star-btn" onclick="setStar('star-lendlease',1)">☆</span><span class="star-btn" onclick="setStar('star-lendlease',2)">☆</span><span class="star-btn" onclick="setStar('star-lendlease',3)">☆</span><span class="star-btn" onclick="setStar('star-lendlease',4)">☆</span><span class="star-btn" onclick="setStar('star-lendlease',5)">☆</span></div>
+              <textarea placeholder="Share your experience at Lendlease..."></textarea>
+              <button class="submit-review-btn" onclick="submitReview(this)" data-en="Submit Review" data-es="Enviar Reseña">Submit Review</button>
+            </div>
+          </div>
+        </div>
+        <div class="emp-footer">
+          <span class="emp-sponsor" data-en="✓ Approved 482 sponsor" data-es="✓ Patrocinador 482 aprobado">✓ Approved 482 sponsor</span>
+          <a href="#" class="emp-link" data-en="View jobs →" data-es="Ver empleos →">View jobs →</a>
+        </div>
+      </div>
+
+      <div class="emp-card fade-up">
+        <div class="emp-top">
+          <div class="emp-logo">✈️</div>
+          <div>
+            <div class="emp-name">Qantas Airways</div>
+            <div class="emp-industry" data-en="Aviation · Transport" data-es="Aviación · Transporte">Aviation · Transport</div>
+          </div>
+        </div>
+        <p class="emp-desc" data-en="Australia's national airline. Sponsors skilled workers in aviation engineering, IT, logistics, and customer experience roles based in Sydney." data-es="La aerolínea nacional de Australia. Patrocina trabajadores calificados en ingeniería aeronáutica, TI, logística y experiencia del cliente en Sydney.">Australia's national airline. Sponsors skilled workers in aviation engineering, IT, logistics, and customer experience roles based in Sydney.</p>
+        <div class="emp-tags">
+          <span class="emp-tag">🛠️ Aviation Eng</span>
+          <span class="emp-tag">💻 IT Systems</span>
+          <span class="emp-tag">📦 Logistics</span>
+        </div>
+        <div class="stars-row" style="padding: 4px 0 12px;">
+          <span class="stars">★★★★☆</span>
+          <span class="review-count">4.4</span>
+          <button class="reviews-toggle" onclick="toggleReviews(this)" data-en="· 76 reviews" data-es="· 76 reseñas">· 76 reviews</button>
+        </div>
+        <div class="reviews-panel" id="reviews-qantas">
+          <div class="reviews-inner">
+            <div class="reviews-heading"><span data-en="EMPLOYEE REVIEWS" data-es="RESEÑAS DE EMPLEADOS">EMPLOYEE REVIEWS</span><span class="write-review" onclick="toggleWriteReview('wr-qantas')" data-en="+ Write a review" data-es="+ Escribir reseña">+ Write a review</span></div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">R</div><div class="review-name">Rodrigo M.</div><div class="review-date">Jan 2025</div></div>
+              <div class="review-stars">★★★★★</div>
+              <p class="review-text" data-en="Aviation engineer from Argentina. Qantas sponsored my 482 in 8 months. Working on cutting-edge aircraft is incredible. They offer strong PR transition support after 2 years on the 482. International staff feel very welcome." data-es="Ingeniero de aviación de Argentina. Qantas patrocinó mi 482 en 8 meses. Trabajar en aviones de última generación es increíble. Ofrecen un sólido apoyo para la transición a RP después de 2 años en la 482. El personal internacional se siente muy bienvenido.">Aviation engineer from Argentina. Qantas sponsored my 482 in 8 months. Working on cutting-edge aircraft is incredible. They offer strong PR transition support after 2 years on the 482. International staff feel very welcome.</p>
+              <div class="review-verified">✓ <span data-en="Current employee" data-es="Empleado actual">Current employee</span></div>
+            </div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">S</div><div class="review-name">Sofia B.</div><div class="review-date">Oct 2024</div></div>
+              <div class="review-stars">★★★★☆</div>
+              <p class="review-text" data-en="IT systems role. Good salary, great perks (staff travel benefits once permanent). The visa process was managed by an external agency Qantas hired, which was efficient. Office culture is very Australian and welcoming." data-es="Rol de sistemas de TI. Buen salario, excelentes beneficios (beneficios de viaje para personal una vez permanente). El proceso de visa fue gestionado por una agencia externa que Qantas contrató, lo cual fue eficiente. La cultura de oficina es muy australiana y acogedora.">IT systems role. Good salary, great perks (staff travel benefits once permanent). The visa process was managed by an external agency Qantas hired, which was efficient. Office culture is very Australian and welcoming.</p>
+              <div class="review-verified">✓ <span data-en="Current employee" data-es="Empleada actual">Current employee</span></div>
+            </div>
+            <div class="write-review-form" id="wr-qantas">
+              <div class="star-select" id="star-qantas"><span class="star-btn" onclick="setStar('star-qantas',1)">☆</span><span class="star-btn" onclick="setStar('star-qantas',2)">☆</span><span class="star-btn" onclick="setStar('star-qantas',3)">☆</span><span class="star-btn" onclick="setStar('star-qantas',4)">☆</span><span class="star-btn" onclick="setStar('star-qantas',5)">☆</span></div>
+              <textarea placeholder="Share your experience at Qantas..."></textarea>
+              <button class="submit-review-btn" onclick="submitReview(this)" data-en="Submit Review" data-es="Enviar Reseña">Submit Review</button>
+            </div>
+          </div>
+        </div>
+        <div class="emp-footer">
+          <span class="emp-sponsor" data-en="✓ Approved 482 sponsor" data-es="✓ Patrocinador 482 aprobado">✓ Approved 482 sponsor</span>
+          <a href="#" class="emp-link" data-en="View jobs →" data-es="Ver empleos →">View jobs →</a>
+        </div>
+      </div>
+
+      <div class="emp-card fade-up">
+        <div class="emp-top">
+          <div class="emp-logo">🛒</div>
+          <div>
+            <div class="emp-name">Woolworths Group</div>
+            <div class="emp-industry" data-en="Retail · Supply Chain" data-es="Retail · Cadena de suministro">Retail · Supply Chain</div>
+          </div>
+        </div>
+        <p class="emp-desc" data-en="Australia's largest supermarket chain. Sponsors skilled workers in data, logistics, supply chain and IT roles. Structured onboarding for overseas workers." data-es="La cadena de supermercados más grande de Australia. Patrocina trabajadores en datos, logística, cadena de suministro e TI. Incorporación estructurada para trabajadores del exterior.">Australia's largest supermarket chain. Sponsors skilled workers in data, logistics, supply chain and IT roles. Structured onboarding for overseas workers.</p>
+        <div class="emp-tags">
+          <span class="emp-tag">📊 Data & Analytics</span>
+          <span class="emp-tag">🔄 Supply Chain</span>
+          <span class="emp-tag">💻 IT</span>
+        </div>
+        <div class="stars-row" style="padding: 4px 0 12px;">
+          <span class="stars">★★★★☆</span>
+          <span class="review-count">4.3</span>
+          <button class="reviews-toggle" onclick="toggleReviews(this)" data-en="· 54 reviews" data-es="· 54 reseñas">· 54 reviews</button>
+        </div>
+        <div class="reviews-panel" id="reviews-woolworths">
+          <div class="reviews-inner">
+            <div class="reviews-heading"><span data-en="EMPLOYEE REVIEWS" data-es="RESEÑAS DE EMPLEADOS">EMPLOYEE REVIEWS</span><span class="write-review" onclick="toggleWriteReview('wr-woolworths')" data-en="+ Write a review" data-es="+ Escribir reseña">+ Write a review</span></div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">E</div><div class="review-name">Eduardo R.</div><div class="review-date">Feb 2025</div></div>
+              <div class="review-stars">★★★★☆</div>
+              <p class="review-text" data-en="Supply chain analyst role. Woolworths sponsored my 482 and the process was straightforward — they have a dedicated team that handles all international hire documentation. The scope of data and logistics at this scale is impressive." data-es="Rol de analista de cadena de suministro. Woolworths patrocinó mi 482 y el proceso fue directo — tienen un equipo dedicado que maneja toda la documentación de contrataciones internacionales. El alcance de datos y logística a esta escala es impresionante.">Supply chain analyst role. Woolworths sponsored my 482 and the process was straightforward — they have a dedicated team that handles all international hire documentation. The scope of data and logistics at this scale is impressive.</p>
+              <div class="review-verified">✓ <span data-en="Current employee" data-es="Empleado actual">Current employee</span></div>
+            </div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">A</div><div class="review-name">Andrea C.</div><div class="review-date">Dec 2024</div></div>
+              <div class="review-stars">★★★★☆</div>
+              <p class="review-text" data-en="IT role within their digital division. Good work environment, diverse team with many international colleagues. Visa was processed quickly (under 5 months). Structured onboarding program was very helpful as a new arrival." data-es="Rol de TI dentro de su división digital. Buen ambiente de trabajo, equipo diverso con muchos colegas internacionales. La visa fue procesada rápidamente (menos de 5 meses). El programa de incorporación estructurado fue muy útil como recién llegada.">IT role within their digital division. Good work environment, diverse team with many international colleagues. Visa was processed quickly (under 5 months). Structured onboarding program was very helpful as a new arrival.</p>
+              <div class="review-verified">✓ <span data-en="Current employee" data-es="Empleada actual">Current employee</span></div>
+            </div>
+            <div class="write-review-form" id="wr-woolworths">
+              <div class="star-select" id="star-woolworths"><span class="star-btn" onclick="setStar('star-woolworths',1)">☆</span><span class="star-btn" onclick="setStar('star-woolworths',2)">☆</span><span class="star-btn" onclick="setStar('star-woolworths',3)">☆</span><span class="star-btn" onclick="setStar('star-woolworths',4)">☆</span><span class="star-btn" onclick="setStar('star-woolworths',5)">☆</span></div>
+              <textarea placeholder="Share your experience at Woolworths..."></textarea>
+              <button class="submit-review-btn" onclick="submitReview(this)" data-en="Submit Review" data-es="Enviar Reseña">Submit Review</button>
+            </div>
+          </div>
+        </div>
+        <div class="emp-footer">
+          <span class="emp-sponsor" data-en="✓ Approved 482 sponsor" data-es="✓ Patrocinador 482 aprobado">✓ Approved 482 sponsor</span>
+          <a href="#" class="emp-link" data-en="View jobs →" data-es="Ver empleos →">View jobs →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── UNIVERSITIES TAB ── -->
+  <div class="tab-panel" id="tab-universities">
+    <div class="section-header">
+      <h2 class="section-title-sm" data-en="Top universities in Sydney" data-es="Principales universidades en Sydney">Top universities in Sydney</h2>
+      <span class="section-count" data-en="8 institutions" data-es="8 instituciones">8 institutions</span>
+    </div>
+    <div class="options-grid">
+
+      <div class="opt-card featured fade-up">
+        <div class="opt-card-top">
+          <div class="opt-logo dark">🏛️</div>
+          <div class="opt-meta">
+            <div class="opt-name">University of Sydney (USYD)</div>
+            <div class="opt-type" data-en="GROUP OF EIGHT · EST. 1850" data-es="GRUPO DE OCHO · FUND. 1850">GROUP OF EIGHT · EST. 1850</div>
+          </div>
+          <span class="opt-badge badge-top" data-en="#1 Sydney" data-es="#1 Sydney">#1 Sydney</span>
+        </div>
+        <div class="opt-card-body">
+          <p class="opt-desc" data-en="Australia's first university and one of the world's top 50. Offers graduate pathways linked to PR for eligible international students after graduation." data-es="La primera universidad de Australia y una de las 50 mejores del mundo. Ofrece caminos de posgrado vinculados a RP para estudiantes internacionales elegibles.">Australia's first university and one of the world's top 50. Offers graduate pathways linked to PR for eligible international students after graduation.</p>
+          <div class="opt-stats">
+            <div class="opt-stat"><strong data-en="World rank" data-es="Ranking mundial">World rank</strong> #41 QS</div>
+            <div class="opt-stat"><strong data-en="Intl students" data-es="Est. internacionales">Intl students</strong> 22,000+</div>
+            <div class="opt-stat"><strong data-en="Tuition" data-es="Matrícula">Tuition</strong> AUD $42–52k/yr</div>
+          </div>
+        </div>
+        <div class="stars-row" style="padding: 0 20px 8px;">
+          <span class="stars">★★★★★</span>
+          <span class="review-count">4.8</span>
+          <button class="reviews-toggle" onclick="toggleReviews(this)" data-en="· 1,432 reviews" data-es="· 1,432 reseñas">· 1,432 reviews</button>
+        </div>
+        <div class="reviews-panel" id="reviews-usyd">
+          <div class="reviews-inner">
+            <div class="reviews-heading"><span data-en="STUDENT REVIEWS" data-es="RESEÑAS DE ESTUDIANTES">STUDENT REVIEWS</span><span class="write-review" onclick="toggleWriteReview('wr-usyd')" data-en="+ Write a review" data-es="+ Escribir reseña">+ Write a review</span></div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">V</div><div class="review-name">Valentina S.</div><div class="review-date">Mar 2025</div></div>
+              <div class="review-stars">★★★★★</div>
+              <p class="review-text" data-en="Best decision of my life. USYD's Master of IT opened so many doors — I had three job offers before graduation. The international student office was excellent and helped me navigate the Student visa conditions and the 485 process after finishing." data-es="La mejor decisión de mi vida. El Máster en TI de USYD abrió muchas puertas — tuve tres ofertas de trabajo antes de graduarme. La oficina de estudiantes internacionales fue excelente y me ayudó a navegar las condiciones de la visa de estudiante y el proceso de la 485 después.">Best decision of my life. USYD's Master of IT opened so many doors — I had three job offers before graduation. The international student office was excellent and helped me navigate the Student visa conditions and the 485 process after finishing.</p>
+              <div class="review-verified">✓ <span data-en="Verified student" data-es="Estudiante verificada">Verified student</span></div>
+            </div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">J</div><div class="review-name">Javier M.</div><div class="review-date">Nov 2024</div></div>
+              <div class="review-stars">★★★★★</div>
+              <p class="review-text" data-en="The prestige of a USYD degree in Australia is enormous — every employer recognises it. Facilities are world-class and the campus is beautiful. The proximity to the Sydney CBD is ideal for part-time work. Highly recommended." data-es="El prestigio de un título de USYD en Australia es enorme — todos los empleadores lo reconocen. Las instalaciones son de clase mundial y el campus es hermoso. La proximidad al CBD de Sydney es ideal para trabajar a tiempo parcial. Muy recomendada.">The prestige of a USYD degree in Australia is enormous — every employer recognises it. Facilities are world-class and the campus is beautiful. The proximity to the Sydney CBD is ideal for part-time work. Highly recommended.</p>
+              <div class="review-verified">✓ <span data-en="Verified student" data-es="Estudiante verificado">Verified student</span></div>
+            </div>
+            <div class="write-review-form" id="wr-usyd">
+              <div class="star-select" id="star-usyd"><span class="star-btn" onclick="setStar('star-usyd',1)">☆</span><span class="star-btn" onclick="setStar('star-usyd',2)">☆</span><span class="star-btn" onclick="setStar('star-usyd',3)">☆</span><span class="star-btn" onclick="setStar('star-usyd',4)">☆</span><span class="star-btn" onclick="setStar('star-usyd',5)">☆</span></div>
+              <textarea placeholder="Share your experience at USYD..."></textarea>
+              <button class="submit-review-btn" onclick="submitReview(this)" data-en="Submit Review" data-es="Enviar Reseña">Submit Review</button>
+            </div>
+          </div>
+        </div>
+        <div class="opt-card-footer">
+          <a href="#" class="opt-link" data-en="View programs →" data-es="Ver programas →">View programs →</a>
+          <span class="opt-visa-tag" data-en="✓ Student visa 500" data-es="✓ Visa estudiante 500">✓ Student visa 500</span>
+        </div>
+      </div>
+
+      <div class="opt-card fade-up">
+        <div class="opt-card-top">
+          <div class="opt-logo">🔬</div>
+          <div class="opt-meta">
+            <div class="opt-name">University of New South Wales (UNSW)</div>
+            <div class="opt-type" data-en="GROUP OF EIGHT · STEM FOCUS" data-es="GRUPO DE OCHO · ENFOQUE STEM">GROUP OF EIGHT · STEM FOCUS</div>
+          </div>
+          <span class="opt-badge badge-hot" data-en="STEM leader" data-es="Líder STEM">STEM leader</span>
+        </div>
+        <div class="opt-card-body">
+          <p class="opt-desc" data-en="Ranked #19 globally. One of Australia's best engineering and technology universities. Strong industry connections and graduate employment outcomes." data-es="Clasificada #19 globalmente. Una de las mejores universidades de ingeniería y tecnología de Australia. Fuertes conexiones industriales y buenos resultados de empleo de graduados.">Ranked #19 globally. One of Australia's best engineering and technology universities. Strong industry connections and graduate employment outcomes.</p>
+          <div class="opt-stats">
+            <div class="opt-stat"><strong data-en="World rank" data-es="Ranking mundial">World rank</strong> #19 QS</div>
+            <div class="opt-stat"><strong data-en="Intl students" data-es="Est. internacionales">Intl students</strong> 25,000+</div>
+            <div class="opt-stat"><strong data-en="Tuition" data-es="Matrícula">Tuition</strong> AUD $40–55k/yr</div>
+          </div>
+        </div>
+        <div class="stars-row" style="padding: 0 20px 8px;">
+          <span class="stars">★★★★★</span>
+          <span class="review-count">4.9</span>
+          <button class="reviews-toggle" onclick="toggleReviews(this)" data-en="· 1,891 reviews" data-es="· 1,891 reseñas">· 1,891 reviews</button>
+        </div>
+        <div class="reviews-panel" id="reviews-unsw">
+          <div class="reviews-inner">
+            <div class="reviews-heading"><span data-en="STUDENT REVIEWS" data-es="RESEÑAS DE ESTUDIANTES">STUDENT REVIEWS</span><span class="write-review" onclick="toggleWriteReview('wr-unsw')" data-en="+ Write a review" data-es="+ Escribir reseña">+ Write a review</span></div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">C</div><div class="review-name">Carlos A.</div><div class="review-date">Apr 2025</div></div>
+              <div class="review-stars">★★★★★</div>
+              <p class="review-text" data-en="Studied Civil Engineering. UNSW's reputation opened doors at every major engineering firm. The industry placement program got me working at Lendlease during my second year, which turned into a full 482 sponsorship offer upon graduation." data-es="Estudié Ingeniería Civil. La reputación de UNSW abrió puertas en todas las principales firmas de ingeniería. El programa de práctica industrial me hizo trabajar en Lendlease durante mi segundo año, lo que se convirtió en una oferta de patrocinio 482 completa al graduarme.">Studied Civil Engineering. UNSW's reputation opened doors at every major engineering firm. The industry placement program got me working at Lendlease during my second year, which turned into a full 482 sponsorship offer upon graduation.</p>
+              <div class="review-verified">✓ <span data-en="Verified graduate" data-es="Graduado verificado">Verified graduate</span></div>
+            </div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">I</div><div class="review-name">Isabela F.</div><div class="review-date">Feb 2025</div></div>
+              <div class="review-stars">★★★★★</div>
+              <p class="review-text" data-en="Brazilian student in Computer Science. UNSW is genuinely #19 globally and you can feel it — the depth of learning and industry connections are unmatched. The 485 post-study work visa process was well-supported by the international student services team." data-es="Estudiante brasileña en Ciencias de la Computación. UNSW es genuinamente #19 globalmente y se nota — la profundidad de aprendizaje y conexiones industriales no tiene igual. El proceso de la visa 485 post-estudio fue bien apoyado por el equipo de servicios para estudiantes internacionales.">Brazilian student in Computer Science. UNSW is genuinely #19 globally and you can feel it — the depth of learning and industry connections are unmatched. The 485 post-study work visa process was well-supported by the international student services team.</p>
+              <div class="review-verified">✓ <span data-en="Verified student" data-es="Estudiante verificada">Verified student</span></div>
+            </div>
+            <div class="write-review-form" id="wr-unsw">
+              <div class="star-select" id="star-unsw"><span class="star-btn" onclick="setStar('star-unsw',1)">☆</span><span class="star-btn" onclick="setStar('star-unsw',2)">☆</span><span class="star-btn" onclick="setStar('star-unsw',3)">☆</span><span class="star-btn" onclick="setStar('star-unsw',4)">☆</span><span class="star-btn" onclick="setStar('star-unsw',5)">☆</span></div>
+              <textarea placeholder="Share your experience at UNSW..."></textarea>
+              <button class="submit-review-btn" onclick="submitReview(this)" data-en="Submit Review" data-es="Enviar Reseña">Submit Review</button>
+            </div>
+          </div>
+        </div>
+        <div class="opt-card-footer">
+          <a href="#" class="opt-link" data-en="View programs →" data-es="Ver programas →">View programs →</a>
+          <span class="opt-visa-tag" data-en="✓ Student visa 500" data-es="✓ Visa estudiante 500">✓ Student visa 500</span>
+        </div>
+      </div>
+
+      <div class="opt-card fade-up">
+        <div class="opt-card-top">
+          <div class="opt-logo">🏢</div>
+          <div class="opt-meta">
+            <div class="opt-name">Macquarie University</div>
+            <div class="opt-type" data-en="RESEARCH UNIVERSITY" data-es="UNIVERSIDAD DE INVESTIGACIÓN">RESEARCH UNIVERSITY</div>
+          </div>
+          <span class="opt-badge badge-new" data-en="PR pathway" data-es="Vía a RP">PR pathway</span>
+        </div>
+        <div class="opt-card-body">
+          <p class="opt-desc" data-en="Known for business, law, and linguistics. Strong post-study work visa opportunities and active partnerships with Sydney's financial sector." data-es="Conocida por negocios, derecho y lingüística. Sólidas oportunidades de visa post-estudio y activas alianzas con el sector financiero de Sydney.">Known for business, law, and linguistics. Strong post-study work visa opportunities and active partnerships with Sydney's financial sector.</p>
+          <div class="opt-stats">
+            <div class="opt-stat"><strong data-en="World rank" data-es="Ranking mundial">World rank</strong> #195 QS</div>
+            <div class="opt-stat"><strong data-en="Intl students" data-es="Est. internacionales">Intl students</strong> 12,000+</div>
+            <div class="opt-stat"><strong data-en="Tuition" data-es="Matrícula">Tuition</strong> AUD $34–46k/yr</div>
+          </div>
+        </div>
+        <div class="stars-row" style="padding: 0 20px 8px;">
+          <span class="stars">★★★★☆</span>
+          <span class="review-count">4.6</span>
+          <button class="reviews-toggle" onclick="toggleReviews(this)" data-en="· 723 reviews" data-es="· 723 reseñas">· 723 reviews</button>
+        </div>
+        <div class="reviews-panel" id="reviews-macq">
+          <div class="reviews-inner">
+            <div class="reviews-heading"><span data-en="STUDENT REVIEWS" data-es="RESEÑAS DE ESTUDIANTES">STUDENT REVIEWS</span><span class="write-review" onclick="toggleWriteReview('wr-macq')" data-en="+ Write a review" data-es="+ Escribir reseña">+ Write a review</span></div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">D</div><div class="review-name">Diana R.</div><div class="review-date">Mar 2025</div></div>
+              <div class="review-stars">★★★★★</div>
+              <p class="review-text" data-en="Macquarie's MBA program was outstanding for networking. Their financial sector partnerships meant I was interviewed at CBA before even graduating. Post-study work visa (485) was straightforward and the international office was very supportive." data-es="El programa MBA de Macquarie fue sobresaliente para hacer networking. Sus alianzas con el sector financiero hicieron que CBA me entrevistara antes de graduarme. La visa de trabajo post-estudio (485) fue sencilla y la oficina internacional fue muy solidaria.">Macquarie's MBA program was outstanding for networking. Their financial sector partnerships meant I was interviewed at CBA before even graduating. Post-study work visa (485) was straightforward and the international office was very supportive.</p>
+              <div class="review-verified">✓ <span data-en="Verified graduate" data-es="Graduada verificada">Verified graduate</span></div>
+            </div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">N</div><div class="review-name">Nicolás H.</div><div class="review-date">Jan 2025</div></div>
+              <div class="review-stars">★★★★☆</div>
+              <p class="review-text" data-en="Good university with excellent business and linguistics programs. More affordable than USYD or UNSW with similar outcomes for business students. The campus is a bit far from the city center but the transport links are good." data-es="Buena universidad con excelentes programas de negocios y lingüística. Más asequible que USYD o UNSW con resultados similares para estudiantes de negocios. El campus está un poco lejos del centro de la ciudad, pero los enlaces de transporte son buenos.">Good university with excellent business and linguistics programs. More affordable than USYD or UNSW with similar outcomes for business students. The campus is a bit far from the city center but the transport links are good.</p>
+              <div class="review-verified">✓ <span data-en="Verified student" data-es="Estudiante verificado">Verified student</span></div>
+            </div>
+            <div class="write-review-form" id="wr-macq">
+              <div class="star-select" id="star-macq"><span class="star-btn" onclick="setStar('star-macq',1)">☆</span><span class="star-btn" onclick="setStar('star-macq',2)">☆</span><span class="star-btn" onclick="setStar('star-macq',3)">☆</span><span class="star-btn" onclick="setStar('star-macq',4)">☆</span><span class="star-btn" onclick="setStar('star-macq',5)">☆</span></div>
+              <textarea placeholder="Share your experience at Macquarie..."></textarea>
+              <button class="submit-review-btn" onclick="submitReview(this)" data-en="Submit Review" data-es="Enviar Reseña">Submit Review</button>
+            </div>
+          </div>
+        </div>
+        <div class="opt-card-footer">
+          <a href="#" class="opt-link" data-en="View programs →" data-es="Ver programas →">View programs →</a>
+          <span class="opt-visa-tag" data-en="✓ Student visa 500" data-es="✓ Visa estudiante 500">✓ Student visa 500</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── COURSES TAB ── -->
+  <div class="tab-panel" id="tab-courses">
+    <div class="section-header">
+      <h2 class="section-title-sm" data-en="Courses matched to your profile" data-es="Cursos adaptados a tu perfil">Courses matched to your profile</h2>
+      <span class="section-count" data-en="16 courses found" data-es="16 cursos encontrados">16 courses found</span>
+    </div>
+    <div class="filter-row">
+      <div class="filter-chip active" onclick="toggleChip(this)" data-en="All levels" data-es="Todos">All levels</div>
+      <div class="filter-chip" onclick="toggleChip(this)" data-en="Masters" data-es="Maestría">Masters</div>
+      <div class="filter-chip" onclick="toggleChip(this)" data-en="Graduate cert." data-es="Cert. posgrado">Graduate cert.</div>
+      <div class="filter-chip" onclick="toggleChip(this)" data-en="Online" data-es="Online">Online</div>
+    </div>
+    <div class="options-grid">
+
+      <div class="course-card fade-up">
+        <div class="course-header">
+          <div class="course-uni">UNIVERSITY OF SYDNEY</div>
+          <div class="course-name" data-en="Master of Information Technology" data-es="Maestría en Tecnología de la Información">Master of Information Technology</div>
+        </div>
+        <div class="course-body">
+          <div class="course-stats">
+            <div class="course-stat">
+              <div class="course-stat-label" data-en="DURATION" data-es="DURACIÓN">DURATION</div>
+              <div class="course-stat-val" data-en="1.5–2 years" data-es="1.5–2 años">1.5–2 years</div>
+            </div>
+            <div class="course-stat">
+              <div class="course-stat-label" data-en="TUITION" data-es="MATRÍCULA">TUITION</div>
+              <div class="course-stat-val">AUD $46k/yr</div>
+            </div>
+            <div class="course-stat">
+              <div class="course-stat-label" data-en="POST-STUDY VISA" data-es="VISA POST-ESTUDIO">POST-STUDY VISA</div>
+              <div class="course-stat-val" data-en="3 years (485)" data-es="3 años (485)">3 years (485)</div>
+            </div>
+            <div class="course-stat">
+              <div class="course-stat-label" data-en="START DATE" data-es="FECHA INICIO">START DATE</div>
+              <div class="course-stat-val" data-en="Feb / Jul 2026" data-es="Feb / Jul 2026">Feb / Jul 2026</div>
+            </div>
+          </div>
+        </div>
+        <div class="stars-row" style="padding: 0 20px 8px;">
+          <span class="stars">★★★★★</span>
+          <span class="review-count">4.8</span>
+          <button class="reviews-toggle" onclick="toggleReviews(this)" data-en="· 284 reviews" data-es="· 284 reseñas">· 284 reviews</button>
+        </div>
+        <div class="reviews-panel" id="reviews-usyd-mit">
+          <div class="reviews-inner">
+            <div class="reviews-heading"><span data-en="COURSE REVIEWS" data-es="RESEÑAS DEL CURSO">COURSE REVIEWS</span><span class="write-review" onclick="toggleWriteReview('wr-usyd-mit')" data-en="+ Write a review" data-es="+ Escribir reseña">+ Write a review</span></div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">K</div><div class="review-name">Karen B.</div><div class="review-date">Apr 2025</div></div>
+              <div class="review-stars">★★★★★</div>
+              <p class="review-text" data-en="This course was my gateway to Australia. The curriculum is industry-focused and the professors are practitioners, not just academics. Got my 485 on graduation day and landed a data engineering role within 3 months." data-es="Este curso fue mi puerta de entrada a Australia. El plan de estudios está orientado a la industria y los profesores son profesionales, no solo académicos. Obtuve mi 485 el día de la graduación y conseguí un rol de ingeniería de datos en 3 meses.">This course was my gateway to Australia. The curriculum is industry-focused and the professors are practitioners, not just academics. Got my 485 on graduation day and landed a data engineering role within 3 months.</p>
+              <div class="review-verified">✓ <span data-en="Verified graduate" data-es="Graduada verificada">Verified graduate</span></div>
+            </div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">M</div><div class="review-name">Marcos P.</div><div class="review-date">Feb 2025</div></div>
+              <div class="review-stars">★★★★★</div>
+              <p class="review-text" data-en="Flexible — I could study full-time while working 20hrs/week under my student visa conditions. USYD's career services helped me get my first Australian internship. The 3-year 485 was the bonus that made everything worthwhile." data-es="Flexible — pude estudiar a tiempo completo mientras trabajaba 20 horas/semana según las condiciones de mi visa de estudiante. Los servicios de carrera de USYD me ayudaron a conseguir mi primera pasantía australiana. La 485 de 3 años fue el bono que hizo que todo valiera la pena.">Flexible — I could study full-time while working 20hrs/week under my student visa conditions. USYD's career services helped me get my first Australian internship. The 3-year 485 was the bonus that made everything worthwhile.</p>
+              <div class="review-verified">✓ <span data-en="Verified student" data-es="Estudiante verificado">Verified student</span></div>
+            </div>
+            <div class="write-review-form" id="wr-usyd-mit">
+              <div class="star-select" id="star-usyd-mit"><span class="star-btn" onclick="setStar('star-usyd-mit',1)">☆</span><span class="star-btn" onclick="setStar('star-usyd-mit',2)">☆</span><span class="star-btn" onclick="setStar('star-usyd-mit',3)">☆</span><span class="star-btn" onclick="setStar('star-usyd-mit',4)">☆</span><span class="star-btn" onclick="setStar('star-usyd-mit',5)">☆</span></div>
+              <textarea placeholder="Share your experience with this course..."></textarea>
+              <button class="submit-review-btn" onclick="submitReview(this)" data-en="Submit Review" data-es="Enviar Reseña">Submit Review</button>
+            </div>
+          </div>
+        </div>
+        <div class="course-footer">
+          <span class="course-visa" data-en="✓ Leads to PR pathway" data-es="✓ Conduce a vía de RP">✓ Leads to PR pathway</span>
+          <a href="#" class="course-link" data-en="Apply →" data-es="Aplicar →">Apply →</a>
+        </div>
+      </div>
+
+      <div class="course-card fade-up">
+        <div class="course-header">
+          <div class="course-uni">UNSW SYDNEY</div>
+          <div class="course-name" data-en="Master of Engineering (Civil)" data-es="Maestría en Ingeniería Civil">Master of Engineering (Civil)</div>
+        </div>
+        <div class="course-body">
+          <div class="course-stats">
+            <div class="course-stat">
+              <div class="course-stat-label" data-en="DURATION" data-es="DURACIÓN">DURATION</div>
+              <div class="course-stat-val" data-en="2 years" data-es="2 años">2 years</div>
+            </div>
+            <div class="course-stat">
+              <div class="course-stat-label" data-en="TUITION" data-es="MATRÍCULA">TUITION</div>
+              <div class="course-stat-val">AUD $52k/yr</div>
+            </div>
+            <div class="course-stat">
+              <div class="course-stat-label" data-en="POST-STUDY VISA" data-es="VISA POST-ESTUDIO">POST-STUDY VISA</div>
+              <div class="course-stat-val" data-en="3 years (485)" data-es="3 años (485)">3 years (485)</div>
+            </div>
+            <div class="course-stat">
+              <div class="course-stat-label" data-en="START DATE" data-es="FECHA INICIO">START DATE</div>
+              <div class="course-stat-val" data-en="Feb 2026" data-es="Feb 2026">Feb 2026</div>
+            </div>
+          </div>
+        </div>
+        <div class="stars-row" style="padding: 0 20px 8px;">
+          <span class="stars">★★★★★</span>
+          <span class="review-count">4.9</span>
+          <button class="reviews-toggle" onclick="toggleReviews(this)" data-en="· 197 reviews" data-es="· 197 reseñas">· 197 reviews</button>
+        </div>
+        <div class="reviews-panel" id="reviews-unsw-eng">
+          <div class="reviews-inner">
+            <div class="reviews-heading"><span data-en="COURSE REVIEWS" data-es="RESEÑAS DEL CURSO">COURSE REVIEWS</span><span class="write-review" onclick="toggleWriteReview('wr-unsw-eng')" data-en="+ Write a review" data-es="+ Escribir reseña">+ Write a review</span></div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">F</div><div class="review-name">Francisco C.</div><div class="review-date">Mar 2025</div></div>
+              <div class="review-stars">★★★★★</div>
+              <p class="review-text" data-en="The best engineering program in Australia and one of the best in the world. Demanding, but the rewards are enormous. Got a 482 sponsorship from Lendlease during my second year. The civil engineering network from UNSW will be with me for life." data-es="El mejor programa de ingeniería de Australia y uno de los mejores del mundo. Exigente, pero las recompensas son enormes. Obtuve un patrocinio 482 de Lendlease durante mi segundo año. La red de ingeniería civil de UNSW me acompañará toda la vida.">The best engineering program in Australia and one of the best in the world. Demanding, but the rewards are enormous. Got a 482 sponsorship from Lendlease during my second year. The civil engineering network from UNSW will be with me for life.</p>
+              <div class="review-verified">✓ <span data-en="Verified graduate" data-es="Graduado verificado">Verified graduate</span></div>
+            </div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">L</div><div class="review-name">Laura G.</div><div class="review-date">Jan 2025</div></div>
+              <div class="review-stars">★★★★★</div>
+              <p class="review-text" data-en="Heavy focus on real projects and industry exposure from day one. The structural engineering electives were top-class. Civil engineers are on the Skilled Occupation List making the PR pathway very accessible — my 485 to 482 transition was seamless." data-es="Gran enfoque en proyectos reales y exposición industrial desde el primer día. Las electivas de ingeniería estructural fueron de primer nivel. Los ingenieros civiles están en la Lista de Ocupaciones Calificadas, lo que hace que el camino a la RP sea muy accesible.">Heavy focus on real projects and industry exposure from day one. The structural engineering electives were top-class. Civil engineers are on the Skilled Occupation List making the PR pathway very accessible — my 485 to 482 transition was seamless.</p>
+              <div class="review-verified">✓ <span data-en="Verified graduate" data-es="Graduada verificada">Verified graduate</span></div>
+            </div>
+            <div class="write-review-form" id="wr-unsw-eng">
+              <div class="star-select" id="star-unsw-eng"><span class="star-btn" onclick="setStar('star-unsw-eng',1)">☆</span><span class="star-btn" onclick="setStar('star-unsw-eng',2)">☆</span><span class="star-btn" onclick="setStar('star-unsw-eng',3)">☆</span><span class="star-btn" onclick="setStar('star-unsw-eng',4)">☆</span><span class="star-btn" onclick="setStar('star-unsw-eng',5)">☆</span></div>
+              <textarea placeholder="Share your experience with this course..."></textarea>
+              <button class="submit-review-btn" onclick="submitReview(this)" data-en="Submit Review" data-es="Enviar Reseña">Submit Review</button>
+            </div>
+          </div>
+        </div>
+        <div class="course-footer">
+          <span class="course-visa" data-en="✓ High demand occupation" data-es="✓ Ocupación de alta demanda">✓ High demand occupation</span>
+          <a href="#" class="course-link" data-en="Apply →" data-es="Aplicar →">Apply →</a>
+        </div>
+      </div>
+
+      <div class="course-card fade-up">
+        <div class="course-header">
+          <div class="course-uni">TAFE NSW</div>
+          <div class="course-name" data-en="Diploma of Business Administration" data-es="Diploma de Administración de Empresas">Diploma of Business Administration</div>
+        </div>
+        <div class="course-body">
+          <div class="course-stats">
+            <div class="course-stat">
+              <div class="course-stat-label" data-en="DURATION" data-es="DURACIÓN">DURATION</div>
+              <div class="course-stat-val" data-en="12 months" data-es="12 meses">12 months</div>
+            </div>
+            <div class="course-stat">
+              <div class="course-stat-label" data-en="TUITION" data-es="MATRÍCULA">TUITION</div>
+              <div class="course-stat-val">AUD $14k/yr</div>
+            </div>
+            <div class="course-stat">
+              <div class="course-stat-label" data-en="POST-STUDY VISA" data-es="VISA POST-ESTUDIO">POST-STUDY VISA</div>
+              <div class="course-stat-val" data-en="2 years (485)" data-es="2 años (485)">2 years (485)</div>
+            </div>
+            <div class="course-stat">
+              <div class="course-stat-label" data-en="START DATE" data-es="FECHA INICIO">START DATE</div>
+              <div class="course-stat-val" data-en="Rolling intake" data-es="Inscripción continua">Rolling intake</div>
+            </div>
+          </div>
+        </div>
+        <div class="stars-row" style="padding: 0 20px 8px;">
+          <span class="stars">★★★★☆</span>
+          <span class="review-count">4.5</span>
+          <button class="reviews-toggle" onclick="toggleReviews(this)" data-en="· 456 reviews" data-es="· 456 reseñas">· 456 reviews</button>
+        </div>
+        <div class="reviews-panel" id="reviews-tafe">
+          <div class="reviews-inner">
+            <div class="reviews-heading"><span data-en="COURSE REVIEWS" data-es="RESEÑAS DEL CURSO">COURSE REVIEWS</span><span class="write-review" onclick="toggleWriteReview('wr-tafe')" data-en="+ Write a review" data-es="+ Escribir reseña">+ Write a review</span></div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">B</div><div class="review-name">Beatriz O.</div><div class="review-date">Feb 2025</div></div>
+              <div class="review-stars">★★★★★</div>
+              <p class="review-text" data-en="TAFE is seriously underrated. For $14k/year vs $45k at a Go8 university, you get practical, industry-ready skills and the same 485 post-study visa. I had a job within 2 months of graduating. Perfect if you want an affordable, fast pathway." data-es="TAFE está seriamente subestimado. Por $14k/año frente a $45k en una universidad Go8, obtienes habilidades prácticas listas para la industria y la misma visa 485 post-estudio. Conseguí trabajo en 2 meses después de graduarme. Perfecto si quieres una vía asequible y rápida.">TAFE is seriously underrated. For $14k/year vs $45k at a Go8 university, you get practical, industry-ready skills and the same 485 post-study visa. I had a job within 2 months of graduating. Perfect if you want an affordable, fast pathway.</p>
+              <div class="review-verified">✓ <span data-en="Verified graduate" data-es="Graduada verificada">Verified graduate</span></div>
+            </div>
+            <div class="review-item">
+              <div class="review-header"><div class="review-avatar">G</div><div class="review-name">Gonzalo M.</div><div class="review-date">Dec 2024</div></div>
+              <div class="review-stars">★★★★☆</div>
+              <p class="review-text" data-en="Great practical training. Less academic prestige than a university degree but the business diploma was sufficient to get interviews at SMEs. The rolling intake was perfect since I applied at a strange time of year. 2-year 485 gave me enough time to get sponsored." data-es="Gran formación práctica. Menos prestigio académico que un título universitario, pero el diploma de negocios fue suficiente para conseguir entrevistas en pymes. La inscripción continua fue perfecta ya que apliqué en una época extraña del año. La 485 de 2 años me dio tiempo suficiente para conseguir patrocinio.">Great practical training. Less academic prestige than a university degree but the business diploma was sufficient to get interviews at SMEs. The rolling intake was perfect since I applied at a strange time of year. 2-year 485 gave me enough time to get sponsored.</p>
+              <div class="review-verified">✓ <span data-en="Verified graduate" data-es="Graduado verificado">Verified graduate</span></div>
+            </div>
+            <div class="write-review-form" id="wr-tafe">
+              <div class="star-select" id="star-tafe"><span class="star-btn" onclick="setStar('star-tafe',1)">☆</span><span class="star-btn" onclick="setStar('star-tafe',2)">☆</span><span class="star-btn" onclick="setStar('star-tafe',3)">☆</span><span class="star-btn" onclick="setStar('star-tafe',4)">☆</span><span class="star-btn" onclick="setStar('star-tafe',5)">☆</span></div>
+              <textarea placeholder="Share your experience with this TAFE course..."></textarea>
+              <button class="submit-review-btn" onclick="submitReview(this)" data-en="Submit Review" data-es="Enviar Reseña">Submit Review</button>
+            </div>
+          </div>
+        </div>
+        <div class="course-footer">
+          <span class="course-visa" data-en="✓ Affordable pathway" data-es="✓ Vía asequible">✓ Affordable pathway</span>
+          <a href="#" class="course-link" data-en="Apply →" data-es="Aplicar →">Apply →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── JOB LISTINGS TAB ── -->
+  <div class="tab-panel" id="tab-jobs">
+    <div class="section-header">
+      <h2 class="section-title-sm" data-en="Current job listings open to visa holders" data-es="Empleos actuales abiertos a titulares de visa">Current job listings open to visa holders</h2>
+      <span class="section-count" data-en="42 listings" data-es="42 empleos">42 listings</span>
+    </div>
+    <div class="filter-row">
+      <div class="filter-chip active" onclick="toggleChip(this)" data-en="All roles" data-es="Todos">All roles</div>
+      <div class="filter-chip" onclick="toggleChip(this)" data-en="Engineering" data-es="Ingeniería">Engineering</div>
+      <div class="filter-chip" onclick="toggleChip(this)" data-en="Technology" data-es="Tecnología">Technology</div>
+      <div class="filter-chip" onclick="toggleChip(this)" data-en="Healthcare" data-es="Salud">Healthcare</div>
+      <div class="filter-chip" onclick="toggleChip(this)" data-en="Finance" data-es="Finanzas">Finance</div>
+    </div>
+    <div class="options-grid">
+
+      <div class="emp-card fade-up">
+        <div class="emp-top">
+          <div class="emp-logo">💻</div>
+          <div>
+            <div class="emp-name" data-en="Senior Software Engineer" data-es="Ingeniero de Software Senior">Senior Software Engineer</div>
+            <div class="emp-industry">Atlassian · Sydney CBD</div>
+          </div>
+          <span class="opt-badge badge-hot" style="margin-left:auto" data-en="Sponsor visa" data-es="Patrocina visa">Sponsor visa</span>
+        </div>
+        <p class="emp-desc" data-en="Full-stack engineering role working on Jira or Confluence products. Visa sponsorship available for the right candidate." data-es="Rol de ingeniería full-stack trabajando en productos Jira o Confluence. Patrocinio de visa disponible para el candidato adecuado.">Full-stack engineering role working on Jira or Confluence products. Visa sponsorship available for the right candidate.</p>
+        <div class="emp-tags">
+          <span class="emp-tag">React / Node.js</span>
+          <span class="emp-tag">5+ years exp</span>
+          <span class="emp-tag">AUD $130–160k</span>
+        </div>
+        <div class="emp-footer">
+          <span class="emp-sponsor" data-en="✓ 482 sponsorship" data-es="✓ Patrocinio 482">✓ 482 sponsorship</span>
+          <a href="#" class="emp-link" data-en="Apply →" data-es="Aplicar →">Apply →</a>
+        </div>
+      </div>
+
+      <div class="emp-card fade-up">
+        <div class="emp-top">
+          <div class="emp-logo">🩺</div>
+          <div>
+            <div class="emp-name" data-en="Registered Nurse — ICU" data-es="Enfermero/a Registrado/a — UCI">Registered Nurse — ICU</div>
+            <div class="emp-industry" data-en="Royal Prince Alfred Hospital · Sydney" data-es="Hospital Royal Prince Alfred · Sydney">Royal Prince Alfred Hospital · Sydney</div>
+          </div>
+          <span class="opt-badge badge-new" style="margin-left:auto" data-en="Urgent hire" data-es="Urgente">Urgent hire</span>
+        </div>
+        <p class="emp-desc" data-en="ICU nursing role at one of Australia's premier hospitals. Full relocation support and visa sponsorship provided. AHPRA registration required." data-es="Rol de enfermería en UCI en uno de los principales hospitales de Australia. Apoyo completo de reubicación y patrocinio de visa. Se requiere registro AHPRA.">ICU nursing role at one of Australia's premier hospitals. Full relocation support and visa sponsorship provided. AHPRA registration required.</p>
+        <div class="emp-tags">
+          <span class="emp-tag">ICU experience</span>
+          <span class="emp-tag">AHPRA required</span>
+          <span class="emp-tag">AUD $85–105k</span>
+        </div>
+        <div class="emp-footer">
+          <span class="emp-sponsor" data-en="✓ 482 sponsorship" data-es="✓ Patrocinio 482">✓ 482 sponsorship</span>
+          <a href="#" class="emp-link" data-en="Apply →" data-es="Aplicar →">Apply →</a>
+        </div>
+      </div>
+
+      <div class="emp-card fade-up">
+        <div class="emp-top">
+          <div class="emp-logo">📊</div>
+          <div>
+            <div class="emp-name" data-en="Data Analyst — Financial Services" data-es="Analista de Datos — Servicios Financieros">Data Analyst — Financial Services</div>
+            <div class="emp-industry">Commonwealth Bank · Sydney</div>
+          </div>
+        </div>
+        <p class="emp-desc" data-en="Data analysis role within CBA's retail banking division. Work with large-scale financial datasets and build dashboards for executive reporting." data-es="Rol de análisis de datos en la división de banca minorista de CBA. Trabajo con conjuntos de datos financieros a gran escala y dashboards para reportes ejecutivos.">Data analysis role within CBA's retail banking division. Work with large-scale financial datasets and build dashboards for executive reporting.</p>
+        <div class="emp-tags">
+          <span class="emp-tag">Python / SQL</span>
+          <span class="emp-tag">Tableau / Power BI</span>
+          <span class="emp-tag">AUD $95–120k</span>
+        </div>
+        <div class="emp-footer">
+          <span class="emp-sponsor" data-en="✓ 482 sponsorship" data-es="✓ Patrocinio 482">✓ 482 sponsorship</span>
+          <a href="#" class="emp-link" data-en="Apply →" data-es="Aplicar →">Apply →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CTA BOTTOM -->
+  <div class="cta-bottom fade-up">
+    <div class="cta-bottom-title" data-en="Ready to take the next step?" data-es="¿Listo para el siguiente paso?">Ready to take the next step?</div>
+    <p class="cta-bottom-sub" data-en="Connect with registered migration agents, lawyers, and housing services to make your move a reality." data-es="Conéctate con agentes migratorios registrados, abogados y servicios de alojamiento para hacer realidad tu mudanza.">Connect with registered migration agents, lawyers, and housing services to make your move a reality.</p>
+    <a href="migro-services.html" class="btn-cta-bottom">
+      <span data-en="→ Find professional services" data-es="→ Encontrar servicios profesionales">→ Find professional services</span>
+    </a>
+  </div>
+
+</div><!-- /page-body -->
+
+<script>
+  let currentLang = 'en';
+
+  function setLang(lang) {
+    currentLang = lang;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent === lang.toUpperCase()));
+    document.querySelectorAll('[data-en]').forEach(el => {
+      const t = el.getAttribute('data-' + lang);
+      if (t) el.innerHTML = t;
+    });
+  }
+
+  function switchTab(name) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    event.currentTarget.classList.add('active');
+    // re-trigger animations for newly visible cards
+    document.querySelectorAll('#tab-' + name + ' .fade-up').forEach((el, i) => {
+      setTimeout(() => el.classList.add('visible'), i * 80);
+    });
+  }
+
+  function toggleChip(el) {
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  /* ── REVIEWS ── */
+  function toggleReviews(btn) {
+    const panel = btn.parentElement.nextElementSibling;
+    if (!panel || !panel.classList.contains('reviews-panel')) return;
+    const open = panel.classList.toggle('open');
+    btn.style.color = open ? 'var(--black)' : '';
+  }
+
+  function toggleWriteReview(id) {
+    const form = document.getElementById(id);
+    if (!form) return;
+    form.classList.toggle('open');
+    const panel = form.closest('.reviews-panel');
+    if (panel) panel.style.maxHeight = form.classList.contains('open') ? '900px' : '700px';
+  }
+
+  function setStar(groupId, n) {
+    const group = document.getElementById(groupId);
+    if (!group) return;
+    group.querySelectorAll('.star-btn').forEach((btn, i) => {
+      btn.textContent = i < n ? '★' : '☆';
+      btn.classList.toggle('active', i < n);
+    });
+    group.dataset.rating = n;
+  }
+
+  function submitReview(btn) {
+    const form = btn.closest('.write-review-form');
+    const textarea = form.querySelector('textarea');
+    const starGroup = form.querySelector('.star-select');
+    const rating = parseInt(starGroup.dataset.rating || 0);
+    const text = textarea.value.trim();
+    if (!rating) { alert('Please select a star rating first.'); return; }
+    if (text.length < 10) { alert('Please write at least a sentence about your experience.'); return; }
+    const stars = '★'.repeat(rating) + '☆'.repeat(5 - rating);
+    const item = document.createElement('div');
+    item.className = 'review-item';
+    const now = new Date();
+    const month = now.toLocaleString('en-AU', { month: 'short', year: 'numeric' });
+    item.innerHTML = `
+      <div class="review-header">
+        <div class="review-avatar" style="background:#555;">Y</div>
+        <div class="review-name">${currentLang === 'es' ? 'Tú' : 'You'}</div>
+        <div class="review-date">${month}</div>
+      </div>
+      <div class="review-stars">${stars}</div>
+      <p class="review-text">${text.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</p>
+      <div class="review-verified">✓ <span>${currentLang === 'es' ? 'Enviado' : 'Just submitted'}</span></div>`;
+    form.parentElement.insertBefore(item, form);
+    form.classList.remove('open');
+    textarea.value = '';
+    starGroup.querySelectorAll('.star-btn').forEach(b => { b.textContent = '☆'; b.classList.remove('active'); });
+    delete starGroup.dataset.rating;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
