@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Migro — Your Migration Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #0a0a0a;
+      --white: #ffffff;
+      --gray-100: #f5f5f5;
+      --gray-200: #e8e8e8;
+      --gray-300: #d0d0d0;
+      --gray-400: #999999;
+      --gray-600: #555555;
+      --gray-800: #222222;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--gray-100);
+      color: var(--black);
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 48px;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-200);
+      position: sticky; top: 0; z-index: 50;
+    }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px; font-weight: 700;
+      color: var(--black); text-decoration: none;
+    }
+
+    .nav-logo span {
+      display: inline-block; width: 6px; height: 6px;
+      background: var(--black); border-radius: 50%;
+      margin-left: 2px; vertical-align: super;
+    }
+
+    .nav-right { display: flex; align-items: center; gap: 16px; }
+
+    .lang-toggle {
+      display: flex; background: var(--gray-100);
+      border-radius: 6px; padding: 3px; gap: 2px;
+    }
+
+    .lang-btn {
+      padding: 4px 10px; font-size: 11px; font-weight: 700;
+      border: none; background: transparent;
+      border-radius: 4px; cursor: pointer;
+      color: var(--gray-400); transition: all 0.2s;
+    }
+
+    .lang-btn.active { background: var(--black); color: var(--white); }
+
+    .btn-restart {
+      font-size: 13px; font-weight: 500;
+      color: var(--gray-600); text-decoration: none;
+      padding: 8px 16px; border-radius: 6px;
+      border: 1px solid var(--gray-200); transition: all 0.2s;
+    }
+
+    .btn-restart:hover { border-color: var(--black); color: var(--black); }
+
+    /* ── HERO BANNER ── */
+    .profile-hero {
+      background: var(--black);
+      padding: 56px 48px;
+    }
+
+    .profile-hero-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr auto;
+      align-items: center; gap: 48px;
+    }
+
+    .profile-greeting {
+      font-size: 13px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 2px;
+      color: #555; margin-bottom: 12px;
+    }
+
+    .profile-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(32px, 4vw, 52px); font-weight: 700;
+      color: var(--white); line-height: 1.1;
+      letter-spacing: -1px; margin-bottom: 16px;
+    }
+
+    .profile-subtitle {
+      font-size: 16px; color: #888; line-height: 1.6;
+      max-width: 520px;
+    }
+
+    /* ── SCORE CIRCLE ── */
+    .score-circle-wrap {
+      text-align: center; flex-shrink: 0;
+    }
+
+    .score-circle {
+      width: 160px; height: 160px;
+      position: relative;
+    }
+
+    .score-circle svg {
+      transform: rotate(-90deg);
+    }
+
+    .score-circle-bg {
+      fill: none; stroke: #1a1a1a; stroke-width: 10;
+    }
+
+    .score-circle-fill {
+      fill: none; stroke: var(--white); stroke-width: 10;
+      stroke-linecap: round;
+      stroke-dasharray: 408;
+      stroke-dashoffset: 408;
+      transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .score-inner {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+
+    .score-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 42px; font-weight: 700;
+      color: var(--white); line-height: 1;
+    }
+
+    .score-label {
+      font-size: 11px; font-weight: 600;
+      color: #555; text-transform: uppercase;
+      letter-spacing: 1px; margin-top: 4px;
+    }
+
+    .score-status {
+      margin-top: 12px;
+      font-size: 13px; font-weight: 700;
+      color: #4ade80;
+    }
+
+    /* ── MAIN CONTENT ── */
+    .page-body {
+      max-width: 1100px; margin: 0 auto;
+      padding: 40px 48px;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--white);
+      border-radius: 16px;
+      border: 1px solid var(--gray-200);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .card-header {
+      padding: 24px 28px 20px;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .card-title {
+      font-size: 14px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      color: var(--gray-400);
+    }
+
+    .card-body { padding: 24px 28px; }
+
+    /* ── PROFILE SUMMARY TAGS ── */
+    .profile-tags {
+      display: flex; flex-wrap: wrap; gap: 10px;
+    }
+
+    .profile-tag {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 14px;
+      background: var(--gray-100);
+      border-radius: 100px;
+      font-size: 13px; font-weight: 600; color: var(--black);
+    }
+
+    .profile-tag-emoji { font-size: 16px; }
+
+    /* ── POINTS BREAKDOWN ── */
+    .points-row {
+      display: flex; align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--gray-100);
+      gap: 16px;
+    }
+
+    .points-row:last-child { border-bottom: none; }
+
+    .points-category {
+      flex: 1;
+    }
+
+    .points-cat-name {
+      font-size: 14px; font-weight: 600; color: var(--black);
+    }
+
+    .points-cat-detail {
+      font-size: 12px; color: var(--gray-400); margin-top: 2px;
+    }
+
+    .points-bar-wrap {
+      width: 120px;
+    }
+
+    .points-bar-bg {
+      height: 4px; background: var(--gray-200);
+      border-radius: 2px; overflow: hidden;
+    }
+
+    .points-bar-fill {
+      height: 4px; background: var(--black);
+      border-radius: 2px; transition: width 1s ease;
+      width: 0;
+    }
+
+    .points-val {
+      font-size: 15px; font-weight: 800;
+      color: var(--black); text-align: right;
+      min-width: 52px;
+    }
+
+    .points-max {
+      font-size: 11px; color: var(--gray-400);
+      font-weight: 500;
+    }
+
+    .points-total-row {
+      display: flex; justify-content: space-between;
+      align-items: center;
+      padding: 18px 28px;
+      background: var(--black);
+      margin: 0 -28px -24px;
+    }
+
+    .points-total-label {
+      font-size: 13px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      color: #888;
+    }
+
+    .points-total-val {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px; font-weight: 700; color: var(--white);
+    }
+
+    .points-total-min {
+      font-size: 12px; color: #555; text-align: right;
+    }
+
+    /* ── VISA ROUTES ── */
+    .visa-route {
+      border: 1.5px solid var(--gray-200);
+      border-radius: 12px; padding: 22px;
+      margin-bottom: 12px;
+      cursor: pointer; transition: all 0.2s;
+      position: relative;
+    }
+
+    .visa-route:hover { border-color: var(--black); }
+
+    .visa-route.recommended {
+      border-color: var(--black); background: var(--black);
+    }
+
+    .visa-route.recommended .visa-route-name { color: var(--white); }
+    .visa-route.recommended .visa-route-sub { color: #888; }
+    .visa-route.recommended .visa-route-meta span { color: #888; }
+    .visa-route.recommended .visa-route-meta strong { color: var(--white); }
+    .visa-route.recommended .visa-badge-rec { display: inline-flex; }
+
+    .visa-badge-rec {
+      display: none;
+      position: absolute; top: 16px; right: 16px;
+      background: var(--white); color: var(--black);
+      font-size: 10px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      padding: 4px 10px; border-radius: 100px;
+    }
+
+    .visa-route-top {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .visa-route-name {
+      font-size: 17px; font-weight: 700; color: var(--black);
+    }
+
+    .visa-route-sub {
+      font-size: 13px; color: var(--gray-400); margin-top: 3px;
+    }
+
+    .visa-prob {
+      text-align: right; flex-shrink: 0;
+    }
+
+    .visa-prob-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px; font-weight: 700;
+    }
+
+    .visa-route.recommended .visa-prob-num { color: var(--white); }
+    .visa-route-name-wrap { flex: 1; }
+
+    .visa-route-meta {
+      display: flex; gap: 20px; flex-wrap: wrap;
+    }
+
+    .visa-route-meta span {
+      font-size: 12px; color: var(--gray-400);
+    }
+
+    .visa-route-meta strong { color: var(--black); }
+
+    .prob-label {
+      font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      color: var(--gray-400);
+    }
+
+    .visa-route.recommended .prob-label { color: #666; }
+
+    .prob-bar {
+      height: 3px; background: #1a1a1a;
+      border-radius: 2px; margin-top: 4px; width: 80px;
+      overflow: hidden;
+    }
+
+    .prob-bar-fill {
+      height: 3px; background: var(--white);
+      border-radius: 2px; transition: width 1.2s ease;
+      width: 0;
+    }
+
+    /* ── SIDEBAR CARDS ── */
+    .sidebar-card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    /* ── NEXT STEPS ── */
+    .next-step-item {
+      display: flex; align-items: flex-start; gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .next-step-item:last-child { border-bottom: none; }
+
+    .step-num-badge {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--black); color: var(--white);
+      font-size: 12px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .next-step-text { flex: 1; }
+
+    .next-step-title {
+      font-size: 14px; font-weight: 700; color: var(--black);
+    }
+
+    .next-step-desc {
+      font-size: 12px; color: var(--gray-400);
+      margin-top: 3px; line-height: 1.5;
+    }
+
+    /* ── IMPROVE SCORE ── */
+    .improve-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .improve-item:last-child { border-bottom: none; }
+
+    .improve-icon {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: var(--gray-100);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+
+    .improve-text { flex: 1; }
+
+    .improve-title {
+      font-size: 13px; font-weight: 700; color: var(--black);
+    }
+
+    .improve-detail {
+      font-size: 12px; color: var(--gray-400); margin-top: 2px;
+    }
+
+    .improve-pts {
+      font-size: 13px; font-weight: 800; color: var(--black);
+      background: var(--gray-100); padding: 4px 10px;
+      border-radius: 100px;
+    }
+
+    /* ── CTA CARD ── */
+    .cta-card {
+      background: var(--black);
+      border-radius: 16px; padding: 28px 24px;
+      text-align: center; margin-bottom: 24px;
+    }
+
+    .cta-card-emoji { font-size: 36px; margin-bottom: 16px; }
+
+    .cta-card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px; font-weight: 700;
+      color: var(--white); margin-bottom: 8px;
+    }
+
+    .cta-card-sub {
+      font-size: 13px; color: #777;
+      line-height: 1.6; margin-bottom: 20px;
+    }
+
+    .btn-cta-card {
+      display: block; width: 100%;
+      background: var(--white); color: var(--black);
+      padding: 14px; border-radius: 8px;
+      font-size: 14px; font-weight: 700;
+      text-decoration: none; transition: all 0.2s;
+      cursor: pointer; border: none;
+    }
+
+    .btn-cta-card:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    /* ── DISCLAIMER ── */
+    .disclaimer {
+      font-size: 12px; color: var(--gray-400);
+      line-height: 1.6; padding: 16px 20px;
+      background: var(--gray-100); border-radius: 10px;
+      border-left: 3px solid var(--gray-300);
+    }
+
+    /* ── FADE ANIM ── */
+    .fade-up {
+      opacity: 0; transform: translateY(20px);
+      transition: all 0.6s ease;
+    }
+
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .page-body { grid-template-columns: 1fr; padding: 24px; }
+      .profile-hero { padding: 40px 24px; }
+      .profile-hero-inner { grid-template-columns: 1fr; }
+      .score-circle-wrap { display: none; }
+      nav { padding: 16px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="migro-landing.html" class="nav-logo">Migro<span></span></a>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('es')">ES</button>
+      </div>
+      <a href="migro-onboarding.html" class="btn-restart" data-en="← Edit profile" data-es="← Editar perfil">← Edit profile</a>
+    </div>
+  </nav>
+
+  <!-- HERO BANNER -->
+  <section class="profile-hero">
+    <div class="profile-hero-inner">
+      <div>
+        <p class="profile-greeting" data-en="YOUR MIGRATION PROFILE" data-es="TU PERFIL MIGRATORIO">YOUR MIGRATION PROFILE</p>
+        <h1 class="profile-title" data-en="You have a strong<br/>profile for Australia." data-es="Tienes un perfil sólido<br/>para Australia.">You have a strong<br/>profile for Australia.</h1>
+        <p class="profile-subtitle" data-en="Based on your answers, we identified 3 visa routes that match your profile. Your points score puts you in a competitive position for skilled migration." data-es="Basándonos en tus respuestas, identificamos 3 rutas de visa que coinciden con tu perfil. Tu puntaje te pone en una posición competitiva para la migración calificada.">
+          Based on your answers, we identified 3 visa routes that match your profile. Your points score puts you in a competitive position for skilled migration.
+        </p>
+      </div>
+
+      <!-- POINTS CIRCLE -->
+      <div class="score-circle-wrap">
+        <div class="score-circle">
+          <svg width="160" height="160" viewBox="0 0 160 160">
+            <circle class="score-circle-bg" cx="80" cy="80" r="65"/>
+            <circle class="score-circle-fill" id="scoreCircle" cx="80" cy="80" r="65"/>
+          </svg>
+          <div class="score-inner">
+            <span class="score-number" id="scoreNum">0</span>
+            <span class="score-label" data-en="POINTS" data-es="PUNTOS">POINTS</span>
+          </div>
+        </div>
+        <p class="score-status" data-en="✓ Above minimum (65)" data-es="✓ Sobre el mínimo (65)">✓ Above minimum (65)</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN BODY -->
+  <div class="page-body">
+
+    <!-- LEFT COLUMN -->
+    <div>
+
+      <!-- PROFILE SUMMARY -->
+      <div class="card fade-up">
+        <div class="card-header">
+          <span class="card-title" data-en="PROFILE SUMMARY" data-es="RESUMEN DE PERFIL">PROFILE SUMMARY</span>
+        </div>
+        <div class="card-body">
+          <div class="profile-tags">
+            <div class="profile-tag"><span class="profile-tag-emoji">🇨🇴</span> <span data-en="Colombia" data-es="Colombia">Colombia</span></div>
+            <div class="profile-tag"><span class="profile-tag-emoji">🎂</span> <span data-en="28 years old" data-es="28 años">28 years old</span></div>
+            <div class="profile-tag"><span class="profile-tag-emoji">🗣️</span> <span data-en="Proficient English" data-es="Inglés avanzado">Proficient English</span></div>
+            <div class="profile-tag"><span class="profile-tag-emoji">🎓</span> <span data-en="Bachelor's Degree" data-es="Licenciatura">Bachelor's Degree</span></div>
+            <div class="profile-tag"><span class="profile-tag-emoji">💼</span> <span data-en="5–7 yrs experience" data-es="5–7 años de experiencia">5–7 yrs experience</span></div>
+            <div class="profile-tag"><span class="profile-tag-emoji">🏠</span> <span data-en="Applying from abroad" data-es="Desde el exterior">Applying from abroad</span></div>
+            <div class="profile-tag"><span class="profile-tag-emoji">🎯</span> <span data-en="Goal: Work in Australia" data-es="Objetivo: Trabajar en Australia">Goal: Work in Australia</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- POINTS BREAKDOWN -->
+      <div class="card fade-up">
+        <div class="card-header">
+          <span class="card-title" data-en="POINTS BREAKDOWN" data-es="DESGLOSE DE PUNTOS">POINTS BREAKDOWN</span>
+          <span style="font-size:12px;color:var(--gray-400);" data-en="Minimum required: 65 pts" data-es="Mínimo requerido: 65 pts">Minimum required: 65 pts</span>
+        </div>
+        <div class="card-body">
+          <div class="points-row">
+            <div class="points-category">
+              <div class="points-cat-name" data-en="Age" data-es="Edad">Age</div>
+              <div class="points-cat-detail" data-en="28 years — optimal range" data-es="28 años — rango óptimo">28 years — optimal range</div>
+            </div>
+            <div class="points-bar-wrap">
+              <div class="points-bar-bg"><div class="points-bar-fill" data-pct="100"></div></div>
+            </div>
+            <div class="points-val">30 <span class="points-max">/ 30</span></div>
+          </div>
+          <div class="points-row">
+            <div class="points-category">
+              <div class="points-cat-name" data-en="English Proficiency" data-es="Nivel de inglés">English Proficiency</div>
+              <div class="points-cat-detail" data-en="Proficient — IELTS 7 equivalent" data-es="Avanzado — equivalente IELTS 7">Proficient — IELTS 7 equivalent</div>
+            </div>
+            <div class="points-bar-wrap">
+              <div class="points-bar-bg"><div class="points-bar-fill" data-pct="67"></div></div>
+            </div>
+            <div class="points-val">20 <span class="points-max">/ 30</span></div>
+          </div>
+          <div class="points-row">
+            <div class="points-category">
+              <div class="points-cat-name" data-en="Education" data-es="Educación">Education</div>
+              <div class="points-cat-detail" data-en="Bachelor's Degree — recognized" data-es="Licenciatura — reconocida">Bachelor's Degree — recognized</div>
+            </div>
+            <div class="points-bar-wrap">
+              <div class="points-bar-bg"><div class="points-bar-fill" data-pct="75"></div></div>
+            </div>
+            <div class="points-val">15 <span class="points-max">/ 20</span></div>
+          </div>
+          <div class="points-row">
+            <div class="points-category">
+              <div class="points-cat-name" data-en="Work Experience" data-es="Experiencia laboral">Work Experience</div>
+              <div class="points-cat-detail" data-en="5–7 years overseas experience" data-es="5–7 años de experiencia exterior">5–7 years overseas experience</div>
+            </div>
+            <div class="points-bar-wrap">
+              <div class="points-bar-bg"><div class="points-bar-fill" data-pct="60"></div></div>
+            </div>
+            <div class="points-val">10 <span class="points-max">/ 15</span></div>
+          </div>
+          <div class="points-row">
+            <div class="points-category">
+              <div class="points-cat-name" data-en="Nationality (No bonus)" data-es="Nacionalidad (sin bono)">Nationality (No bonus)</div>
+              <div class="points-cat-detail" data-en="No additional points apply" data-es="No aplican puntos adicionales">No additional points apply</div>
+            </div>
+            <div class="points-bar-wrap">
+              <div class="points-bar-bg"><div class="points-bar-fill" data-pct="0"></div></div>
+            </div>
+            <div class="points-val">0 <span class="points-max">/ 0</span></div>
+          </div>
+
+          <div class="points-total-row">
+            <div>
+              <div class="points-total-label" data-en="TOTAL SCORE" data-es="PUNTAJE TOTAL">TOTAL SCORE</div>
+              <div class="points-total-min" data-en="Minimum to apply: 65 pts" data-es="Mínimo para aplicar: 65 pts">Minimum to apply: 65 pts</div>
+            </div>
+            <div class="points-total-val" id="totalScore">75 pts</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VISA ROUTES -->
+      <div class="card fade-up">
+        <div class="card-header">
+          <span class="card-title" data-en="YOUR VISA ROUTES" data-es="TUS RUTAS DE VISA">YOUR VISA ROUTES</span>
+          <span style="font-size:12px;color:var(--gray-400);" data-en="3 matches found" data-es="3 coincidencias encontradas">3 matches found</span>
+        </div>
+        <div class="card-body">
+
+          <!-- ROUTE 1 — RECOMMENDED -->
+          <div class="visa-route recommended">
+            <span class="visa-badge-rec" data-en="Best match" data-es="Mejor opción">Best match</span>
+            <div class="visa-route-top">
+              <div class="visa-route-name-wrap">
+                <div class="visa-route-name" data-en="Subclass 482 — Temporary Skill Shortage" data-es="Subclase 482 — Escasez Temporal de Habilidades">Subclass 482 — Temporary Skill Shortage</div>
+                <div class="visa-route-sub" data-en="Employer-sponsored · Up to 4 years · Pathway to PR" data-es="Patrocinado por empleador · Hasta 4 años · Camino a RP">Employer-sponsored · Up to 4 years · Pathway to PR</div>
+              </div>
+              <div class="visa-prob">
+                <div class="visa-prob-num">87%</div>
+                <div class="prob-label" data-en="match" data-es="compatibilidad">match</div>
+                <div class="prob-bar"><div class="prob-bar-fill" data-pct="87"></div></div>
+              </div>
+            </div>
+            <div class="visa-route-meta">
+              <span>⏱ <strong data-en="3–6 months" data-es="3–6 meses">3–6 months</strong></span>
+              <span>💰 <strong>AUD $3,115</strong></span>
+              <span>📋 <strong data-en="Medium difficulty" data-es="Dificultad media">Medium difficulty</strong></span>
+            </div>
+          </div>
+
+          <!-- ROUTE 2 -->
+          <div class="visa-route">
+            <div class="visa-route-top">
+              <div class="visa-route-name-wrap">
+                <div class="visa-route-name" data-en="Subclass 189 — Skilled Independent" data-es="Subclase 189 — Calificado Independiente">Subclass 189 — Skilled Independent</div>
+                <div class="visa-route-sub" data-en="Points-based · Permanent residency · No sponsor needed" data-es="Por puntos · Residencia permanente · Sin patrocinador">Points-based · Permanent residency · No sponsor needed</div>
+              </div>
+              <div class="visa-prob">
+                <div class="visa-prob-num">72%</div>
+                <div class="prob-label" data-en="match" data-es="compatibilidad">match</div>
+                <div class="prob-bar"><div class="prob-bar-fill" data-pct="72"></div></div>
+              </div>
+            </div>
+            <div class="visa-route-meta">
+              <span>⏱ <strong data-en="12–24 months" data-es="12–24 meses">12–24 months</strong></span>
+              <span>💰 <strong>AUD $4,640</strong></span>
+              <span>📋 <strong data-en="High difficulty" data-es="Dificultad alta">High difficulty</strong></span>
+            </div>
+          </div>
+
+          <!-- ROUTE 3 -->
+          <div class="visa-route">
+            <div class="visa-route-top">
+              <div class="visa-route-name-wrap">
+                <div class="visa-route-name" data-en="Subclass 190 — Skilled Nominated" data-es="Subclase 190 — Calificado Nominado">Subclass 190 — Skilled Nominated</div>
+                <div class="visa-route-sub" data-en="State nominated · Permanent · +5 bonus points" data-es="Nominado por estado · Permanente · +5 puntos extra">State nominated · Permanent · +5 bonus points</div>
+              </div>
+              <div class="visa-prob">
+                <div class="visa-prob-num">65%</div>
+                <div class="prob-label" data-en="match" data-es="compatibilidad">match</div>
+                <div class="prob-bar"><div class="prob-bar-fill" data-pct="65"></div></div>
+              </div>
+            </div>
+            <div class="visa-route-meta">
+              <span>⏱ <strong data-en="6–12 months" data-es="6–12 meses">6–12 meses</strong></span>
+              <span>💰 <strong>AUD $4,640</strong></span>
+              <span>📋 <strong data-en="Medium difficulty" data-es="Dificultad media">Medium difficulty</strong></span>
+            </div>
+          </div>
+
+          <div style="margin-top:20px; text-align:center;">
+            <a href="migro-onboarding.html" style="font-size:13px;font-weight:600;color:var(--gray-400);text-decoration:none;" data-en="→ Continue to city selection" data-es="→ Continuar a selección de ciudad">→ Continue to city selection</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div>
+
+      <!-- CTA: CHOOSE CITY -->
+      <div class="cta-card fade-up">
+        <div class="cta-card-emoji">🏙️</div>
+        <div class="cta-card-title" data-en="Now choose your city" data-es="Ahora elige tu ciudad">Now choose your city</div>
+        <div class="cta-card-sub" data-en="Filter Australian cities by climate, cost of living, beach, and job opportunities." data-es="Filtra ciudades australianas por clima, costo de vida, playa y oportunidades laborales.">Filter Australian cities by climate, cost of living, beach, and job opportunities.</div>
+        <button class="btn-cta-card" onclick="alert('Paso 4 — Elección de Ciudad próximamente / Step 4 coming next!')" data-en="→ Explore cities" data-es="→ Explorar ciudades">→ Explore cities</button>
+      </div>
+
+      <!-- NEXT STEPS -->
+      <div class="sidebar-card fade-up">
+        <div class="card-header">
+          <span class="card-title" data-en="NEXT STEPS" data-es="PRÓXIMOS PASOS">NEXT STEPS</span>
+        </div>
+        <div class="card-body">
+          <div class="next-step-item">
+            <div class="step-num-badge">1</div>
+            <div class="next-step-text">
+              <div class="next-step-title" data-en="Get an IELTS score" data-es="Obtener puntaje IELTS">Get an IELTS score</div>
+              <div class="next-step-desc" data-en="Boost your points to 85+ with an IELTS 8 score" data-es="Sube tu puntaje a 85+ con un IELTS 8">Boost your points to 85+ with an IELTS 8 score</div>
+            </div>
+          </div>
+          <div class="next-step-item">
+            <div class="step-num-badge">2</div>
+            <div class="next-step-text">
+              <div class="next-step-title" data-en="Skills assessment" data-es="Evaluación de habilidades">Skills assessment</div>
+              <div class="next-step-desc" data-en="Get your qualifications recognized by the relevant authority" data-es="Haz reconocer tus calificaciones por la autoridad correspondiente">Get your qualifications recognized by the relevant authority</div>
+            </div>
+          </div>
+          <div class="next-step-item">
+            <div class="step-num-badge">3</div>
+            <div class="next-step-text">
+              <div class="next-step-title" data-en="Submit EOI" data-es="Enviar Declaración de Interés">Submit EOI</div>
+              <div class="next-step-desc" data-en="Register your Expression of Interest on SkillSelect" data-es="Registra tu Declaración de Interés en SkillSelect">Register your Expression of Interest on SkillSelect</div>
+            </div>
+          </div>
+          <div class="next-step-item">
+            <div class="step-num-badge">4</div>
+            <div class="next-step-text">
+              <div class="next-step-title" data-en="Wait for invitation" data-es="Esperar invitación">Wait for invitation</div>
+              <div class="next-step-desc" data-en="Invitations are issued in rounds — usually every month" data-es="Las invitaciones se emiten en rondas — normalmente cada mes">Invitations are issued in rounds — usually every month</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- IMPROVE SCORE -->
+      <div class="sidebar-card fade-up">
+        <div class="card-header">
+          <span class="card-title" data-en="BOOST YOUR SCORE" data-es="MEJORA TU PUNTAJE">BOOST YOUR SCORE</span>
+        </div>
+        <div class="card-body">
+          <div class="improve-item">
+            <div class="improve-icon">🗣️</div>
+            <div class="improve-text">
+              <div class="improve-title" data-en="IELTS 8 score" data-es="Puntaje IELTS 8">IELTS 8 score</div>
+              <div class="improve-detail" data-en="Upgrade from Proficient to Superior" data-es="De avanzado a superior">Upgrade from Proficient to Superior</div>
+            </div>
+            <div class="improve-pts">+10 pts</div>
+          </div>
+          <div class="improve-item">
+            <div class="improve-icon">🎓</div>
+            <div class="improve-text">
+              <div class="improve-title" data-en="Australian study" data-es="Estudios en Australia">Australian study</div>
+              <div class="improve-detail" data-en="2+ years at Australian institution" data-es="2+ años en institución australiana">2+ years at Australian institution</div>
+            </div>
+            <div class="improve-pts">+5 pts</div>
+          </div>
+          <div class="improve-item">
+            <div class="improve-icon">🏙️</div>
+            <div class="improve-text">
+              <div class="improve-title" data-en="Regional study / work" data-es="Estudio / trabajo regional">Regional study / work</div>
+              <div class="improve-detail" data-en="Work or study in a regional area" data-es="Trabaja o estudia en área regional">Work or study in a regional area</div>
+            </div>
+            <div class="improve-pts">+5 pts</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DISCLAIMER -->
+      <p class="disclaimer fade-up" data-en="⚠️ This profile is indicative only, based on publicly available information from the Australian Department of Home Affairs. It does not constitute legal advice. Points calculations may vary. Consult a registered migration agent for your specific situation." data-es="⚠️ Este perfil es solo indicativo, basado en información pública del Departamento de Interior de Australia. No constituye asesoría legal. Los cálculos de puntos pueden variar. Consulta a un agente migratorio registrado para tu situación específica.">
+        ⚠️ This profile is indicative only, based on publicly available information from the Australian Department of Home Affairs. It does not constitute legal advice. Points calculations may vary. Consult a registered migration agent for your specific situation.
+      </p>
+
+    </div>
+  </div>
+
+  <script>
+    let currentLang = 'en';
+
+    // ── LANG TOGGLE ──
+    function setLang(lang) {
+      currentLang = lang;
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent === lang.toUpperCase()));
+      document.querySelectorAll('[data-en]').forEach(el => {
+        const t = el.getAttribute('data-' + lang);
+        if (t) el.innerHTML = t;
+      });
+    }
+
+    // ── ANIMATE SCORE CIRCLE ──
+    function animateScore(target) {
+      const circle = document.getElementById('scoreCircle');
+      const numEl = document.getElementById('scoreNum');
+      const circumference = 408;
+      const maxScore = 100;
+      const pct = Math.min(target / maxScore, 1);
+      const offset = circumference * (1 - pct);
+
+      setTimeout(() => {
+        circle.style.strokeDashoffset = offset;
+        let current = 0;
+        const step = target / 60;
+        const timer = setInterval(() => {
+          current += step;
+          if (current >= target) { current = target; clearInterval(timer); }
+          numEl.textContent = Math.round(current);
+        }, 16);
+      }, 400);
+    }
+
+    // ── ANIMATE BARS ──
+    function animateBars() {
+      document.querySelectorAll('.points-bar-fill').forEach(bar => {
+        const pct = bar.dataset.pct;
+        setTimeout(() => { bar.style.width = pct + '%'; }, 600);
+      });
+
+      document.querySelectorAll('.prob-bar-fill').forEach(bar => {
+        const pct = bar.dataset.pct;
+        setTimeout(() => { bar.style.width = pct + '%'; }, 800);
+      });
+    }
+
+    // ── SCROLL ANIMATIONS ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 100);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // ── INIT ──
+    window.addEventListener('load', () => {
+      animateScore(75);
+      animateBars();
+    });
+  </script>
+</body>
+</html>
