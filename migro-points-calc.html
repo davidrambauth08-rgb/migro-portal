@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Migro — Points Calculator 189/190</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --black: #0a0a0a; --white: #ffffff;
+      --gray-100: #f5f5f5; --gray-200: #e8e8e8;
+      --gray-300: #d0d0d0; --gray-400: #999;
+      --gray-600: #555; --gray-800: #222;
+      --green: #16a34a; --green-bg: #f0fdf4; --green-border: #bbf7d0;
+      --amber: #b45309; --amber-bg: #fffbeb; --amber-border: #fde68a;
+      --red: #dc2626; --red-bg: #fef2f2; --red-border: #fecaca;
+      --blue: #2563eb; --blue-bg: #eff6ff; --blue-border: #bfdbfe;
+      --purple: #7c3aed; --purple-bg: #f5f3ff; --purple-border: #ddd6fe;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--gray-100); color: var(--black); }
+
+    /* NAV */
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 48px; background: var(--white); border-bottom: 1px solid var(--gray-200); position: sticky; top: 0; z-index: 100; }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--black); text-decoration: none; }
+    .nav-logo span { display: inline-block; width: 6px; height: 6px; background: var(--black); border-radius: 50%; margin-left: 2px; vertical-align: super; }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .lang-toggle { display: flex; background: var(--gray-100); border-radius: 6px; padding: 3px; gap: 2px; }
+    .lang-btn { padding: 4px 10px; font-size: 11px; font-weight: 700; border: none; background: transparent; border-radius: 4px; cursor: pointer; color: var(--gray-400); transition: all .2s; }
+    .lang-btn.active { background: var(--black); color: var(--white); }
+    .nav-back { font-size: 13px; font-weight: 500; color: var(--gray-600); text-decoration: none; padding: 7px 14px; border-radius: 6px; border: 1px solid var(--gray-200); transition: all .2s; }
+    .nav-back:hover { border-color: var(--black); color: var(--black); }
+
+    /* HERO */
+    .hero { background: var(--black); padding: 52px 48px 40px; }
+    .hero-inner { max-width: 1200px; margin: 0 auto; }
+    .hero-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #555; margin-bottom: 12px; }
+    .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(28px, 3.5vw, 46px); font-weight: 700; color: var(--white); line-height: 1.1; letter-spacing: -1px; margin-bottom: 14px; }
+    .hero-sub { font-size: 15px; color: #777; max-width: 560px; line-height: 1.6; margin-bottom: 28px; }
+    .hero-chips { display: flex; gap: 10px; flex-wrap: wrap; }
+    .hero-chip { display: flex; align-items: center; gap: 8px; background: #111; border: 1px solid #222; border-radius: 100px; padding: 7px 14px; font-size: 13px; font-weight: 600; color: #aaa; }
+    .chip-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .chip-dot.green { background: #4ade80; }
+    .chip-dot.amber { background: #fbbf24; }
+
+    /* LAYOUT */
+    .page-body { max-width: 1200px; margin: 0 auto; padding: 36px 48px; display: grid; grid-template-columns: 1fr 340px; gap: 28px; align-items: start; }
+
+    /* SCORE PANEL (sticky right) */
+    .score-panel { position: sticky; top: 84px; display: flex; flex-direction: column; gap: 16px; }
+    .score-card { background: var(--black); border-radius: 14px; padding: 28px; }
+    .score-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #555; margin-bottom: 16px; }
+    .score-total { font-family: 'Playfair Display', serif; font-size: 72px; font-weight: 700; color: var(--white); line-height: 1; }
+    .score-max { font-size: 14px; color: #555; margin-top: 6px; }
+    .score-bar-wrap { margin: 20px 0 0; }
+    .score-bar-bg { height: 8px; background: #1a1a1a; border-radius: 100px; overflow: hidden; }
+    .score-bar-fill { height: 100%; background: var(--white); border-radius: 100px; transition: width .6s cubic-bezier(.4,0,.2,1); width: 0%; }
+    .score-breakdown { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+    .score-row { display: flex; align-items: center; justify-content: space-between; font-size: 12px; }
+    .score-row-label { color: #666; }
+    .score-row-val { font-weight: 700; color: var(--white); min-width: 28px; text-align: right; }
+    .score-row-val.zero { color: #333; }
+
+    /* THRESHOLDS CARD */
+    .threshold-card { background: var(--white); border-radius: 14px; padding: 22px; border: 1px solid var(--gray-200); }
+    .threshold-title { font-size: 13px; font-weight: 700; color: var(--black); margin-bottom: 14px; }
+    .threshold-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px; border-radius: 8px; margin-bottom: 8px; }
+    .threshold-item:last-child { margin-bottom: 0; }
+    .threshold-item.t189 { background: var(--purple-bg); border: 1px solid var(--purple-border); }
+    .threshold-item.t190 { background: var(--blue-bg); border: 1px solid var(--blue-border); }
+    .threshold-badge { font-size: 12px; font-weight: 800; padding: 3px 8px; border-radius: 100px; white-space: nowrap; flex-shrink: 0; }
+    .t189 .threshold-badge { background: var(--purple); color: var(--white); }
+    .t190 .threshold-badge { background: var(--blue); color: var(--white); }
+    .threshold-info { flex: 1; }
+    .threshold-score { font-size: 22px; font-weight: 800; color: var(--black); }
+    .threshold-desc { font-size: 11px; color: var(--gray-400); margin-top: 2px; line-height: 1.4; }
+    .threshold-gap { font-size: 12px; font-weight: 600; margin-top: 6px; }
+    .threshold-gap.need { color: var(--red); }
+    .threshold-gap.met { color: var(--green); }
+
+    /* TIPS CARD */
+    .tips-card { background: var(--white); border-radius: 14px; padding: 22px; border: 1px solid var(--gray-200); }
+    .tips-title { font-size: 13px; font-weight: 700; margin-bottom: 12px; }
+    .tip-item { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: var(--gray-600); line-height: 1.5; margin-bottom: 8px; }
+    .tip-item:last-child { margin-bottom: 0; }
+    .tip-icon { flex-shrink: 0; margin-top: 1px; }
+    .btn-share { width: 100%; padding: 12px; background: var(--black); color: var(--white); border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all .2s; margin-top: 14px; }
+    .btn-share:hover { background: #222; }
+
+    /* SECTIONS */
+    .calc-sections { display: flex; flex-direction: column; gap: 20px; }
+
+    /* SECTION CARD */
+    .section-card { background: var(--white); border-radius: 14px; overflow: hidden; border: 1px solid var(--gray-200); transition: border-color .2s; }
+    .section-card.has-points { border-color: var(--black); }
+    .section-header { padding: 20px 24px; display: flex; align-items: center; gap: 14px; cursor: pointer; user-select: none; }
+    .section-num { width: 32px; height: 32px; border-radius: 50%; background: var(--gray-100); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: var(--gray-400); flex-shrink: 0; transition: all .2s; }
+    .section-card.has-points .section-num { background: var(--black); color: var(--white); }
+    .section-info { flex: 1; }
+    .section-name { font-size: 15px; font-weight: 700; color: var(--black); }
+    .section-sub { font-size: 12px; color: var(--gray-400); margin-top: 2px; }
+    .section-pts { font-size: 22px; font-weight: 800; color: var(--gray-200); transition: color .2s; }
+    .section-card.has-points .section-pts { color: var(--black); }
+    .section-chevron { font-size: 12px; color: var(--gray-300); transition: transform .3s; margin-left: 4px; }
+    .section-card.open .section-chevron { transform: rotate(180deg); }
+    .section-body { max-height: 0; overflow: hidden; transition: max-height .4s cubic-bezier(.4,0,.2,1); }
+    .section-card.open .section-body { max-height: 1200px; }
+    .section-inner { padding: 0 24px 24px; border-top: 1px solid var(--gray-100); }
+
+    /* QUESTION */
+    .question { margin-top: 20px; }
+    .question-label { font-size: 14px; font-weight: 600; color: var(--black); margin-bottom: 10px; }
+    .question-hint { font-size: 12px; color: var(--gray-400); margin-top: -6px; margin-bottom: 10px; line-height: 1.4; }
+    .options-grid { display: flex; flex-direction: column; gap: 6px; }
+    .opt-btn { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border: 1.5px solid var(--gray-200); border-radius: 8px; background: var(--white); cursor: pointer; text-align: left; transition: all .2s; font-family: 'Inter', sans-serif; width: 100%; }
+    .opt-btn:hover { border-color: var(--gray-400); background: var(--gray-100); }
+    .opt-btn.selected { border-color: var(--black); background: var(--black); }
+    .opt-btn.selected .opt-text { color: var(--white); }
+    .opt-btn.selected .opt-pts { background: var(--white); color: var(--black); }
+    .opt-text { font-size: 13px; font-weight: 500; color: var(--black); line-height: 1.4; }
+    .opt-pts { font-size: 11px; font-weight: 800; padding: 3px 9px; border-radius: 100px; background: var(--gray-100); color: var(--gray-600); white-space: nowrap; flex-shrink: 0; margin-left: 12px; transition: all .2s; }
+    .opt-pts.positive { background: var(--green-bg); color: var(--green); }
+    .opt-btn.selected .opt-pts.positive { background: var(--white); color: var(--green); }
+
+    /* CONDITIONAL QUESTION */
+    .cond-question { max-height: 0; overflow: hidden; transition: max-height .35s ease; }
+    .cond-question.show { max-height: 600px; }
+
+    /* PROGRESS TRACKER */
+    .progress-strip { background: var(--white); border-bottom: 1px solid var(--gray-200); padding: 12px 48px; }
+    .progress-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 16px; }
+    .progress-label { font-size: 12px; font-weight: 600; color: var(--gray-400); white-space: nowrap; }
+    .progress-dots { display: flex; gap: 6px; }
+    .prog-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gray-200); transition: background .3s; }
+    .prog-dot.done { background: var(--black); }
+    .prog-dot.active { background: var(--black); box-shadow: 0 0 0 3px var(--gray-200); }
+    .progress-pct { font-size: 12px; font-weight: 700; color: var(--black); margin-left: auto; white-space: nowrap; }
+
+    /* RESULT SECTION */
+    .result-section { display: none; background: var(--black); border-radius: 14px; padding: 32px; margin-top: 4px; }
+    .result-section.show { display: block; }
+    .result-tag { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #555; margin-bottom: 12px; }
+    .result-heading { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--white); line-height: 1.2; margin-bottom: 8px; }
+    .result-sub { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 24px; }
+    .result-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .result-card { background: #111; border: 1px solid #222; border-radius: 10px; padding: 18px; }
+    .result-card.eligible { border-color: #166534; background: #052e16; }
+    .result-card.ineligible { border-color: #7f1d1d; background: #2d0a0a; }
+    .result-card-badge { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .eligible .result-card-badge { color: #4ade80; }
+    .ineligible .result-card-badge { color: #f87171; }
+    .result-card-title { font-size: 18px; font-weight: 800; color: var(--white); margin-bottom: 4px; }
+    .result-card-sub { font-size: 12px; color: #555; line-height: 1.5; }
+    .result-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; }
+    .btn-result { padding: 12px 22px; background: var(--white); color: var(--black); border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: all .2s; }
+    .btn-result:hover { transform: translateY(-1px); }
+    .btn-result-ghost { padding: 12px 22px; background: transparent; color: #888; border: 1.5px solid #333; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: all .2s; }
+    .btn-result-ghost:hover { border-color: #666; color: var(--white); }
+
+    /* ROUND INFO */
+    .rounds-card { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); overflow: hidden; }
+    .rounds-header { padding: 20px 24px; border-bottom: 1px solid var(--gray-100); }
+    .rounds-title { font-size: 15px; font-weight: 700; }
+    .rounds-sub { font-size: 12px; color: var(--gray-400); margin-top: 3px; }
+    .rounds-table { width: 100%; border-collapse: collapse; }
+    .rounds-table th { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); padding: 10px 24px; text-align: left; background: var(--gray-100); border-bottom: 1px solid var(--gray-200); }
+    .rounds-table td { font-size: 13px; padding: 12px 24px; border-bottom: 1px solid var(--gray-100); color: var(--gray-800); }
+    .rounds-table tr:last-child td { border-bottom: none; }
+    .round-visa { display: inline-block; padding: 2px 8px; border-radius: 100px; font-size: 11px; font-weight: 800; }
+    .round-visa.v189 { background: var(--purple-bg); color: var(--purple); }
+    .round-visa.v190 { background: var(--blue-bg); color: var(--blue); }
+    .round-cutoff { font-weight: 700; color: var(--black); }
+
+    /* FADE UP */
+    .fade-up { opacity: 0; transform: translateY(18px); transition: opacity .5s ease, transform .5s ease; }
+    .fade-up.visible { opacity: 1; transform: none; }
+
+    @media (max-width: 900px) {
+      nav { padding: 14px 20px; }
+      .hero { padding: 36px 20px 28px; }
+      .page-body { padding: 20px; grid-template-columns: 1fr; }
+      .score-panel { position: static; }
+      .progress-strip { padding: 12px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="migro-dashboard.html" class="nav-logo">Migro<span></span></a>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('es')">ES</button>
+    </div>
+    <a href="migro-dashboard.html" class="nav-back">⊞ Dashboard</a>
+    <a href="migro-visa-compare.html" class="nav-back" data-en="⚖ Visa comparator" data-es="⚖ Comparador">⚖ Visa comparator</a>
+  </div>
+</nav>
+
+<!-- PROGRESS STRIP -->
+<div class="progress-strip">
+  <div class="progress-inner">
+    <span class="progress-label" data-en="Sections answered" data-es="Secciones respondidas">Sections answered</span>
+    <div class="progress-dots" id="progressDots"></div>
+    <span class="progress-pct" id="progressPct">0 / 9</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag" data-en="Skilled Migration" data-es="Migración Calificada">Skilled Migration</div>
+    <h1 class="hero-title" data-en="Points test<br/>calculator" data-es="Calculadora de<br/>puntos">Points test<br/>calculator</h1>
+    <p class="hero-sub" data-en="Estimate your score for Subclass 189 (Skilled Independent) and 190 (Skilled Nominated) visas. Takes about 3 minutes." data-es="Estima tu puntaje para las visas Subclase 189 (Independiente) y 190 (Nominada por estado). Toma unos 3 minutos.">Estimate your score for Subclass 189 (Skilled Independent) and 190 (Skilled Nominated) visas. Takes about 3 minutes.</p>
+    <div class="hero-chips">
+      <div class="hero-chip"><div class="chip-dot green"></div><span data-en="Live score" data-es="Puntaje en vivo">Live score</span></div>
+      <div class="hero-chip"><div class="chip-dot amber"></div><span data-en="2025-26 thresholds" data-es="Umbrales 2025-26">2025-26 thresholds</span></div>
+      <div class="hero-chip"><div class="chip-dot green"></div><span data-en="189 &amp; 190 comparison" data-es="Comparación 189 y 190">189 &amp; 190 comparison</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE BODY -->
+<div class="page-body">
+
+  <!-- LEFT: CALC SECTIONS -->
+  <div class="calc-sections" id="calcSections">
+
+    <!-- 1. AGE -->
+    <div class="section-card fade-up" id="sec-age">
+      <div class="section-header" onclick="toggleSection('sec-age')">
+        <div class="section-num">1</div>
+        <div class="section-info">
+          <div class="section-name" data-en="Age" data-es="Edad">Age</div>
+          <div class="section-sub" data-en="Up to 30 points" data-es="Hasta 30 puntos">Up to 30 points</div>
+        </div>
+        <div class="section-pts" id="pts-age">—</div>
+        <div class="section-chevron">▼</div>
+      </div>
+      <div class="section-body">
+        <div class="section-inner">
+          <div class="question">
+            <div class="question-label" data-en="What is your age at the time of invitation?" data-es="¿Cuál es tu edad al momento de la invitación?">What is your age at the time of invitation?</div>
+            <div class="question-hint" data-en="Age is assessed at the time you receive your invitation to apply, not when you lodge." data-es="La edad se evalúa cuando recibes la invitación, no cuando presentas la solicitud.">Age is assessed at the time you receive your invitation to apply, not when you lodge.</div>
+            <div class="options-grid">
+              <button class="opt-btn" onclick="selectOption('age',0,'sec-age')" data-group="age"><span class="opt-text" data-en="Under 18 or 45 and over" data-es="Menor de 18 o 45 o más">Under 18 or 45 and over</span><span class="opt-pts">0 pts</span></button>
+              <button class="opt-btn" onclick="selectOption('age',5,'sec-age')" data-group="age"><span class="opt-text" data-en="18 – 24" data-es="18 – 24">18 – 24</span><span class="opt-pts positive">+5 pts</span></button>
+              <button class="opt-btn" onclick="selectOption('age',30,'sec-age')" data-group="age"><span class="opt-text" data-en="25 – 32" data-es="25 – 32">25 – 32</span><span class="opt-pts positive">+30 pts</span></button>
+              <button class="opt-btn" onclick="selectOption('age',25,'sec-age')" data-group="age"><span class="opt-text" data-en="33 – 39" data-es="33 – 39">33 – 39</span><span class="opt-pts positive">+25 pts</span></button>
+              <button class="opt-btn" onclick="selectOption('age',15,'sec-age')" data-group="age"><span class="opt-text" data-en="40 – 44" data-es="40 – 44">40 – 44</span><span class="opt-pts positive">+15 pts</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. ENGLISH -->
+    <div class="section-card fade-up" id="sec-english">
+      <div class="section-header" onclick="toggleSection('sec-english')">
+        <div class="section-num">2</div>
+        <div class="section-info">
+          <div class="section-name" data-en="English Language" data-es="Inglés">English Language</div>
+          <div class="section-sub" data-en="Up to 20 points" data-es="Hasta 20 puntos">Up to 20 points</div>
+        </div>
+        <div class="section-pts" id="pts-english">—</div>
+        <div class="section-chevron">▼</div>
+      </div>
+      <div class="section-body">
+        <div class="section-inner">
+          <div class="question">
+            <div class="question-label" data-en="What is your English proficiency level?" data-es="¿Cuál es tu nivel de inglés?">What is your English proficiency level?</div>
+            <div class="question-hint" data-en="Based on IELTS, TOEFL iBT, PTE Academic, Cambridge C1/C2, or OET. 'Proficient' = IELTS 7.0 each band. 'Superior' = IELTS 8.0 each band." data-es="Basado en IELTS, TOEFL iBT, PTE, Cambridge o OET. 'Competente' = IELTS 7.0 en cada banda. 'Superior' = IELTS 8.0 en cada banda.">Based on IELTS, TOEFL iBT, PTE Academic, Cambridge C1/C2, or OET. 'Proficient' = IELTS 7.0 each band. 'Superior' = IELTS 8.0 each band.</div>
+            <div class="options-grid">
+              <button class="opt-btn" onclick="selectOption('english',0,'sec-english')" data-group="english"><span class="opt-text" data-en="Competent English (IELTS 6.0 each band)" data-es="Inglés competente (IELTS 6.0 cada banda)">Competent English (IELTS 6.0 each band)</span><span class="opt-pts">0 pts</span></button>
+              <button class="opt-btn" onclick="selectOption('english',10,'sec-english')" data-group="english"><span class="opt-text" data-en="Proficient English (IELTS 7.0 each band)" data-es="Inglés competente (IELTS 7.0 cada banda)">Proficient English (IELTS 7.0 each band)</span><span class="opt-pts positive">+10 pts</span></button>
+              <button class="opt-btn" onclick="selectOption('english',20,'sec-english')" data-group="english"><span class="opt-text" data-en="Superior English (IELTS 8.0 each band)" data-es="Inglés superior (IELTS 8.0 cada banda)">Superior English (IELTS 8.0 each band)</span><span class="opt-pts positive">+20 pts</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. WORK EXPERIENCE (OVERSEAS) -->
+    <div class="section-card fade-up" id="sec-work">
+      <div class="section-header" onclick="toggleSection('sec-work')">
+        <div class="section-num">3</div>
+        <div class="section-info">
+          <div class="section-name" data-en="Overseas Work Experience" data-es="Experiencia laboral en el exterior">Overseas Work Experience</div>
+          <div class="section-sub" data-en="Up to 15 points" data-es="Hasta 15 puntos">Up to 15 points</div>
+        </div>
+        <div class="section-pts" id="pts-work">—</div>
+        <div class="section-chevron">▼</div>
+      </div>
+      <div class="section-body">
+        <div class="section-inner">
+          <div class="question">
+            <div class="question-label" data-en="Years of skilled work experience outside Australia in your nominated occupation?" data-es="¿Años de experiencia laboral calificada fuera de Australia en tu ocupación nominada?">Years of skilled work experience outside Australia in your nominated occupation?</div>
+            <div class="question-hint" data-en="Must be in your nominated occupation or a closely related occupation within the last 10 years." data-es="Debe ser en tu ocupación nominada o una ocupación relacionada dentro de los últimos 10 años.">Must be in your nominated occupation or a closely related occupation within the last 10 years.</div>
+            <div class="options-grid">
+              <button class="opt-btn" onclick="selectOption('work',0,'sec-work')" data-group="work"><span class="opt-text" data-en="Less than 3 years" data-es="Menos de 3 años">Less than 3 years</span><span class="opt-pts">0 pts</span></button>
+              <button class="opt-btn" onclick="selectOption('work',5,'sec-work')" data-group="work"><span class="opt-text" data-en="3 – 4 years" data-es="3 – 4 años">3 – 4 years</span><span class="opt-pts positive">+5 pts</span></button>
+              <button class="opt-btn" onclick="selectOption('work',10,'sec-work')" data-group="work"><span class="opt-text" data-en="5 – 7 years" data-es="5 – 7 años">5 – 7 years</span><span class="opt-pts positive">+10 pts</span></button>
+              <button class="opt-btn" onclick="selectOption('work',15,'sec-work')" data-group="work"><span class="opt-text" data-en="8 years or more" data-es="8 años o más">8 years or more</span><span class="opt-pts positive">+15 pts</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. AUSTRALIAN WORK EXPERIENCE -->
+    <div class="section-card fade-up" id="sec-auwork">
+      <div class="section-header" onclick="toggleSection('sec-auwork')">
+        <div class="section-num">4</div>
+        <div class="section-info">
+          <div class="section-name" data-en="Australian Work Experience" data-es="Experiencia laboral en Australia">Australian Work Experience</div>
+          <div class="section-sub" data-en="Up to 20 points" data-es="Hasta 20 puntos">Up to 20 points</div>
+        </div>
+        <div class="section-pts" id="pts-auwork">—</div>
+        <div class="section-chevron">▼</div>
+      </div>
+      <div class="section-body">
+        <div class="section-inner">
+          <div class="question">
+            <div class="question-label" data-en="Years of skilled work experience in Australia in your nominated occupation?" data-es="¿Años de experiencia laboral calificada en Australia en tu ocupación nominada?">Years of skilled work experience in Australia in your nominated occupation?</div>
+            <div class="question-hint" data-en="Must be lawful work in Australia while you held a visa that permitted work." data-es="Debe ser trabajo legal en Australia mientras tenías una visa que permitía trabajar.">Must be lawful work in Australia while you held a visa that permitted work.</div>
+            <div class="options-grid">
+              <button class="opt-btn" onclick="selectOption('auwork',0,'sec-auwork')" data-group="auwork"><span class="opt-text" data-en="Less than 1 year" data-es="Menos de 1 año">Less than 1 year</span><span class="opt-pts">0 pts</span></button>
+              <button class="opt-btn" onclick="selectOption('auwork',5,'sec-auwork')" data-group="auwork"><span class="opt-text" data-en="1 – 2 years" data-es="1 – 2 años">1 – 2 years</span><span class="opt-pts positive">+5 pts</span></button>
+              <button class="opt-btn" onclick="selectOption('auwork',10,'sec-auwork')" data-group="auwork"><span class="opt-text" data-en="3 – 4 years" data-es="3 – 4 años">3 – 4 years</span><span class="opt-pts positive">+10 pts</span></button>
+              <button class="opt-btn" onclick="selectOption('auwork',15,'sec-auwork')" data-group="auwork"><span class="opt-text" data-en="5 – 7 years" data-es="5 – 7 años">5 – 7 años</span><span class="opt-pts positive">+15 pts</span></button>
+              <button class="opt-btn" onclick="selectOption('auwork',20,'sec-auwork')" data-group="auwork"><span class="opt-text" data-en="8 years or more" data-es="8 años o más">8 years or more</span><span class="opt-pts positive">+20 pts</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. EDUCATION -->
+    <div class="section-card fade-up" id="sec-edu">
+      <div class="section-header" onclick="toggleSection('sec-edu')">
+        <div class="section-num">5</div>
+        <div class="section-info">
+          <div class="section-name" data-en="Education" data-es="Educación">Education</div>
+          <div class="section-sub" data-en="Up to 20 points" data-es="Hasta 20 puntos">Up to 20 points</div>
+        </div>
+        <div class="section-pts" id="pts-edu">—</div>
+        <div class="section-chevron">▼</div>
+      </div>
+      <div class="section-body">
+        <div class="section-inner">
+          <div class="question">
+            <div class="question-label" data-en="What is your highest educational qualification?" data-es="¿Cuál es tu nivel educativo más alto?">What is your highest educational qualification?</div>
+            <div class="question-hint" data-en="Qualifications must be assessed by the relevant assessing authority for your occupation." data-es="Las calificaciones deben ser evaluadas por la autoridad de evaluación correspondiente para tu ocupación.">Qualifications must be assessed by the relevant assessing authority for your occupation.</div>
+            <div class="options-grid">
+              <button class="opt-btn" onclick="selectOption('edu',0,'sec-edu')" data-group="edu"><span class="opt-text" data-en="No formal qualifications / trade qualification" data-es="Sin calificaciones formales / calificación de oficio">No formal qualifications / trade qualification</span><span class="opt-pts">0 pts</span></button>
+              <button class="opt-btn" onclick="selectOption('edu',10,'sec-edu')" data-group="edu"><span class="opt-text" data-en="Diploma or trade qualification" data-es="Diploma o calificación de oficio">Diploma or trade qualification</span><span class="opt-pts positive">+10 pts</span></button>
+              <button class="opt-btn" onclick="selectOption('edu',15,'sec-edu')" data-group="edu"><span class="opt-text" data-en="Bachelor degree" data-es="Licenciatura">Bachelor degree</span><span class="opt-pts positive">+15 pts</span></button>
+              <button class="opt-btn" onclick="selectOption('edu',15,'sec-edu')" data-group="edu"><span class="opt-text" data-en="Bachelor degree with honours / Master's by coursework" data-es="Licenciatura con honores / Maestría por materias">Bachelor degree with honours / Master's by coursework</span><span class="opt-pts positive">+15 pts</span></button>
+              <button class="opt-btn" onclick="selectOption('edu',20,'sec-edu')" data-group="edu"><span class="opt-text" data-en="Doctorate (PhD)" data-es="Doctorado (PhD)">Doctorate (PhD)</span><span class="opt-pts positive">+20 pts</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. AUSTRALIAN STUDY -->
+    <div class="section-card fade-up" id="sec-austudy">
+      <div class="section-header" onclick="toggleSection('sec-austudy')">
+        <div class="section-num">6</div>
+        <div class="section-info">
+          <div class="section-name" data-en="Australian Study Requirement" data-es="Requisito de estudio en Australia">Australian Study Requirement</div>
+          <div class="section-sub" data-en="5 points" data-es="5 puntos">5 points</div>
+        </div>
+        <div class="section-pts" id="pts-austudy">—</div>
+        <div class="section-chevron">▼</div>
+      </div>
+      <div class="section-body">
+        <div class="section-inner">
+          <div class="question">
+            <div class="question-label" data-en="Did you complete at least 2 years of a degree, diploma or trade qualification in Australia?" data-es="¿Completaste al menos 2 años de un título, diploma o calificación en Australia?">Did you complete at least 2 years of a degree, diploma or trade qualification in Australia?</div>
+            <div class="question-hint" data-en="The qualification must have been studied while onshore and must require at least 2 years to complete." data-es="La calificación debe haber sido cursada dentro de Australia y debe requerir al menos 2 años para completarse.">The qualification must have been studied while onshore and must require at least 2 years to complete.</div>
+            <div class="options-grid">
+              <button class="opt-btn" onclick="selectOption('austudy',0,'sec-austudy')" data-group="austudy"><span class="opt-text" data-en="No" data-es="No">No</span><span class="opt-pts">0 pts</span></button>
+              <button class="opt-btn" onclick="selectOption('austudy',5,'sec-austudy')" data-group="austudy"><span class="opt-text" data-en="Yes — 2+ years of study in Australia" data-es="Sí — 2+ años de estudio en Australia">Yes — 2+ years of study in Australia</span><span class="opt-pts positive">+5 pts</span></button>
+            </div>
+          </div>
+          <!-- Conditional: specialist education -->
+          <div class="cond-question" id="cond-specia">
+            <div class="question" style="margin-top:18px; padding-top:18px; border-top:1px solid var(--gray-100);">
+              <div class="question-label" data-en="Was your Australian study in a STEM field or designated area of need?" data-es="¿Tu estudio en Australia fue en un campo STEM o área de necesidad designada?">Was your Australian study in a STEM field or designated area of need?</div>
+              <div class="question-hint" data-en="Specialist Education Qualification: additional 10 points if studying a science, technology, engineering, or mathematics course in a regional area of Australia." data-es="Calificación educativa especializada: 10 puntos adicionales si estudiaste ciencias, tecnología, ingeniería o matemáticas en un área regional de Australia.">Specialist Education Qualification: additional 10 points if studying a science, technology, engineering, or mathematics course in a regional area of Australia.</div>
+              <div class="options-grid">
+                <button class="opt-btn" onclick="selectOption('specia',0,'sec-austudy')" data-group="specia"><span class="opt-text" data-en="No" data-es="No">No</span><span class="opt-pts">0 pts</span></button>
+                <button class="opt-btn" onclick="selectOption('specia',10,'sec-austudy')" data-group="specia"><span class="opt-text" data-en="Yes — STEM/specialist study in regional Australia" data-es="Sí — Estudio STEM/especializado en Australia regional">Yes — STEM/specialist study in regional Australia</span><span class="opt-pts positive">+10 pts</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. PARTNER SKILLS -->
+    <div class="section-card fade-up" id="sec-partner">
+      <div class="section-header" onclick="toggleSection('sec-partner')">
+        <div class="section-num">7</div>
+        <div class="section-info">
+          <div class="section-name" data-en="Partner Skills" data-es="Habilidades del cónyuge">Partner Skills</div>
+          <div class="section-sub" data-en="Up to 10 points" data-es="Hasta 10 puntos">Up to 10 points</div>
+        </div>
+        <div class="section-pts" id="pts-partner">—</div>
+        <div class="section-chevron">▼</div>
+      </div>
+      <div class="section-body">
+        <div class="section-inner">
+          <div class="question">
+            <div class="question-label" data-en="Are you including a partner in your application?" data-es="¿Incluyes a un cónyuge o pareja en tu solicitud?">Are you including a partner in your application?</div>
+            <div class="options-grid">
+              <button class="opt-btn" onclick="partnerStatus('none')" data-group="partner-status"><span class="opt-text" data-en="No partner / applying as single" data-es="Sin pareja / solicitando solo">No partner / applying as single</span><span class="opt-pts positive">+10 pts</span></button>
+              <button class="opt-btn" onclick="partnerStatus('has')" data-group="partner-status"><span class="opt-text" data-en="Yes, including a partner" data-es="Sí, incluyo pareja">Yes, including a partner</span><span class="opt-pts">varies</span></button>
+            </div>
+          </div>
+          <div class="cond-question" id="cond-partner-detail">
+            <div class="question" style="margin-top:18px; padding-top:18px; border-top:1px solid var(--gray-100);">
+              <div class="question-label" data-en="Does your partner meet the skilled migration requirements?" data-es="¿Tu pareja cumple los requisitos de migración calificada?">Does your partner meet the skilled migration requirements?</div>
+              <div class="question-hint" data-en="Your partner must be under 45, have competent English, and have a positively assessed skills qualification." data-es="Tu pareja debe tener menos de 45 años, inglés competente y calificación evaluada positivamente.">Your partner must be under 45, have competent English, and have a positively assessed skills qualification.</div>
+              <div class="options-grid">
+                <button class="opt-btn" onclick="selectOption('partner',0,'sec-partner')" data-group="partner"><span class="opt-text" data-en="No — partner does not meet requirements" data-es="No — la pareja no cumple los requisitos">No — partner does not meet requirements</span><span class="opt-pts">0 pts</span></button>
+                <button class="opt-btn" onclick="selectOption('partner',5,'sec-partner')" data-group="partner"><span class="opt-text" data-en="Yes — partner has skills assessment" data-es="Sí — la pareja tiene evaluación de habilidades">Yes — partner has skills assessment</span><span class="opt-pts positive">+5 pts</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. STATE NOMINATION / COMMUNITY LANGUAGE -->
+    <div class="section-card fade-up" id="sec-state">
+      <div class="section-header" onclick="toggleSection('sec-state')">
+        <div class="section-num">8</div>
+        <div class="section-info">
+          <div class="section-name" data-en="State Nomination" data-es="Nominación estatal">State Nomination</div>
+          <div class="section-sub" data-en="5 points (190 visa only)" data-es="5 puntos (solo visa 190)">5 points (190 visa only)</div>
+        </div>
+        <div class="section-pts" id="pts-state">—</div>
+        <div class="section-chevron">▼</div>
+      </div>
+      <div class="section-body">
+        <div class="section-inner">
+          <div class="question">
+            <div class="question-label" data-en="Have you been nominated by an Australian state or territory?" data-es="¿Has sido nominado por un estado o territorio australiano?">Have you been nominated by an Australian state or territory?</div>
+            <div class="question-hint" data-en="State nomination is only available for the 190 visa. You need to apply through the relevant state/territory government." data-es="La nominación estatal solo está disponible para la visa 190. Debes postularte a través del gobierno estatal correspondiente.">State nomination is only available for the 190 visa. You need to apply through the relevant state/territory government.</div>
+            <div class="options-grid">
+              <button class="opt-btn" onclick="selectOption('state',0,'sec-state')" data-group="state"><span class="opt-text" data-en="No state nomination" data-es="Sin nominación estatal">No state nomination</span><span class="opt-pts">0 pts</span></button>
+              <button class="opt-btn" onclick="selectOption('state',5,'sec-state')" data-group="state"><span class="opt-text" data-en="Yes — nominated by a state or territory (190 only)" data-es="Sí — nominado por un estado o territorio (solo 190)">Yes — nominated by a state or territory (190 only)</span><span class="opt-pts positive">+5 pts</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. COMMUNITY LANGUAGE / PROFESSIONAL YEAR -->
+    <div class="section-card fade-up" id="sec-bonus">
+      <div class="section-header" onclick="toggleSection('sec-bonus')">
+        <div class="section-num">9</div>
+        <div class="section-info">
+          <div class="section-name" data-en="Bonus Points" data-es="Puntos adicionales">Bonus Points</div>
+          <div class="section-sub" data-en="Community language, Professional Year, regional study" data-es="Idioma comunitario, Año profesional, estudio regional">Community language, Professional Year, regional study</div>
+        </div>
+        <div class="section-pts" id="pts-bonus">—</div>
+        <div class="section-chevron">▼</div>
+      </div>
+      <div class="section-body">
+        <div class="section-inner">
+          <!-- Community language -->
+          <div class="question">
+            <div class="question-label" data-en="Do you have accredited community language skills?" data-es="¿Tienes habilidades en un idioma comunitario acreditado?">Do you have accredited community language skills?</div>
+            <div class="question-hint" data-en="You must be accredited as a community language interpreter by NAATI." data-es="Debes estar acreditado como intérprete de idioma comunitario por NAATI.">You must be accredited as a community language interpreter by NAATI.</div>
+            <div class="options-grid">
+              <button class="opt-btn" onclick="selectOption('lang',0,'sec-bonus')" data-group="lang"><span class="opt-text" data-en="No" data-es="No">No</span><span class="opt-pts">0 pts</span></button>
+              <button class="opt-btn" onclick="selectOption('lang',5,'sec-bonus')" data-group="lang"><span class="opt-text" data-en="Yes — NAATI accredited community language" data-es="Sí — idioma comunitario acreditado por NAATI">Yes — NAATI accredited community language</span><span class="opt-pts positive">+5 pts</span></button>
+            </div>
+          </div>
+          <!-- Professional Year -->
+          <div class="question" style="margin-top:18px;">
+            <div class="question-label" data-en="Have you completed a Professional Year in Australia?" data-es="¿Completaste un Año Profesional en Australia?">Have you completed a Professional Year in Australia?</div>
+            <div class="question-hint" data-en="Available for accountants (CAANZ/CPA), IT (ACS) and engineers (Engineers Australia). Must be completed in Australia." data-es="Disponible para contadores (CAANZ/CPA), IT (ACS) e ingenieros (Engineers Australia). Debe completarse en Australia.">Available for accountants (CAANZ/CPA), IT (ACS) and engineers (Engineers Australia). Must be completed in Australia.</div>
+            <div class="options-grid">
+              <button class="opt-btn" onclick="selectOption('profyear',0,'sec-bonus')" data-group="profyear"><span class="opt-text" data-en="No" data-es="No">No</span><span class="opt-pts">0 pts</span></button>
+              <button class="opt-btn" onclick="selectOption('profyear',5,'sec-bonus')" data-group="profyear"><span class="opt-text" data-en="Yes — completed Professional Year in Australia" data-es="Sí — completé el Año Profesional en Australia">Yes — completed Professional Year in Australia</span><span class="opt-pts positive">+5 pts</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULT SECTION -->
+    <div class="result-section" id="resultSection">
+      <div class="result-tag" data-en="Your result" data-es="Tu resultado">Your result</div>
+      <div class="result-heading" id="resultHeading"></div>
+      <div class="result-sub" id="resultSub"></div>
+      <div class="result-cards" id="resultCards"></div>
+      <div class="result-actions">
+        <a href="migro-visa-compare.html" class="btn-result" data-en="⚖ Compare visas" data-es="⚖ Comparar visas">⚖ Compare visas</a>
+        <a href="migro-services.html" class="btn-result-ghost" data-en="Find a migration agent" data-es="Encontrar agente migratorio">Find a migration agent</a>
+        <button class="btn-result-ghost" onclick="resetCalc()" data-en="↺ Recalculate" data-es="↺ Recalcular">↺ Recalculate</button>
+      </div>
+    </div>
+
+    <!-- RECENT ROUNDS TABLE -->
+    <div class="rounds-card fade-up">
+      <div class="rounds-header">
+        <div class="rounds-title" data-en="Recent invitation rounds" data-es="Rondas de invitación recientes">Recent invitation rounds</div>
+        <div class="rounds-sub" data-en="SkillSelect rounds — Fiscal Year 2025-26" data-es="Rondas SkillSelect — Año fiscal 2025-26">SkillSelect rounds — Fiscal Year 2025-26</div>
+      </div>
+      <table class="rounds-table">
+        <thead>
+          <tr>
+            <th data-en="Date" data-es="Fecha">Date</th>
+            <th data-en="Visa" data-es="Visa">Visa</th>
+            <th data-en="Invitations" data-es="Invitaciones">Invitations</th>
+            <th data-en="Lowest score" data-es="Puntaje mínimo">Lowest score</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Feb 2026</td>
+            <td><span class="round-visa v189">189</span></td>
+            <td>1,100</td>
+            <td class="round-cutoff">90</td>
+          </tr>
+          <tr>
+            <td>Feb 2026</td>
+            <td><span class="round-visa v190">190</span></td>
+            <td>2,950</td>
+            <td class="round-cutoff">80</td>
+          </tr>
+          <tr>
+            <td>Jan 2026</td>
+            <td><span class="round-visa v189">189</span></td>
+            <td>900</td>
+            <td class="round-cutoff">95</td>
+          </tr>
+          <tr>
+            <td>Jan 2026</td>
+            <td><span class="round-visa v190">190</span></td>
+            <td>3,200</td>
+            <td class="round-cutoff">80</td>
+          </tr>
+          <tr>
+            <td>Dec 2025</td>
+            <td><span class="round-visa v189">189</span></td>
+            <td>700</td>
+            <td class="round-cutoff">95</td>
+          </tr>
+          <tr>
+            <td>Dec 2025</td>
+            <td><span class="round-visa v190">190</span></td>
+            <td>2,800</td>
+            <td class="round-cutoff">85</td>
+          </tr>
+          <tr>
+            <td>Nov 2025</td>
+            <td><span class="round-visa v189">189</span></td>
+            <td>1,050</td>
+            <td class="round-cutoff">90</td>
+          </tr>
+          <tr>
+            <td>Nov 2025</td>
+            <td><span class="round-visa v190">190</span></td>
+            <td>3,100</td>
+            <td class="round-cutoff">80</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div><!-- /calc-sections -->
+
+  <!-- RIGHT: SCORE PANEL -->
+  <div class="score-panel">
+
+    <!-- LIVE SCORE -->
+    <div class="score-card">
+      <div class="score-label" data-en="Your points score" data-es="Tu puntaje">Your points score</div>
+      <div class="score-total" id="scoreTotal">0</div>
+      <div class="score-max" data-en="out of ~130 possible points" data-es="de ~130 puntos posibles">out of ~130 possible points</div>
+      <div class="score-bar-wrap">
+        <div class="score-bar-bg">
+          <div class="score-bar-fill" id="scoreBarFill"></div>
+        </div>
+      </div>
+      <div class="score-breakdown">
+        <div class="score-row"><span class="score-row-label" data-en="Age" data-es="Edad">Age</span><span class="score-row-val zero" id="br-age">—</span></div>
+        <div class="score-row"><span class="score-row-label" data-en="English" data-es="Inglés">English</span><span class="score-row-val zero" id="br-english">—</span></div>
+        <div class="score-row"><span class="score-row-label" data-en="Overseas work" data-es="Trabajo exterior">Overseas work</span><span class="score-row-val zero" id="br-work">—</span></div>
+        <div class="score-row"><span class="score-row-label" data-en="Australian work" data-es="Trabajo en AU">Australian work</span><span class="score-row-val zero" id="br-auwork">—</span></div>
+        <div class="score-row"><span class="score-row-label" data-en="Education" data-es="Educación">Education</span><span class="score-row-val zero" id="br-edu">—</span></div>
+        <div class="score-row"><span class="score-row-label" data-en="AU study" data-es="Estudio en AU">AU study</span><span class="score-row-val zero" id="br-austudy">—</span></div>
+        <div class="score-row"><span class="score-row-label" data-en="Partner" data-es="Pareja">Partner</span><span class="score-row-val zero" id="br-partner">—</span></div>
+        <div class="score-row"><span class="score-row-label" data-en="State nom." data-es="Nom. estatal">State nom.</span><span class="score-row-val zero" id="br-state">—</span></div>
+        <div class="score-row"><span class="score-row-label" data-en="Bonus" data-es="Bonos">Bonus</span><span class="score-row-val zero" id="br-bonus">—</span></div>
+      </div>
+    </div>
+
+    <!-- THRESHOLDS -->
+    <div class="threshold-card">
+      <div class="threshold-title" data-en="Invitation thresholds (2025-26)" data-es="Umbrales de invitación (2025-26)">Invitation thresholds (2025-26)</div>
+      <div class="threshold-item t189">
+        <div>
+          <span class="threshold-badge">189</span>
+        </div>
+        <div class="threshold-info">
+          <div class="threshold-score">90 pts</div>
+          <div class="threshold-desc" data-en="Skilled Independent — latest round cutoff" data-es="Independiente calificado — último corte">Skilled Independent — latest round cutoff</div>
+          <div class="threshold-gap need" id="gap189" data-en="—" data-es="—">—</div>
+        </div>
+      </div>
+      <div class="threshold-item t190">
+        <div>
+          <span class="threshold-badge">190</span>
+        </div>
+        <div class="threshold-info">
+          <div class="threshold-score">80 pts</div>
+          <div class="threshold-desc" data-en="Skilled Nominated — latest round cutoff" data-es="Nominado por estado — último corte">Skilled Nominated — latest round cutoff</div>
+          <div class="threshold-gap need" id="gap190" data-en="—" data-es="—">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIPS -->
+    <div class="tips-card">
+      <div class="tips-title" data-en="Score improvement tips" data-es="Cómo mejorar tu puntaje">Score improvement tips</div>
+      <div id="tipsList">
+        <div class="tip-item"><span class="tip-icon">💡</span><span data-en="Complete your answers to see personalised tips." data-es="Completa tus respuestas para ver consejos personalizados.">Complete your answers to see personalised tips.</span></div>
+      </div>
+      <button class="btn-share" onclick="shareScore()" data-en="📋 Copy score summary" data-es="📋 Copiar resumen">📋 Copy score summary</button>
+    </div>
+
+  </div><!-- /score-panel -->
+
+</div><!-- /page-body -->
+
+<script>
+  // ─── STATE ───────────────────────────────────────────────────────────────
+  const THRESHOLDS = { v189: 90, v190: 80 };
+  const MAX_SCORE = 130;
+  const TOTAL_SECTIONS = 9;
+
+  const scores = {
+    age: null, english: null, work: null, auwork: null,
+    edu: null, austudy: null, specia: null, partner: null,
+    state: null, lang: null, profyear: null
+  };
+
+  const sectionMap = {
+    'sec-age':     ['age'],
+    'sec-english': ['english'],
+    'sec-work':    ['work'],
+    'sec-auwork':  ['auwork'],
+    'sec-edu':     ['edu'],
+    'sec-austudy': ['austudy','specia'],
+    'sec-partner': ['partner'],
+    'sec-state':   ['state'],
+    'sec-bonus':   ['lang','profyear']
+  };
+
+  const sectionPtsEl = {
+    'sec-age':     'pts-age',
+    'sec-english': 'pts-english',
+    'sec-work':    'pts-work',
+    'sec-auwork':  'pts-auwork',
+    'sec-edu':     'pts-edu',
+    'sec-austudy': 'pts-austudy',
+    'sec-partner': 'pts-partner',
+    'sec-state':   'pts-state',
+    'sec-bonus':   'pts-bonus'
+  };
+
+  const breakdownMap = {
+    age:'br-age', english:'br-english', work:'br-work', auwork:'br-auwork',
+    edu:'br-edu', austudy:'br-austudy', partner:'br-partner', state:'br-state'
+  };
+
+  let lang = 'en';
+  let partnerHas = false;
+
+  // ─── SELECT OPTION ────────────────────────────────────────────────────────
+  function selectOption(group, pts, secId) {
+    scores[group] = pts;
+
+    // highlight selected button
+    document.querySelectorAll(`[data-group="${group}"]`).forEach(btn => btn.classList.remove('selected'));
+    event.currentTarget.classList.add('selected');
+
+    // special: austudy shows conditional
+    if (group === 'austudy') {
+      const cond = document.getElementById('cond-specia');
+      if (pts > 0) { cond.classList.add('show'); }
+      else { cond.classList.remove('show'); scores.specia = null; resetGroup('specia'); }
+    }
+
+    updateAll(secId);
+  }
+
+  function partnerStatus(status) {
+    partnerHas = (status === 'has');
+    document.querySelectorAll('[data-group="partner-status"]').forEach(btn => btn.classList.remove('selected'));
+    event.currentTarget.classList.add('selected');
+
+    const cond = document.getElementById('cond-partner-detail');
+    if (partnerHas) {
+      cond.classList.add('show');
+      scores.partner = null;
+      resetGroup('partner');
+    } else {
+      cond.classList.remove('show');
+      scores.partner = 10; // single = 10 pts
+    }
+    updateAll('sec-partner');
+  }
+
+  function resetGroup(group) {
+    document.querySelectorAll(`[data-group="${group}"]`).forEach(btn => btn.classList.remove('selected'));
+  }
+
+  // ─── CALCULATE TOTAL ─────────────────────────────────────────────────────
+  function calcTotal() {
+    let total = 0;
+    for (const k in scores) {
+      if (scores[k] !== null) total += scores[k];
+    }
+    return total;
+  }
+
+  function calcSectionPts(secId) {
+    const keys = sectionMap[secId] || [];
+    let sum = 0;
+    for (const k of keys) { if (scores[k] !== null) sum += scores[k]; }
+    return sum;
+  }
+
+  function isSectionAnswered(secId) {
+    const keys = sectionMap[secId] || [];
+    // a section is answered if at least first key is answered
+    return scores[keys[0]] !== null;
+  }
+
+  // ─── UPDATE UI ────────────────────────────────────────────────────────────
+  function updateAll(changedSec) {
+    const total = calcTotal();
+
+    // total score
+    document.getElementById('scoreTotal').textContent = total;
+    const pct = Math.min(100, Math.round((total / MAX_SCORE) * 100));
+    document.getElementById('scoreBarFill').style.width = pct + '%';
+
+    // section pts display
+    for (const secId in sectionPtsEl) {
+      const elId = sectionPtsEl[secId];
+      const el = document.getElementById(elId);
+      const sec = document.getElementById(secId);
+      const pts = calcSectionPts(secId);
+      if (isSectionAnswered(secId)) {
+        el.textContent = pts + ' pts';
+        sec.classList.add('has-points');
+      } else {
+        el.textContent = '—';
+        sec.classList.remove('has-points');
+      }
+    }
+
+    // breakdown rows
+    const brKeys = ['age','english','work','auwork','edu'];
+    for (const k of brKeys) {
+      const el = document.getElementById('br-' + k);
+      if (scores[k] !== null) { el.textContent = scores[k] + ' pts'; el.classList.remove('zero'); }
+      else { el.textContent = '—'; el.classList.add('zero'); }
+    }
+    // austudy + specia combined
+    const auEl = document.getElementById('br-austudy');
+    const auPts = (scores.austudy || 0) + (scores.specia || 0);
+    if (scores.austudy !== null) { auEl.textContent = auPts + ' pts'; auEl.classList.remove('zero'); }
+    else { auEl.textContent = '—'; auEl.classList.add('zero'); }
+    // partner
+    const pEl = document.getElementById('br-partner');
+    if (scores.partner !== null || (!partnerHas && document.querySelector('[data-group="partner-status"].selected'))) {
+      const pPts = scores.partner !== null ? scores.partner : 10;
+      pEl.textContent = pPts + ' pts'; pEl.classList.remove('zero');
+    } else { pEl.textContent = '—'; pEl.classList.add('zero'); }
+    // state
+    const stEl = document.getElementById('br-state');
+    if (scores.state !== null) { stEl.textContent = scores.state + ' pts'; stEl.classList.remove('zero'); }
+    else { stEl.textContent = '—'; stEl.classList.add('zero'); }
+    // bonus
+    const bnEl = document.getElementById('br-bonus');
+    const bnPts = (scores.lang || 0) + (scores.profyear || 0);
+    if (scores.lang !== null || scores.profyear !== null) { bnEl.textContent = bnPts + ' pts'; bnEl.classList.remove('zero'); }
+    else { bnEl.textContent = '—'; bnEl.classList.add('zero'); }
+
+    // gaps
+    updateGap('gap189', total, THRESHOLDS.v189);
+    updateGap('gap190', total, THRESHOLDS.v190);
+
+    // progress dots
+    updateProgress();
+
+    // tips
+    updateTips(total);
+
+    // auto-close answered, open next
+    if (changedSec) {
+      document.getElementById(changedSec).classList.remove('open');
+      advanceToNext(changedSec);
+    }
+
+    // show result if all answered
+    checkResult(total);
+  }
+
+  function updateGap(elId, total, threshold) {
+    const el = document.getElementById(elId);
+    const diff = threshold - total;
+    if (diff > 0) {
+      el.className = 'threshold-gap need';
+      el.textContent = lang === 'en' ? `Need ${diff} more pts` : `Necesitas ${diff} pts más`;
+    } else {
+      el.className = 'threshold-gap met';
+      el.textContent = lang === 'en' ? `✓ Threshold met (+${Math.abs(diff)} pts above)` : `✓ Umbral superado (+${Math.abs(diff)} pts)`;
+    }
+  }
+
+  function updateProgress() {
+    const secs = Object.keys(sectionMap);
+    const answered = secs.filter(s => isSectionAnswered(s)).length;
+    const dotsEl = document.getElementById('progressDots');
+    dotsEl.innerHTML = '';
+    secs.forEach((s, i) => {
+      const dot = document.createElement('div');
+      dot.className = 'prog-dot' + (isSectionAnswered(s) ? ' done' : '');
+      dotsEl.appendChild(dot);
+    });
+    document.getElementById('progressPct').textContent = answered + ' / ' + TOTAL_SECTIONS;
+  }
+
+  function advanceToNext(currentSec) {
+    const secs = Object.keys(sectionMap);
+    const idx = secs.indexOf(currentSec);
+    if (idx >= 0 && idx < secs.length - 1) {
+      const next = secs[idx + 1];
+      if (!isSectionAnswered(next)) {
+        setTimeout(() => {
+          const nextEl = document.getElementById(next);
+          nextEl.classList.add('open');
+          nextEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 300);
+      }
+    }
+  }
+
+  function checkResult(total) {
+    const allAnswered = Object.keys(sectionMap).every(s => isSectionAnswered(s));
+    const resultSec = document.getElementById('resultSection');
+    if (!allAnswered) { resultSec.classList.remove('show'); return; }
+
+    resultSec.classList.add('show');
+
+    const v189Met = total >= THRESHOLDS.v189;
+    const v190Met = total >= THRESHOLDS.v190;
+
+    const heading = document.getElementById('resultHeading');
+    const sub = document.getElementById('resultSub');
+    const cards = document.getElementById('resultCards');
+
+    if (lang === 'en') {
+      heading.textContent = v189Met
+        ? `You scored ${total} points — competitive for 189 & 190`
+        : v190Met
+        ? `You scored ${total} points — competitive for 190`
+        : `You scored ${total} points — more work needed`;
+      sub.textContent = v189Met
+        ? `Your score is above recent cutoffs for both visas. Submit your EOI now to maximise your chances of receiving an invitation.`
+        : v190Met
+        ? `Your score is above the 190 threshold. Consider applying for state nomination to increase your chances.`
+        : `Your score is below current invitation thresholds. Review the improvement tips to boost your points.`;
+    } else {
+      heading.textContent = v189Met
+        ? `Obtuviste ${total} puntos — competitivo para 189 y 190`
+        : v190Met
+        ? `Obtuviste ${total} puntos — competitivo para 190`
+        : `Obtuviste ${total} puntos — necesitas mejorar`;
+      sub.textContent = v189Met
+        ? `Tu puntaje está por encima de los cortes recientes para ambas visas. Envía tu EOI ahora para maximizar tus posibilidades.`
+        : v190Met
+        ? `Tu puntaje supera el umbral de la 190. Considera postularte para nominación estatal.`
+        : `Tu puntaje está por debajo de los umbrales actuales. Revisa los consejos para mejorar tus puntos.`;
+    }
+
+    cards.innerHTML = `
+      <div class="result-card ${v189Met ? 'eligible' : 'ineligible'}">
+        <div class="result-card-badge">${v189Met ? (lang==='en'?'ELIGIBLE':'ELEGIBLE') : (lang==='en'?'BELOW THRESHOLD':'BAJO UMBRAL')}</div>
+        <div class="result-card-title">Subclass 189</div>
+        <div class="result-card-sub">${lang==='en'?'Skilled Independent — '+THRESHOLDS.v189+' pts required':'Independiente calificado — se requieren '+THRESHOLDS.v189+' pts'}</div>
+      </div>
+      <div class="result-card ${v190Met ? 'eligible' : 'ineligible'}">
+        <div class="result-card-badge">${v190Met ? (lang==='en'?'ELIGIBLE':'ELEGIBLE') : (lang==='en'?'BELOW THRESHOLD':'BAJO UMBRAL')}</div>
+        <div class="result-card-title">Subclass 190</div>
+        <div class="result-card-sub">${lang==='en'?'Skilled Nominated — '+THRESHOLDS.v190+' pts required + state nom.':'Nominado estatal — se requieren '+THRESHOLDS.v190+' pts + nominación'}</div>
+      </div>
+    `;
+
+    resultSec.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  // ─── TIPS ENGINE ─────────────────────────────────────────────────────────
+  const TIPS_EN = [
+    { key: 'english', check: () => (scores.english||0) < 20,  text: 'Achieve IELTS 8.0 in each band (Superior English) for an extra 10 points over Proficient.' },
+    { key: 'austudy', check: () => scores.austudy === null || scores.austudy === 0, text: 'Complete 2+ years of an Australian qualification to earn 5 bonus points.' },
+    { key: 'work',    check: () => (scores.work||0) < 15,    text: 'Each additional year of overseas work experience brings you closer to the 15-point maximum.' },
+    { key: 'auwork',  check: () => (scores.auwork||0) < 20,  text: 'Australian work experience is worth up to 20 pts — consider extending your onshore stay.' },
+    { key: 'state',   check: () => scores.state === 0,        text: 'Applying for state nomination (190) adds 5 guaranteed points with a lower cutoff threshold.' },
+    { key: 'lang',    check: () => scores.lang !== 5,         text: 'NAATI accreditation in a community language adds 5 points — Spanish qualifies.' },
+    { key: 'profyear',check: () => scores.profyear !== 5,     text: 'A Professional Year (ACS for IT, CA/CPA for accounting) adds 5 points.' },
+    { key: 'partner', check: () => partnerHas && (scores.partner||0) < 5, text: 'Help your partner get a skills assessment to add 5 points to your application.' },
+  ];
+  const TIPS_ES = [
+    { key: 'english', check: () => (scores.english||0) < 20,  text: 'Alcanza IELTS 8.0 en cada banda (inglés superior) para 10 puntos extra sobre el nivel competente.' },
+    { key: 'austudy', check: () => scores.austudy === null || scores.austudy === 0, text: 'Completa 2+ años de estudio en Australia para ganar 5 puntos extra.' },
+    { key: 'work',    check: () => (scores.work||0) < 15,    text: 'Cada año adicional de experiencia laboral en el exterior te acerca al máximo de 15 puntos.' },
+    { key: 'auwork',  check: () => (scores.auwork||0) < 20,  text: 'La experiencia laboral en Australia vale hasta 20 pts — considera extender tu estadía.' },
+    { key: 'state',   check: () => scores.state === 0,        text: 'La nominación estatal (190) agrega 5 puntos garantizados con un umbral de corte más bajo.' },
+    { key: 'lang',    check: () => scores.lang !== 5,         text: 'La acreditación NAATI en un idioma comunitario agrega 5 puntos — el español califica.' },
+    { key: 'profyear',check: () => scores.profyear !== 5,     text: 'Un Año Profesional (ACS para IT, CA/CPA para contadores) agrega 5 puntos.' },
+    { key: 'partner', check: () => partnerHas && (scores.partner||0) < 5, text: 'Ayuda a tu pareja a obtener una evaluación de habilidades para agregar 5 puntos.' },
+  ];
+
+  function updateTips(total) {
+    const tips = lang === 'en' ? TIPS_EN : TIPS_ES;
+    const relevant = tips.filter(t => t.check()).slice(0, 4);
+    const el = document.getElementById('tipsList');
+    if (!relevant.length) {
+      el.innerHTML = `<div class="tip-item"><span class="tip-icon">🎯</span><span>${lang==='en'?'Your score looks strong across all categories!':'¡Tu puntaje se ve sólido en todas las categorías!'}</span></div>`;
+      return;
+    }
+    el.innerHTML = relevant.map(t =>
+      `<div class="tip-item"><span class="tip-icon">💡</span><span>${t.text}</span></div>`
+    ).join('');
+  }
+
+  // ─── RESET ────────────────────────────────────────────────────────────────
+  function resetCalc() {
+    for (const k in scores) scores[k] = null;
+    partnerHas = false;
+    document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('.cond-question').forEach(c => c.classList.remove('show'));
+    document.getElementById('scoreTotal').textContent = '0';
+    document.getElementById('scoreBarFill').style.width = '0%';
+    document.getElementById('resultSection').classList.remove('show');
+    document.querySelectorAll('.section-card').forEach(c => { c.classList.remove('has-points','open'); });
+    document.querySelectorAll('[id^="pts-"]').forEach(e => e.textContent = '—');
+    document.querySelectorAll('[id^="br-"]').forEach(e => { e.textContent = '—'; e.classList.add('zero'); });
+    document.getElementById('gap189').textContent = '—';
+    document.getElementById('gap190').textContent = '—';
+    document.getElementById('tipsList').innerHTML = `<div class="tip-item"><span class="tip-icon">💡</span><span>${lang==='en'?'Complete your answers to see personalised tips.':'Completa tus respuestas para ver consejos personalizados.'}</span></div>`;
+    updateProgress();
+    // open first section
+    document.getElementById('sec-age').classList.add('open');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ─── SHARE ────────────────────────────────────────────────────────────────
+  function shareScore() {
+    const total = calcTotal();
+    const lines = [
+      lang === 'en' ? 'My Migro Points Score' : 'Mi Puntaje Migro',
+      '─────────────────',
+      `Total: ${total} pts`,
+      `Subclass 189 threshold: ${THRESHOLDS.v189} pts → ${total >= THRESHOLDS.v189 ? '✓ Met' : `Need ${THRESHOLDS.v189 - total} more`}`,
+      `Subclass 190 threshold: ${THRESHOLDS.v190} pts → ${total >= THRESHOLDS.v190 ? '✓ Met' : `Need ${THRESHOLDS.v190 - total} more`}`,
+      '─────────────────',
+      `Age: ${scores.age !== null ? scores.age + ' pts' : '—'}`,
+      `English: ${scores.english !== null ? scores.english + ' pts' : '—'}`,
+      `Overseas work: ${scores.work !== null ? scores.work + ' pts' : '—'}`,
+      `AU work: ${scores.auwork !== null ? scores.auwork + ' pts' : '—'}`,
+      `Education: ${scores.edu !== null ? scores.edu + ' pts' : '—'}`,
+      `AU study: ${(scores.austudy||0) + (scores.specia||0)} pts`,
+      `Partner: ${scores.partner !== null ? scores.partner + ' pts' : '—'}`,
+      `State nom: ${scores.state !== null ? scores.state + ' pts' : '—'}`,
+      `Bonus: ${(scores.lang||0) + (scores.profyear||0)} pts`,
+      '─────────────────',
+      'migro.com.au'
+    ];
+    navigator.clipboard.writeText(lines.join('\n')).then(() => {
+      const btn = document.querySelector('.btn-share');
+      const orig = btn.textContent;
+      btn.textContent = lang === 'en' ? '✓ Copied!' : '✓ ¡Copiado!';
+      setTimeout(() => { btn.textContent = orig; }, 2000);
+    }).catch(() => alert(lines.join('\n')));
+  }
+
+  // ─── SECTION TOGGLE ──────────────────────────────────────────────────────
+  function toggleSection(id) {
+    const el = document.getElementById(id);
+    el.classList.toggle('open');
+  }
+
+  // ─── LANG ─────────────────────────────────────────────────────────────────
+  function setLang(l) {
+    lang = l;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent === l.toUpperCase()));
+    document.querySelectorAll('[data-en]').forEach(el => {
+      const txt = el.getAttribute('data-' + l);
+      if (txt) el.innerHTML = txt;
+    });
+    // refresh dynamic elements
+    const total = calcTotal();
+    updateGap('gap189', total, THRESHOLDS.v189);
+    updateGap('gap190', total, THRESHOLDS.v190);
+    updateTips(total);
+  }
+
+  // ─── FADE UP OBSERVER ─────────────────────────────────────────────────────
+  const fadeObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); fadeObs.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fade-up').forEach(el => fadeObs.observe(el));
+
+  // ─── INIT ─────────────────────────────────────────────────────────────────
+  window.addEventListener('DOMContentLoaded', () => {
+    updateProgress();
+    // open first section by default
+    setTimeout(() => document.getElementById('sec-age').classList.add('open'), 400);
+  });
+</script>
+</body>
+</html>
