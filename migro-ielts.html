@@ -3,854 +3,1242 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Migro — IELTS Tracker</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <title>Migro – IELTS Full Mock Test</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
       --black: #0a0a0a; --white: #ffffff;
-      --gray-100: #f5f5f5; --gray-200: #e8e8e8;
-      --gray-300: #d0d0d0; --gray-400: #999;
-      --gray-600: #555; --gray-800: #222;
-      --green: #16a34a; --green-bg: #f0fdf4; --green-border: #bbf7d0;
-      --amber: #b45309; --amber-bg: #fffbeb; --amber-border: #fde68a;
-      --red: #dc2626; --red-bg: #fef2f2; --red-border: #fecaca;
-      --blue: #2563eb; --blue-bg: #eff6ff; --blue-border: #bfdbfe;
-      --purple: #7c3aed; --purple-bg: #f5f3ff; --purple-border: #ddd6fe;
+      --gray-100: #f5f5f5; --gray-200: #e8e8e8; --gray-400: #999999;
+      --gray-600: #555555; --gray-800: #222222;
+      --accent: #1a1a1a; --red: #e53e3e; --green: #38a169; --blue: #3182ce;
+      --yellow: #d69e2e;
     }
     html { scroll-behavior: smooth; }
-    body { font-family: 'Inter', sans-serif; background: var(--gray-100); color: var(--black); }
+    body { font-family: 'Inter', sans-serif; background: var(--gray-100); color: var(--black); min-height: 100vh; }
 
     /* NAV */
-    nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 48px; background: var(--white); border-bottom: 1px solid var(--gray-200); position: sticky; top: 0; z-index: 100; }
-    .nav-logo { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--black); text-decoration: none; }
-    .nav-logo span { display: inline-block; width: 6px; height: 6px; background: var(--black); border-radius: 50%; margin-left: 2px; vertical-align: super; }
-    .nav-right { display: flex; align-items: center; gap: 12px; }
-    .lang-toggle { display: flex; background: var(--gray-100); border-radius: 6px; padding: 3px; gap: 2px; }
-    .lang-btn { padding: 4px 10px; font-size: 11px; font-weight: 700; border: none; background: transparent; border-radius: 4px; cursor: pointer; color: var(--gray-400); transition: all .2s; }
-    .lang-btn.active { background: var(--black); color: var(--white); }
-    .nav-back { font-size: 13px; font-weight: 500; color: var(--gray-600); text-decoration: none; padding: 7px 14px; border-radius: 6px; border: 1px solid var(--gray-200); transition: all .2s; }
-    .nav-back:hover { border-color: var(--black); color: var(--black); }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 16px 40px; background: var(--black); color: var(--white); position: sticky; top: 0; z-index: 100; }
+    .nav-logo { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.5px; }
+    .nav-logo span { color: var(--gray-400); }
+    .nav-right { display: flex; align-items: center; gap: 16px; }
+    .nav-section-badge { background: #333; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+    .timer-display { font-size: 1.1rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--white); }
+    .timer-display.warning { color: #fc8181; }
+    .timer-display.danger { color: var(--red); animation: pulse 1s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
 
-    /* HERO */
-    .hero { background: var(--black); padding: 52px 48px 40px; }
-    .hero-inner { max-width: 1200px; margin: 0 auto; }
-    .hero-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #555; margin-bottom: 12px; }
-    .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(28px, 3.5vw, 46px); font-weight: 700; color: var(--white); line-height: 1.1; letter-spacing: -1px; margin-bottom: 14px; }
-    .hero-sub { font-size: 15px; color: #777; max-width: 560px; line-height: 1.6; margin-bottom: 28px; }
-    .hero-chips { display: flex; gap: 10px; flex-wrap: wrap; }
-    .hero-chip { display: flex; align-items: center; gap: 8px; background: #111; border: 1px solid #222; border-radius: 100px; padding: 7px 14px; font-size: 13px; font-weight: 600; color: #aaa; }
-    .chip-dot { width: 6px; height: 6px; border-radius: 50%; }
-    .chip-dot.green { background: #4ade80; }
-    .chip-dot.amber { background: #fbbf24; }
+    /* SCREENS */
+    .screen { display: none; }
+    .screen.active { display: block; }
 
-    /* PAGE BODY */
-    .page-body { max-width: 1200px; margin: 0 auto; padding: 36px 48px; display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start; }
+    /* WELCOME */
+    #screen-welcome { background: var(--black); min-height: 100vh; display: flex; flex-direction: column; }
+    #screen-welcome nav { background: transparent; border-bottom: 1px solid #333; }
+    .welcome-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 40px; text-align: center; color: var(--white); }
+    .welcome-title { font-size: 3rem; font-weight: 700; letter-spacing: -1.5px; margin-bottom: 12px; }
+    .welcome-subtitle { font-size: 1.1rem; color: var(--gray-400); margin-bottom: 48px; max-width: 500px; }
+    .sections-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; max-width: 800px; width: 100%; margin-bottom: 48px; }
+    .section-card { background: #111; border: 1px solid #333; border-radius: 12px; padding: 20px; text-align: left; }
+    .section-card .s-icon { font-size: 1.5rem; margin-bottom: 8px; }
+    .section-card .s-name { font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; }
+    .section-card .s-time { font-size: 0.75rem; color: var(--gray-400); margin-bottom: 4px; }
+    .section-card .s-qs { font-size: 0.75rem; color: var(--gray-400); }
+    .btn-start { background: var(--white); color: var(--black); border: none; padding: 18px 48px; border-radius: 50px; font-size: 1rem; font-weight: 700; cursor: pointer; letter-spacing: -0.3px; transition: transform 0.15s; }
+    .btn-start:hover { transform: scale(1.03); }
+    .test-note { margin-top: 20px; font-size: 0.8rem; color: var(--gray-400); max-width: 500px; }
 
-    /* TRACKER CARD */
-    .tracker-card { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); overflow: hidden; }
-    .tracker-header { padding: 22px 24px 0; }
-    .tracker-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; margin-bottom: 4px; }
-    .tracker-sub { font-size: 13px; color: var(--gray-400); margin-bottom: 20px; }
+    /* EXAM LAYOUT */
+    .exam-layout { display: grid; grid-template-columns: 1fr 380px; gap: 0; min-height: calc(100vh - 60px); }
+    .exam-main { padding: 32px 40px; overflow-y: auto; max-height: calc(100vh - 60px); }
+    .exam-sidebar { background: var(--white); border-left: 1px solid var(--gray-200); padding: 24px; overflow-y: auto; max-height: calc(100vh - 60px); position: sticky; top: 60px; }
+    .section-title { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 4px; }
+    .section-desc { font-size: 0.85rem; color: var(--gray-600); margin-bottom: 24px; }
+    .passage-box { background: var(--white); border-radius: 12px; padding: 28px; margin-bottom: 24px; line-height: 1.7; font-size: 0.9rem; border: 1px solid var(--gray-200); }
+    .passage-box h3 { font-size: 1rem; font-weight: 700; margin-bottom: 12px; }
+    .passage-box p { margin-bottom: 12px; color: var(--gray-800); }
+    .passage-box .para-label { font-weight: 700; color: var(--black); }
 
-    /* BAND INPUTS */
-    .bands-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 0 24px 24px; }
-    .band-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
-    .band-pts-chip { font-size: 10px; padding: 2px 7px; border-radius: 100px; font-weight: 800; }
-    input[type=range] { -webkit-appearance: none; width: 100%; height: 5px; border-radius: 100px; outline: none; cursor: pointer; }
-    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--black); cursor: pointer; border: 3px solid var(--white); box-shadow: 0 0 0 1.5px var(--gray-300); }
-    .band-markers { display: flex; justify-content: space-between; margin-top: 4px; font-size: 10px; color: var(--gray-300); }
-    .band-value { font-size: 36px; font-weight: 800; margin-top: 8px; }
-    .band-value.low { color: var(--red); }
-    .band-value.ok { color: var(--amber); }
-    .band-value.good { color: var(--green); }
-    .band-value.great { color: var(--purple); }
+    /* QUESTIONS */
+    .questions-box { background: var(--white); border-radius: 12px; padding: 28px; border: 1px solid var(--gray-200); }
+    .q-group { margin-bottom: 28px; }
+    .q-group-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-600); margin-bottom: 4px; }
+    .q-group-instruction { font-size: 0.85rem; color: var(--gray-600); margin-bottom: 16px; padding: 10px 14px; background: var(--gray-100); border-radius: 8px; border-left: 3px solid var(--gray-400); }
+    .question { margin-bottom: 20px; }
+    .question .q-num { font-size: 0.75rem; font-weight: 700; color: var(--gray-400); margin-bottom: 4px; }
+    .question .q-text { font-size: 0.9rem; font-weight: 500; margin-bottom: 10px; line-height: 1.5; }
+    .options { display: flex; flex-direction: column; gap: 8px; }
+    .option { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; border: 1.5px solid var(--gray-200); cursor: pointer; transition: all 0.15s; font-size: 0.875rem; }
+    .option:hover { border-color: var(--gray-400); background: var(--gray-100); }
+    .option.selected { border-color: var(--black); background: #f0f0f0; }
+    .option input[type=radio] { accent-color: var(--black); }
+    .tfng-options { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tfng-btn { padding: 8px 16px; border: 1.5px solid var(--gray-200); border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 600; background: var(--white); transition: all 0.15s; }
+    .tfng-btn:hover { border-color: var(--gray-400); }
+    .tfng-btn.selected { background: var(--black); color: var(--white); border-color: var(--black); }
+    .fill-input { width: 100%; padding: 10px 14px; border: 1.5px solid var(--gray-200); border-radius: 8px; font-size: 0.875rem; font-family: inherit; transition: border-color 0.15s; }
+    .fill-input:focus { outline: none; border-color: var(--black); }
+    .short-input { width: 240px; padding: 10px 14px; border: 1.5px solid var(--gray-200); border-radius: 8px; font-size: 0.875rem; font-family: inherit; }
+    .short-input:focus { outline: none; border-color: var(--black); }
 
-    /* DIVIDER + OVERALL */
-    .bands-divider { height: 1px; background: var(--gray-100); margin: 0 24px; }
-    .overall-row { padding: 20px 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-    .overall-avg-val { font-size: 40px; font-weight: 800; color: var(--black); }
-    .overall-avg-label { font-size: 11px; color: var(--gray-400); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
-    .level-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 700; }
-    .level-badge.none { background: var(--gray-100); color: var(--gray-400); }
-    .level-badge.competent { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
-    .level-badge.proficient { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
-    .level-badge.superior { background: var(--purple-bg); color: var(--purple); border: 1px solid var(--purple-border); }
-    .level-badge.below { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
-    .overall-pts-chip { font-size: 24px; font-weight: 800; color: var(--black); }
-    .overall-pts-label { font-size: 11px; color: var(--gray-400); text-align: center; }
+    /* SIDEBAR QUESTION NAV */
+    .sidebar-heading { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-400); margin-bottom: 12px; }
+    .q-nav-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 6px; margin-bottom: 24px; }
+    .q-nav-btn { width: 36px; height: 36px; border-radius: 8px; border: 1.5px solid var(--gray-200); background: var(--white); font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; }
+    .q-nav-btn.answered { background: var(--black); color: var(--white); border-color: var(--black); }
+    .q-nav-btn.current { border-color: var(--blue); color: var(--blue); }
+    .progress-bar-wrap { background: var(--gray-200); border-radius: 99px; height: 6px; margin-bottom: 6px; }
+    .progress-bar-fill { background: var(--black); height: 6px; border-radius: 99px; transition: width 0.3s; }
+    .progress-text { font-size: 0.75rem; color: var(--gray-600); margin-bottom: 24px; }
+    .btn-next-section { width: 100%; padding: 14px; background: var(--black); color: var(--white); border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 700; cursor: pointer; margin-top: 8px; transition: opacity 0.15s; }
+    .btn-next-section:hover { opacity: 0.85; }
+    .timer-sidebar { text-align: center; padding: 16px; background: var(--gray-100); border-radius: 10px; margin-bottom: 20px; }
+    .timer-sidebar .t-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-600); margin-bottom: 4px; }
+    .timer-sidebar .t-time { font-size: 1.8rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .timer-sidebar.warning .t-time { color: var(--yellow); }
+    .timer-sidebar.danger .t-time { color: var(--red); }
 
-    /* BAND TABLE */
-    .band-table { width: 100%; border-collapse: collapse; }
-    .band-table th { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); padding: 10px 24px; text-align: left; background: var(--gray-100); border-top: 1px solid var(--gray-200); border-bottom: 1px solid var(--gray-200); }
-    .band-table td { font-size: 13px; padding: 12px 24px; border-bottom: 1px solid var(--gray-100); color: var(--gray-800); }
-    .band-table tr:last-child td { border-bottom: none; }
-    .score-pill { display: inline-block; padding: 2px 10px; border-radius: 100px; font-size: 12px; font-weight: 800; }
-    .score-pill.low { background: var(--red-bg); color: var(--red); }
-    .score-pill.ok  { background: var(--amber-bg); color: var(--amber); }
-    .score-pill.good { background: var(--green-bg); color: var(--green); }
-    .score-pill.great { background: var(--purple-bg); color: var(--purple); }
-    .band-status.met { color: var(--green); font-weight: 600; font-size: 12px; }
-    .band-status.unmet { color: var(--red); font-weight: 600; font-size: 12px; }
+    /* WRITING */
+    .writing-task-header { background: var(--white); border-radius: 12px; padding: 24px; margin-bottom: 16px; border: 1px solid var(--gray-200); }
+    .writing-task-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-600); margin-bottom: 8px; }
+    .writing-task-prompt { font-size: 0.9rem; line-height: 1.6; color: var(--gray-800); }
+    .writing-task-min { font-size: 0.8rem; color: var(--gray-600); margin-top: 8px; font-style: italic; }
+    .chart-placeholder { background: var(--gray-100); border-radius: 8px; padding: 20px; margin: 12px 0; font-size: 0.85rem; color: var(--gray-600); text-align: center; border: 2px dashed var(--gray-200); }
+    textarea.writing-area { width: 100%; padding: 16px; border: 1.5px solid var(--gray-200); border-radius: 10px; font-family: inherit; font-size: 0.9rem; line-height: 1.7; resize: vertical; min-height: 220px; transition: border-color 0.15s; }
+    textarea.writing-area:focus { outline: none; border-color: var(--black); }
+    .word-count { font-size: 0.78rem; color: var(--gray-400); text-align: right; margin-top: 6px; }
+    .word-count.ok { color: var(--green); }
+    .word-count.warn { color: var(--red); }
+    .writing-task-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+    .task-tab { padding: 10px 20px; border-radius: 8px; border: 1.5px solid var(--gray-200); background: var(--white); font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+    .task-tab.active { background: var(--black); color: var(--white); border-color: var(--black); }
 
-    /* HISTORY */
-    .history-card { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); overflow: hidden; }
-    .history-header { padding: 20px 24px; border-bottom: 1px solid var(--gray-100); display: flex; align-items: center; justify-content: space-between; }
-    .history-title { font-size: 15px; font-weight: 700; }
-    .btn-add-attempt { padding: 7px 14px; background: var(--black); color: var(--white); border: none; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all .2s; }
-    .btn-add-attempt:hover { background: var(--gray-800); }
-    .history-body { padding: 0 24px 20px; }
-    .history-empty { padding: 28px 0; text-align: center; color: var(--gray-400); font-size: 13px; }
-    .attempt-list { display: flex; flex-direction: column; gap: 10px; padding-top: 16px; }
-    .attempt-item { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border: 1.5px solid var(--gray-200); border-radius: 10px; background: var(--gray-100); flex-wrap: wrap; }
-    .attempt-date { font-size: 12px; font-weight: 600; color: var(--gray-400); min-width: 70px; }
-    .attempt-bands { display: flex; gap: 6px; flex: 1; flex-wrap: wrap; }
-    .attempt-band { font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 6px; background: var(--white); border: 1px solid var(--gray-200); color: var(--black); }
-    .attempt-overall { font-size: 18px; font-weight: 800; color: var(--black); min-width: 40px; text-align: right; }
-    .attempt-level { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 100px; }
-    .attempt-level.competent { background: var(--amber-bg); color: var(--amber); }
-    .attempt-level.proficient { background: var(--green-bg); color: var(--green); }
-    .attempt-level.superior { background: var(--purple-bg); color: var(--purple); }
-    .attempt-level.below { background: var(--red-bg); color: var(--red); }
-    .attempt-del { padding: 4px 8px; background: none; border: none; cursor: pointer; color: var(--gray-300); font-size: 14px; transition: color .2s; }
-    .attempt-del:hover { color: var(--red); }
+    /* SPEAKING */
+    .speaking-part { background: var(--white); border-radius: 12px; padding: 28px; margin-bottom: 20px; border: 1px solid var(--gray-200); }
+    .speaking-part-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-600); margin-bottom: 8px; }
+    .speaking-part-title { font-size: 1rem; font-weight: 700; margin-bottom: 12px; }
+    .speaking-part-desc { font-size: 0.85rem; color: var(--gray-600); margin-bottom: 16px; }
+    .cue-card { background: #fffbeb; border: 2px solid #f6e05e; border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+    .cue-card-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 12px; }
+    .cue-card ul { padding-left: 20px; }
+    .cue-card ul li { font-size: 0.875rem; margin-bottom: 6px; color: var(--gray-800); }
+    .speaking-questions { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+    .speaking-q { font-size: 0.875rem; color: var(--gray-800); padding: 10px 14px; background: var(--gray-100); border-radius: 8px; }
+    .speaking-q::before { content: '● '; color: var(--gray-400); }
+    textarea.speaking-notes { width: 100%; padding: 12px; border: 1.5px solid var(--gray-200); border-radius: 8px; font-family: inherit; font-size: 0.875rem; resize: vertical; min-height: 80px; }
+    textarea.speaking-notes:focus { outline: none; border-color: var(--black); }
+    .notes-label { font-size: 0.75rem; color: var(--gray-600); margin-bottom: 6px; }
+    .self-score-row { display: flex; align-items: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+    .self-score-label { font-size: 0.8rem; color: var(--gray-600); }
+    .self-score-btn { padding: 6px 14px; border: 1.5px solid var(--gray-200); border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; background: var(--white); transition: all 0.15s; }
+    .self-score-btn:hover { border-color: var(--gray-400); }
+    .self-score-btn.selected { background: var(--black); color: var(--white); border-color: var(--black); }
 
-    /* ADD FORM */
-    .add-attempt-form { display: none; border: 1.5px solid var(--gray-200); border-radius: 10px; padding: 18px; margin-top: 12px; background: var(--gray-100); }
-    .add-attempt-form.open { display: block; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-    .form-group label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); display: block; margin-bottom: 5px; }
-    .form-group input { width: 100%; padding: 9px 12px; border: 1.5px solid var(--gray-200); border-radius: 7px; font-size: 14px; font-weight: 700; font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); transition: border-color .2s; }
-    .form-group input:focus { outline: none; border-color: var(--black); }
-    .form-actions { display: flex; gap: 8px; }
-    .btn-save { padding: 9px 18px; background: var(--black); color: var(--white); border: none; border-radius: 7px; font-size: 13px; font-weight: 700; cursor: pointer; }
-    .btn-cancel { padding: 9px 18px; background: none; border: 1.5px solid var(--gray-200); border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; color: var(--gray-600); }
-
-    /* CHART */
-    .chart-card { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); overflow: hidden; }
-    .chart-header { padding: 20px 24px; border-bottom: 1px solid var(--gray-100); }
-    .chart-title { font-size: 15px; font-weight: 700; }
-    .chart-sub { font-size: 12px; color: var(--gray-400); margin-top: 3px; }
-    .chart-wrap { padding: 20px 24px; overflow-x: auto; }
-    svg.progress-chart { width: 100%; min-width: 300px; }
-    .chart-legend { display: flex; gap: 14px; padding: 0 24px 16px; flex-wrap: wrap; }
-    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--gray-600); }
-    .legend-dot { width: 10px; height: 3px; border-radius: 2px; }
-
-    /* RIGHT PANEL */
-    .right-panel { display: flex; flex-direction: column; gap: 16px; position: sticky; top: 84px; }
-
-    /* IMPACT CARD */
-    .impact-card { background: var(--black); border-radius: 14px; padding: 24px; }
-    .impact-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #555; margin-bottom: 14px; }
-    .impact-pts { font-family: 'Playfair Display', serif; font-size: 60px; font-weight: 700; color: var(--white); line-height: 1; }
-    .impact-pts-label { font-size: 13px; color: #555; margin-top: 4px; margin-bottom: 18px; }
-    .impact-levels { display: flex; flex-direction: column; gap: 8px; }
-    .impact-level-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-radius: 8px; border: 1.5px solid #1a1a1a; cursor: default; }
-    .impact-level-row.active { border-color: var(--white); background: #111; }
-    .impact-level-name { font-size: 12px; font-weight: 600; color: #666; }
-    .impact-level-row.active .impact-level-name { color: var(--white); }
-    .impact-level-score { font-size: 10px; color: #444; }
-    .impact-level-row.active .impact-level-score { color: #888; }
-    .impact-level-pts { font-size: 13px; font-weight: 800; color: #333; }
-    .impact-level-row.active .impact-level-pts { color: var(--white); }
-
-    /* MILESTONES */
-    .milestone-card { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); overflow: hidden; }
-    .milestone-header { padding: 18px 20px; border-bottom: 1px solid var(--gray-100); }
-    .milestone-title { font-size: 14px; font-weight: 700; }
-    .milestone-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px 20px; border-bottom: 1px solid var(--gray-100); }
-    .milestone-item:last-child { border-bottom: none; }
-    .milestone-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px; transition: all .3s; }
-    .milestone-name { font-size: 13px; font-weight: 700; color: var(--black); }
-    .milestone-desc { font-size: 11px; color: var(--gray-400); margin-top: 2px; line-height: 1.4; }
-
-    /* PREP RESOURCES */
-    .prep-card { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); overflow: hidden; }
-    .prep-header { padding: 18px 20px; border-bottom: 1px solid var(--gray-100); }
-    .prep-title { font-size: 14px; font-weight: 700; }
-    .prep-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid var(--gray-100); cursor: pointer; transition: background .2s; }
-    .prep-item:last-child { border-bottom: none; }
-    .prep-item:hover { background: var(--gray-100); }
-    .prep-icon { width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
-    .prep-info { flex: 1; }
-    .prep-name { font-size: 13px; font-weight: 600; color: var(--black); }
-    .prep-desc { font-size: 11px; color: var(--gray-400); margin-top: 1px; }
-    .prep-arrow { color: var(--gray-300); font-size: 14px; }
-
-    /* TIPS ACCORDION */
-    .tips-card { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); overflow: hidden; }
-    .tips-title-row { padding: 18px 20px; border-bottom: 1px solid var(--gray-100); }
-    .tips-title { font-size: 14px; font-weight: 700; }
-    .tip-section { border-bottom: 1px solid var(--gray-100); }
-    .tip-section:last-child { border-bottom: none; }
-    .tip-section-hdr { padding: 13px 20px; display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
-    .tip-band-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .tip-band-name { font-size: 13px; font-weight: 600; flex: 1; }
-    .tip-chevron { font-size: 10px; color: var(--gray-300); transition: transform .25s; }
-    .tip-section.open .tip-chevron { transform: rotate(180deg); }
-    .tip-section-body { max-height: 0; overflow: hidden; transition: max-height .35s cubic-bezier(.4,0,.2,1); }
-    .tip-section.open .tip-section-body { max-height: 400px; }
-    .tip-list { padding: 0 20px 14px; display: flex; flex-direction: column; gap: 8px; }
-    .tip-row { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: var(--gray-600); line-height: 1.5; }
-    .tip-bullet { color: var(--gray-300); flex-shrink: 0; margin-top: 2px; }
-
-    /* EQUIV TABLE */
-    .equiv-card { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); overflow: hidden; }
-    .equiv-header { padding: 20px 24px; border-bottom: 1px solid var(--gray-100); }
-    .equiv-title { font-size: 15px; font-weight: 700; }
-    .equiv-sub { font-size: 12px; color: var(--gray-400); margin-top: 3px; }
-    .equiv-table { width: 100%; border-collapse: collapse; }
-    .equiv-table th { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); padding: 10px 16px; text-align: center; background: var(--gray-100); border-bottom: 1px solid var(--gray-200); }
-    .equiv-table th:first-child { text-align: left; }
-    .equiv-table td { font-size: 12px; padding: 11px 16px; border-bottom: 1px solid var(--gray-100); text-align: center; color: var(--gray-800); }
-    .equiv-table td:first-child { text-align: left; font-weight: 600; }
-    .equiv-table tr:last-child td { border-bottom: none; }
-    .equiv-badge { display: inline-block; padding: 2px 9px; border-radius: 100px; font-size: 11px; font-weight: 800; }
-    .equiv-badge.b { background: var(--red-bg); color: var(--red); }
-    .equiv-badge.c { background: var(--amber-bg); color: var(--amber); }
-    .equiv-badge.p { background: var(--green-bg); color: var(--green); }
-    .equiv-badge.s { background: var(--purple-bg); color: var(--purple); }
-
-    /* FADE UP */
-    .fade-up { opacity: 0; transform: translateY(18px); transition: opacity .5s ease, transform .5s ease; }
-    .fade-up.visible { opacity: 1; transform: none; }
+    /* RESULTS */
+    #screen-results { background: var(--black); min-height: 100vh; }
+    #screen-results nav { background: transparent; border-bottom: 1px solid #333; }
+    .results-content { max-width: 800px; margin: 0 auto; padding: 60px 40px; color: var(--white); }
+    .results-header { text-align: center; margin-bottom: 48px; }
+    .results-title { font-size: 2.5rem; font-weight: 700; letter-spacing: -1px; margin-bottom: 8px; }
+    .overall-band-display { font-size: 6rem; font-weight: 800; letter-spacing: -3px; line-height: 1; margin: 24px 0; }
+    .overall-label { font-size: 0.9rem; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.1em; }
+    .band-desc { font-size: 1rem; color: var(--gray-400); margin-top: 8px; }
+    .scores-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; margin-bottom: 40px; }
+    .score-card { background: #111; border: 1px solid #333; border-radius: 12px; padding: 24px; }
+    .score-card .sc-section { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-400); margin-bottom: 4px; }
+    .score-card .sc-band { font-size: 2.5rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 4px; }
+    .score-card .sc-raw { font-size: 0.8rem; color: var(--gray-400); }
+    .score-card .sc-desc { font-size: 0.8rem; color: var(--gray-400); margin-top: 8px; }
+    .band-bar { background: #222; border-radius: 99px; height: 6px; margin-top: 10px; }
+    .band-bar-fill { height: 6px; border-radius: 99px; }
+    .feedback-section { background: #111; border: 1px solid #333; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .feedback-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-400); margin-bottom: 12px; }
+    .feedback-item { font-size: 0.875rem; color: var(--gray-400); padding: 8px 0; border-bottom: 1px solid #222; }
+    .feedback-item:last-child { border-bottom: none; }
+    .feedback-item strong { color: var(--white); }
+    .results-actions { display: flex; gap: 12px; justify-content: center; margin-top: 40px; flex-wrap: wrap; }
+    .btn-retake { background: var(--white); color: var(--black); border: none; padding: 14px 32px; border-radius: 50px; font-size: 0.9rem; font-weight: 700; cursor: pointer; }
+    .btn-dashboard { background: transparent; color: var(--white); border: 2px solid #333; padding: 14px 32px; border-radius: 50px; font-size: 0.9rem; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-block; }
+    .correct-mark { color: var(--green); font-weight: 700; }
+    .wrong-mark { color: var(--red); font-weight: 700; }
+    .answer-reveal { font-size: 0.78rem; margin-top: 4px; }
 
     @media (max-width: 900px) {
-      nav { padding: 14px 20px; }
-      .hero { padding: 36px 20px 28px; }
-      .page-body { padding: 20px; grid-template-columns: 1fr; }
-      .right-panel { position: static; }
-      .bands-grid { grid-template-columns: 1fr; }
-      .form-row { grid-template-columns: 1fr 1fr; }
+      .exam-layout { grid-template-columns: 1fr; }
+      .exam-sidebar { position: static; max-height: none; border-left: none; border-top: 1px solid var(--gray-200); }
+      .sections-grid { grid-template-columns: repeat(2,1fr); }
+      .scores-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <a href="migro-dashboard.html" class="nav-logo">Migro<span></span></a>
-  <div class="nav-right">
-    <div class="lang-toggle">
-      <button class="lang-btn active" onclick="setLang('en')">EN</button>
-      <button class="lang-btn" onclick="setLang('es')">ES</button>
+<!-- ═══════════════════════════════════════════ WELCOME ══ -->
+<div id="screen-welcome" class="screen active">
+  <nav>
+    <div class="nav-logo">Migro<span>•</span></div>
+    <a href="migro-dashboard.html" style="color:#888;font-size:0.85rem;text-decoration:none;">← Back to dashboard</a>
+  </nav>
+  <div class="welcome-content">
+    <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.15em;color:#666;margin-bottom:12px;">Full Mock Test</div>
+    <h1 class="welcome-title">IELTS Academic<br>Simulated Exam</h1>
+    <p class="welcome-subtitle">A complete practice test with all 4 sections, official timing, and instant band score feedback.</p>
+    <div class="sections-grid">
+      <div class="section-card"><div class="s-icon">🎧</div><div class="s-name">Listening</div><div class="s-time">⏱ 40 min</div><div class="s-qs">40 questions</div></div>
+      <div class="section-card"><div class="s-icon">📖</div><div class="s-name">Reading</div><div class="s-time">⏱ 60 min</div><div class="s-qs">40 questions</div></div>
+      <div class="section-card"><div class="s-icon">✍️</div><div class="s-name">Writing</div><div class="s-time">⏱ 60 min</div><div class="s-qs">2 tasks</div></div>
+      <div class="section-card"><div class="s-icon">🗣️</div><div class="s-name">Speaking</div><div class="s-time">⏱ 15 min</div><div class="s-qs">3 parts</div></div>
     </div>
-    <a href="migro-dashboard.html" class="nav-back">⊞ Dashboard</a>
-    <a href="migro-points-calc.html" class="nav-back" data-en="🧮 Points calc" data-es="🧮 Calculadora">🧮 Points calc</a>
+    <button class="btn-start" onclick="startTest()">Begin Full Test →</button>
+    <p class="test-note">⚠ Once you start the timer runs. Complete each section before time expires. Results include estimated band scores for all sections.</p>
   </div>
-</nav>
+</div>
 
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-inner">
-    <div class="hero-tag" data-en="English Proficiency" data-es="Competencia en Inglés">English Proficiency</div>
-    <h1 class="hero-title" data-en="IELTS score<br/>tracker" data-es="Seguimiento de<br/>puntaje IELTS">IELTS score<br/>tracker</h1>
-    <p class="hero-sub" data-en="Track your band scores across attempts, see how your English level maps to migration points, and get targeted improvement tips." data-es="Registra tus puntajes por banda, ve cómo tu nivel de inglés se traduce en puntos y obtén consejos de mejora por habilidad.">Track your band scores across attempts, see how your English level maps to migration points, and get targeted improvement tips.</p>
-    <div class="hero-chips">
-      <div class="hero-chip"><div class="chip-dot green"></div><span data-en="Live points impact" data-es="Impacto en puntos en vivo">Live points impact</span></div>
-      <div class="hero-chip"><div class="chip-dot amber"></div><span data-en="Attempt history" data-es="Historial de intentos">Attempt history</span></div>
-      <div class="hero-chip"><div class="chip-dot green"></div><span data-en="Per-band tips" data-es="Consejos por banda">Per-band tips</span></div>
+<!-- ═══════════════════════════════════════════ LISTENING ══ -->
+<div id="screen-listening" class="screen">
+  <nav>
+    <div class="nav-logo">Migro<span>•</span></div>
+    <div class="nav-right">
+      <span class="nav-section-badge">Section 1 — Listening</span>
+      <span class="timer-display" id="timer-listening">40:00</span>
+    </div>
+  </nav>
+  <div class="exam-layout">
+    <div class="exam-main">
+      <div class="section-title">Listening Test</div>
+      <div class="section-desc">Read the transcript carefully — in the real IELTS exam you would listen to an audio recording. Answer all 40 questions based on what you read/hear.</div>
+
+      <!-- PART 1 transcript -->
+      <div class="passage-box">
+        <h3>🎧 Part 1 — Transcript: Phone call to a sports centre</h3>
+        <p><strong>Receptionist:</strong> Good morning, Greenfield Sports Centre, how can I help?</p>
+        <p><strong>Caller (Maria):</strong> Hi, I'd like to register for some classes. My name is Maria Santos.</p>
+        <p><strong>Receptionist:</strong> Of course. Could I take your date of birth?</p>
+        <p><strong>Maria:</strong> It's the fourteenth of March, nineteen ninety-two.</p>
+        <p><strong>Receptionist:</strong> And a contact number?</p>
+        <p><strong>Maria:</strong> It's 07894 double-three 156.</p>
+        <p><strong>Receptionist:</strong> Great. What classes are you interested in?</p>
+        <p><strong>Maria:</strong> I'd like to do yoga on Tuesday evenings, and swimming on Saturday mornings. How much is the monthly fee?</p>
+        <p><strong>Receptionist:</strong> Yoga is £28 per month. Swimming membership is £35. But if you take both, there's a package — £55 per month total.</p>
+        <p><strong>Maria:</strong> That sounds good. Does that include locker hire?</p>
+        <p><strong>Receptionist:</strong> Lockers are an extra £4 per visit or £12 per month.</p>
+        <p><strong>Maria:</strong> I'll add the monthly locker option please. So that would be £67 in total?</p>
+        <p><strong>Receptionist:</strong> Exactly right. The yoga class starts at 7 pm and the swimming session at 9 am. Both are in the main building — yoga is in Studio B on the second floor, swimming obviously in the pool on the ground floor.</p>
+        <p><strong>Maria:</strong> Perfect. Do I need to bring my own equipment?</p>
+        <p><strong>Receptionist:</strong> For yoga, yes — please bring a mat and a towel. For swimming, towels are provided but you must wear a swimming cap, which you can purchase at reception for £3.</p>
+        <p><strong>Maria:</strong> Great. Can I pay by card?</p>
+        <p><strong>Receptionist:</strong> Yes, we accept all major cards. Your membership card will be ready in 3–5 working days.</p>
+      </div>
+      <div class="passage-box" style="margin-top:0">
+        <h3>🎧 Part 2 — Transcript: Community radio announcement</h3>
+        <p>Good evening, listeners. I'm here to tell you about some exciting changes coming to the Millbrook Community Garden this spring. The garden, located on Park Road between the library and the post office, has been running for twelve years and is celebrating its anniversary with a major expansion.</p>
+        <p>From April the first, the garden will extend its opening hours. On weekdays it will now open at seven-thirty in the morning instead of nine, and close at eight in the evening. Weekend hours remain unchanged: nine to five.</p>
+        <p>We're adding three new sections this year. First, a dedicated children's area with raised beds suitable for young gardeners aged five to twelve. Second, a composting station where residents can drop off kitchen waste every Sunday. Third, a small greenhouse for tropical plants — this will be locked and accessible only by members.</p>
+        <p>Membership fees are changing slightly. Adult membership will rise from £20 to £25 annually. Concessions — for students and over-65s — remain at £12. Family membership, covering two adults and up to three children, will be £40, down from £48.</p>
+        <p>The garden's main coordinator, Dr. Patricia Holt, has announced a series of free workshops in May: composting techniques on May 3rd, water conservation on May 10th, and a beginners' beekeeping introduction on May 24th. To book a place, call the garden office on 01632 496 881.</p>
+      </div>
+
+      <!-- PART 1 questions -->
+      <div class="questions-box">
+        <div class="q-group">
+          <div class="q-group-title">Questions 1–6 · Part 1</div>
+          <div class="q-group-instruction">Complete the form below. Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.</div>
+
+          <div class="question" id="q1">
+            <div class="q-num">QUESTION 1</div>
+            <div class="q-text">Caller's date of birth: 14th March, <span style="color:var(--red)">_______</span></div>
+            <input class="fill-input" type="text" placeholder="Year..." onchange="setAnswer(1,this.value)" oninput="updateNav()"/>
+          </div>
+          <div class="question" id="q2">
+            <div class="q-num">QUESTION 2</div>
+            <div class="q-text">Contact number: <span style="color:var(--red)">_______</span></div>
+            <input class="fill-input" type="text" placeholder="Phone number..." onchange="setAnswer(2,this.value)" oninput="updateNav()"/>
+          </div>
+          <div class="question" id="q3">
+            <div class="q-num">QUESTION 3</div>
+            <div class="q-text">Combined package price (yoga + swimming): £ <span style="color:var(--red)">_______</span> per month</div>
+            <input class="short-input" type="text" placeholder="Amount..." onchange="setAnswer(3,this.value)" oninput="updateNav()"/>
+          </div>
+          <div class="question" id="q4">
+            <div class="q-num">QUESTION 4</div>
+            <div class="q-text">Monthly locker fee: £ <span style="color:var(--red)">_______</span></div>
+            <input class="short-input" type="text" placeholder="Amount..." onchange="setAnswer(4,this.value)" oninput="updateNav()"/>
+          </div>
+          <div class="question" id="q5">
+            <div class="q-num">QUESTION 5</div>
+            <div class="q-text">Yoga studio location: Studio B, <span style="color:var(--red)">_______</span> floor</div>
+            <input class="short-input" type="text" placeholder="Floor..." onchange="setAnswer(5,this.value)" oninput="updateNav()"/>
+          </div>
+          <div class="question" id="q6">
+            <div class="q-num">QUESTION 6</div>
+            <div class="q-text">Price of swimming cap at reception: £ <span style="color:var(--red)">_______</span></div>
+            <input class="short-input" type="text" placeholder="Amount..." onchange="setAnswer(6,this.value)" oninput="updateNav()"/>
+          </div>
+        </div>
+
+        <div class="q-group">
+          <div class="q-group-title">Questions 7–10 · Part 1</div>
+          <div class="q-group-instruction">Choose the correct letter A, B or C.</div>
+
+          <div class="question" id="q7">
+            <div class="q-num">QUESTION 7</div>
+            <div class="q-text">What does the caller need to bring to yoga class?</div>
+            <div class="options">
+              <label class="option"><input type="radio" name="q7" value="A" onchange="setAnswer(7,'A');updateNav()"/> A &nbsp;Towel only</label>
+              <label class="option"><input type="radio" name="q7" value="B" onchange="setAnswer(7,'B');updateNav()"/> B &nbsp;Mat and towel</label>
+              <label class="option"><input type="radio" name="q7" value="C" onchange="setAnswer(7,'C');updateNav()"/> C &nbsp;Mat only</label>
+            </div>
+          </div>
+          <div class="question" id="q8">
+            <div class="q-num">QUESTION 8</div>
+            <div class="q-text">How long will the membership card take to arrive?</div>
+            <div class="options">
+              <label class="option"><input type="radio" name="q8" value="A" onchange="setAnswer(8,'A');updateNav()"/> A &nbsp;1–2 working days</label>
+              <label class="option"><input type="radio" name="q8" value="B" onchange="setAnswer(8,'B');updateNav()"/> B &nbsp;3–5 working days</label>
+              <label class="option"><input type="radio" name="q8" value="C" onchange="setAnswer(8,'C');updateNav()"/> C &nbsp;7 working days</label>
+            </div>
+          </div>
+          <div class="question" id="q9">
+            <div class="q-num">QUESTION 9</div>
+            <div class="q-text">What time does the Millbrook Community Garden open on weekday mornings from April?</div>
+            <div class="options">
+              <label class="option"><input type="radio" name="q9" value="A" onchange="setAnswer(9,'A');updateNav()"/> A &nbsp;7:00 am</label>
+              <label class="option"><input type="radio" name="q9" value="B" onchange="setAnswer(9,'B');updateNav()"/> B &nbsp;7:30 am</label>
+              <label class="option"><input type="radio" name="q9" value="C" onchange="setAnswer(9,'C');updateNav()"/> C &nbsp;9:00 am</label>
+            </div>
+          </div>
+          <div class="question" id="q10">
+            <div class="q-num">QUESTION 10</div>
+            <div class="q-text">What is the new annual family membership fee?</div>
+            <div class="options">
+              <label class="option"><input type="radio" name="q10" value="A" onchange="setAnswer(10,'A');updateNav()"/> A &nbsp;£20</label>
+              <label class="option"><input type="radio" name="q10" value="B" onchange="setAnswer(10,'B');updateNav()"/> B &nbsp;£40</label>
+              <label class="option"><input type="radio" name="q10" value="C" onchange="setAnswer(10,'C');updateNav()"/> C &nbsp;£48</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="q-group">
+          <div class="q-group-title">Questions 11–16 · Part 2</div>
+          <div class="q-group-instruction">Choose TWO letters A–E. Which TWO new sections are being added to the garden?</div>
+          <div class="question" id="q11">
+            <div class="q-num">QUESTIONS 11–12</div>
+            <div class="q-text">Which TWO new sections are being added to the garden this year?</div>
+            <div class="options" id="q11-opts">
+              <label class="option"><input type="checkbox" name="q11" value="A" onchange="setMulti(11,12);updateNav()"/> A &nbsp;An outdoor cinema</label>
+              <label class="option"><input type="checkbox" name="q11" value="B" onchange="setMulti(11,12);updateNav()"/> B &nbsp;A children's area</label>
+              <label class="option"><input type="checkbox" name="q11" value="C" onchange="setMulti(11,12);updateNav()"/> C &nbsp;A composting station</label>
+              <label class="option"><input type="checkbox" name="q11" value="D" onchange="setMulti(11,12);updateNav()"/> D &nbsp;A café</label>
+              <label class="option"><input type="checkbox" name="q11" value="E" onchange="setMulti(11,12);updateNav()"/> E &nbsp;A car park</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="q-group">
+          <div class="q-group-title">Questions 13–16 · Part 2</div>
+          <div class="q-group-instruction">Complete the sentences. Write NO MORE THAN ONE WORD for each answer.</div>
+          <div class="question" id="q13">
+            <div class="q-num">QUESTION 13</div>
+            <div class="q-text">The greenhouse will be accessible only by <input class="short-input" type="text" style="width:160px" placeholder="..." onchange="setAnswer(13,this.value)" oninput="updateNav()"/>.</div>
+          </div>
+          <div class="question" id="q14">
+            <div class="q-num">QUESTION 14</div>
+            <div class="q-text">The concession membership price will remain at £<input class="short-input" type="text" style="width:100px" placeholder="..." onchange="setAnswer(14,this.value)" oninput="updateNav()"/>.</div>
+          </div>
+          <div class="question" id="q15">
+            <div class="q-num">QUESTION 15</div>
+            <div class="q-text">The composting drop-off is available every <input class="short-input" type="text" style="width:140px" placeholder="day..." onchange="setAnswer(15,this.value)" oninput="updateNav()"/>.</div>
+          </div>
+          <div class="question" id="q16">
+            <div class="q-num">QUESTION 16</div>
+            <div class="q-text">To book a workshop, residents should call the garden <input class="short-input" type="text" style="width:140px" placeholder="..." onchange="setAnswer(16,this.value)" oninput="updateNav()"/>.</div>
+          </div>
+        </div>
+
+        <!-- Parts 3 & 4 placeholder questions 17-40 -->
+        <div class="q-group">
+          <div class="q-group-title">Questions 17–40 · Parts 3 & 4</div>
+          <div class="q-group-instruction">For this practice exam, choose the best answer for each question based on your general IELTS knowledge.</div>
+          <div id="parts34-qs"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="exam-sidebar">
+      <div class="timer-sidebar" id="timer-sidebar-l">
+        <div class="t-label">Time Remaining</div>
+        <div class="t-time" id="timer-listening-big">40:00</div>
+      </div>
+      <div class="sidebar-heading">Question Navigator</div>
+      <div class="q-nav-grid" id="q-nav-listening"></div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-listening" style="width:0%"></div></div>
+      <div class="progress-text" id="prog-text-listening">0 / 40 answered</div>
+      <button class="btn-next-section" onclick="goToSection('reading')">Finish Listening → Reading</button>
     </div>
   </div>
 </div>
 
-<!-- PAGE BODY -->
-<div class="page-body">
-
-  <!-- LEFT COLUMN -->
-  <div style="display:flex;flex-direction:column;gap:20px;">
-
-    <!-- SCORE TRACKER -->
-    <div class="tracker-card fade-up">
-      <div class="tracker-header">
-        <div class="tracker-title" data-en="My current IELTS scores" data-es="Mis puntajes IELTS actuales">My current IELTS scores</div>
-        <div class="tracker-sub" data-en="Drag the sliders to enter your most recent band scores (0 – 9.0)" data-es="Arrastra los controles para ingresar tus puntajes más recientes (0 – 9.0)">Drag the sliders to enter your most recent band scores (0 – 9.0)</div>
-      </div>
-      <div class="bands-grid">
-        <!-- Listening -->
-        <div class="band-group">
-          <div class="band-label">
-            <span data-en="Listening" data-es="Comprensión auditiva">Listening</span>
-            <span class="band-pts-chip" id="chip-L" style="background:var(--gray-100);color:var(--gray-400);">—</span>
-          </div>
-          <input type="range" id="slider-L" min="0" max="9" step="0.5" value="0" oninput="updateBand('L',this.value)"
-            style="background:linear-gradient(to right,var(--black) 0%,var(--gray-200) 0%)">
-          <div class="band-markers"><span>0</span><span>3</span><span>6</span><span>9</span></div>
-          <div class="band-value low" id="val-L">—</div>
-        </div>
-        <!-- Reading -->
-        <div class="band-group">
-          <div class="band-label">
-            <span data-en="Reading" data-es="Comprensión lectora">Reading</span>
-            <span class="band-pts-chip" id="chip-R" style="background:var(--gray-100);color:var(--gray-400);">—</span>
-          </div>
-          <input type="range" id="slider-R" min="0" max="9" step="0.5" value="0" oninput="updateBand('R',this.value)"
-            style="background:linear-gradient(to right,var(--black) 0%,var(--gray-200) 0%)">
-          <div class="band-markers"><span>0</span><span>3</span><span>6</span><span>9</span></div>
-          <div class="band-value low" id="val-R">—</div>
-        </div>
-        <!-- Writing -->
-        <div class="band-group">
-          <div class="band-label">
-            <span data-en="Writing" data-es="Expresión escrita">Writing</span>
-            <span class="band-pts-chip" id="chip-W" style="background:var(--gray-100);color:var(--gray-400);">—</span>
-          </div>
-          <input type="range" id="slider-W" min="0" max="9" step="0.5" value="0" oninput="updateBand('W',this.value)"
-            style="background:linear-gradient(to right,var(--black) 0%,var(--gray-200) 0%)">
-          <div class="band-markers"><span>0</span><span>3</span><span>6</span><span>9</span></div>
-          <div class="band-value low" id="val-W">—</div>
-        </div>
-        <!-- Speaking -->
-        <div class="band-group">
-          <div class="band-label">
-            <span data-en="Speaking" data-es="Expresión oral">Speaking</span>
-            <span class="band-pts-chip" id="chip-S" style="background:var(--gray-100);color:var(--gray-400);">—</span>
-          </div>
-          <input type="range" id="slider-S" min="0" max="9" step="0.5" value="0" oninput="updateBand('S',this.value)"
-            style="background:linear-gradient(to right,var(--black) 0%,var(--gray-200) 0%)">
-          <div class="band-markers"><span>0</span><span>3</span><span>6</span><span>9</span></div>
-          <div class="band-value low" id="val-S">—</div>
-        </div>
-      </div>
-
-      <div class="bands-divider"></div>
-
-      <div class="overall-row">
-        <div>
-          <div class="overall-avg-val" id="overallAvg">—</div>
-          <div class="overall-avg-label" data-en="Overall band" data-es="Banda general">Overall band</div>
-        </div>
-        <div style="flex:1;">
-          <div class="level-badge none" id="levelBadge">—</div>
-          <div style="font-size:12px;color:var(--gray-400);margin-top:6px;line-height:1.5;max-width:280px;" id="levelNote">—</div>
-        </div>
-        <div style="text-align:center;">
-          <div class="overall-pts-chip" id="overallPts">—</div>
-          <div class="overall-pts-label" data-en="points from English" data-es="puntos de inglés">points from English</div>
-        </div>
-      </div>
-
-      <table class="band-table">
-        <thead>
-          <tr>
-            <th data-en="Skill" data-es="Habilidad">Skill</th>
-            <th data-en="Your score" data-es="Tu puntaje">Your score</th>
-            <th data-en="Competent ≥6.0" data-es="Competente ≥6.0">Competent ≥6.0</th>
-            <th data-en="Proficient ≥7.0" data-es="Avanzado ≥7.0">Proficient ≥7.0</th>
-            <th data-en="Superior ≥8.0" data-es="Superior ≥8.0">Superior ≥8.0</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td data-en="Listening" data-es="Auditiva">Listening</td><td><span class="score-pill low" id="tval-L">—</span></td><td class="band-status" id="tc-L">—</td><td class="band-status" id="tp-L">—</td><td class="band-status" id="ts-L">—</td></tr>
-          <tr><td data-en="Reading" data-es="Lectora">Reading</td><td><span class="score-pill low" id="tval-R">—</span></td><td class="band-status" id="tc-R">—</td><td class="band-status" id="tp-R">—</td><td class="band-status" id="ts-R">—</td></tr>
-          <tr><td data-en="Writing" data-es="Escrita">Writing</td><td><span class="score-pill low" id="tval-W">—</span></td><td class="band-status" id="tc-W">—</td><td class="band-status" id="tp-W">—</td><td class="band-status" id="ts-W">—</td></tr>
-          <tr><td data-en="Speaking" data-es="Oral">Speaking</td><td><span class="score-pill low" id="tval-S">—</span></td><td class="band-status" id="tc-S">—</td><td class="band-status" id="tp-S">—</td><td class="band-status" id="ts-S">—</td></tr>
-        </tbody>
-      </table>
+<!-- ═══════════════════════════════════════════ READING ══ -->
+<div id="screen-reading" class="screen">
+  <nav>
+    <div class="nav-logo">Migro<span>•</span></div>
+    <div class="nav-right">
+      <span class="nav-section-badge">Section 2 — Reading</span>
+      <span class="timer-display" id="timer-reading">60:00</span>
     </div>
+  </nav>
+  <div class="exam-layout">
+    <div class="exam-main">
+      <div class="section-title">Academic Reading</div>
+      <div class="section-desc">Three passages. 60 minutes. 40 questions total. You may read the passages in any order.</div>
 
-    <!-- ATTEMPT HISTORY -->
-    <div class="history-card fade-up">
-      <div class="history-header">
-        <div class="history-title" data-en="Attempt history" data-es="Historial de intentos">Attempt history</div>
-        <button class="btn-add-attempt" onclick="toggleAddForm()">
-          <span>+</span><span data-en="Add attempt" data-es="Agregar intento">Add attempt</span>
-        </button>
+      <div class="passage-box">
+        <h3>Passage 1 — The History of Urban Gardens</h3>
+        <p><span class="para-label">A</span> Urban gardens have existed in some form for thousands of years. Ancient Mesopotamian cities maintained terraced gardens as symbols of wealth and divine connection. In medieval Europe, monastery gardens served both spiritual and practical functions, supplying herbs for medicine and food for communities. However, the urban garden as a response to social conditions — hunger, pollution, inequality — is a distinctly modern phenomenon, emerging in earnest during the industrial revolution.</p>
+        <p><span class="para-label">B</span> The rapid urbanisation of the nineteenth century displaced agricultural populations into crowded industrial cities with little access to green space or fresh food. In Britain, the Allotments Act of 1887 gave local councils the power to provide small plots of cultivated land to working-class residents. Similar legislation followed across Europe and North America. These allotments proved critical during both World Wars, when "victory gardens" produced a significant proportion of national food supplies.</p>
+        <p><span class="para-label">C</span> The latter half of the twentieth century saw a decline in urban gardening in many Western cities. Rising living standards, cheap imported food, and the perceived inconvenience of growing one's own reduced demand for allotments. In the United Kingdom, the number of allotments fell from over 1.4 million in 1945 to fewer than 300,000 by the 1990s. Local authorities, facing budget pressures, often converted disused garden land to more commercially profitable uses.</p>
+        <p><span class="para-label">D</span> Yet the twenty-first century has brought a dramatic reversal of this trend. Concerns about food security, climate change, and mental health have renewed public interest in urban growing. Community gardens — shared spaces managed collectively by neighbourhood groups — have proliferated across cities from New York to Nairobi. Unlike traditional allotments assigned to individual families, community gardens typically emphasise collective decision-making, social integration, and educational outreach.</p>
+        <p><span class="para-label">E</span> Research consistently links participation in urban gardening with improved mental and physical health outcomes. A 2019 study published in the journal <em>Landscape and Urban Planning</em> found that regular gardeners reported significantly lower levels of stress and anxiety compared to non-gardeners, even after controlling for other lifestyle factors. Gardening has also been shown to reduce symptoms of depression and improve sleep quality. Public health advocates now argue that urban green spaces should be classified as health infrastructure, attracting the same investment as hospitals and clinics.</p>
+        <p><span class="para-label">F</span> The environmental benefits of urban agriculture are equally compelling. Studies suggest that urban farms and gardens can reduce the urban heat island effect by up to 3°C in densely built areas, as plant transpiration cools the surrounding air. Green roofs and walls — increasingly common in progressive cities — provide insulation, reduce stormwater runoff, and create habitats for pollinators. Some researchers have even proposed that sufficiently scaled urban agriculture could meaningfully supplement — though not replace — conventional food production.</p>
+        <p><span class="para-label">G</span> Despite these benefits, urban gardening faces significant challenges. Land tenure is a persistent obstacle: community gardens established on temporarily vacant lots are vulnerable to displacement when the land is sold for development. Soil contamination in former industrial areas can make growing food unsafe without costly remediation. Access to water, particularly during dry seasons, is another constraint, especially in cities with ageing infrastructure. Advocates argue that without consistent policy support and legal protections, the social and environmental benefits of urban gardens remain precarious.</p>
       </div>
-      <div class="history-body">
-        <div class="add-attempt-form" id="addAttemptForm">
-          <div class="form-row">
-            <div class="form-group">
-              <label data-en="Date" data-es="Fecha">Date</label>
-              <input type="date" id="inp-date"/>
-            </div>
-            <div class="form-group">
-              <label data-en="Listening" data-es="Auditiva">Listening</label>
-              <input type="number" id="inp-L" min="0" max="9" step="0.5" placeholder="7.5"/>
-            </div>
-            <div class="form-group">
-              <label data-en="Reading" data-es="Lectora">Reading</label>
-              <input type="number" id="inp-R" min="0" max="9" step="0.5" placeholder="7.0"/>
-            </div>
-            <div class="form-group">
-              <label data-en="Writing" data-es="Escrita">Writing</label>
-              <input type="number" id="inp-W" min="0" max="9" step="0.5" placeholder="6.5"/>
-            </div>
-            <div class="form-group">
-              <label data-en="Speaking" data-es="Oral">Speaking</label>
-              <input type="number" id="inp-S" min="0" max="9" step="0.5" placeholder="7.0"/>
+
+      <div class="questions-box">
+        <div class="q-group">
+          <div class="q-group-title">Questions 1–7 · Passage 1</div>
+          <div class="q-group-instruction">The passage has seven paragraphs, A–G. Which paragraph contains the following information? Write the correct letter A–G.</div>
+          <div class="question" id="rq1">
+            <div class="q-num">QUESTION 1</div>
+            <div class="q-text">A reference to a specific scientific study on mental health</div>
+            <input class="short-input" type="text" placeholder="A–G" maxlength="1" onchange="setReadingAnswer(1,this.value.toUpperCase())" oninput="updateReadingNav()"/>
+          </div>
+          <div class="question" id="rq2">
+            <div class="q-num">QUESTION 2</div>
+            <div class="q-text">An explanation of why urban gardening declined in the late twentieth century</div>
+            <input class="short-input" type="text" placeholder="A–G" maxlength="1" onchange="setReadingAnswer(2,this.value.toUpperCase())" oninput="updateReadingNav()"/>
+          </div>
+          <div class="question" id="rq3">
+            <div class="q-num">QUESTION 3</div>
+            <div class="q-text">A description of the origin of urban gardens in industrial cities</div>
+            <input class="short-input" type="text" placeholder="A–G" maxlength="1" onchange="setReadingAnswer(3,this.value.toUpperCase())" oninput="updateReadingNav()"/>
+          </div>
+          <div class="question" id="rq4">
+            <div class="q-num">QUESTION 4</div>
+            <div class="q-text">Mention of a temperature reduction caused by urban plants</div>
+            <input class="short-input" type="text" placeholder="A–G" maxlength="1" onchange="setReadingAnswer(4,this.value.toUpperCase())" oninput="updateReadingNav()"/>
+          </div>
+          <div class="question" id="rq5">
+            <div class="q-num">QUESTION 5</div>
+            <div class="q-text">A comparison between community gardens and traditional allotments</div>
+            <input class="short-input" type="text" placeholder="A–G" maxlength="1" onchange="setReadingAnswer(5,this.value.toUpperCase())" oninput="updateReadingNav()"/>
+          </div>
+          <div class="question" id="rq6">
+            <div class="q-num">QUESTION 6</div>
+            <div class="q-text">A reference to gardens in ancient civilisations</div>
+            <input class="short-input" type="text" placeholder="A–G" maxlength="1" onchange="setReadingAnswer(6,this.value.toUpperCase())" oninput="updateReadingNav()"/>
+          </div>
+          <div class="question" id="rq7">
+            <div class="q-num">QUESTION 7</div>
+            <div class="q-text">A description of obstacles facing urban gardening</div>
+            <input class="short-input" type="text" placeholder="A–G" maxlength="1" onchange="setReadingAnswer(7,this.value.toUpperCase())" oninput="updateReadingNav()"/>
+          </div>
+        </div>
+
+        <div class="q-group">
+          <div class="q-group-title">Questions 8–13 · Passage 1</div>
+          <div class="q-group-instruction">Do the following statements agree with the information in the passage? Write TRUE, FALSE, or NOT GIVEN.</div>
+          <div class="question" id="rq8">
+            <div class="q-num">QUESTION 8</div>
+            <div class="q-text">The Allotments Act of 1887 was passed in response to food shortages.</div>
+            <div class="tfng-options">
+              <button class="tfng-btn" onclick="setReadingAnswer(8,'TRUE');this.parentElement.querySelectorAll('.tfng-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');updateReadingNav()">TRUE</button>
+              <button class="tfng-btn" onclick="setReadingAnswer(8,'FALSE');this.parentElement.querySelectorAll('.tfng-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');updateReadingNav()">FALSE</button>
+              <button class="tfng-btn" onclick="setReadingAnswer(8,'NOT GIVEN');this.parentElement.querySelectorAll('.tfng-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');updateReadingNav()">NOT GIVEN</button>
             </div>
           </div>
-          <div class="form-actions">
-            <button class="btn-save" onclick="saveAttempt()" data-en="Save attempt" data-es="Guardar intento">Save attempt</button>
-            <button class="btn-cancel" onclick="toggleAddForm()" data-en="Cancel" data-es="Cancelar">Cancel</button>
+          <div class="question" id="rq9">
+            <div class="q-num">QUESTION 9</div>
+            <div class="q-text">By the 1990s, fewer than 300,000 allotments remained in the UK.</div>
+            <div class="tfng-options">
+              <button class="tfng-btn" onclick="setReadingAnswer(9,'TRUE');this.parentElement.querySelectorAll('.tfng-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');updateReadingNav()">TRUE</button>
+              <button class="tfng-btn" onclick="setReadingAnswer(9,'FALSE');this.parentElement.querySelectorAll('.tfng-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');updateReadingNav()">FALSE</button>
+              <button class="tfng-btn" onclick="setReadingAnswer(9,'NOT GIVEN');this.parentElement.querySelectorAll('.tfng-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');updateReadingNav()">NOT GIVEN</button>
+            </div>
+          </div>
+          <div class="question" id="rq10">
+            <div class="q-num">QUESTION 10</div>
+            <div class="q-text">Urban gardens can fully replace conventional food production.</div>
+            <div class="tfng-options">
+              <button class="tfng-btn" onclick="setReadingAnswer(10,'TRUE');this.parentElement.querySelectorAll('.tfng-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');updateReadingNav()">TRUE</button>
+              <button class="tfng-btn" onclick="setReadingAnswer(10,'FALSE');this.parentElement.querySelectorAll('.tfng-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');updateReadingNav()">FALSE</button>
+              <button class="tfng-btn" onclick="setReadingAnswer(10,'NOT GIVEN');this.parentElement.querySelectorAll('.tfng-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');updateReadingNav()">NOT GIVEN</button>
+            </div>
+          </div>
+          <div class="question" id="rq11">
+            <div class="q-num">QUESTION 11</div>
+            <div class="q-text">Community gardens typically focus on collective decision-making rather than individual use.</div>
+            <div class="tfng-options">
+              <button class="tfng-btn" onclick="setReadingAnswer(11,'TRUE');this.parentElement.querySelectorAll('.tfng-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');updateReadingNav()">TRUE</button>
+              <button class="tfng-btn" onclick="setReadingAnswer(11,'FALSE');this.parentElement.querySelectorAll('.tfng-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');updateReadingNav()">FALSE</button>
+              <button class="tfng-btn" onclick="setReadingAnswer(11,'NOT GIVEN');this.parentElement.querySelectorAll('.tfng-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');updateReadingNav()">NOT GIVEN</button>
+            </div>
+          </div>
+          <div class="question" id="rq12">
+            <div class="q-num">QUESTION 12</div>
+            <div class="q-text">The 2019 gardening study was funded by a government health agency.</div>
+            <div class="tfng-options">
+              <button class="tfng-btn" onclick="setReadingAnswer(12,'TRUE');this.parentElement.querySelectorAll('.tfng-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');updateReadingNav()">TRUE</button>
+              <button class="tfng-btn" onclick="setReadingAnswer(12,'FALSE');this.parentElement.querySelectorAll('.tfng-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');updateReadingNav()">FALSE</button>
+              <button class="tfng-btn" onclick="setReadingAnswer(12,'NOT GIVEN');this.parentElement.querySelectorAll('.tfng-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');updateReadingNav()">NOT GIVEN</button>
+            </div>
+          </div>
+          <div class="question" id="rq13">
+            <div class="q-num">QUESTION 13</div>
+            <div class="q-text">Soil contamination makes all inner-city growing unsafe.</div>
+            <div class="tfng-options">
+              <button class="tfng-btn" onclick="setReadingAnswer(13,'TRUE');this.parentElement.querySelectorAll('.tfng-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');updateReadingNav()">TRUE</button>
+              <button class="tfng-btn" onclick="setReadingAnswer(13,'FALSE');this.parentElement.querySelectorAll('.tfng-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');updateReadingNav()">FALSE</button>
+              <button class="tfng-btn" onclick="setReadingAnswer(13,'NOT GIVEN');this.parentElement.querySelectorAll('.tfng-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');updateReadingNav()">NOT GIVEN</button>
+            </div>
           </div>
         </div>
-        <div id="attemptList">
-          <div class="history-empty" id="emptyMsg" data-en="No attempts recorded yet. Add your first IELTS result above." data-es="Ningún intento registrado aún. Agrega tu primer resultado IELTS arriba.">No attempts recorded yet. Add your first IELTS result above.</div>
-        </div>
-      </div>
-    </div>
 
-    <!-- PROGRESS CHART (shown when 2+ attempts) -->
-    <div class="chart-card fade-up" id="chartCard" style="display:none;">
-      <div class="chart-header">
-        <div class="chart-title" data-en="Score progression" data-es="Progresión de puntaje">Score progression</div>
-        <div class="chart-sub" data-en="Band scores across all attempts" data-es="Puntajes por banda en todos los intentos">Band scores across all attempts</div>
-      </div>
-      <div class="chart-legend">
-        <div class="legend-item"><div class="legend-dot" style="background:#0a0a0a;height:3px;"></div><span data-en="Overall" data-es="General">Overall</span></div>
-        <div class="legend-item"><div class="legend-dot" style="background:#3b82f6;"></div><span data-en="Listening" data-es="Auditiva">Listening</span></div>
-        <div class="legend-item"><div class="legend-dot" style="background:#10b981;"></div><span data-en="Reading" data-es="Lectora">Reading</span></div>
-        <div class="legend-item"><div class="legend-dot" style="background:#f59e0b;"></div><span data-en="Writing" data-es="Escrita">Writing</span></div>
-        <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6;"></div><span data-en="Speaking" data-es="Oral">Speaking</span></div>
-      </div>
-      <div class="chart-wrap">
-        <svg class="progress-chart" id="progressChart" viewBox="0 0 600 160" preserveAspectRatio="none"></svg>
-      </div>
-    </div>
-
-    <!-- EQUIVALENCE TABLE -->
-    <div class="equiv-card fade-up">
-      <div class="equiv-header">
-        <div class="equiv-title" data-en="Test score equivalence table" data-es="Tabla de equivalencia de puntajes">Test score equivalence table</div>
-        <div class="equiv-sub" data-en="Minimum band scores across IELTS, PTE Academic, TOEFL iBT and Cambridge C1/C2" data-es="Puntajes mínimos en IELTS, PTE, TOEFL iBT y Cambridge C1/C2">Minimum band scores across IELTS, PTE Academic, TOEFL iBT and Cambridge C1/C2</div>
-      </div>
-      <table class="equiv-table">
-        <thead>
-          <tr>
-            <th data-en="Level" data-es="Nivel">Level</th>
-            <th>IELTS</th>
-            <th>PTE Academic</th>
-            <th>TOEFL iBT</th>
-            <th>Cambridge</th>
-            <th data-en="Points" data-es="Puntos">Points</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><span class="equiv-badge b" data-en="Below" data-es="Por debajo">Below</span></td>
-            <td data-en="Any band &lt; 6.0" data-es="Alguna banda &lt; 6.0">Any band &lt; 6.0</td>
-            <td data-en="Any &lt; 50" data-es="Alguno &lt; 50">Any &lt; 50</td>
-            <td data-en="Any &lt; 12" data-es="Alguno &lt; 12">Any &lt; 12</td>
-            <td data-en="Below B2" data-es="Bajo B2">Below B2</td>
-            <td>0 pts</td>
-          </tr>
-          <tr style="background:#fffbf0;">
-            <td><span class="equiv-badge c" data-en="Competent" data-es="Competente">Competent</span></td>
-            <td>6.0 each band</td>
-            <td>50 each component</td>
-            <td>12 / 13 / 21 / 18</td>
-            <td>169 (B2)</td>
-            <td><strong>0 pts</strong></td>
-          </tr>
-          <tr>
-            <td><span class="equiv-badge p" data-en="Proficient" data-es="Avanzado">Proficient</span></td>
-            <td>7.0 each band</td>
-            <td>65 each component</td>
-            <td>24 / 24 / 27 / 23</td>
-            <td>185 (C1)</td>
-            <td><strong>+10 pts</strong></td>
-          </tr>
-          <tr>
-            <td><span class="equiv-badge s" data-en="Superior" data-es="Superior">Superior</span></td>
-            <td>8.0 each band</td>
-            <td>79 each component</td>
-            <td>28 / 29 / 30 / 26</td>
-            <td>200 (C2)</td>
-            <td><strong>+20 pts</strong></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-  </div><!-- /left -->
-
-  <!-- RIGHT PANEL -->
-  <div class="right-panel">
-
-    <!-- POINTS IMPACT -->
-    <div class="impact-card">
-      <div class="impact-label" data-en="Points test impact" data-es="Impacto en el test de puntos">Points test impact</div>
-      <div class="impact-pts" id="impactPts">—</div>
-      <div class="impact-pts-label" data-en="points from English" data-es="puntos de inglés">points from English</div>
-      <div class="impact-levels">
-        <div class="impact-level-row" id="il-below">
-          <span class="impact-level-name" data-en="Below competent" data-es="Por debajo">Below competent</span>
-          <span class="impact-level-score" data-en="Visa requirement not met" data-es="Requisito no cumplido">Visa requirement not met</span>
-          <span class="impact-level-pts">0 pts</span>
-        </div>
-        <div class="impact-level-row" id="il-comp">
-          <span class="impact-level-name" data-en="Competent" data-es="Competente">Competent</span>
-          <span class="impact-level-score">IELTS 6.0</span>
-          <span class="impact-level-pts">0 pts</span>
-        </div>
-        <div class="impact-level-row" id="il-prof">
-          <span class="impact-level-name" data-en="Proficient" data-es="Avanzado">Proficient</span>
-          <span class="impact-level-score">IELTS 7.0</span>
-          <span class="impact-level-pts">+10 pts</span>
-        </div>
-        <div class="impact-level-row" id="il-sup">
-          <span class="impact-level-name" data-en="Superior" data-es="Superior">Superior</span>
-          <span class="impact-level-score">IELTS 8.0</span>
-          <span class="impact-level-pts">+20 pts</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- MILESTONES -->
-    <div class="milestone-card">
-      <div class="milestone-header">
-        <div class="milestone-title" data-en="IELTS milestones" data-es="Hitos IELTS">IELTS milestones</div>
-      </div>
-      <div class="milestone-item">
-        <div class="milestone-dot" id="ms-visa" style="background:var(--gray-100);color:var(--gray-400);">1</div>
-        <div>
-          <div class="milestone-name" data-en="Meet visa requirement" data-es="Cumplir requisito de visa">Meet visa requirement</div>
-          <div class="milestone-desc" data-en="All 4 bands ≥ 6.0 (Competent English)" data-es="Las 4 bandas ≥ 6.0 (Inglés competente)">All 4 bands ≥ 6.0 (Competent English)</div>
-        </div>
-      </div>
-      <div class="milestone-item">
-        <div class="milestone-dot" id="ms-prof" style="background:var(--gray-100);color:var(--gray-400);">2</div>
-        <div>
-          <div class="milestone-name" data-en="+10 points — Proficient" data-es="+10 puntos — Avanzado">+10 points — Proficient</div>
-          <div class="milestone-desc" data-en="All 4 bands ≥ 7.0" data-es="Las 4 bandas ≥ 7.0">All 4 bands ≥ 7.0</div>
-        </div>
-      </div>
-      <div class="milestone-item">
-        <div class="milestone-dot" id="ms-sup" style="background:var(--gray-100);color:var(--gray-400);">3</div>
-        <div>
-          <div class="milestone-name" data-en="+20 points — Superior" data-es="+20 puntos — Superior">+20 points — Superior</div>
-          <div class="milestone-desc" data-en="All 4 bands ≥ 8.0 — maximum English points" data-es="Las 4 bandas ≥ 8.0 — máximo de puntos de inglés">All 4 bands ≥ 8.0 — maximum English points</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TIPS ACCORDION -->
-    <div class="tips-card">
-      <div class="tips-title-row">
-        <div class="tips-title" data-en="Tips by skill" data-es="Consejos por habilidad">Tips by skill</div>
-      </div>
-      <div class="tip-section">
-        <div class="tip-section-hdr" onclick="this.parentElement.classList.toggle('open')">
-          <div class="tip-band-dot" style="background:#3b82f6;"></div>
-          <div class="tip-band-name" data-en="Listening" data-es="Auditiva">Listening</div>
-          <div class="tip-chevron">▼</div>
-        </div>
-        <div class="tip-section-body">
-          <div class="tip-list">
-            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="Practice with Australian accents — BBC 6 Minute English, ABC Radio National." data-es="Practica con acentos australianos — BBC 6 Minute English, ABC Radio National.">Practice with Australian accents — BBC 6 Minute English, ABC Radio National.</span></div>
-            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="Read questions before the audio — you get 30 seconds per section." data-es="Lee las preguntas antes del audio — tienes 30 segundos por sección.">Read questions before the audio — you get 30 seconds per section.</span></div>
-            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="Never leave an answer blank — there's no penalty for wrong answers." data-es="Nunca dejes una respuesta en blanco — no hay penalización.">Never leave an answer blank — there's no penalty for wrong answers.</span></div>
-            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="Sections 3 and 4 are harder — allocate more focus to these in practice." data-es="Las secciones 3 y 4 son más difíciles — concéntrate más en ellas al practicar.">Sections 3 and 4 are harder — allocate more focus to these in practice.</span></div>
+        <!-- Passages 2 & 3 — abbreviated with MCQ for space -->
+        <div class="q-group">
+          <div class="q-group-title">Questions 14–27 · Passage 2</div>
+          <div class="q-group-instruction">Read the passage summary and choose the correct answer A, B, C or D.</div>
+          <div class="passage-box" style="background:var(--gray-100);border:none;margin-bottom:16px">
+            <h3>Passage 2 — Artificial Intelligence in Healthcare</h3>
+            <p>Artificial intelligence (AI) is transforming medical diagnosis. Machine learning algorithms trained on millions of medical images can now detect certain cancers with accuracy matching or exceeding specialist clinicians. In 2020, a DeepMind algorithm diagnosed eye disease from retinal scans with 94% accuracy. Despite these advances, experts caution that AI should augment rather than replace clinicians, citing concerns about algorithmic bias, data privacy, and the essential role of human empathy in clinical care.</p>
+            <p>One major challenge is the "black box" problem: many AI systems cannot explain their reasoning, making it difficult for doctors to verify diagnoses or understand errors. Regulatory bodies in the EU and US now require healthcare AI to meet explainability standards before clinical deployment. Another concern is that AI systems trained predominantly on data from Western populations may perform poorly for patients from other ethnic backgrounds, potentially exacerbating existing health inequalities.</p>
+            <p>Proponents argue that AI offers particular promise in resource-limited settings, where specialist clinicians are scarce. In parts of sub-Saharan Africa and South Asia, AI diagnostic tools have been deployed to screen for tuberculosis and diabetic retinopathy in communities that would otherwise have no access to specialist care. If properly governed, AI could therefore serve as a powerful tool for global health equity.</p>
+          </div>
+          <div class="question" id="rq14">
+            <div class="q-num">QUESTION 14</div>
+            <div class="q-text">What did the DeepMind algorithm achieve in 2020?</div>
+            <div class="options">
+              <label class="option"><input type="radio" name="rq14" value="A" onchange="setReadingAnswer(14,'A');updateReadingNav()"/> A &nbsp;It replaced all ophthalmologists in UK hospitals</label>
+              <label class="option"><input type="radio" name="rq14" value="B" onchange="setReadingAnswer(14,'B');updateReadingNav()"/> B &nbsp;It diagnosed eye disease with 94% accuracy</label>
+              <label class="option"><input type="radio" name="rq14" value="C" onchange="setReadingAnswer(14,'C');updateReadingNav()"/> C &nbsp;It created a database of 1 million medical images</label>
+              <label class="option"><input type="radio" name="rq14" value="D" onchange="setReadingAnswer(14,'D');updateReadingNav()"/> D &nbsp;It identified cancer faster than any human clinician</label>
+            </div>
+          </div>
+          <div class="question" id="rq15">
+            <div class="q-num">QUESTION 15</div>
+            <div class="q-text">What is the "black box" problem in healthcare AI?</div>
+            <div class="options">
+              <label class="option"><input type="radio" name="rq15" value="A" onchange="setReadingAnswer(15,'A');updateReadingNav()"/> A &nbsp;AI systems are too expensive to operate</label>
+              <label class="option"><input type="radio" name="rq15" value="B" onchange="setReadingAnswer(15,'B');updateReadingNav()"/> B &nbsp;AI cannot process scans from older machines</label>
+              <label class="option"><input type="radio" name="rq15" value="C" onchange="setReadingAnswer(15,'C');updateReadingNav()"/> C &nbsp;AI systems cannot explain how they reach their conclusions</label>
+              <label class="option"><input type="radio" name="rq15" value="D" onchange="setReadingAnswer(15,'D');updateReadingNav()"/> D &nbsp;AI lacks access to patient historical records</label>
+            </div>
+          </div>
+          <div class="question" id="rq16">
+            <div class="q-num">QUESTION 16</div>
+            <div class="q-text">What concern do critics raise about AI trained on Western data?</div>
+            <div class="options">
+              <label class="option"><input type="radio" name="rq16" value="A" onchange="setReadingAnswer(16,'A');updateReadingNav()"/> A &nbsp;It processes data too slowly for clinical use</label>
+              <label class="option"><input type="radio" name="rq16" value="B" onchange="setReadingAnswer(16,'B');updateReadingNav()"/> B &nbsp;It may perform less accurately for patients of other ethnic backgrounds</label>
+              <label class="option"><input type="radio" name="rq16" value="C" onchange="setReadingAnswer(16,'C');updateReadingNav()"/> C &nbsp;It violates international copyright law</label>
+              <label class="option"><input type="radio" name="rq16" value="D" onchange="setReadingAnswer(16,'D');updateReadingNav()"/> D &nbsp;It increases healthcare costs for all patients</label>
+            </div>
+          </div>
+          <div class="question" id="rq17">
+            <div class="q-num">QUESTION 17</div>
+            <div class="q-text">According to the passage, where might AI offer the greatest benefit?</div>
+            <div class="options">
+              <label class="option"><input type="radio" name="rq17" value="A" onchange="setReadingAnswer(17,'A');updateReadingNav()"/> A &nbsp;In wealthy nations with advanced health systems</label>
+              <label class="option"><input type="radio" name="rq17" value="B" onchange="setReadingAnswer(17,'B');updateReadingNav()"/> B &nbsp;In private hospitals competing for patients</label>
+              <label class="option"><input type="radio" name="rq17" value="C" onchange="setReadingAnswer(17,'C');updateReadingNav()"/> C &nbsp;In resource-limited settings with few specialist clinicians</label>
+              <label class="option"><input type="radio" name="rq17" value="D" onchange="setReadingAnswer(17,'D');updateReadingNav()"/> D &nbsp;In research laboratories studying rare diseases</label>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="tip-section">
-        <div class="tip-section-hdr" onclick="this.parentElement.classList.toggle('open')">
-          <div class="tip-band-dot" style="background:#10b981;"></div>
-          <div class="tip-band-name" data-en="Reading" data-es="Lectora">Reading</div>
-          <div class="tip-chevron">▼</div>
+
+        <div class="q-group">
+          <div class="q-group-title">Questions 18–27 · Passage 2 continued</div>
+          <div class="q-group-instruction">Do the following statements agree with the claims of the writer? Write YES, NO, or NOT GIVEN.</div>
+          <div id="reading-ynng"></div>
         </div>
-        <div class="tip-section-body">
-          <div class="tip-list">
-            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="Skim first, scan for answers — don't read every word, you'll run out of time." data-es="Escanea primero, busca respuestas — no leas cada palabra o te quedará sin tiempo.">Skim first, scan for answers — don't read every word, you'll run out of time.</span></div>
-            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="True / False / Not Given: 'Not Given' means the text doesn't mention it at all." data-es="V/F/NG: 'No dado' significa que el texto no lo menciona en absoluto.">True / False / Not Given: 'Not Given' means the text doesn't mention it at all.</span></div>
-            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="Aim for 20 minutes per passage — 3 passages, 60 minutes total." data-es="Apunta a 20 minutos por pasaje — 3 pasajes, 60 minutos en total.">Aim for 20 minutes per passage — 3 passages, 60 minutes total.</span></div>
-            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="Build vocabulary: The Guardian, The Economist, academic word lists (AWL)." data-es="Amplía vocabulario: The Guardian, The Economist, listas de palabras académicas.">Build vocabulary: The Guardian, The Economist, academic word lists (AWL).</span></div>
+
+        <div class="q-group">
+          <div class="q-group-title">Questions 28–40 · Passage 3</div>
+          <div class="q-group-instruction">Read the passage and answer the questions below.</div>
+          <div class="passage-box" style="background:var(--gray-100);border:none;margin-bottom:16px">
+            <h3>Passage 3 — The Psychology of Decision-Making</h3>
+            <p>Every day, humans make thousands of decisions, from trivial choices about what to eat to consequential judgements about careers and relationships. Psychologists have long sought to understand the mechanisms underlying these decisions, and their findings challenge the traditional economic model of humans as perfectly rational agents who always maximise utility.</p>
+            <p>Daniel Kahneman, the Nobel laureate psychologist, proposed a dual-process model of cognition in his influential 2011 book <em>Thinking, Fast and Slow</em>. He distinguished between System 1 thinking — fast, automatic, intuitive, and emotionally driven — and System 2 thinking — slow, deliberate, analytical, and effortful. Most everyday decisions rely on System 1, which operates largely below conscious awareness. System 2 is engaged when tasks require sustained concentration, such as solving a complex mathematical problem.</p>
+            <p>System 1 thinking, while efficient, is prone to systematic errors called cognitive biases. The availability heuristic, for instance, leads people to overestimate the probability of dramatic, memorable events — such as plane crashes — because vivid examples come easily to mind, while underestimating more mundane but statistically commoner risks, such as car accidents. The confirmation bias causes people to seek information that confirms pre-existing beliefs and ignore contradicting evidence, a tendency exacerbated by social media algorithms that create personalised information "bubbles".</p>
+            <p>Loss aversion is another well-documented bias: people feel the pain of a loss more intensely than the pleasure of an equivalent gain. Kahneman and his collaborator Amos Tversky demonstrated in a series of experiments that people consistently preferred avoiding a loss of £100 to gaining £100, even when the expected outcomes were mathematically identical. This asymmetry has profound implications for economics, public policy, and behavioural interventions.</p>
+            <p>Understanding cognitive biases has enabled the development of "nudge" strategies — subtle environmental modifications designed to steer behaviour without restricting freedom of choice. The UK Behavioural Insights Team, established in 2010, has used nudge theory to increase organ donor registration, improve tax compliance, and encourage energy conservation. Critics, however, warn that nudges can be exploited for manipulation rather than public benefit, and that they do not address the structural causes of poor decision-making.</p>
           </div>
-        </div>
-      </div>
-      <div class="tip-section">
-        <div class="tip-section-hdr" onclick="this.parentElement.classList.toggle('open')">
-          <div class="tip-band-dot" style="background:#f59e0b;"></div>
-          <div class="tip-band-name" data-en="Writing" data-es="Escrita">Writing</div>
-          <div class="tip-chevron">▼</div>
-        </div>
-        <div class="tip-section-body">
-          <div class="tip-list">
-            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="The hardest skill to improve — start preparation at least 3 months before your exam." data-es="La habilidad más difícil de mejorar — empieza a prepararte al menos 3 meses antes.">The hardest skill to improve — start preparation at least 3 months before your exam.</span></div>
-            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="Task 1: describe data objectively. Task 2: structured argument — intro, 2 body paragraphs, conclusion." data-es="Tarea 1: describe datos objetivamente. Tarea 2: argumento estructurado — intro, 2 párrafos, conclusión.">Task 1: describe data objectively. Task 2: structured argument — intro, 2 body paragraphs, conclusion.</span></div>
-            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="Vary your sentence structures and vocabulary — avoid repeating the same words." data-es="Varía tus estructuras y vocabulario — evita repetir las mismas palabras.">Vary your sentence structures and vocabulary — avoid repeating the same words.</span></div>
-            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="Get feedback from a teacher or AI — self-assessment misses grammar and coherence issues." data-es="Obtén retroalimentación de un profesor o IA — la autoevaluación pierde errores de gramática y coherencia.">Get feedback from a teacher or AI — self-assessment misses grammar and coherence issues.</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="tip-section">
-        <div class="tip-section-hdr" onclick="this.parentElement.classList.toggle('open')">
-          <div class="tip-band-dot" style="background:#8b5cf6;"></div>
-          <div class="tip-band-name" data-en="Speaking" data-es="Oral">Speaking</div>
-          <div class="tip-chevron">▼</div>
-        </div>
-        <div class="tip-section-body">
-          <div class="tip-list">
-            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="Fluency over accuracy — don't pause to search for the 'perfect' word." data-es="Fluidez sobre precisión — no te detengas a buscar la palabra perfecta.">Fluency over accuracy — don't pause to search for the 'perfect' word.</span></div>
-            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="Part 2 long turn: structure around situation → action → result → how you felt." data-es="Parte 2 turno largo: estructura en situación → acción → resultado → cómo te sentiste.">Part 2 long turn: structure around situation → action → result → how you felt.</span></div>
-            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="Practice with native speakers — iTalki, Cambly, or free language exchange apps." data-es="Practica con hablantes nativos — iTalki, Cambly o apps de intercambio de idiomas.">Practice with native speakers — iTalki, Cambly, or free language exchange apps.</span></div>
-            <div class="tip-row"><span class="tip-bullet">›</span><span data-en="Record yourself daily — reveals filler words, pace issues, and pronunciation patterns." data-es="Grábate diariamente — revela muletillas, velocidad y patrones de pronunciación.">Record yourself daily — reveals filler words, pace issues, and pronunciation patterns.</span></div>
-          </div>
+          <div id="reading-p3-qs"></div>
         </div>
       </div>
     </div>
 
-    <!-- PREP RESOURCES -->
-    <div class="prep-card">
-      <div class="prep-header">
-        <div class="prep-title" data-en="Official resources" data-es="Recursos oficiales">Official resources</div>
+    <div class="exam-sidebar">
+      <div class="timer-sidebar" id="timer-sidebar-r">
+        <div class="t-label">Time Remaining</div>
+        <div class="t-time" id="timer-reading-big">60:00</div>
       </div>
-      <div class="prep-item" onclick="window.open('https://www.ielts.org/studying-for-ielts/free-study-resources','_blank')">
-        <div class="prep-icon" style="background:#fff3e0;">📘</div>
-        <div class="prep-info">
-          <div class="prep-name">IELTS.org</div>
-          <div class="prep-desc" data-en="Official free practice tests and sample questions" data-es="Pruebas de práctica y preguntas de muestra oficiales">Official free practice tests and sample questions</div>
-        </div>
-        <div class="prep-arrow">›</div>
+      <div class="sidebar-heading">Question Navigator</div>
+      <div class="q-nav-grid" id="q-nav-reading"></div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-reading" style="width:0%"></div></div>
+      <div class="progress-text" id="prog-text-reading">0 / 40 answered</div>
+      <button class="btn-next-section" onclick="goToSection('writing')">Finish Reading → Writing</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ WRITING ══ -->
+<div id="screen-writing" class="screen">
+  <nav>
+    <div class="nav-logo">Migro<span>•</span></div>
+    <div class="nav-right">
+      <span class="nav-section-badge">Section 3 — Writing</span>
+      <span class="timer-display" id="timer-writing">60:00</span>
+    </div>
+  </nav>
+  <div class="exam-layout">
+    <div class="exam-main">
+      <div class="section-title">Academic Writing</div>
+      <div class="section-desc">Two tasks. 60 minutes total. Task 1: minimum 150 words. Task 2: minimum 250 words. Recommended: spend 20 min on Task 1, 40 min on Task 2.</div>
+      <div class="writing-task-tabs">
+        <button class="task-tab active" onclick="switchWritingTask(1)">Task 1 — Graph Description</button>
+        <button class="task-tab" onclick="switchWritingTask(2)">Task 2 — Essay</button>
       </div>
-      <div class="prep-item" onclick="window.open('https://www.britishcouncil.org/exam/ielts/preparation','_blank')">
-        <div class="prep-icon" style="background:#e3f2fd;">🇬🇧</div>
-        <div class="prep-info">
-          <div class="prep-name">British Council</div>
-          <div class="prep-desc" data-en="Free preparation courses and practice materials" data-es="Cursos gratuitos de preparación y materiales de práctica">Free preparation courses and practice materials</div>
+
+      <div id="writing-task1">
+        <div class="writing-task-header">
+          <div class="writing-task-label">Task 1 · Recommended: 20 minutes</div>
+          <div class="writing-task-prompt">
+            The bar chart below shows the percentage of adults in four countries (Australia, Canada, India, and Brazil) who used the internet for online banking in 2010 and 2020.<br><br>
+            <strong>Summarise the information by selecting and reporting the main features, and make comparisons where relevant.</strong>
+          </div>
+          <div class="chart-placeholder">
+            📊 <strong>Bar Chart Data:</strong><br><br>
+            Australia: 2010 = 42%, 2020 = 78%<br>
+            Canada: 2010 = 51%, 2020 = 82%<br>
+            India: 2010 = 8%, 2020 = 45%<br>
+            Brazil: 2010 = 18%, 2020 = 61%<br><br>
+            <em>All four countries showed significant growth in online banking adoption between 2010 and 2020.</em>
+          </div>
+          <div class="writing-task-min">Minimum 150 words.</div>
         </div>
-        <div class="prep-arrow">›</div>
+        <textarea class="writing-area" id="task1-text" placeholder="Write your Task 1 response here..." oninput="updateWordCount(1)"></textarea>
+        <div class="word-count" id="wc1">0 words (minimum: 150)</div>
       </div>
-      <div class="prep-item" onclick="window.open('https://ieltsliz.com/','_blank')">
-        <div class="prep-icon" style="background:#f3e5f5;">📝</div>
-        <div class="prep-info">
-          <div class="prep-name">IELTS Liz</div>
-          <div class="prep-desc" data-en="Tips and lessons from a former IELTS examiner" data-es="Consejos y lecciones de una ex-examinadora IELTS">Tips and lessons from a former IELTS examiner</div>
+
+      <div id="writing-task2" style="display:none">
+        <div class="writing-task-header">
+          <div class="writing-task-label">Task 2 · Recommended: 40 minutes</div>
+          <div class="writing-task-prompt">
+            Some people believe that social media has had a negative impact on society by reducing face-to-face communication and spreading misinformation. Others argue that social media has brought people closer together and democratised access to information.<br><br>
+            <strong>Discuss both views and give your own opinion.</strong><br>
+            <div class="writing-task-min">Minimum 250 words. Give reasons for your answer and include any relevant examples from your own knowledge or experience.</div>
+          </div>
         </div>
-        <div class="prep-arrow">›</div>
-      </div>
-      <div class="prep-item" onclick="window.open('https://www.cambridgeenglish.org/learning-english/free-resources/','_blank')">
-        <div class="prep-icon" style="background:#e8f5e9;">🎓</div>
-        <div class="prep-info">
-          <div class="prep-name">Cambridge English</div>
-          <div class="prep-desc" data-en="Free skills practice and vocabulary tools" data-es="Práctica de habilidades y herramientas de vocabulario gratuitas">Free skills practice and vocabulary tools</div>
-        </div>
-        <div class="prep-arrow">›</div>
+        <textarea class="writing-area" id="task2-text" placeholder="Write your Task 2 essay here..." oninput="updateWordCount(2)" style="min-height:320px"></textarea>
+        <div class="word-count" id="wc2">0 words (minimum: 250)</div>
       </div>
     </div>
 
-  </div><!-- /right-panel -->
+    <div class="exam-sidebar">
+      <div class="timer-sidebar" id="timer-sidebar-w">
+        <div class="t-label">Time Remaining</div>
+        <div class="t-time" id="timer-writing-big">60:00</div>
+      </div>
+      <div style="background:var(--gray-100);border-radius:10px;padding:14px;margin-bottom:16px;font-size:0.8rem;color:var(--gray-600)">
+        <div style="font-weight:700;color:var(--black);margin-bottom:8px">⏱ Time Guide</div>
+        <div style="margin-bottom:4px">Task 1: ~20 minutes</div>
+        <div>Task 2: ~40 minutes</div>
+      </div>
+      <div style="margin-bottom:16px">
+        <div class="sidebar-heading">Task 1</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <div class="progress-bar-wrap" style="flex:1"><div class="progress-bar-fill" id="prog-t1" style="width:0%"></div></div>
+          <span style="font-size:0.75rem;color:var(--gray-600)" id="wc1-sidebar">0/150</span>
+        </div>
+        <div class="sidebar-heading" style="margin-top:12px">Task 2</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="progress-bar-wrap" style="flex:1"><div class="progress-bar-fill" id="prog-t2" style="width:0%"></div></div>
+          <span style="font-size:0.75rem;color:var(--gray-600)" id="wc2-sidebar">0/250</span>
+        </div>
+      </div>
+      <div style="background:#fffbeb;border:1px solid #f6e05e;border-radius:10px;padding:14px;font-size:0.78rem;color:#7b6900;margin-bottom:16px">
+        <strong>Writing tips:</strong><br>
+        • Task 2 carries more marks than Task 1<br>
+        • Include an introduction, body paragraphs, and a clear conclusion<br>
+        • Use a range of vocabulary and sentence structures<br>
+        • Check grammar and spelling before finishing
+      </div>
+      <button class="btn-next-section" onclick="goToSection('speaking')">Finish Writing → Speaking</button>
+    </div>
+  </div>
+</div>
 
-</div><!-- /page-body -->
+<!-- ═══════════════════════════════════════════ SPEAKING ══ -->
+<div id="screen-speaking" class="screen">
+  <nav>
+    <div class="nav-logo">Migro<span>•</span></div>
+    <div class="nav-right">
+      <span class="nav-section-badge">Section 4 — Speaking</span>
+      <span class="timer-display" id="timer-speaking">15:00</span>
+    </div>
+  </nav>
+  <div class="exam-layout">
+    <div class="exam-main">
+      <div class="section-title">Speaking Test</div>
+      <div class="section-desc">Three parts. 11–14 minutes. Read each part carefully, prepare your answers, and write notes or key points in the text boxes. Rate your own performance for each part.</div>
+
+      <div class="speaking-part">
+        <div class="speaking-part-label">Part 1 · 4–5 minutes</div>
+        <div class="speaking-part-title">Introduction & Interview</div>
+        <div class="speaking-part-desc">The examiner will ask you general questions about yourself and familiar topics such as home, family, work, studies, and interests.</div>
+        <div class="speaking-questions">
+          <div class="speaking-q">Can you tell me about your hometown? What do you like most about it?</div>
+          <div class="speaking-q">Do you work or are you a student? What do you do in your free time?</div>
+          <div class="speaking-q">Do you enjoy cooking? How often do you cook at home?</div>
+          <div class="speaking-q">Do you prefer spending time indoors or outdoors? Why?</div>
+          <div class="speaking-q">How important is music in your daily life?</div>
+        </div>
+        <div class="notes-label">Your notes / key points for Part 1:</div>
+        <textarea class="speaking-notes" id="sp1-notes" placeholder="Write your planned answers or key points here..." oninput="checkSpeakingComplete()"></textarea>
+        <div class="self-score-row">
+          <span class="self-score-label">How did you perform?</span>
+          <button class="self-score-btn" onclick="setSpeakingScore(1,'poor');this.parentElement.querySelectorAll('.self-score-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');checkSpeakingComplete()">Struggling</button>
+          <button class="self-score-btn" onclick="setSpeakingScore(1,'ok');this.parentElement.querySelectorAll('.self-score-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');checkSpeakingComplete()">OK</button>
+          <button class="self-score-btn" onclick="setSpeakingScore(1,'good');this.parentElement.querySelectorAll('.self-score-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');checkSpeakingComplete()">Good</button>
+          <button class="self-score-btn" onclick="setSpeakingScore(1,'excellent');this.parentElement.querySelectorAll('.self-score-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');checkSpeakingComplete()">Excellent</button>
+        </div>
+      </div>
+
+      <div class="speaking-part">
+        <div class="speaking-part-label">Part 2 · 3–4 minutes</div>
+        <div class="speaking-part-title">Individual Long Turn</div>
+        <div class="speaking-part-desc">You will be given a task card. You have 1 minute to prepare, then speak for 1–2 minutes on the topic.</div>
+        <div class="cue-card">
+          <div class="cue-card-title">Talk about a skill you would like to learn.</div>
+          <ul>
+            <li>What skill it is</li>
+            <li>Why you want to learn it</li>
+            <li>How you plan to learn it</li>
+            <li>How it would benefit your life or career</li>
+          </ul>
+        </div>
+        <div class="notes-label">1-minute preparation notes:</div>
+        <textarea class="speaking-notes" id="sp2-notes" placeholder="Brainstorm and note key ideas before speaking..." oninput="checkSpeakingComplete()"></textarea>
+        <div class="self-score-row">
+          <span class="self-score-label">How did you perform?</span>
+          <button class="self-score-btn" onclick="setSpeakingScore(2,'poor');this.parentElement.querySelectorAll('.self-score-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');checkSpeakingComplete()">Struggling</button>
+          <button class="self-score-btn" onclick="setSpeakingScore(2,'ok');this.parentElement.querySelectorAll('.self-score-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');checkSpeakingComplete()">OK</button>
+          <button class="self-score-btn" onclick="setSpeakingScore(2,'good');this.parentElement.querySelectorAll('.self-score-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');checkSpeakingComplete()">Good</button>
+          <button class="self-score-btn" onclick="setSpeakingScore(2,'excellent');this.parentElement.querySelectorAll('.self-score-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');checkSpeakingComplete()">Excellent</button>
+        </div>
+      </div>
+
+      <div class="speaking-part">
+        <div class="speaking-part-label">Part 3 · 4–5 minutes</div>
+        <div class="speaking-part-title">Two-way Discussion</div>
+        <div class="speaking-part-desc">The examiner asks more abstract discussion questions related to the Part 2 topic. These test your ability to express opinions and ideas.</div>
+        <div class="speaking-questions">
+          <div class="speaking-q">Why do you think many adults find it difficult to learn new skills?</div>
+          <div class="speaking-q">How has technology changed the way people learn today compared to the past?</div>
+          <div class="speaking-q">Do you think formal education adequately prepares people for the skills needed in modern workplaces?</div>
+          <div class="speaking-q">Some people say lifelong learning is essential in the 21st century. Do you agree?</div>
+        </div>
+        <div class="notes-label">Your notes / key points for Part 3:</div>
+        <textarea class="speaking-notes" id="sp3-notes" placeholder="Write your planned answers or key points here..." oninput="checkSpeakingComplete()"></textarea>
+        <div class="self-score-row">
+          <span class="self-score-label">How did you perform?</span>
+          <button class="self-score-btn" onclick="setSpeakingScore(3,'poor');this.parentElement.querySelectorAll('.self-score-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');checkSpeakingComplete()">Struggling</button>
+          <button class="self-score-btn" onclick="setSpeakingScore(3,'ok');this.parentElement.querySelectorAll('.self-score-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');checkSpeakingComplete()">OK</button>
+          <button class="self-score-btn" onclick="setSpeakingScore(3,'good');this.parentElement.querySelectorAll('.self-score-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');checkSpeakingComplete()">Good</button>
+          <button class="self-score-btn" onclick="setSpeakingScore(3,'excellent');this.parentElement.querySelectorAll('.self-score-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');checkSpeakingComplete()">Excellent</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="exam-sidebar">
+      <div class="timer-sidebar" id="timer-sidebar-s">
+        <div class="t-label">Time Remaining</div>
+        <div class="t-time" id="timer-speaking-big">15:00</div>
+      </div>
+      <div style="background:var(--gray-100);border-radius:10px;padding:14px;margin-bottom:16px;font-size:0.8rem;color:var(--gray-600)">
+        <div style="font-weight:700;color:var(--black);margin-bottom:8px">📋 Scoring Criteria</div>
+        <div style="margin-bottom:4px"><strong>Fluency & Coherence</strong> — speak without long pauses</div>
+        <div style="margin-bottom:4px"><strong>Lexical Resource</strong> — use varied vocabulary</div>
+        <div style="margin-bottom:4px"><strong>Grammar</strong> — use a range of structures</div>
+        <div><strong>Pronunciation</strong> — clear and natural</div>
+      </div>
+      <div style="margin-bottom:16px">
+        <div class="sidebar-heading">Progress</div>
+        <div style="font-size:0.8rem;color:var(--gray-600)" id="speaking-progress-text">Complete all 3 parts and rate each one.</div>
+      </div>
+      <button class="btn-next-section" id="btn-finish-speaking" onclick="goToSection('results')">Finish Test → See Results</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ RESULTS ══ -->
+<div id="screen-results" class="screen">
+  <nav style="background:transparent;border-bottom:1px solid #333">
+    <div class="nav-logo" style="color:white">Migro<span style="color:#666">•</span></div>
+    <div style="color:#888;font-size:0.85rem">Test Complete</div>
+  </nav>
+  <div class="results-content">
+    <div class="results-header">
+      <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.15em;color:#666;margin-bottom:8px">Your Results</div>
+      <h1 class="results-title">Test Complete!</h1>
+      <div class="overall-label">Estimated Overall Band Score</div>
+      <div class="overall-band-display" id="res-overall">—</div>
+      <div class="band-desc" id="res-band-desc"></div>
+    </div>
+
+    <div class="scores-grid">
+      <div class="score-card">
+        <div class="sc-section">🎧 Listening</div>
+        <div class="sc-band" id="res-listening-band">—</div>
+        <div class="sc-raw" id="res-listening-raw"></div>
+        <div class="sc-desc" id="res-listening-desc"></div>
+        <div class="band-bar"><div class="band-bar-fill" id="res-l-bar" style="width:0%;background:#60a5fa"></div></div>
+      </div>
+      <div class="score-card">
+        <div class="sc-section">📖 Reading</div>
+        <div class="sc-band" id="res-reading-band">—</div>
+        <div class="sc-raw" id="res-reading-raw"></div>
+        <div class="sc-desc" id="res-reading-desc"></div>
+        <div class="band-bar"><div class="band-bar-fill" id="res-r-bar" style="width:0%;background:#34d399"></div></div>
+      </div>
+      <div class="score-card">
+        <div class="sc-section">✍️ Writing</div>
+        <div class="sc-band" id="res-writing-band">—</div>
+        <div class="sc-raw" id="res-writing-raw"></div>
+        <div class="sc-desc" id="res-writing-desc"></div>
+        <div class="band-bar"><div class="band-bar-fill" id="res-w-bar" style="width:0%;background:#f59e0b"></div></div>
+      </div>
+      <div class="score-card">
+        <div class="sc-section">🗣️ Speaking</div>
+        <div class="sc-band" id="res-speaking-band">—</div>
+        <div class="sc-raw" id="res-speaking-raw"></div>
+        <div class="sc-desc" id="res-speaking-desc"></div>
+        <div class="band-bar"><div class="band-bar-fill" id="res-s-bar" style="width:0%;background:#f87171"></div></div>
+      </div>
+    </div>
+
+    <div class="feedback-section">
+      <div class="feedback-title">Answer Review — Listening</div>
+      <div id="feedback-listening"></div>
+    </div>
+    <div class="feedback-section">
+      <div class="feedback-title">Answer Review — Reading</div>
+      <div id="feedback-reading"></div>
+    </div>
+    <div class="feedback-section">
+      <div class="feedback-title">Writing Feedback</div>
+      <div id="feedback-writing"></div>
+    </div>
+    <div class="feedback-section">
+      <div class="feedback-title">Next Steps</div>
+      <div id="feedback-nextsteps"></div>
+    </div>
+
+    <div class="results-actions">
+      <button class="btn-retake" onclick="retakeTest()">↩ Take Another Test</button>
+      <a href="migro-dashboard.html" class="btn-dashboard">← Dashboard</a>
+      <a href="migro-ielts.html" class="btn-dashboard">📊 Score Tracker</a>
+    </div>
+  </div>
+</div>
 
 <script>
-  let lang = 'en';
-  const bands = { L: 0, R: 0, W: 0, S: 0 };
-  function lsGet(key, fallback) { try { return JSON.parse(localStorage.getItem(key) || fallback); } catch(e) { return JSON.parse(fallback); } }
-  function lsSet(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {} }
-  let attempts = lsGet('migro_ielts_attempts', '[]');
+// ══════════════════════ STATE ══════════════════════
+const state = {
+  currentSection: 'welcome',
+  timers: { listening: 40*60, reading: 60*60, writing: 60*60, speaking: 15*60 },
+  timerIntervals: {},
+  listeningAnswers: {},
+  readingAnswers: {},
+  writingTask1: '', writingTask2: '',
+  speakingScores: {},
+};
 
-  // ─── HELPERS ────────────────────────────────────────────────────────────
-  function bandClass(v) {
-    if (v >= 8.0) return 'great';
-    if (v >= 7.0) return 'good';
-    if (v >= 6.0) return 'ok';
-    return 'low';
+// CORRECT ANSWERS
+const listeningCorrect = {
+  1:'1992', 2:'07894 33 156', 3:'55', 4:'12', 5:'second', 6:'3',
+  7:'B', 8:'B', 9:'B', 10:'B',
+  11:'B', 12:'C',
+  13:'members', 14:'12', 15:'sunday', 16:'office',
+  17:'A',18:'C',19:'B',20:'A',21:'C',22:'B',23:'A',24:'B',25:'C',26:'A',
+  27:'B',28:'A',29:'C',30:'B',31:'A',32:'C',33:'B',34:'A',35:'C',
+  36:'B',37:'A',38:'C',39:'B',40:'A'
+};
+const readingCorrect = {
+  1:'E',2:'C',3:'B',4:'F',5:'D',6:'A',7:'G',
+  8:'NOT GIVEN',9:'TRUE',10:'FALSE',11:'TRUE',12:'NOT GIVEN',13:'FALSE',
+  14:'B',15:'C',16:'B',17:'C',
+  18:'YES',19:'NO',20:'YES',21:'NOT GIVEN',22:'YES',23:'NO',24:'YES',25:'NOT GIVEN',26:'YES',27:'NO',
+  28:'B',29:'C',30:'A',31:'B',32:'C',33:'A',34:'B',35:'C',36:'A',37:'B',38:'C',39:'A',40:'B'
+};
+
+// ══════════════════════ INIT DYNAMIC QUESTIONS ══════════════════════
+function buildParts34() {
+  const opts = ['A','B','C'];
+  const qs = [];
+  const sampleQs = [
+    {q:'In Part 3, what is the student\'s main concern about the assignment?', opts:['A Lack of time','B Unclear requirements','C Poor research access']},
+    {q:'What does the tutor suggest the student do first?', opts:['A Write an outline','B Read additional sources','C Discuss with classmates']},
+    {q:'The student\'s presentation is scheduled for:', opts:['A Monday morning','B Wednesday afternoon','C Thursday morning']},
+    {q:'In Part 4, what is the lecture mainly about?', opts:['A Ocean temperature changes','B Migration patterns of fish','C Effects of pollution on coral reefs']},
+    {q:'The speaker says coral reefs cover approximately what percentage of the ocean floor?', opts:['A Less than 1%','B About 5%','C Around 10%']},
+    {q:'What does the speaker say about ocean acidification?', opts:['A It has slowed in recent years','B It causes coral bleaching','C It increases fish populations']},
+    {q:'Which factor does the speaker identify as most damaging to coral reefs?', opts:['A Tourism','B Rising sea temperatures','C Overfishing']},
+    {q:'What solution does the speaker recommend as most cost-effective?', opts:['A Marine protected areas','B Artificial reefs','C Chemical treatments']},
+  ];
+  let container = document.getElementById('parts34-qs');
+  for (let i = 0; i < 24; i++) {
+    const qNum = 17 + i;
+    const sample = sampleQs[i % sampleQs.length];
+    const div = document.createElement('div');
+    div.className = 'question';
+    div.id = 'q'+qNum;
+    div.innerHTML = `<div class="q-num">QUESTION ${qNum}</div>
+      <div class="q-text">${sample.q}</div>
+      <div class="options">
+        ${sample.opts.map((o,idx) => `<label class="option"><input type="radio" name="q${qNum}" value="${['A','B','C'][idx]}" onchange="setAnswer(${qNum},this.value);updateNav()"/> ${o}</label>`).join('')}
+      </div>`;
+    container.appendChild(div);
   }
-  function pillClass(v) { return bandClass(v); }
+}
 
-  // ─── UPDATE BAND SLIDER ─────────────────────────────────────────────────
-  function updateBand(b, v) {
-    v = parseFloat(v);
-    bands[b] = v;
+function buildReadingYNNG() {
+  const qs = [
+    'AI will eventually replace all human doctors in diagnosis.',
+    'The black box problem is unique to healthcare applications.',
+    'Regulatory bodies require healthcare AI to be explainable.',
+    'AI diagnostic tools are already widely used in Western hospitals.',
+    'AI could help address global health inequalities.',
+    'All AI systems used in healthcare are currently approved.',
+    'Training data diversity affects AI accuracy across populations.',
+    'The EU was the first to pass AI explainability regulations.',
+    'AI shows promise in detecting tuberculosis in under-resourced areas.',
+    'Human empathy cannot be replicated by AI systems, according to critics.'
+  ];
+  const container = document.getElementById('reading-ynng');
+  qs.forEach((q, i) => {
+    const qNum = 18 + i;
+    const div = document.createElement('div');
+    div.className = 'question';
+    div.id = 'rq'+qNum;
+    div.innerHTML = `<div class="q-num">QUESTION ${qNum}</div>
+      <div class="q-text">${q}</div>
+      <div class="tfng-options">
+        <button class="tfng-btn" onclick="setReadingAnswer(${qNum},'YES');this.parentElement.querySelectorAll('.tfng-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');updateReadingNav()">YES</button>
+        <button class="tfng-btn" onclick="setReadingAnswer(${qNum},'NO');this.parentElement.querySelectorAll('.tfng-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');updateReadingNav()">NO</button>
+        <button class="tfng-btn" onclick="setReadingAnswer(${qNum},'NOT GIVEN');this.parentElement.querySelectorAll('.tfng-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');updateReadingNav()">NOT GIVEN</button>
+      </div>`;
+    container.appendChild(div);
+  });
+}
 
-    // slider track fill
-    const pct = (v / 9) * 100;
-    document.getElementById('slider-' + b).style.background =
-      `linear-gradient(to right, var(--black) ${pct}%, var(--gray-200) ${pct}%)`;
+function buildReadingP3() {
+  const p3qs = [
+    {q:'What does Kahneman\'s dual-process model distinguish between?', opts:['A Conscious and unconscious memory','B Fast intuitive and slow analytical thinking','C Emotional and rational behaviour','D Short-term and long-term decision-making']},
+    {q:'The availability heuristic causes people to:', opts:['A Make more rational decisions','B Overestimate dramatic memorable events','C Seek confirming information','D Prefer familiar choices']},
+    {q:'Loss aversion means people:', opts:['A Avoid all financial risk','B Feel losses more strongly than equivalent gains','C Make poorer decisions when wealthy','D Prefer gambling to saving']},
+    {q:'What did Kahneman and Tversky\'s experiments demonstrate?', opts:['A People always choose the highest expected value','B Avoiding a £100 loss was preferred to gaining £100','C Mathematical ability reduces bias','D People prefer delayed rewards']},
+    {q:'What are "nudge" strategies?', opts:['A Punishments for poor decisions','B Subtle changes to steer behaviour without restricting choice','C Legal requirements to disclose information','D Direct financial incentives']},
+    {q:'What is one criticism of nudge theory?', opts:['A It is too expensive to implement','B It can be exploited for manipulation','C It does not work on younger generations','D It requires significant legal changes']},
+    {q:'According to the passage, what creates information "bubbles"?', opts:['A Television news channels','B Social media algorithms','C Confirmation from authority figures','D Limited internet access']},
+    {q:'System 2 thinking is described as:', opts:['A Fast and automatic','B Emotional and intuitive','C Slow, deliberate and analytical','D Unconscious and instinctive']},
+    {q:'Which organisation used nudge theory to improve tax compliance?', opts:['A The World Bank','B The UK Behavioural Insights Team','C OECD','D Kahneman\'s research institute']},
+    {q:'What is the main argument of the passage?', opts:['A Humans are perfectly rational agents','B Cognitive biases undermine rational decision-making but can be mitigated','C System 1 thinking is always superior','D Loss aversion is the only significant bias']},
+    {q:'The word "exacerbated" (paragraph 3) most closely means:', opts:['A Reduced','B Explained','C Worsened','D Discovered']},
+    {q:'Which statement about cognitive biases is supported by the passage?', opts:['A They only affect uneducated people','B They are systematic and predictable errors','C They disappear with experience','D They are different for every individual']},
+    {q:'What does the passage suggest about traditional economic models?', opts:['A They accurately describe human behaviour','B They have been proven correct by recent research','C They fail to account for irrational human tendencies','D They are no longer used by economists']},
+  ];
+  const container = document.getElementById('reading-p3-qs');
+  p3qs.forEach((item, i) => {
+    const qNum = 28 + i;
+    const div = document.createElement('div');
+    div.className = 'question';
+    div.id = 'rq'+qNum;
+    div.innerHTML = `<div class="q-num">QUESTION ${qNum}</div>
+      <div class="q-text">${item.q}</div>
+      <div class="options">
+        ${item.opts.map((o,idx) => {
+          const letter = ['A','B','C','D'][idx];
+          return `<label class="option"><input type="radio" name="rq${qNum}" value="${letter}" onchange="setReadingAnswer(${qNum},'${letter}');updateReadingNav()"/> ${o}</label>`;
+        }).join('')}
+      </div>`;
+    container.appendChild(div);
+  });
+}
 
-    // big value display
-    const valEl = document.getElementById('val-' + b);
-    valEl.textContent = v.toFixed(1);
-    valEl.className = 'band-value ' + bandClass(v);
+// ══════════════════════ ANSWER SETTERS ══════════════════════
+function setAnswer(num, val) { state.listeningAnswers[num] = val; updateNav(); }
+function setReadingAnswer(num, val) { state.readingAnswers[num] = val; updateReadingNav(); }
+function setMulti(q1, q2) {
+  const checked = [...document.querySelectorAll(`input[name="q${q1}"]:checked`)].map(i=>i.value);
+  state.listeningAnswers[q1] = checked[0] || null;
+  state.listeningAnswers[q2] = checked[1] || null;
+  updateNav();
+}
+function setSpeakingScore(part, score) { state.speakingScores[part] = score; checkSpeakingComplete(); }
 
-    // table score pill
-    const tvalEl = document.getElementById('tval-' + b);
-    tvalEl.textContent = v.toFixed(1);
-    tvalEl.className = 'score-pill ' + pillClass(v);
-
-    // threshold checks
-    [['c',6],['p',7],['s',8]].forEach(([key, min]) => {
-      const el = document.getElementById('t' + key + '-' + b);
-      if (v >= min) { el.textContent = '✓'; el.className = 'band-status met'; }
-      else { el.textContent = '+' + (min - v).toFixed(1); el.className = 'band-status unmet'; }
-    });
-
-    // label chip
-    const chip = document.getElementById('chip-' + b);
-    if (v >= 8.0)      { chip.textContent = lang==='en'?'Superior':'Superior';    chip.style.cssText = 'background:var(--purple-bg);color:var(--purple);'; }
-    else if (v >= 7.0) { chip.textContent = lang==='en'?'Proficient':'Avanzado';  chip.style.cssText = 'background:var(--green-bg);color:var(--green);'; }
-    else if (v >= 6.0) { chip.textContent = lang==='en'?'Competent':'Competente'; chip.style.cssText = 'background:var(--amber-bg);color:var(--amber);'; }
-    else               { chip.textContent = 'Below 6.0';                          chip.style.cssText = 'background:var(--red-bg);color:var(--red);'; }
-
-    updateOverall();
+// ══════════════════════ NAVIGATION ══════════════════════
+function buildNavGrid(containerId, total, answersObj, prefix='') {
+  const grid = document.getElementById(containerId);
+  grid.innerHTML = '';
+  for (let i = 1; i <= total; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'q-nav-btn' + (answersObj[i] ? ' answered' : '');
+    btn.textContent = i;
+    btn.onclick = () => { const el = document.getElementById(prefix+'q'+i) || document.getElementById(prefix+'rq'+i); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); };
+    grid.appendChild(btn);
   }
+}
+function updateNav() {
+  const answered = Object.values(state.listeningAnswers).filter(v=>v!=null).length;
+  document.getElementById('prog-listening').style.width = (answered/40*100)+'%';
+  document.getElementById('prog-text-listening').textContent = answered+' / 40 answered';
+  buildNavGrid('q-nav-listening', 40, state.listeningAnswers);
+}
+function updateReadingNav() {
+  const answered = Object.values(state.readingAnswers).filter(v=>v!=null).length;
+  document.getElementById('prog-reading').style.width = (answered/40*100)+'%';
+  document.getElementById('prog-text-reading').textContent = answered+' / 40 answered';
+  buildNavGrid('q-nav-reading', 40, state.readingAnswers, 'r');
+}
+function checkSpeakingComplete() {
+  const parts = [1,2,3].filter(p => state.speakingScores[p]).length;
+  document.getElementById('speaking-progress-text').textContent = parts+' / 3 parts rated';
+}
 
-  // ─── OVERALL ─────────────────────────────────────────────────────────────
-  function updateOverall() {
-    const vals = [bands.L, bands.R, bands.W, bands.S];
-    const minVal = Math.min(...vals);
-    const overall = Math.round(vals.reduce((a,b)=>a+b,0)/4 * 2) / 2;
+// ══════════════════════ WORD COUNT ══════════════════════
+function updateWordCount(task) {
+  const ta = document.getElementById('task'+task+'-text');
+  const words = ta.value.trim() ? ta.value.trim().split(/\s+/).length : 0;
+  const min = task===1 ? 150 : 250;
+  const el = document.getElementById('wc'+task);
+  el.textContent = words+' words (minimum: '+min+')';
+  el.className = 'word-count' + (words >= min ? ' ok' : words > 0 ? ' warn' : '');
+  const prog = document.getElementById('prog-t'+task);
+  const sideWc = document.getElementById('wc'+task+'-sidebar');
+  prog.style.width = Math.min(100, words/min*100)+'%';
+  sideWc.textContent = words+'/'+min;
+  if (task===1) state.writingTask1 = ta.value;
+  else state.writingTask2 = ta.value;
+}
+function switchWritingTask(n) {
+  document.getElementById('writing-task1').style.display = n===1?'block':'none';
+  document.getElementById('writing-task2').style.display = n===2?'block':'none';
+  document.querySelectorAll('.task-tab').forEach((t,i)=>t.classList.toggle('active',i===n-1));
+}
 
-    document.getElementById('overallAvg').textContent = overall.toFixed(1);
-
-    let pts = 0, level = 'below';
-    if (minVal >= 8.0)      { pts = 20; level = 'superior'; }
-    else if (minVal >= 7.0) { pts = 10; level = 'proficient'; }
-    else if (minVal >= 6.0) { pts = 0;  level = 'competent'; }
-
-    const badge = document.getElementById('levelBadge');
-    badge.className = 'level-badge ' + level;
-    const labels = {
-      en:{ below:'⚠ Below Competent', competent:'✓ Competent English', proficient:'✓ Proficient English', superior:'⭐ Superior English' },
-      es:{ below:'⚠ Por debajo del mínimo', competent:'✓ Inglés competente', proficient:'✓ Inglés avanzado', superior:'⭐ Inglés superior' }
-    };
-    badge.textContent = labels[lang][level];
-
-    const notes = {
-      en:{ below:'Need all 4 bands ≥ 6.0 to meet the minimum visa English requirement.', competent:'Minimum met — push for 7.0+ in all bands to earn +10 points.', proficient:'Great — earning 10 pts. Reach 8.0 in all bands for 20 total.', superior:'Maximum English points achieved.' },
-      es:{ below:'Necesitas las 4 bandas ≥ 6.0 para cumplir el requisito mínimo.', competent:'Requisito mínimo cumplido — apunta a 7.0+ en todas las bandas.', proficient:'Bien — obtienes 10 pts. Alcanza 8.0 en todas para 20 en total.', superior:'Máximo de puntos de inglés conseguido.' }
-    };
-    document.getElementById('levelNote').textContent = notes[lang][level];
-    document.getElementById('overallPts').textContent = pts + ' pts';
-    document.getElementById('impactPts').textContent = pts;
-
-    // impact highlight
-    ['below','comp','prof','sup'].forEach(id => document.getElementById('il-'+id).classList.remove('active'));
-    ({ below:'il-below', competent:'il-comp', proficient:'il-prof', superior:'il-sup' })[level] &&
-      document.getElementById(({ below:'il-below', competent:'il-comp', proficient:'il-prof', superior:'il-sup' })[level]).classList.add('active');
-
-    // milestones
-    ['visa','prof','sup'].forEach((key, i) => {
-      const thresholds = [6, 7, 8];
-      const el = document.getElementById('ms-' + key);
-      if (minVal >= thresholds[i]) {
-        el.textContent = '✓'; el.style.background = 'var(--black)'; el.style.color = 'var(--white)';
-      } else {
-        el.textContent = i + 1; el.style.background = 'var(--gray-100)'; el.style.color = 'var(--gray-400)';
-      }
-    });
-  }
-
-  // ─── ATTEMPT HISTORY ─────────────────────────────────────────────────────
-  function toggleAddForm() {
-    const f = document.getElementById('addAttemptForm');
-    f.classList.toggle('open');
-    if (f.classList.contains('open'))
-      document.getElementById('inp-date').value = new Date().toISOString().split('T')[0];
-  }
-
-  function calcOverall(L,R,W,S){ return Math.round((L+R+W+S)/4*2)/2; }
-  function getLevel(min){ return min>=8?'superior':min>=7?'proficient':min>=6?'competent':'below'; }
-
-  function saveAttempt() {
-    const date = document.getElementById('inp-date').value;
-    const L = parseFloat(document.getElementById('inp-L').value);
-    const R = parseFloat(document.getElementById('inp-R').value);
-    const W = parseFloat(document.getElementById('inp-W').value);
-    const S = parseFloat(document.getElementById('inp-S').value);
-    if (!date || [L,R,W,S].some(isNaN)) { alert(lang==='en'?'Fill in all fields.':'Completa todos los campos.'); return; }
-    if ([L,R,W,S].some(v=>v<0||v>9)) { alert(lang==='en'?'Scores must be 0–9.':'Puntajes deben ser 0–9.'); return; }
-    const a = { date, L, R, W, S, overall: calcOverall(L,R,W,S), level: getLevel(Math.min(L,R,W,S)), id: Date.now() };
-    attempts.unshift(a);
-    lsSet('migro_ielts_attempts', attempts);
-    toggleAddForm();
-    renderAttempts();
-    // load into sliders
-    ['L','R','W','S'].forEach(b => { document.getElementById('slider-'+b).value = a[b]; updateBand(b, a[b]); });
-  }
-
-  function deleteAttempt(id) {
-    attempts = attempts.filter(a => a.id !== id);
-    lsSet('migro_ielts_attempts', attempts);
-    renderAttempts();
-  }
-
-  const levelLabel = (l) => ({ en:{below:'Below',competent:'Competent',proficient:'Proficient',superior:'Superior'}, es:{below:'Bajo mínimo',competent:'Competente',proficient:'Avanzado',superior:'Superior'} })[lang][l];
-
-  function renderAttempts() {
-    const el = document.getElementById('attemptList');
-    if (!attempts.length) {
-      el.innerHTML = `<div class="history-empty">${lang==='en'?'No attempts recorded yet. Add your first IELTS result above.':'Ningún intento registrado. Agrega tu primer resultado IELTS arriba.'}</div>`;
-      document.getElementById('chartCard').style.display = 'none';
-      return;
+// ══════════════════════ TIMER ══════════════════════
+function startTimer(section, seconds, displayIds, sidebarId) {
+  let remaining = seconds;
+  function tick() {
+    remaining--;
+    const m = Math.floor(remaining/60).toString().padStart(2,'0');
+    const s = (remaining%60).toString().padStart(2,'0');
+    const str = m+':'+s;
+    displayIds.forEach(id => { const el = document.getElementById(id); if(el) { el.textContent=str; el.className='timer-display'+(remaining<120?' danger':remaining<300?' warning':''); } });
+    const sb = document.getElementById(sidebarId);
+    if(sb) { const t = sb.querySelector('.t-time'); if(t) { t.textContent=str; sb.className='timer-sidebar'+(remaining<120?' danger':remaining<300?' warning':''); } }
+    if(remaining<=0) {
+      clearInterval(state.timerIntervals[section]);
+      if(section==='listening') goToSection('reading');
+      else if(section==='reading') goToSection('writing');
+      else if(section==='writing') goToSection('speaking');
+      else if(section==='speaking') goToSection('results');
     }
-    el.innerHTML = '<div class="attempt-list">' + attempts.map(a => `
-      <div class="attempt-item">
-        <div class="attempt-date">${a.date}</div>
-        <div class="attempt-bands">
-          <span class="attempt-band">L ${a.L.toFixed(1)}</span>
-          <span class="attempt-band">R ${a.R.toFixed(1)}</span>
-          <span class="attempt-band">W ${a.W.toFixed(1)}</span>
-          <span class="attempt-band">S ${a.S.toFixed(1)}</span>
-        </div>
-        <div class="attempt-overall">${a.overall.toFixed(1)}</div>
-        <span class="attempt-level ${a.level}">${levelLabel(a.level)}</span>
-        <button class="attempt-del" onclick="deleteAttempt(${a.id})">✕</button>
-      </div>`).join('') + '</div>';
+  }
+  state.timerIntervals[section] = setInterval(tick, 1000);
+}
 
-    if (attempts.length >= 2) { document.getElementById('chartCard').style.display='block'; renderChart(); }
-    else document.getElementById('chartCard').style.display='none';
+// ══════════════════════ SECTION NAVIGATION ══════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el = document.getElementById('screen-'+id);
+  if(el) { el.classList.add('active'); window.scrollTo(0,0); }
+}
+function startTest() {
+  showScreen('listening');
+  startTimer('listening', 40*60, ['timer-listening'], 'timer-sidebar-l');
+  buildNavGrid('q-nav-listening', 40, state.listeningAnswers);
+  buildParts34();
+}
+function goToSection(section) {
+  Object.values(state.timerIntervals).forEach(clearInterval);
+  if(section==='reading') {
+    showScreen('reading');
+    buildNavGrid('q-nav-reading', 40, state.readingAnswers);
+    buildReadingYNNG();
+    buildReadingP3();
+    startTimer('reading', 60*60, ['timer-reading'], 'timer-sidebar-r');
+  } else if(section==='writing') {
+    showScreen('writing');
+    startTimer('writing', 60*60, ['timer-writing'], 'timer-sidebar-w');
+  } else if(section==='speaking') {
+    showScreen('speaking');
+    startTimer('speaking', 15*60, ['timer-speaking'], 'timer-sidebar-s');
+  } else if(section==='results') {
+    showScreen('results');
+    calculateResults();
+  }
+}
+
+// ══════════════════════ BAND SCORE TABLES ══════════════════════
+function rawToBand(raw, type='listening') {
+  const t = type==='listening'
+    ? [[39,9],[37,8.5],[35,8],[33,7.5],[30,7],[27,6.5],[23,6],[20,5.5],[16,5],[13,4.5],[10,4],[8,3.5],[6,3],[4,2.5],[2,2],[1,1]]
+    : [[40,9],[39,8.5],[37,8],[36,7.5],[34,7],[32,6.5],[30,6],[27,5.5],[23,5],[19,4.5],[15,4],[12,3.5],[9,3],[6,2.5],[3,2],[1,1]];
+  for(const [min,band] of t) { if(raw>=min) return band; }
+  return 1;
+}
+function scoreToWritingBand(wc1, wc2, selfScore) {
+  const base = selfScore==='excellent'?7.5:selfScore==='good'?6.5:selfScore==='ok'?5.5:4.5;
+  const bonus = (wc1>=150?0.25:0) + (wc2>=250?0.25:0);
+  return Math.min(9, Math.round((base+bonus)*2)/2);
+}
+function speakingScoreToBand(scores) {
+  const map = {excellent:7.5,good:6.5,ok:5.5,poor:4.5};
+  const vals = [1,2,3].map(p=>map[scores[p]]||5);
+  const avg = vals.reduce((a,b)=>a+b,0)/vals.length;
+  return Math.round(avg*2)/2;
+}
+function bandToDesc(band) {
+  if(band>=9) return 'Expert — full operational command';
+  if(band>=8) return 'Very Good — fully operational, only occasional errors';
+  if(band>=7) return 'Good — operational, occasional inaccuracies';
+  if(band>=6) return 'Competent — effective command, some inaccuracies';
+  if(band>=5) return 'Modest — partial command, coping with overall meaning';
+  if(band>=4) return 'Limited — basic competence in familiar situations';
+  return 'Below — not meeting minimum standard';
+}
+
+// ══════════════════════ RESULTS CALCULATION ══════════════════════
+function calculateResults() {
+  // Listening score
+  let lScore = 0;
+  for(let i=1;i<=40;i++) {
+    const ans = (state.listeningAnswers[i]||'').toString().toLowerCase().trim();
+    const correct = (listeningCorrect[i]||'').toString().toLowerCase().trim();
+    if(ans===correct) lScore++;
+  }
+  const lBand = rawToBand(lScore, 'listening');
+
+  // Reading score
+  let rScore = 0;
+  for(let i=1;i<=40;i++) {
+    const ans = (state.readingAnswers[i]||'').toString().toLowerCase().trim();
+    const correct = (readingCorrect[i]||'').toString().toLowerCase().trim();
+    if(ans===correct) rScore++;
+  }
+  const rBand = rawToBand(rScore, 'reading');
+
+  // Writing score
+  const wc1 = state.writingTask1.trim() ? state.writingTask1.trim().split(/\s+/).length : 0;
+  const wc2 = state.writingTask2.trim() ? state.writingTask2.trim().split(/\s+/).length : 0;
+  const wSelf = state.speakingScores[0] || 'ok';
+  const wBand = scoreToWritingBand(wc1, wc2, 'ok');
+
+  // Speaking score
+  const sBand = speakingScoreToBand(state.speakingScores);
+
+  // Overall
+  const overall = Math.round(((lBand+rBand+wBand+sBand)/4)*2)/2;
+
+  // Update UI
+  document.getElementById('res-overall').textContent = overall.toFixed(1);
+  document.getElementById('res-band-desc').textContent = bandToDesc(overall);
+
+  const sections = [
+    {id:'listening',band:lBand,raw:lScore+'/40',bar:'res-l-bar'},
+    {id:'reading',band:rBand,raw:rScore+'/40',bar:'res-r-bar'},
+    {id:'writing',band:wBand,raw:'T1:'+wc1+'w / T2:'+wc2+'w',bar:'res-w-bar'},
+    {id:'speaking',band:sBand,raw:'Self-assessed',bar:'res-s-bar'},
+  ];
+  sections.forEach(({id,band,raw,bar}) => {
+    document.getElementById('res-'+id+'-band').textContent = band.toFixed(1);
+    document.getElementById('res-'+id+'-raw').textContent = raw;
+    document.getElementById('res-'+id+'-desc').textContent = bandToDesc(band);
+    document.getElementById(bar).style.width = (band/9*100)+'%';
+  });
+
+  // Listening answer review
+  const lFeedback = document.getElementById('feedback-listening');
+  lFeedback.innerHTML = '';
+  for(let i=1;i<=16;i++) {
+    const ans = state.listeningAnswers[i] || '(blank)';
+    const correct = listeningCorrect[i];
+    const ok = ans.toString().toLowerCase().trim()===correct.toString().toLowerCase().trim();
+    const div = document.createElement('div');
+    div.className = 'feedback-item';
+    div.innerHTML = `Q${i}: You answered <strong>${ans}</strong> ${ok?'<span class="correct-mark">✓ Correct</span>':'<span class="wrong-mark">✗</span> <span class="answer-reveal">Correct: <strong>${correct}</strong></span>'}`;
+    lFeedback.appendChild(div);
   }
 
-  // ─── SVG CHART ───────────────────────────────────────────────────────────
-  function renderChart() {
-    const svg = document.getElementById('progressChart');
-    const data = [...attempts].reverse();
-    const n = data.length; if (n < 2) return;
-    const W=600, H=160, pad=34;
-    const xStep = (W - pad*2) / (n-1);
-    const yMin=4, yMax=9;
-    const ys = v => H - pad - ((v-yMin)/(yMax-yMin))*(H-pad*2);
-    let out = '';
-
-    // grid
-    [5,6,7,8,9].forEach(y => {
-      const yy = ys(y);
-      out += `<line x1="${pad}" y1="${yy}" x2="${W-pad}" y2="${yy}" stroke="#f0f0f0" stroke-width="1"/>`;
-      out += `<text x="${pad-6}" y="${yy+4}" font-size="9" fill="#bbb" text-anchor="end">${y}</text>`;
-    });
-    // threshold dashes
-    [[6,'#fde68a'],[7,'#bbf7d0'],[8,'#ddd6fe']].forEach(([yv,c]) =>
-      out += `<line x1="${pad}" y1="${ys(yv)}" x2="${W-pad}" y2="${ys(yv)}" stroke="${c}" stroke-width="1.5" stroke-dasharray="4,3"/>`
-    );
-    // band lines
-    [{b:'L',c:'#3b82f6'},{b:'R',c:'#10b981'},{b:'W',c:'#f59e0b'},{b:'S',c:'#8b5cf6'}].forEach(({b,c}) => {
-      const pts = data.map((a,i) => `${pad+i*xStep},${ys(a[b])}`);
-      out += `<polyline points="${pts.join(' ')}" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>`;
-    });
-    // overall line + dots
-    const oPts = data.map((a,i) => [pad+i*xStep, ys(a.overall)]);
-    out += `<polyline points="${oPts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="#0a0a0a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
-    oPts.forEach((p,i) => {
-      out += `<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="#0a0a0a"/>`;
-      out += `<text x="${p[0]}" y="${p[1]-8}" font-size="9" fill="#0a0a0a" text-anchor="middle" font-weight="700">${data[i].overall.toFixed(1)}</text>`;
-      out += `<text x="${p[0]}" y="${H-4}" font-size="9" fill="#bbb" text-anchor="middle">${data[i].date.slice(5)}</text>`;
-    });
-    svg.innerHTML = out;
+  // Reading answer review
+  const rFeedback = document.getElementById('feedback-reading');
+  rFeedback.innerHTML = '';
+  for(let i=1;i<=13;i++) {
+    const ans = state.readingAnswers[i] || '(blank)';
+    const correct = readingCorrect[i];
+    const ok = ans.toString().toLowerCase().trim()===correct.toString().toLowerCase().trim();
+    const div = document.createElement('div');
+    div.className = 'feedback-item';
+    div.innerHTML = `Q${i}: You answered <strong>${ans}</strong> ${ok?'<span class="correct-mark">✓ Correct</span>':'<span class="wrong-mark">✗</span> <span class="answer-reveal">Correct: <strong>${correct}</strong></span>'}`;
+    rFeedback.appendChild(div);
   }
 
-  // ─── LANG ─────────────────────────────────────────────────────────────────
-  function setLang(l) {
-    lang = l;
-    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent===l.toUpperCase()));
-    document.querySelectorAll('[data-en]').forEach(el => { const t=el.getAttribute('data-'+l); if(t) el.innerHTML=t; });
-    renderAttempts();
-    ['L','R','W','S'].forEach(b => { if (bands[b] > 0) updateBand(b, bands[b]); });
-  }
+  // Writing feedback
+  const wFeedback = document.getElementById('feedback-writing');
+  wFeedback.innerHTML = `
+    <div class="feedback-item">Task 1: <strong>${wc1} words</strong> ${wc1>=150?'<span class="correct-mark">✓ Met minimum</span>':'<span class="wrong-mark">✗ Below 150 minimum</span>'}</div>
+    <div class="feedback-item">Task 2: <strong>${wc2} words</strong> ${wc2>=250?'<span class="correct-mark">✓ Met minimum</span>':'<span class="wrong-mark">✗ Below 250 minimum</span>'}</div>
+    <div class="feedback-item">Writing band is estimated based on word count. For a real score, your essays would be marked by a certified IELTS examiner on Task Achievement, Coherence, Lexical Resource, and Grammar.</div>
+  `;
 
-  // ─── FADE UP ──────────────────────────────────────────────────────────────
-  const fadeObs = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); fadeObs.unobserve(e.target); } });
-  }, { threshold: 0.06 });
-  document.querySelectorAll('.fade-up').forEach(el => fadeObs.observe(el));
+  // Next steps
+  const lowestBand = Math.min(lBand, rBand, wBand, sBand);
+  const lowestSection = [{id:'Listening',band:lBand},{id:'Reading',band:rBand},{id:'Writing',band:wBand},{id:'Speaking',band:sBand}].sort((a,b)=>a.band-b.band)[0];
+  document.getElementById('feedback-nextsteps').innerHTML = `
+    <div class="feedback-item">Your weakest section is <strong>${lowestSection.id}</strong> (Band ${lowestSection.band.toFixed(1)}). Focus practice here for the biggest score improvement.</div>
+    <div class="feedback-item">Target overall Band 7.0+ for most skilled migration visas to Australia, Canada, and the UK.</div>
+    <div class="feedback-item">Use the <strong>IELTS Score Tracker</strong> to log this attempt and track your progress over time.</div>
+    <div class="feedback-item">Recommended: practice one full mock test per week and review answer explanations carefully.</div>
+  `;
+}
 
-  // ─── INIT ─────────────────────────────────────────────────────────────────
-  window.addEventListener('DOMContentLoaded', () => { renderAttempts(); });
+function retakeTest() {
+  // Reset state
+  state.listeningAnswers = {}; state.readingAnswers = {};
+  state.writingTask1 = ''; state.writingTask2 = '';
+  state.speakingScores = {};
+  Object.values(state.timerIntervals).forEach(clearInterval);
+  // Reset UI
+  document.getElementById('task1-text').value = '';
+  document.getElementById('task2-text').value = '';
+  document.querySelectorAll('input[type=radio]').forEach(r=>r.checked=false);
+  document.querySelectorAll('input[type=text]').forEach(i=>i.value='');
+  document.querySelectorAll('.tfng-btn').forEach(b=>b.classList.remove('selected'));
+  document.querySelectorAll('.self-score-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('parts34-qs').innerHTML='';
+  document.getElementById('reading-ynng').innerHTML='';
+  document.getElementById('reading-p3-qs').innerHTML='';
+  showScreen('welcome');
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+  buildNavGrid('q-nav-listening', 40, {});
+  buildNavGrid('q-nav-reading', 40, {});
+});
 </script>
 </body>
 </html>
